@@ -1,0 +1,3 @@
+# INST_CON File for port-terminal test
+b :terminal # output
+a :terminal # input

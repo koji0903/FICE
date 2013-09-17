@@ -1,0 +1,437 @@
+
+/*====================================================================*/
+/*                                                                    */
+/* 78K0R(MF3) series INTM  macro                                      */
+/*                                                                    */
+/*    Module   : QLK0RINTM4V1                                         */
+/*    Date     : 2009/09/21                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : M.Ouchiyama                                          */
+/*    Note     : ¿·µ¬ºîÀ®                                             */
+/*                                                                    */
+/*====================================================================*/
+/*[MF3 ²þÄûÍúÎò]                                                      */
+/*    MF3 v1.00: 2009/09/21 BASECK -> PCLKRW                          */
+/*                                                                    */
+/*    DF2.0 2010/01/09                                                */
+/*          added for ICE common usage:TDBLY                          */
+/*          added PORT: ICECK60M                                      */
+/*          added module: ICEDLY50N                                   */
+/*                                                                    */
+/*          2010/01/13                                                */
+/*          modify for ICE: else sentens added                        */
+/*                                                                    */
+/*    DF3.0 2010/02/06						      */
+/*          Change analog dly: TBDLY50N -> TBFILTER1X2                */
+/*                                                                    */
+/*====================================================================*/
+
+/*====================================================================*/
+/*                                                                    */
+/* 78K0R series INTM  macro                                           */
+/*                                                                    */
+/*    Module   : QLK0RINTM4V1                                         */
+/*    Date     : 2005/10/02                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : K.Kawai                                              */
+/*    Note     : ¿·µ¬ºîÀ®                                             */
+/*                                                                    */
+/*====================================================================*/
+/*[10K²þÄûÍúÎò]                                                       */
+/*    Ver1.10  2005/08/04  kenji.yamaguchi                            */
+/*       modify egin7_fs - egin0_fs for scanmode                      */
+/*[K0R²þÄûÍúÎò]                                                       */
+/*    Ver1.00a 2005/09/01  kazuyoshi.kawai                            */
+/*        K0RÍÑ¤ËQLK0RTINTM8V1¤òÎ®ÍÑ                                  */
+/*        MDW¤Èdin¤òBI¤ò²ð¤µ¤º¤ËÄ¾·ë                                  */
+/*    Ver1.00b 2005/09/26  kazuyoshi.kawai                            */
+/*        SVMOD¿®¹æ¤¬¥¢¥¯¥Æ¥£¥ÖÃæ¤Ï¥¨¥Ã¥¸¸¡½Ðµ¡Ç½¤òÄä»ß               */
+/*    Ver1.00c 2005/10/02  kazuyoshi.kawai                            */
+/*        INTM8¤òINTM4¤Ë²þÂ¤                                          */	
+/*    Ver1.00d 2005/10/03  kazuyoshi.kawai                            */
+/*        PSELINTM4¤òPSELINTM¤Ë£¸Ê¸»ú°ÊÆâ¤ËÊÑ¹¹                       */
+/*====================================================================*/
+/*                                                                    */
+/*  QLK0RINTM4V1 : SoftMacro Top module                               */
+/*    |--- QLK0RINTM4V1_BI                                            */
+/*    |                                                               */
+/*    |--- QLK0RINTM4V1_MAIN                                          */
+/*             |---QLK0RINTM4V1_EDGE_DETECT(x8)                       */
+/*                                                                    */
+/*====================================================================*/
+
+
+module QLK0RINTM4V1(
+        MDR11 , MDR10  , MDR9   , MDR8   ,
+        MDR3  , MDR2   , MDR1   , MDR0   ,
+        MDW11 , MDW10  , MDW9   , MDW8   ,
+        MDW3  , MDW2   , MDW1   , MDW0   ,
+        MA0  ,
+        PCLKRW , PSELINTM , CPURD  , CPUWR  , RESB    ,
+        INTP3  , INTP2   , INTP1   , INTP0   ,
+        EGIN3  , EGIN2   , EGIN1   , EGIN0   ,
+        SVMOD , SCANMODE
+
+	,ICECK60M
+);
+
+    input       PCLKRW, PSELINTM, CPURD, CPUWR, RESB, SVMOD, SCANMODE ;
+    input       MDW11, MDW10, MDW9, MDW8,
+                MDW3,  MDW2,  MDW1, MDW0 ;
+    input       MA0 ;
+    input       EGIN3, EGIN2, EGIN1, EGIN0 ;
+
+    output      MDR11, MDR10, MDR9, MDR8,
+                MDR3,  MDR2,  MDR1, MDR0 ;
+    output      INTP3, INTP2, INTP1, INTP0 ;
+
+    input	ICECK60M ;
+
+    wire    [3:0]   doutl, douth ;
+    wire        we_egp, we_egn ;
+
+    //MDW¤Èdin¤ÏBI¤ÎÃæ¤Ç¤Ï¥Õ¥£¡¼¥É¥¹¥ë¡¼¤Ë¤Ê¤ë¤Î¤Ç¡¢RTL¾å¤ÏBI¤ò²ð¤µ¤º¤ËÄ¾·ë¤¹¤ë¡£
+
+  QLK0RINTM4V1_MAIN main (
+        .baseck(PCLKRW), .doutl(doutl), .douth(douth), .resb(RESB),
+        .dinh({MDW11, MDW10, MDW9, MDW8}), .dinl({MDW3, MDW2, MDW1, MDW0 }),
+        .we_egp(we_egp), .we_egn(we_egn),
+        .egin3(EGIN3), .egin2(EGIN2), .egin1(EGIN1), .egin0(EGIN0),
+        .intp3(INTP3), .intp2(INTP2), .intp1(INTP1), .intp0(INTP0),
+        .svmod(SVMOD), .scanmode(SCANMODE)
+	,.ICECK60M(ICECK60M) ) ;
+
+
+  QLK0RINTM4V1_BI bi (
+        .mdr11(MDR11), .mdr10(MDR10), .mdr9(MDR9), .mdr8(MDR8),
+        .mdr3(MDR3), .mdr2(MDR2), .mdr1(MDR1), .mdr0(MDR0),
+        //.mdw({ MDW15, MDW14, MDW13, MDW12, MDW11, MDW10, MDW9, MDW8, MDW7, MDW6, MDW5, MDW4, MDW3, MDW2, MDW1, MDW0 }),
+        .ma( MA0 ),
+        .pselintm4(PSELINTM), .cpurd(CPURD), .cpuwr(CPUWR),
+        //.din(din[15:0]), 
+        .doutl(doutl), .douth(douth),
+        .we_egp(we_egp), .we_egn(we_egn) ) ;
+
+endmodule
+
+//=============================================================================================
+//   INTM4 MAIN BLOCK
+//=============================================================================================
+module  QLK0RINTM4V1_MAIN   (
+            baseck, resb,
+            dinl, dinh, doutl, douth, we_egp, we_egn, 
+            egin3, egin2, egin1, egin0,
+            intp3, intp2, intp1, intp0,
+            svmod, scanmode
+
+	,ICECK60M
+) ;
+
+    input       baseck,resb;
+    input [3:0] dinl, dinh ;
+    output [3:0] doutl, douth ;
+    input       we_egp, we_egn ;
+    input       egin3, egin2, egin1, egin0 ;
+    output      intp3, intp2, intp1, intp0 ;
+    input       svmod, scanmode ;
+
+    input	ICECK60M ;
+
+    reg [3:0]   egp, egn ;
+
+    wire        egin3_f, egin2_f, egin1_f, egin0_f ;
+    wire        egin3_fs, egin2_fs, egin1_fs, egin0_fs ;
+
+    wire        intp0_sv, intp1_sv, intp2_sv, intp3_sv;
+//=========  register write access  ===========================================================
+
+    //synopsys async_set_reset "resb"
+    always @(posedge baseck or negedge resb) begin
+        if ( !resb ) begin
+            egp <= 4'h0 ;
+        end else if( we_egp ) begin
+            egp <= dinl ;
+        end
+    end
+
+    //synopsys async_set_reset "resb"
+    always @(posedge baseck or negedge resb) begin
+        if ( !resb ) begin
+            egn <= 4'h0 ;
+        end else if( we_egn ) begin
+            egn <= dinh ;
+        end
+    end
+
+    
+
+//=========  register read access  =============================================================
+    
+    assign doutl = egp ;
+    assign douth = egn ;
+
+
+//=========  intp function  ======================================================================
+
+    //¹çÀ®»þ¤Ëset_dont_touch¤òÅ¬ÍÑ¤¹¤ë»ö¡£
+    QLK0RINTM4V1_DLYFIL_LVX   intp3_dfil ( .N01(egin3_f) , .H01(egin3) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM4V1_DLYFIL_LVX   intp2_dfil ( .N01(egin2_f) , .H01(egin2) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM4V1_DLYFIL_LVX   intp1_dfil ( .N01(egin1_f) , .H01(egin1) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM4V1_DLYFIL_LVX   intp0_dfil ( .N01(egin0_f) , .H01(egin0) ,.ICECK60M(ICECK60M) ) ;
+
+
+    assign egin3_fs = ( scanmode )?  egin3 : egin3_f ;
+    assign egin2_fs = ( scanmode )?  egin2 : egin2_f ;
+    assign egin1_fs = ( scanmode )?  egin1 : egin1_f ;
+    assign egin0_fs = ( scanmode )?  egin0 : egin0_f ;
+
+    //¹çÀ®»þ¤Ëset_dont_touch¤òÅ¬ÍÑ¤¹¤ë»ö¡£
+    QLK0RINTM4V1_EDGE_DETECT  intp3_edge ( .intp(intp3_sv), .egin(egin3_fs), .egpin(egp[3]),
+                                           .egnin(egn[3]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM4V1_EDGE_DETECT  intp2_edge ( .intp(intp2_sv), .egin(egin2_fs), .egpin(egp[2]),
+                                           .egnin(egn[2]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM4V1_EDGE_DETECT  intp1_edge ( .intp(intp1_sv), .egin(egin1_fs), .egpin(egp[1]),
+                                           .egnin(egn[1]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM4V1_EDGE_DETECT  intp0_edge ( .intp(intp0_sv), .egin(egin0_fs), .egpin(egp[0]), 
+                                           .egnin(egn[0]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+
+    //SVMOD¤¬¥¢¥¯¥Æ¥£¥Ö¤Î»þ¤Ï¥¨¥Ã¥¸¸¡½Ðµ¡Ç½¤òÄä»ß¤¹¤ë
+    assign intp0 = intp0_sv & ~svmod;
+    assign intp1 = intp1_sv & ~svmod;
+    assign intp2 = intp2_sv & ~svmod;
+    assign intp3 = intp3_sv & ~svmod;
+
+endmodule
+
+//=============================================================================================
+//   EXTERNAL INTERRUPT DETECT
+//   ¹çÀ®»þ¤Ëset_dont_touch¤òÅ¬ÍÑ¤¹¤ë»ö¡£
+//=============================================================================================
+
+module  QLK0RINTM4V1_EDGE_DETECT( intp , egin , egpin , egnin , scanmode ,ICECK60M ) ;
+
+    output  intp ;
+    input   egin , egpin , egnin , scanmode ;
+
+    input   ICECK60M ;
+
+    wire    egin_d1, egin_d2, egin_d3, egin_d4, egin_d5 ; 
+    wire    egin_b , egin_d_b , egp_int , egn_int ;
+    wire    egin_dsp, egin_dsn ;
+                        
+        // This analog delay is MF2 process ( TBDLY3X2 MIN:1.69NS*5=8.45NS )
+
+`ifndef FPGA_ICE
+        QLK0RINTM4V1_DLYEDG_LVX    ptin_delay1 ( .N01(egin_d1) , .H01(egin) ) ;
+        QLK0RINTM4V1_DLYEDG_LVX    ptin_delay2 ( .N01(egin_d2) , .H01(egin_d1) ) ;
+        QLK0RINTM4V1_DLYEDG_LVX    ptin_delay3 ( .N01(egin_d3) , .H01(egin_d2) ) ;
+        QLK0RINTM4V1_DLYEDG_LVX    ptin_delay4 ( .N01(egin_d4) , .H01(egin_d3) ) ;
+        QLK0RINTM4V1_DLYEDG_LVX    ptin_delay5 ( .N01(egin_d5) , .H01(egin_d4) ) ;
+`else
+        QLK0RINTM4V1_DLYEDG_LVX    ptin_delay1 ( .N01(egin_d5) , .H01(egin)  ,.ICECK60M(ICECK60M) ) ;
+`endif
+
+    /*--------------------------------------*/
+    /* scanmode egin_d5 | egin_dsp egin_dsn */
+    /*------------------+-------------------*/
+    /*    0        0    | egin_d5   egin_d5 */
+    /*    0        1    | egin_d5   egin_d5 */
+    /*    1        0    |    0        1     */
+    /*    1        1    |    0        1     */
+    /*--------------------------------------*/
+    assign  egin_dsp = egin_d5 & ~scanmode ;
+    assign  egin_dsn = egin_d5 | scanmode ;
+
+        //      edge find logic
+
+    assign  egin_b = ~egin ;
+    assign  egin_d_b = ~egin_dsp ;
+
+    /*¥²¡¼¥È¸Æ¤Ó½Ð¤·¤Ë¤è¤ëµ­½Ò*/
+    //¥²¡¼¥ÈÃÊ¿ô¤È¥¿¥¤¥ß¥ó¥°¤ò¸ÇÄê¤·¤¿¤¤¤Î¤Ç¥²¡¼¥È¤Ç¸Æ¤Ó½Ð¤·¤ò»ÈÍÑ¡£
+    QLK0RINTM4V1_3AND_LVX   egp_and ( .N01(egp_int) , .H01(egpin) , .H02(egin) , .H03(egin_d_b) ) ;
+    QLK0RINTM4V1_3AND_LVX   egn_and ( .N01(egn_int) , .H01(egnin) , .H02(egin_b) , .H03(egin_dsn) ) ;
+    QLK0RINTM4V1_2OR_LVX    intp_or ( .N01(intp) , .H01(egp_int) , .H02(egn_int) ) ;
+
+    /*±é»»»Ò¤Ë¤è¤ëµ­½Ò*/
+    //assign egp_int = egin & egin_d_b & egpin ;
+    //assign egn_int = egin_b & egin_dsn & egnin ;
+    //assign intp = egp_int | egn_int;
+
+endmodule
+
+
+//====================================================================================================
+//   INTM4 BI BLOCK
+//====================================================================================================
+//MDW¤Èdin¤ÏBI¤ÎÃæ¤Ç¤Ï¥Õ¥£¡¼¥É¥¹¥ë¡¼¤Ë¤Ê¤ë¤Î¤Ç¡¢RTL¾å¤ÏBI¤ò²ð¤µ¤º¤ËÄ¾·ë¤¹¤ë¡£
+
+module  QLK0RINTM4V1_BI (
+            mdr11, mdr10, mdr9, mdr8, mdr3, mdr2, mdr1, mdr0, 
+            ma, pselintm4, cpurd, cpuwr,
+            //mdw, din,
+            doutl, douth, we_egp, we_egn
+) ;
+
+    input       pselintm4, ma, cpurd, cpuwr ;
+    input [3:0] doutl, douth ;
+    //input [15:0] mdw ;
+
+    output      we_egp, we_egn ;
+    output      mdr11, mdr10, mdr9, mdr8, mdr3, mdr2, mdr1, mdr0;
+    //output [15:0] din ;
+
+    wire        rd_en ;
+    wire        sel_egp, sel_egn;
+
+//========== address decode ========================================================================
+
+    assign  sel_egp = pselintm4 & ~ma ;
+    assign  sel_egn = pselintm4 & ma ;
+    
+//========== write enable ==========================================================================
+
+    assign  we_egp = sel_egp & cpuwr;
+    assign  we_egn = sel_egn & cpuwr;
+
+//  mdrbus Read/Write control
+
+    assign rd_en = cpurd & ( sel_egp | sel_egn ) ;
+
+        assign mdr0  = doutl[0] & rd_en  ; 
+        assign mdr1  = doutl[1] & rd_en  ; 
+        assign mdr2  = doutl[2] & rd_en  ; 
+        assign mdr3  = doutl[3] & rd_en  ; 
+        assign mdr8  = douth[0] & rd_en  ; 
+        assign mdr9  = douth[1] & rd_en  ; 
+        assign mdr10 = douth[2] & rd_en  ; 
+        assign mdr11 = douth[3] & rd_en  ; 
+
+      //  assign din = mdw ;
+
+endmodule
+
+
+//===================================================================================================================
+//   INTM4 EDGE DETECT MODULE (dont touch)
+//===================================================================================================================
+// MF3 Added:
+// ICE »ÈÍÑ»þ¤Ë¤Ï¥â¥¸¥å¡¼¥ëÀë¸À¤òIÇICE¤ÎDLY¤ÈÃÖ¤­´¹¤¨¤ë
+`ifndef FPGA_ICE
+module QLK0RINTM4V1_DLYEDG_LVX ( N01 , H01 ) ;
+  input  H01 ;
+  output N01 ;
+
+//input	ICECK60M ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch delay1 true
+  // synopsys dc_script_end
+
+  TBDLY3X2 delay1 ( .H01(H01) , .N01(N01) ) ;
+
+endmodule
+`else
+module QLK0RINTM4V1_DLYEDG_LVX ( N01 , H01 ,ICECK60M ) ;
+  input  H01 ;
+  output N01 ;
+
+  input	ICECK60M ;
+
+  reg [1:0]	in_dly ;
+
+  always @ ( posedge ICECK60M ) begin
+	in_dly <= { in_dly[0], H01} ;
+  end
+
+  assign N01 = in_dly[1] ;
+
+endmodule
+`endif
+
+//==================================================================================================================
+//   INTM4 ¥Î¥¤¥º¥Õ¥£¥ë¥¿
+//   ¹çÀ®»þ¤Ëset_dont_touch¤òÅ¬ÍÑ¤¹¤ë»ö¡£
+//==================================================================================================================
+module QLK0RINTM4V1_DLYFIL_LVX ( N01 , H01 ,ICECK60M ) ;
+  input  H01 ;
+  output N01 ;
+
+input	ICECK60M ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch delay1 true
+  // synopsys dc_script_end
+
+  /*TBDLY50N¤Ï¥¢¥Ê¥í¥°¥Ç¥£¥ì¥¤¡ÜRS¥é¥Ã¥Á¤ò´Þ¤ß¥Î¥¤¥º¥Õ¥£¥ë¥¿¤È¤·¤Æµ¡Ç½¤¹¤ë*/
+//TBDLY50N delay1 ( .H01(H01) , .N01(N01) ) ;
+  QLK0RINTM4V1_ICEDLYMIN50N delay1 ( .dlyin(H01) , .dlyo(N01) ,.ICECK60M(ICECK60M) ) ;
+
+endmodule
+
+// MF3 Added: TBDLY50N ¤Ï ICE¤Îdly¤ÈÃÖ¤­´¹¤¨¤é¤ì¤ë¤è¤¦¤Ë ³¬ÁØ²½¤¹¤ë¡£
+// ICE »ÈÍÑ»þ¤Ë¤Ï¥â¥¸¥å¡¼¥ëÀë¸À¤òºï½ü¤¹¤ë¤³¤È¤ÇICE¤ÎDLY¤ÈÃÖ¤­´¹¤¨¤ë
+`ifndef FPGA_ICE
+module QLK0RINTM4V1_ICEDLYMIN50N ( dlyin ,dlyo , ICECK60M ) ;
+input	dlyin ;
+output	dlyo ;
+input	ICECK60M ;
+
+  TBFILTER1X2 tbdly50n ( .H01(dlyin) , .N01(dlyo) ) ;
+
+endmodule
+`else
+/****************************************************************/
+/* 50ns Digital Noise Filter by 60mhz clock.			*/
+/* Min50ns ( 50.000ns <= delay <= 66.666ns )			*/
+/****************************************************************/
+module QLK0RINTM4V1_ICEDLYMIN50N ( dlyin ,dlyo , ICECK60M ) ;
+	input	dlyin ;
+	output	dlyo ;
+	input	ICECK60M ;
+	
+	wire	in = dlyin;
+	wire	clk60mhz = ICECK60M;
+	
+	reg [2:0] dly;
+	reg N01;
+	always @( posedge clk60mhz ) begin
+		dly <= {dly[1:0], in};
+		if ((dly[0]==in)&&(dly[1]==in)&&(dly[2]==in)) begin
+			N01 <= dly[2];
+		end
+	end
+
+	assign dlyo = N01 ;
+endmodule
+`endif
+// end of ICE shared HDL
+
+
+module QLK0RINTM4V1_3AND_LVX ( N01 , H01 , H02 , H03 ) ;
+  input  H01 , H02 , H03  ;
+  output N01 ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch gate true
+  // synopsys dc_script_end
+
+  TBAD3X1 gate ( .H01(H01) , .H02(H02) , .H03(H03) , .N01(N01) ) ;
+
+endmodule
+
+module QLK0RINTM4V1_2OR_LVX ( N01 , H01 , H02 ) ;
+  input  H01 , H02 ;
+  output N01 ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch gate true
+  // synopsys dc_script_end
+
+  TBOR2X1 gate ( .H01(H01) , .H02(H02) , .N01(N01) ) ;
+
+endmodule
+
+
+
+

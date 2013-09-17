@@ -1,0 +1,4837 @@
+/* ===================================================================== */
+/*                                                                       */
+/*  78K0R series Chip State Control Macro                                */
+/*                                                                       */
+/*  Module   : QLK0RCSC1V2                                               */
+/*                                                                       */
+/*  Date     : 2011/3/30                                                 */
+/*  Revision : 2.30                                                      */
+/*  Designer : Y.Sakaguchi (yuusuke.sakaguchi.eb@rms.renesas.com)        */
+/*  Note     : 新規作成                                                  */
+/*             QLK0RCSC1V1を元に作成                                     */
+/*                                                                       */
+/*             - for v2.3                                                */
+/*                add pin TRAPINP                                        */
+/*                modify TMDENCLK count 14.5 -> 32.5                     */
+/*                                                                       */
+/* ===================================================================== */
+
+module QLK0RCSC1V2 (
+		PSEL3	,	PSEL2	,	PSEL1	,	PADDR2	,
+		PADDR1	,	PADDR0	,	PENABLE	,	PWRITE	,
+		PWDATA15,	PWDATA14,	PWDATA13,	PWDATA12,
+		PWDATA11,	PWDATA10,	PWDATA9	,	PWDATA8	,
+		PWDATA7	,	PWDATA6	,	PWDATA5	,	PWDATA4	,
+		PWDATA3	,	PWDATA2	,	PWDATA1	,	PWDATA0	,
+		OSCOUTM	,	OSCOUTS	,	R32MOUT	,	R15KOUT	,
+		EXCLK1	,	SVSTOP	,	STPST	,	HLTST	,
+		STBRELE	,	NVMRCEND,	TESSCAN3,	TESSCAN4,
+		OPWDEN	,	OPWDSTBY,	DMAEN	,	OCDMOD	,
+		SPRGMOD	,	TESTMOD	,	PTESINST,	TESUSR	,
+		TESDBT	,	OPTIDDQ	,	OPTEXCCK,	SCANMODE,
+		SCANEN	,	SCANCLK	,	SCANRESZ,	POCREL	,
+		POCRELNF,	RESETINBNF,	LVIOUTZNF,	WDTRES	,
+		SOFTBRK	,	OCDRESMK,
+		PRDATA15,	PRDATA14,	PRDATA13,	PRDATA12,
+		PRDATA11,	PRDATA10,	PRDATA9	,	PRDATA8	,
+		PRDATA7	,	PRDATA6	,	PRDATA5	,	PRDATA4	,
+		PRDATA3	,	PRDATA2	,	PRDATA1	,	PRDATA0	,
+		BASECK	,	BASECKHS,	PCLKOCD	,
+		PCLK7	,	PCLK6	,	PCLK5	,	PCLK4	,
+		PCLK3	,	PCLK2	,	PCLK1	,	PCLK0	,
+		RESB	,	NSRESB	,	PRESOCDZ,	PRESWDTZ,
+		PRES7Z	,	PRES6Z	,	PRES5Z	,	PRES4Z	,
+		PRES3Z	,	PRES2Z	,	PRES1Z	,	PRES0Z	,
+		RESSTP	,	CPUSTART,	RESSQSTA,	FSTPST	,
+		FHLTST	,	PSUBMODE,	OSCSEL	,	MSTOP	,
+		EXCLK	,	AMPH	,	OSCSELS	,	XTSTOP	,
+		EXCLKS	,	AMPHS0	,	R32MSTP	,	R15KSTPZ,
+		REGLC	,	REGLV	,	OREGSTP	,	SYSRESB	,
+		RESETB	,	LVIEN	,
+		LVIS3	,	LVIS2	,	LVIS1	,	LVIS0	,
+		INTLVI	,	TPOCREL	,	TLVIF	,
+		FMAIN   ,       PSTN    ,	AMPHS1  ,	XTWKUP  ,
+		FCLKRT	,	SRESREQ	,
+		ICECK60M,	ICEMKWDT,	ICEMKLVI,	ICEMKSRQ,
+		TSELOREG,	TSELIRES,	TTEMP	,
+		LOSCTEST,	TSTN	,	TFLSTOPC,	TFLSTOPD,
+		PER07	,	PER06	,	PER05	,	PER04	,
+		PER03	,	PER02	,	PER01	,	PER00	,
+		STPBCKBT,	CIBRESRQ,	OCDASEN	,
+		BBCKSELR,	BBCKSELM,	PCLKRW	,
+		PRSCLK1	,   	PRSCLK2	,  	PRSCLK3	,
+		PRSCLK4	,   	PRSCLK5	,  	PRSCLK6	,  	PRSCLK7	,
+		PRSCLK8	,   	PRSCLK9	,  	PRSCLK10, 	PRSCLK11,
+		PRSCLK12,  	PRSCLK13, 	PRSCLK14, 	PRSCLK15,
+		RT0LPM	,	SVPERI0	, 	SVPERI1,	TMDENCLK,
+		FRQSEL4	,	FRQSEL3	,	FRQSEL2	,	FRQSEL1	,
+		FRQSEL0	,
+		RDSETUP	,	BBCLKR	,	BBCLKM	,	INCDECMD,
+		CRCHLTEN,	REQPCLKSA,	REQPCLKAD,	BBREQPCLK,
+		OPTBCT	,	REQFL	,	REQOCD	,
+		GOFIRM	,	INTRCLK	,	WDTTESCK,	CKSEL	,
+		CPUCLKEN,	RTCCLKEN,	RPERR	,	BBMODE	,
+		PCLKTST	,	IAWRES	,	SBRFONLY,	FSUB	,
+		STDWAIT ,	HISPEED	,	HIOMSK	,
+		RLOWSPY	,	PAENB	,
+		OPVPOC2 ,	OPVPOC1 ,	OPVPOC0 ,	OPLVIS1 ,
+		OPLVIS0 ,	OPLVIMDS1,	OPLVIMDS0,	OPBOEN  ,
+		LVITEST	,	LVITSEL	,	PCLKFCB	,	FLROACT	,
+		FLSPM	,	EEEMD	,	WDEN	,	MCM0	,
+		RSTS	,	REQR32M	,	VSETEND ,	BBRPERR	,
+		TSELBGR	,	BBCKSTR	,	PSYSRESB,	BBREGCTL,
+		BBHIOON	,	BBCKSTM	,	GOFIRMR	,	AMPSEL	,
+		FMXST	,	SUBCKST	,	BCKHSEN	,	TRMRD1	,
+		TRAPINP
+		, EMEMRAMCLK
+		) ;
+
+
+// APB I/F
+input		PSEL3 ;
+input		PSEL2 ;
+input		PSEL1 ;
+input		PADDR2 ;
+input		PADDR1 ;
+input		PADDR0 ;
+input		PENABLE ;
+input		PWRITE ;
+input		PWDATA15 ;
+input		PWDATA14 ;
+input		PWDATA13 ;
+input		PWDATA12 ;
+input		PWDATA11 ;
+input		PWDATA10 ;
+input		PWDATA9 ;
+input		PWDATA8 ;
+input		PWDATA7 ;
+input		PWDATA6 ;
+input		PWDATA5 ;
+input		PWDATA4 ;
+input		PWDATA3 ;
+input		PWDATA2 ;
+input		PWDATA1 ;
+input		PWDATA0 ;
+
+// CG Input
+input		OSCOUTM ;
+input		OSCOUTS	;
+input		R32MOUT ;
+input		R15KOUT ;
+input		EXCLK1  ;
+input		SVSTOP ;
+input		STPST ;
+input		HLTST ;
+input		STBRELE	;
+input		NVMRCEND ;
+input		OPWDEN ;
+input		OPWDSTBY ;
+input		DMAEN ;
+input		OCDMOD;
+input		SPRGMOD	;
+input		TESTMOD	;
+input		TESSCAN3 ;
+input		TESSCAN4 ;
+input		PTESINST ;
+input		TESUSR ;
+input		TESDBT ;
+input		OPTIDDQ	;
+input		OPTEXCCK ;
+input		SCANMODE ;
+input		SCANEN ;
+input		SCANCLK	;
+input		SCANRESZ ;
+input		BBCKSELR ;
+input		BBCKSELM ;
+input		SVPERI0 ;
+input	 	SVPERI1 ;
+input		RDSETUP ;
+input		BBCLKR ;
+input		BBCLKM ;
+input		INCDECMD ;
+input		CRCHLTEN ;
+input		REQPCLKSA ;
+input		REQPCLKAD ;
+input		BBREQPCLK ;
+input		OPTBCT ;
+input		REQFL ;
+input		REQOCD ;
+input		GOFIRM ;
+input		BBMODE ;
+input		STDWAIT ;
+input		HISPEED ;
+input		HIOMSK	;
+input		FRQSEL4	;
+input		FRQSEL3	;
+input		FRQSEL2	;
+input		FRQSEL1	;
+input		FRQSEL0	;
+input		RLOWSPY	;
+input		FLSPM	;
+input		EEEMD	;
+input		BBREGCTL;
+input		BBHIOON	;
+input		TRMRD1	;
+
+// RG Input
+input		POCREL	;
+input		POCRELNF ;
+input		RESETINBNF ;
+input		LVIOUTZNF ;
+input		WDTRES	;
+input		SOFTBRK	;
+input		OCDRESMK;
+input		SRESREQ ;
+input		CIBRESRQ ;
+input		RPERR ;
+input		IAWRES ;
+input           OPVPOC2 ;
+input           OPVPOC1 ;
+input           OPVPOC0 ;
+input           OPLVIS1 ;
+input           OPLVIS0 ;
+input           OPLVIMDS1 ;
+input           OPLVIMDS0 ;
+input           OPBOEN ;
+input           BBRPERR ;
+input           GOFIRMR	;
+
+// ICE I/F
+input		ICECK60M ;
+input		ICEMKWDT ;
+input		ICEMKLVI ;
+input		ICEMKSRQ ;
+
+// APB I/F
+output		PRDATA15;
+output		PRDATA14;
+output		PRDATA13;
+output		PRDATA12;
+output		PRDATA11;
+output		PRDATA10;
+output		PRDATA9	;
+output		PRDATA8	;
+output		PRDATA7	;
+output		PRDATA6	;
+output		PRDATA5	;
+output		PRDATA4	;
+output		PRDATA3	;
+output		PRDATA2	;
+output		PRDATA1	;
+output		PRDATA0	;
+
+// CG Output
+output		BASECK	;
+output		BASECKHS;
+output		PCLKOCD	;
+output		PCLK7	;
+output		PCLK6	;
+output		PCLK5	;
+output		PCLK4	;
+output		PCLK3	;
+output		PCLK2	;
+output		PCLK1	;
+output		PCLK0	;
+output		FMAIN	;
+output		FCLKRT	;
+output		TMDENCLK;
+output		PCLKTST ;
+output		RESB	;
+output		NSRESB	;
+output		PRESOCDZ;
+output		PRESWDTZ;
+output		PRES7Z	;
+output		PRES6Z	;
+output		PRES5Z	;
+output		PRES4Z	;
+output		PRES3Z	;
+output		PRES2Z	;
+output		PRES1Z	;
+output		PRES0Z	;
+output		RESSTP	;
+output		CPUSTART;
+output		RESSQSTA;
+output		FSTPST	;
+output		FHLTST	;
+output		PSUBMODE;
+output		OSCSEL	;
+output		MSTOP	;
+output		EXCLK	;
+output		AMPH	;
+output		OSCSELS	;
+output		XTSTOP	;
+output		EXCLKS	;
+output		AMPHS0	;
+output		R32MSTP	;
+output		R15KSTPZ;
+output		REGLC	;
+output		REGLV   ;
+output		TSELOREG;
+output		TSELIRES;
+output		TTEMP	;
+output		LOSCTEST;
+output		TSTN    ;
+output		TFLSTOPC;
+output		TFLSTOPD;
+output		OREGSTP	;
+output		PSTN	;
+output		AMPHS1	;
+output		XTWKUP  ;
+output		PER07;
+output		PER06;
+output		PER05;
+output		PER04;
+output		PER03;
+output		PER02;
+output		PER01;
+output		PER00;
+output		STPBCKBT;
+output		OCDASEN	;
+output		FSUB ;
+output		PAENB	;
+output		PCLKRW ;
+output		PRSCLK1 ;
+output   	PRSCLK2 ;
+output  	PRSCLK3 ;
+output		PRSCLK4 ;
+output   	PRSCLK5 ;
+output  	PRSCLK6 ;
+output  	PRSCLK7 ;
+output		PRSCLK8 ;
+output   	PRSCLK9 ;
+output  	PRSCLK10;
+output 		PRSCLK11;
+output		PRSCLK12;
+output  	PRSCLK13;
+output	 	PRSCLK14;
+output	 	PRSCLK15;
+output		RT0LPM  ;
+output		INTRCLK ;
+output		WDTTESCK;
+output		CKSEL   ;
+output		CPUCLKEN;
+output		RTCCLKEN;
+output		PCLKFCB	;
+output		FLROACT	;
+output		WDEN	;
+output		MCM0	;
+output		RSTS	;
+output		REQR32M	;
+output		TSELBGR	;
+output		BBCKSTR	;
+output		BBCKSTM	;
+output		AMPSEL	;
+output		FMXST	;
+output		SUBCKST	;
+output		BCKHSEN	;
+
+// RG Output			
+output		SYSRESB	;
+output		RESETB	;
+output		LVIEN	;
+output		LVIS3	;
+output		LVIS2	;
+output		LVIS1	;
+output		LVIS0	;
+output		INTLVI	;
+output		TPOCREL	;
+output		TLVIF	;
+output		SBRFONLY;
+output          LVITEST ;
+output          LVITSEL ;
+output          VSETEND ;
+output          PSYSRESB;
+output		TRAPINP	;
+output		EMEMRAMCLK ;
+
+wire		BASECK	;
+wire		RESB	;
+wire		SYSRESB	;
+wire		RESETB	;
+wire		CPUSTART;
+
+wire    dout15_cg, dout14_cg, dout13_cg, dout12_cg,
+	dout11_cg, dout10_cg, dout9_cg, dout8_cg,
+        dout7_cg , dout6_cg , dout5_cg , dout4_cg ,
+	dout3_cg , dout2_cg , dout1_cg, dout0_cg ;
+
+wire	dout15_rg, dout14_rg, dout13_rg, dout12_rg,
+	dout11_rg, dout10_rg, dout9_rg, dout8_rg,
+	dout7_rg , dout6_rg , dout5_rg , dout4_rg ,
+	dout3_rg , dout2_rg , dout1_rg, dout0_rg ;
+
+wire	we_cmc, we_csc, we_ckc, we_osts, we_osmc, we_per0, we_rmc,
+	we_lvim, we_lvis, we_tcsc0, we_tcsc1, we_rpectl ;
+
+wire	re_cmc, re_csc, re_ckc, re_osts, re_osmc, re_per0, re_rmc,
+	re_lvim, re_lvis, re_resf, re_ostc, re_tcsc0, re_tcsc1, re_rpectl ;
+
+wire	sel_lvim, sel_lvis, sel_resf, sel_rpectl ;
+wire    DRESETB, NSRESB, RSWDTRES, REQLVI ;
+wire	RESSQSTA, WARMUP ;
+
+QLK0RCSC1V2_APBBI  bi	(
+                .psel3(PSEL3),  	  .psel2(PSEL2),             .psel1(PSEL1),            .penable(PENABLE),
+                .pwrite(PWRITE),          .paddr({ PADDR2, PADDR1, PADDR0 }),
+                .dout15_cg(dout15_cg),    .dout14_cg(dout14_cg),     .dout13_cg(dout13_cg),    .dout12_cg(dout12_cg),
+                .dout11_cg(dout11_cg),    .dout10_cg(dout10_cg),     .dout9_cg(dout9_cg),      .dout8_cg(dout8_cg),
+                .dout7_cg(dout7_cg),      .dout6_cg(dout6_cg),       .dout5_cg(dout5_cg),      .dout4_cg(dout4_cg),
+                .dout3_cg(dout3_cg),      .dout2_cg(dout2_cg),       .dout1_cg(dout1_cg),      .dout0_cg(dout0_cg),
+                .dout15_rg(dout15_rg),    .dout14_rg(dout14_rg),     .dout13_rg(dout13_rg),    .dout12_rg(dout12_rg),
+                .dout11_rg(dout11_rg),    .dout10_rg(dout10_rg),     .dout9_rg(dout9_rg),      .dout8_rg(dout8_rg),
+                .dout7_rg(dout7_rg),      .dout6_rg(dout6_rg),       .dout5_rg(dout5_rg),      .dout4_rg(dout4_rg),
+                .dout3_rg(dout3_rg),      .dout2_rg(dout2_rg),       .dout1_rg(dout1_rg),      .dout0_rg(dout0_rg),
+                .prdata15(PRDATA15),      .prdata14(PRDATA14),       .prdata13(PRDATA13),      .prdata12(PRDATA12),
+                .prdata11(PRDATA11),      .prdata10(PRDATA10),       .prdata9(PRDATA9),        .prdata8(PRDATA8),
+                .prdata7(PRDATA7),        .prdata6(PRDATA6),         .prdata5(PRDATA5),        .prdata4(PRDATA4),
+                .prdata3(PRDATA3),        .prdata2(PRDATA2),         .prdata1(PRDATA1),        .prdata0(PRDATA0),
+		.we_cmc(we_cmc),	  .we_csc(we_csc),           .we_ckc(we_ckc),          .we_osts(we_osts),
+                .we_osmc(we_osmc),        .we_per0(we_per0),         .we_lvim(we_lvim),        .we_rmc(we_rmc),
+                .we_lvis(we_lvis),        .we_tcsc0(we_tcsc0),       .we_tcsc1(we_tcsc1),      .we_rpectl(we_rpectl),
+                .re_cmc(re_cmc),          .re_csc(re_csc),           .re_ckc(re_ckc),          .re_osts(re_osts),
+                .re_osmc(re_osmc),        .re_per0(re_per0),         .re_tcsc0(re_tcsc0),      .re_tcsc1(re_tcsc1),
+                .re_lvim(re_lvim),        .re_lvis(re_lvis),         .re_resf(re_resf),        .re_rpectl(re_rpectl),
+		.re_ostc(re_ostc),        .sel_lvim(sel_lvim),       .sel_lvis(sel_lvis),       .sel_resf(sel_resf),
+		.sel_rpectl(sel_rpectl),  .re_rmc(re_rmc)
+		) ;
+
+QLK0RCSC1V2_CG  cg	(
+                .PWDATA15(PWDATA15),      .PWDATA14(PWDATA14),       .PWDATA13(PWDATA13),      .PWDATA12(PWDATA12),
+                .PWDATA11(PWDATA11),      .PWDATA10(PWDATA10),       .PWDATA9(PWDATA9),        .PWDATA8(PWDATA8),
+                .PWDATA7(PWDATA7),        .PWDATA6(PWDATA6),         .PWDATA5(PWDATA5),        .PWDATA4(PWDATA4),
+                .PWDATA3(PWDATA3),        .PWDATA2(PWDATA2),         .PWDATA1(PWDATA1),        .PWDATA0(PWDATA0),
+                .OSCOUTM(OSCOUTM),        .OSCOUTS(OSCOUTS),         .R32MOUT(R32MOUT),
+                .R15KOUT(R15KOUT),        .EXCLK1(EXCLK1),           .SVSTOP(SVSTOP),
+                .STPST(STPST),            .HLTST(HLTST),             .RESETB(RESETB),
+                .OPWDEN(OPWDEN),          .OPWDSTBY(OPWDSTBY),
+                .DMAEN(DMAEN),            .SPRGMOD(SPRGMOD),         .TESTMOD(TESTMOD),
+                .PTESINST(PTESINST),       .TESUSR(TESUSR),           .TESDBT(TESDBT),
+                .OPTIDDQ(OPTIDDQ),        .OPTEXCCK(OPTEXCCK),       .STBRELE(STBRELE),
+                .NVMRCEND(NVMRCEND),      .TESSCAN3(TESSCAN3),       .TESSCAN4(TESSCAN4),
+		.SCANMODE(SCANMODE),      .SCANEN(SCANEN),           .SCANCLK(SCANCLK),        .SCANRESZ(SCANRESZ),
+                .we_cmc(we_cmc),          .we_csc(we_csc),           .we_ckc(we_ckc),          .we_osts(we_osts),
+                .we_osmc(we_osmc),        .we_per0(we_per0),         .we_tcsc0(we_tcsc0),      .we_tcsc1(we_tcsc1),
+                .re_cmc(re_cmc),          .re_csc(re_csc),           .re_ckc(re_ckc),          .re_osts(re_osts),
+                .re_osmc(re_osmc),        .re_per0(re_per0),         .re_ostc(re_ostc),
+		.re_tcsc0(re_tcsc0),      .re_tcsc1(re_tcsc1),
+		.dout({ dout15_cg, dout14_cg, dout13_cg, dout12_cg, dout11_cg, dout10_cg, dout9_cg, dout8_cg,
+                        dout7_cg,  dout6_cg,  dout5_cg,  dout4_cg,  dout3_cg,  dout2_cg,  dout1_cg, dout0_cg } ),
+                .BASECK(BASECK),          .BASECKHS(BASECKHS),
+                .PCLKOCD(PCLKOCD),
+                .PCLK7(PCLK7),            .PCLK6(PCLK6),            .PCLK5(PCLK5),            .PCLK4(PCLK4),
+                .PCLK3(PCLK3),            .PCLK2(PCLK2),            .PCLK1(PCLK1),            .PCLK0(PCLK0),
+                .RESB(RESB),
+                .NSRESB(NSRESB),          .PRESOCDZ(PRESOCDZ),      .PRESWDTZ(PRESWDTZ),
+                .PRES7Z(PRES7Z),          .PRES6Z(PRES6Z),          .PRES5Z(PRES5Z),          .PRES4Z(PRES4Z),
+                .PRES3Z(PRES3Z),          .PRES2Z(PRES2Z),          .PRES1Z(PRES1Z),          .PRES0Z(PRES0Z),
+                .RESSTP(RESSTP),          .CPUSTART(CPUSTART),      .RESSQSTA(RESSQSTA),
+                .FSTPST(FSTPST),          .FHLTST(FHLTST),
+                .PSUBMODE(PSUBMODE),      .OSCSEL(OSCSEL),          .MSTOP(MSTOP),
+                .EXCLK(EXCLK),            .AMPH(AMPH),              .OSCSELS(OSCSELS),        .XTSTOP(XTSTOP),
+                .EXCLKS(EXCLKS),          .AMPHS0(AMPHS0),          .R32MOSTP(R32MSTP),
+                .R15KSTPZ(R15KSTPZ),      .REGLC(REGLC),            .REGLV(REGLV),            .OREGSTP(OREGSTP),
+		.FCLKRT(FCLKRT),          .FMAIN(FMAIN),
+		.AMPHS1(AMPHS1),          .XTWKUP(XTWKUP),          .PSTN(PSTN),              .DRESETB(DRESETB),
+		.ICECK60M(ICECK60M),      .TSELOREG(TSELOREG),      .TSELIRES(TSELIRES),      .TTEMP(TTEMP),
+                .LOSCTEST(LOSCTEST),      .TSTN(TSTN),
+                .TFLSTOPC(TFLSTOPC),      .TFLSTOPD(TFLSTOPD),
+		.PER07(PER07),            .PER06(PER06),            .PER05(PER05),            .PER04(PER04),
+		.PER03(PER03),            .PER02(PER02),            .PER01(PER01),            .PER00(PER00),
+		.STPBCKBT(STPBCKBT),      .OCDASEN(OCDASEN),
+		.BBCKSELR(BBCKSELR),	  .BBCKSELM(BBCKSELM),      .PENABLE(PENABLE), .PCLKRW(PCLKRW),
+		.PRSCLK1(PRSCLK1),     .PRSCLK2(PRSCLK2),   .PRSCLK3(PRSCLK3),
+		.PRSCLK4(PRSCLK4),     .PRSCLK5(PRSCLK5),   .PRSCLK6(PRSCLK6),   .PRSCLK7(PRSCLK7),
+		.PRSCLK8(PRSCLK8),     .PRSCLK9(PRSCLK9),   .PRSCLK10(PRSCLK10), .PRSCLK11(PRSCLK11),
+		.PRSCLK12(PRSCLK12),   .PRSCLK13(PRSCLK13), .PRSCLK14(PRSCLK14), .PRSCLK15(PRSCLK15),
+		.SVPERI0(SVPERI0), .SVPERI1(SVPERI1),
+		.FRQSEL4(FRQSEL4),     .FRQSEL3(FRQSEL3),   .FRQSEL2(FRQSEL2),   .FRQSEL1(FRQSEL1),   .FRQSEL0(FRQSEL0),
+		.RDSETUP(RDSETUP),     .BBCLKR(BBCLKR),     .BBCLKM(BBCLKM),     .INCDECMD(INCDECMD),
+		.CRCHLTEN(CRCHLTEN),   .RT0LPM(RT0LPM),   .TMDENCLK(TMDENCLK), .RSWDTRES(RSWDTRES),
+		.REQPCLKSA(REQPCLKSA), .REQPCLKAD(REQPCLKAD), .BBREQPCLK(BBREQPCLK),
+		.OPTBCT(OPTBCT), .REQFL(REQFL), .REQOCD(REQOCD), .GOFIRM(GOFIRM), .OCDMOD(OCDMOD),
+		.INTRCLK(INTRCLK), .WDTTESCK(WDTTESCK), .CKSEL(CKSEL), .CPUCLKEN(CPUCLKEN), .RTCCLKEN(RTCCLKEN),
+		.PCLKTST(PCLKTST), .oscouts_nf(FSUB), .BBMODE(BBMODE), .STDWAIT(STDWAIT),
+		.POCRELNF(POCRELNF), .HISPEED(HISPEED), .HIOMSK(HIOMSK), .we_rmc(we_rmc), .re_rmc(re_rmc),
+		.RLOWSPY(RLOWSPY), .PAENB(PAENB), .WARMUP(WARMUP), .SYSRESB(SYSRESB),
+		.VSETEND(VSETEND), .REQLVI(REQLVI),
+		.PCLKFCB(PCLKFCB), .FLROACT(FLROACT), .FLSPM(FLSPM), .EEEMD(EEEMD), .WDEN(WDEN),
+		.MCM0(MCM0), .RSTS(RSTS), .REQR32M(REQR32M), .TSELBGR(TSELBGR), .BBCKSTR(BBCKSTR), .BBREGCTL(BBREGCTL),
+		.BBHIOON(BBHIOON), .BBCKSTM(BBCKSTM), .AMPSEL(AMPSEL), .FMXST(FMXST), .SUBCKST(SUBCKST), .BCKHSEN(BCKHSEN),
+		.TRMRD1(TRMRD1)
+		, .EMEMRAMCLK ( EMEMRAMCLK )
+            	 ) ;
+
+QLK0RCSC1V2_RG  rg      (
+                .BASECK(BASECK),	.BASECKHS(BASECKHS),	.PCLKRW(PCLKRW),	.PCLKTST(PCLKTST),
+		.RESB(RESB),		.CPUSTART(CPUSTART),
+                .PWDATA15(PWDATA15),	.PWDATA14(PWDATA14),	.PWDATA13(PWDATA13),	.PWDATA8(PWDATA8),
+                .PWDATA7(PWDATA7),	.PWDATA0(PWDATA0),	.RESSQSTA(RESSQSTA),
+                .POCREL(POCREL),	.POCRELNF(POCRELNF),	.RESETINBNF(RESETINBNF), .LVIOUTZNF(LVIOUTZNF),
+                .WDTRES(WDTRES),	.SOFTBRK(SOFTBRK),	.SVSTOP(SVSTOP),	.OCDRESMK(OCDRESMK),
+                .OCDMOD(OCDMOD),
+                .PTESINST(PTESINST),	.TESDBT(TESDBT),	.OPTIDDQ(OPTIDDQ),
+                .SCANMODE(SCANMODE),	.SCANCLK(SCANCLK),	.SCANRESZ(SCANRESZ),	.TESTMOD (TESTMOD),
+                .we_lvim(we_lvim),	.we_lvis(we_lvis),
+                .sel_lvim(sel_lvim),	.sel_lvis(sel_lvis),	.sel_resf(sel_resf),	.sel_rpectl(sel_rpectl),
+                .re_lvim(re_lvim),	.re_lvis(re_lvis),	.re_resf(re_resf),
+                .dout({ dout15_rg, dout14_rg, dout13_rg, dout12_rg, dout11_rg, dout10_rg, dout9_rg, dout8_rg,
+                        dout7_rg,  dout6_rg,  dout5_rg,  dout4_rg,  dout3_rg,  dout2_rg,  dout1_rg, dout0_rg } ),
+                .SYSRESB(SYSRESB),	.RESETB(RESETB),	.LVIEN(LVIEN),
+                .LVIS3(LVIS3),		.LVIS2(LVIS2),		.LVIS1(LVIS1),		.LVIS0(LVIS0),
+                .INTLVI(INTLVI),	.TPOCREL(TPOCREL),	.TLVIF(TLVIF),
+		.SRESREQ(SRESREQ),
+                .ICECK60M(ICECK60M),	.ICEMKWDT(ICEMKWDT),	.ICEMKLVI(ICEMKLVI),	.ICEMKSRQ(ICEMKSRQ),
+		.DRESETB(DRESETB),
+		.SCANEN(SCANEN),	.NSRESB(NSRESB),	.CIBRESRQ(CIBRESRQ),	.RSWDTRES(RSWDTRES),
+		.we_rpectl(we_rpectl),	.re_rpectl(re_rpectl),	.RPERR(RPERR),
+		.IAWRES(IAWRES),	.SBRFONLY(SBRFONLY),
+                .OPVPOC2(OPVPOC2),	.OPVPOC1(OPVPOC1),	.OPVPOC0(OPVPOC0),
+		.OPLVIS1(OPLVIS1),	.OPLVIS0(OPLVIS0),
+		.OPLVIMDS1(OPLVIMDS1),	.OPLVIMDS0(OPLVIMDS0),	.OPBOEN(OPBOEN),	.WARMUP(WARMUP),
+		.R15KOUT(R15KOUT),	.LVITEST(LVITEST),	.LVITSEL(LVITSEL),	.vsetend(VSETEND),
+		.reqlvi(REQLVI),	.R32MOUT(R32MOUT),	.BBRPERR(BBRPERR),	.PSYSRESB(PSYSRESB),
+		.GOFIRMR(GOFIRMR),	.OPTBCT(OPTBCT),
+		.TRAPINP(TRAPINP)
+             ) ;
+
+endmodule
+
+
+module QLK0RCSC1V2_APBBI	(
+	pwrite, penable, psel1, psel2, psel3, paddr,
+	dout15_cg, dout14_cg, dout13_cg, dout12_cg,
+	dout11_cg, dout10_cg, dout9_cg, dout8_cg,
+	dout7_cg, dout6_cg, dout5_cg, dout4_cg,
+	dout3_cg, dout2_cg, dout1_cg, dout0_cg,
+	dout15_rg, dout14_rg, dout13_rg, dout12_rg,
+	dout11_rg, dout10_rg, dout9_rg, dout8_rg,
+	dout7_rg, dout6_rg, dout5_rg, dout4_rg,
+	dout3_rg, dout2_rg, dout1_rg, dout0_rg,
+	re_cmc, re_csc, re_ckc, re_osts, re_osmc, re_per0,
+	re_ostc, re_resf, re_lvim, re_lvis, re_tcsc0, re_tcsc1, re_rpectl,
+	we_cmc, we_csc, we_ckc, we_osts, we_osmc, we_per0,
+	we_lvim, we_lvis, we_tcsc0, we_tcsc1, we_rpectl,
+	sel_resf, sel_lvim, sel_lvis, sel_rpectl,
+        prdata15, prdata14, prdata13, prdata12,
+        prdata11, prdata10, prdata9, prdata8,
+        prdata7, prdata6, prdata5, prdata4,
+        prdata3, prdata2, prdata1, prdata0, re_rmc, we_rmc
+	);
+
+	//--- port direction
+	input		pwrite, penable, psel1, psel2, psel3 ;
+	input	[2:0]	paddr ;
+
+        input           dout15_cg, dout14_cg, dout13_cg, dout12_cg,
+                        dout11_cg, dout10_cg, dout9_cg, dout8_cg,
+                        dout7_cg, dout6_cg, dout5_cg, dout4_cg, 
+                        dout3_cg, dout2_cg, dout1_cg, dout0_cg ;
+
+        input           dout15_rg, dout14_rg, dout13_rg, dout12_rg,
+                        dout11_rg, dout10_rg, dout9_rg, dout8_rg,
+                        dout7_rg, dout6_rg, dout5_rg, dout4_rg, 
+                        dout3_rg, dout2_rg, dout1_rg, dout0_rg ;
+
+	output		re_cmc, re_csc, re_ckc, re_osts, re_osmc, re_per0 ,re_ostc ;
+	output		we_cmc, we_csc, we_ckc, we_osts, we_osmc, we_per0 ;
+	output		re_resf, re_lvim, re_lvis ;
+	output		sel_resf, sel_lvim, sel_lvis, sel_rpectl ;
+	output		we_lvim, we_lvis ;
+	output		we_tcsc0, we_tcsc1, we_rpectl, we_rmc ;
+	output		re_tcsc0, re_tcsc1, re_rpectl, re_rmc ;
+
+        output          prdata15, prdata14, prdata13, prdata12,
+                        prdata11, prdata10, prdata9, prdata8,
+                        prdata7, prdata6, prdata5, prdata4,
+                        prdata3, prdata2, prdata1, prdata0 ;
+
+	//--- wire
+	wire		sel_cmc, sel_csc, sel_ckc, sel_osts, sel_osmc, sel_per0, sel_ostc ;
+	wire		sel_resf, sel_lvim, sel_lvis, sel_rpectl ;
+	wire		sel_tcsc0, sel_tcsc1, sel_rmc ;
+        wire            prdata15, prdata14, prdata13, prdata12,
+                        prdata11, prdata10, prdata9, prdata8,
+                        prdata7, prdata6, prdata5, prdata4,
+                        prdata3, prdata2, prdata1, prdata0 ;
+
+	//Address Decode
+	assign sel_cmc		=  psel1 & (paddr[2:0] == 3'h0);
+	assign sel_csc		=  psel1 & (paddr[2:0] == 3'h1);
+	assign sel_ostc		=  psel1 & (paddr[2:0] == 3'h2);
+	assign sel_osts		=  psel1 & (paddr[2:0] == 3'h3);
+	assign sel_ckc		=  psel1 & (paddr[2:0] == 3'h4);
+
+	assign sel_per0		=  psel2 & (paddr[2:0] == 3'h0);
+	assign sel_osmc		=  psel2 & (paddr[2:0] == 3'h3);
+	assign sel_rmc		=  psel2 & (paddr[2:0] == 3'h4);
+	assign sel_rpectl	=  psel2 & (paddr[2:0] == 3'h5);
+	assign sel_tcsc0	=  psel2 & (paddr[2:0] == 3'h6);
+	assign sel_tcsc1	=  psel2 & (paddr[2:0] == 3'h7);
+
+	assign sel_resf		=  psel3 & (paddr[1:0] == 2'h0);
+	assign sel_lvim 	=  psel3 & (paddr[1:0] == 2'h1);
+	assign sel_lvis  	=  psel3 & (paddr[1:0] == 2'h2);
+
+	//Write Enable
+	assign we_cmc		= sel_cmc    & penable & pwrite;
+	assign we_csc		= sel_csc    & penable & pwrite;
+	assign we_osts		= sel_osts   & penable & pwrite;
+	assign we_ckc		= sel_ckc    & penable & pwrite;
+
+	assign we_per0		= sel_per0   & penable & pwrite;
+	assign we_osmc		= sel_osmc   & penable & pwrite;
+	assign we_rmc		= sel_rmc    & penable & pwrite;
+	assign we_rpectl	= sel_rpectl & penable & pwrite;
+	assign we_tcsc0		= sel_tcsc0  & penable & pwrite;
+	assign we_tcsc1		= sel_tcsc1  & penable & pwrite;
+
+	assign we_lvim  	= sel_lvim   & penable & pwrite;
+	assign we_lvis		= sel_lvis   & penable & pwrite;
+
+	//Read Enable
+	assign re_cmc		= sel_cmc    & penable & ~pwrite;
+	assign re_csc		= sel_csc    & penable & ~pwrite;
+	assign re_ostc		= sel_ostc   & penable & ~pwrite;
+	assign re_osts		= sel_osts   & penable & ~pwrite;
+	assign re_ckc		= sel_ckc    & penable & ~pwrite;
+
+	assign re_per0		= sel_per0   & penable & ~pwrite;
+	assign re_osmc		= sel_osmc   & penable & ~pwrite;
+	assign re_rmc		= sel_rmc    & penable & ~pwrite;
+	assign re_rpectl	= sel_rpectl & penable & ~pwrite;
+	assign re_tcsc0		= sel_tcsc0  & penable & ~pwrite;
+	assign re_tcsc1		= sel_tcsc1  & penable & ~pwrite;
+
+	assign re_resf  	= sel_resf   & penable & ~pwrite;
+	assign re_lvim		= sel_lvim   & penable & ~pwrite;
+	assign re_lvis		= sel_lvis   & penable & ~pwrite;
+
+	//Output
+	assign prdata15		= dout15_cg | dout15_rg ;
+	assign prdata14		= dout14_cg | dout14_rg ;
+	assign prdata13		= dout13_cg | dout13_rg ;
+	assign prdata12		= dout12_cg | dout12_rg ;
+	assign prdata11		= dout11_cg | dout11_rg ;
+	assign prdata10		= dout10_cg | dout10_rg ;
+	assign prdata9		= dout9_cg | dout9_rg ;
+	assign prdata8		= dout8_cg | dout8_rg ;
+	assign prdata7		= dout7_cg | dout7_rg ;
+	assign prdata6		= dout6_cg | dout6_rg ;
+	assign prdata5		= dout5_cg | dout5_rg ;
+	assign prdata4		= dout4_cg | dout4_rg ;
+	assign prdata3		= dout3_cg | dout3_rg ;
+	assign prdata2		= dout2_cg | dout2_rg ;
+	assign prdata1		= dout1_cg | dout1_rg ;
+	assign prdata0		= dout0_cg | dout0_rg ;
+
+endmodule
+
+
+module QLK0RCSC1V2_CG (
+	SCANMODE, SCANEN, SCANCLK, SCANRESZ,
+	PWDATA15, PWDATA14, PWDATA13, PWDATA12, PWDATA11, PWDATA10, PWDATA9, PWDATA8,
+	PWDATA7, PWDATA6, PWDATA5, PWDATA4, PWDATA3, PWDATA2, PWDATA1, PWDATA0,
+	BASECK, BASECKHS, RESB, NSRESB, PCLKOCD,
+	RESETB, OSCOUTM, OSCOUTS, RESSTP,
+	TESTMOD, PTESINST, TESUSR, TESDBT, OPTIDDQ, OPTEXCCK,
+	OSCSEL, MSTOP, EXCLK, AMPH, OSCSELS, XTSTOP, EXCLKS, AMPHS0,
+	OPWDEN, OPWDSTBY,
+	R15KOUT, R15KSTPZ, PRESOCDZ, PRESWDTZ,
+	SVSTOP, OREGSTP,
+	SPRGMOD, R32MOUT, CPUSTART, RESSQSTA, FSTPST, FHLTST,
+	HLTST, STPST, R32MOSTP, STBRELE, NVMRCEND, PSUBMODE,
+	EXCLK1, TESSCAN3, TESSCAN4, DMAEN,
+	PCLK7, PCLK6, PCLK5, PCLK4, PCLK3, PCLK2, PCLK1, PCLK0,
+	PRES7Z, PRES6Z, PRES5Z, PRES4Z, PRES3Z, PRES2Z, PRES1Z, PRES0Z,
+        dout, 
+        we_cmc, we_csc, we_ckc, we_osts, we_osmc, we_per0,
+        re_cmc, re_csc, re_ckc, re_osts, re_osmc, re_per0, re_ostc,
+	we_tcsc0, we_tcsc1,
+	re_tcsc0, re_tcsc1,
+	FCLKRT, FMAIN, PSTN, AMPHS1, XTWKUP,
+	ICECK60M, DRESETB, TSELOREG, TSELIRES, TTEMP,
+        LOSCTEST, TSTN, TFLSTOPC, TFLSTOPD, REGLC, REGLV,
+	PER07, PER06, PER05, PER04, PER03, PER02, PER01, PER00,
+	STPBCKBT, OCDASEN,
+	BBCKSELR, BBCKSELM,
+	PENABLE, PCLKRW,
+	PRSCLK1,   PRSCLK2,  PRSCLK3,
+	PRSCLK4,   PRSCLK5,  PRSCLK6,  PRSCLK7,
+	PRSCLK8,   PRSCLK9,  PRSCLK10, PRSCLK11,
+	PRSCLK12,  PRSCLK13, PRSCLK14, PRSCLK15,
+	SVPERI0, SVPERI1,
+	FRQSEL4, FRQSEL3, FRQSEL2, FRQSEL1, FRQSEL0,
+	RDSETUP, BBCLKR, BBCLKM, INCDECMD, CRCHLTEN, RT0LPM, TMDENCLK, RSWDTRES,
+	REQPCLKSA, REQPCLKAD, BBREQPCLK,
+	OPTBCT, REQFL, REQOCD, GOFIRM, OCDMOD, INTRCLK, WDTTESCK, CKSEL, CPUCLKEN, RTCCLKEN,
+	PCLKTST, oscouts_nf, BBMODE, STDWAIT, POCRELNF, HISPEED, HIOMSK, we_rmc, re_rmc,
+	RLOWSPY, PAENB, WARMUP, SYSRESB, VSETEND, REQLVI,
+	PCLKFCB, FLROACT, FLSPM, EEEMD, WDEN, MCM0, RSTS, REQR32M, TSELBGR, BBCKSTR, BBREGCTL,
+	BBHIOON, BBCKSTM, AMPSEL, FMXST, SUBCKST, BCKHSEN, TRMRD1
+	, EMEMRAMCLK
+	);
+
+	input		SCANMODE, SCANEN, SCANCLK, SCANRESZ, TESSCAN3, TESSCAN4 ;
+	input		PWDATA15, PWDATA14, PWDATA13, PWDATA12, PWDATA11, PWDATA10, PWDATA9, PWDATA8,
+			PWDATA7, PWDATA6, PWDATA5, PWDATA4, PWDATA3, PWDATA2, PWDATA1, PWDATA0;
+	input		OSCOUTM, OSCOUTS, R32MOUT, R15KOUT;
+	input		SVSTOP, SPRGMOD, RESETB, HLTST, STPST;
+	input		STBRELE, NVMRCEND ;
+	input		OPWDEN, OPWDSTBY;
+	input		TESTMOD, PTESINST, TESUSR, TESDBT, OPTIDDQ, OPTEXCCK;
+	input		EXCLK1, DMAEN;
+	input		re_cmc, re_csc, re_ckc, re_osts, re_osmc, re_per0, re_ostc,
+			we_cmc, we_csc, we_ckc, we_osts, we_osmc, we_per0 ;
+	input		we_tcsc0, we_tcsc1, re_tcsc0, re_tcsc1, re_rmc, we_rmc ;
+	input		ICECK60M ;
+	input		DRESETB ;
+	input		BBCKSELR, BBCKSELM ;
+	input		RDSETUP ;
+	input		BBCLKR, BBCLKM ;
+	input		PENABLE ;
+	input		SVPERI0, SVPERI1, INCDECMD, CRCHLTEN ;
+	input		REQPCLKSA, REQPCLKAD, BBREQPCLK ;
+	input		OPTBCT, REQFL, REQOCD, GOFIRM, OCDMOD, BBMODE, STDWAIT, POCRELNF, HISPEED ;
+	input		HIOMSK, RLOWSPY, SYSRESB ;
+	input		FRQSEL4, FRQSEL3, FRQSEL2, FRQSEL1, FRQSEL0 ;
+	input		VSETEND, REQLVI ;
+	input		FLSPM, EEEMD, BBREGCTL ;
+	input		BBHIOON, TRMRD1 ;
+
+	output		PCLKOCD, PRESOCDZ, PRESWDTZ ;
+	output		RESB, NSRESB, R32MOSTP ;
+	output		OSCSEL, MSTOP, EXCLK, AMPH, OSCSELS, XTSTOP, EXCLKS, AMPHS0;
+	output		FSTPST, FHLTST, OREGSTP ;
+	output		CPUSTART, RESSQSTA, R15KSTPZ ;
+	output		RESSTP, BASECK, BASECKHS, PSUBMODE;
+	output		PCLK7, PCLK6, PCLK5, PCLK4, PCLK3, PCLK2, PCLK1, PCLK0;
+	output		PRES7Z, PRES6Z, PRES5Z, PRES4Z, PRES3Z, PRES2Z, PRES1Z, PRES0Z;
+	output [15:0]   dout ;
+	output		FCLKRT, FMAIN, PSTN, AMPHS1, XTWKUP ;
+	output		TSELOREG, TSELIRES , TTEMP ;
+        output		LOSCTEST, TSTN, TFLSTOPC, TFLSTOPD ;
+	output		REGLC, REGLV ;
+	output		PER07, PER06, PER05, PER04, PER03, PER02, PER01, PER00;
+	output		STPBCKBT ;
+	output		OCDASEN ;
+	output		PCLKRW;
+	output		PRSCLK1,   PRSCLK2,  PRSCLK3 ;
+	output		PRSCLK4,   PRSCLK5,  PRSCLK6,  PRSCLK7 ;
+	output		PRSCLK8,   PRSCLK9,  PRSCLK10, PRSCLK11 ;
+	output		PRSCLK12,  PRSCLK13, PRSCLK14, PRSCLK15 ;
+	output		RT0LPM, TMDENCLK, RSWDTRES, INTRCLK, WDTTESCK, CKSEL, CPUCLKEN, RTCCLKEN, PCLKTST,oscouts_nf ;
+	output		PAENB, WARMUP, PCLKFCB, FLROACT, WDEN, MCM0, RSTS, REQR32M, TSELBGR, BBCKSTR, BBCKSTM, AMPSEL ;
+	output		FMXST, SUBCKST, BCKHSEN ;
+	output		EMEMRAMCLK ;
+
+	wire		re_cmc, re_csc, re_ckc, re_osts, re_osmc, re_per0, re_ostc, re_tcsc0, re_tcsc1, re_rmc,
+			we_cmc, we_csc, we_ckc, we_osts, we_osmc, we_per0, we_tcsc0, we_tcsc1, we_rmc ;
+	wire		dmstop_neg, hiostop_neg, most8, most9, most10, most11, most13, most15, most17, most18,
+			osts2, osts1, osts0, css, sdiv,
+			dexclk, doscsel, dexclks, doscsels,
+			dxtstop, FMAIN, ostend,
+			stposcm, toregon, tr32mon, resstp_dft,
+			mtmc, FCLKRT, stopbaseck,
+			r32m_user_stp, oscsel_ns, exclk_ns,
+			testresb,
+			liosc_user_stpz, fsub2_st, reqpclk_all ;
+	wire		PSUBMODE, clr_mcnt_ns, presocdz_ns,
+			rtclpc, stpst3, reglc_ns, 
+			reglv_ns, preswdtz_ns ;
+	wire		oscouts_nf, oscouts_nf_p, fhltst_p2, fhltst_p1, wutmmck0, tregnv, treghc, wdvol, dpaenb ;
+	wire		oscouts_nf_en ;
+
+	wire   [15:0]   dout ;
+	wire		PER07, PER06, PER05, PER04, PER03, PER02, PER01, PER00;
+	wire		tselhio2, tselhio1, tselhio0, twwdtstp, optexcck_neg, fih_en ;
+
+        QLK0RCSC1V2_CG_REGI regi (
+                .pclkrw(PCLKRW), .pclktst(PCLKTST), .resb(RESB), .nsresb(NSRESB), .testmod(TESTMOD),
+                .scanmode(SCANMODE), .scanresz(SCANRESZ),
+                .re_cmc(re_cmc), .re_csc(re_csc), .re_ckc(re_ckc),
+		.re_osts(re_osts), .re_osmc(re_osmc), .re_per0(re_per0),
+		.re_ostc(re_ostc), .re_rmc(re_rmc),
+                .we_cmc(we_cmc), .we_csc(we_csc), .we_ckc(we_ckc),
+		.we_osts(we_osts), .we_osmc(we_osmc), .we_per0(we_per0), .we_rmc(we_rmc),
+                .dmstop_neg(dmstop_neg), .hiostop_neg(hiostop_neg), .subck(SUBCKST),
+                .most8(most8), .most9(most9), .most10(most10), .most11(most11), .most13(most13), .most15(most15),
+		.most17(most17), .most18(most18), .osts2(osts2), .osts1(osts1), .osts0(osts0),
+                .css(css), .fmxst(FMXST), .mcm0(MCM0), .sdiv(sdiv), .testresb(testresb),
+                .dexclk(dexclk), .doscsel(doscsel), .amph(AMPH),
+                .dexclks(dexclks), .doscsels(doscsels), .amphs1(AMPHS1), .amphs0(AMPHS0), .dxtstop(dxtstop),
+		.per0({PER07, PER06, PER05, PER04, PER03, PER02, PER01, PER00}),
+		.din({PWDATA15, PWDATA14, PWDATA13, PWDATA12, PWDATA11, PWDATA10, PWDATA9, PWDATA8,
+		      PWDATA7, PWDATA6, PWDATA5, PWDATA4, PWDATA3, PWDATA2, PWDATA1, PWDATA0}),
+		.dout( dout ),
+		.we_tcsc0(we_tcsc0), .we_tcsc1(we_tcsc1), .re_tcsc0(re_tcsc0), .re_tcsc1(re_tcsc1),
+		.xtwkup(XTWKUP), .rtclpc(rtclpc), .wutmmck0(wutmmck0),
+		.ampsel(AMPSEL), .tselhio2(tselhio2), .tselhio1(tselhio1), .tselhio0(tselhio0),
+                .toregon(toregon), .tr32mon(tr32mon), .losctest(LOSCTEST), .twwdtstp(twwdtstp),
+		.tregnv(tregnv), .treghc(treghc), .tstn(TSTN), .tflstopc(TFLSTOPC), .tflstopd(TFLSTOPD),
+		.wdvol(wdvol), .dpaenb(dpaenb)
+                ) ;
+
+	QLK0RCSC1V2_CG_LIOSCCTL lioscctl (
+		.opwden(OPWDEN), .fstpst(FSTPST), .fhltst_p2(fhltst_p2), .opwdstby(OPWDSTBY),
+		.r15kstpz(R15KSTPZ), .tesdbt(TESDBT), .resetb(RESETB), .optiddq(OPTIDDQ),
+		.liosc_user_stpz(liosc_user_stpz), .wutmmck0(wutmmck0), .reqlvi(REQLVI),
+		.resb(RESB), .twwdtstp(twwdtstp), .wden(WDEN)
+		) ;
+
+        QLK0RCSC1V2_CG_HIOSCCTL hioscctl (
+		.r32mout(R32MOUT),	.scanmode(SCANMODE), .scanclk(SCANCLK), .exclk1(EXCLK1),
+		.optexcck(OPTEXCCK),	.oscoutm(OSCOUTM), .ptesinst(PTESINST), .subck(SUBCKST),
+		.hiostop_neg(hiostop_neg), .rsts(RSTS), .fmxst(FMXST),
+		.resetb(RESETB),	.nsresb(NSRESB), .mcm0(MCM0), .tesdbt(TESDBT),
+		.scanresz(SCANRESZ),
+		.r32mostp(R32MOSTP), .oregstp(OREGSTP),
+		.tesusr(TESUSR), .toregon(toregon), .tr32mon(tr32mon), .optiddq(OPTIDDQ),
+		.ostend(ostend), .mtmc(mtmc),
+		.fmain(FMAIN),
+		.r32m_user_stp(r32m_user_stp), .oscsel(OSCSEL), .stpst3(stpst3),
+		.dresetb(DRESETB), .resb(RESB), .bbckselr(BBCKSELR),
+		.bbclkr(BBCLKR), .frqsel3(FRQSEL3), .frqsel2(FRQSEL2), .frqsel1(FRQSEL1), .frqsel0(FRQSEL0),
+		.reqfl(REQFL), .reqocd(REQOCD), .reqpclk_all(reqpclk_all), .bbmode(BBMODE),
+		.hiomsk(HIOMSK), .frqsel4(FRQSEL4), .vsetend(VSETEND),
+		.tmdenclk(TMDENCLK), .stposcm(stposcm), .tselhio2(tselhio2), .tselhio1(tselhio1), .tselhio0(tselhio0),
+                .tseloreg(TSELOREG), .tselires(TSELIRES), .ttemp(TTEMP), .pclktst(PCLKTST), .reqr32m(REQR32M),
+		.tselbgr(TSELBGR), .bbckstr(BBCKSTR), .optexcck_neg(optexcck_neg),
+		.bbhioon(BBHIOON), .bbckstm(BBCKSTM), .bbckselm(BBCKSELM), .bbclkm(BBCLKM), .scanen(SCANEN),
+		.fih_en(fih_en)
+		) ;
+
+        QLK0RCSC1V2_CG_TBASE tbase (
+	        .fclk(FCLKRT), .baseckhs(BASECKHS), .stbrele(STBRELE), .ostend(ostend),
+		.oscouts_nf(oscouts_nf), .resetb(RESETB), .hltst(HLTST), .stpst(STPST),
+		.fmain(FMAIN), .cpustart(CPUSTART), .resstp_dft(resstp_dft), .resstp(RESSTP),
+		.resb(RESB), .nsresb(NSRESB), .stposcm(stposcm), .subck(SUBCKST), .css(css), .sdiv(sdiv),
+		.scanmode(SCANMODE), .scanclk(SCANCLK), .scanresz(SCANRESZ), .nvmrcend(NVMRCEND),
+		.fstpst(FSTPST), .fhltst(FHLTST), .fhltst_p1(fhltst_p1), .fhltst_p2(fhltst_p2), .stopbaseck(stopbaseck),
+		.rsts(RSTS),
+		.fsub2_st(fsub2_st), .oscsels(OSCSELS),
+		.psubmode(PSUBMODE), .dmaen(DMAEN), .pstn(PSTN), .stpst3(stpst3),
+		.iceck60m(ICECK60M), .rdsetup(RDSETUP), .vsetend(VSETEND),
+		.incdecmd(INCDECMD), .crchlten(CRCHLTEN), .ressqsta(RESSQSTA), .rt0lpm(RT0LPM), .tmdenclk(TMDENCLK),
+		.stdwait(STDWAIT), .warmup(WARMUP), .sysresb(SYSRESB), .ocdasen(OCDASEN), .cpuclken(CPUCLKEN),
+		.rtclpc(rtclpc), .oscouts_nf_p(oscouts_nf_p), .oscouts_nf_en(oscouts_nf_en), .xtstop(XTSTOP)
+		,.ememramclk( EMEMRAMCLK )
+		) ;
+
+	QLK0RCSC1V2_CG_MOSCCNT mosccnt (
+		.oscoutm(OSCOUTM), .resstp_dft(resstp_dft), .scanmode(SCANMODE), .scanclk(SCANCLK), .dmstop_neg(dmstop_neg),
+		.svstop(SVSTOP), .exclk(EXCLK), .ptesinst(PTESINST), .optexcck_neg(optexcck_neg), .osts2(osts2), .nsresb(NSRESB),
+		.osts1(osts1), .osts0(osts0), .most8(most8), .most9(most9), .most10(most10), .most11(most11),
+		.most13(most13), .most15(most15), .most17(most17), .most18(most18), .mtmc(mtmc),
+		.clr_mcnt_ns(clr_mcnt_ns), .r15kout(R15KOUT), .rswdtres(RSWDTRES), .fmxst(FMXST), .subck(SUBCKST)
+		) ;
+
+	QLK0RCSC1V2_CG_OSCCTL oscctl (
+		.scanmode(SCANMODE), .ptesinst(PTESINST), .dxtstop(dxtstop), .oscouts(OSCOUTS),
+		.optexcck_neg(optexcck_neg), .doscsel(doscsel), .dexclk(dexclk), .doscsels(doscsels), .dexclks(dexclks),
+                .oscsel(OSCSEL), .mstop(MSTOP), .exclk(EXCLK), .subck(SUBCKST), .tesusr(TESUSR),
+		.oscsels(OSCSELS), .xtstop(XTSTOP), .exclks(EXCLKS), .iceck60m(ICECK60M),
+		.oscsel_ns(oscsel_ns), .exclk_ns(exclk_ns), .fmxst(FMXST), .dmstop_neg(dmstop_neg), .stposcm(stposcm),
+		.rtcclken(RTCCLKEN), .per07(PER07), .oscouts_nf(oscouts_nf),
+		.oscouts_nf_p(oscouts_nf_p), .oscouts_nf_en(oscouts_nf_en)
+		) ;
+
+        QLK0RCSC1V2_CG_REGCTL regctl (
+		.scanmode(SCANMODE), .tesscan3(TESSCAN3), .tesscan4(TESSCAN4), .resetb(RESETB), .subck(SUBCKST),
+		.dmstop_neg(dmstop_neg), .css(css), .baseck(BASECK), .resb(RESB), .hiostop_neg(hiostop_neg),
+		.psubmode(PSUBMODE), .stpst3(stpst3), .reqpclk_all(reqpclk_all), .reqocd(REQOCD),
+		.reglc(REGLC), .reglv(REGLV), .reglc_ns(reglc_ns), .reglv_ns(reglv_ns),
+		.nvmrcend(NVMRCEND), .pocrelnf(POCRELNF), .baseckhs(BASECKHS), .hispeed(HISPEED),
+		.tregnv(tregnv), .treghc(treghc), .dpaenb(dpaenb), .rlowspy(RLOWSPY), .paenb(PAENB),
+		.wdvol(wdvol), .bbregctl(BBREGCTL), .trmrd1(TRMRD1)
+		) ;
+
+	QLK0RCSC1V2_CG_PEC pec (
+		.fclk(FCLKRT), .baseck(BASECK), .scanmode(SCANMODE), .scanresz(SCANRESZ),
+		.per0({PER07, PER06, PER05, PER04, PER03, PER02, PER01, PER00}),
+		.scanen(SCANEN),
+		.pclk7(PCLK7),   .pclk6(PCLK6),   .pclk5(PCLK5),   .pclk4(PCLK4),
+		.pclk3(PCLK3),   .pclk2(PCLK2),   .pclk1(PCLK1),   .pclk0(PCLK0),
+		.pres7z(PRES7Z),   .pres6z(PRES6Z),   .pres5z(PRES5Z),   .pres4z(PRES4Z),
+		.pres3z(PRES3Z),   .pres2z(PRES2Z),   .pres1z(PRES1Z),   .pres0z(PRES0Z),
+		.sprgmod(SPRGMOD), .pclkocd(PCLKOCD), .presocdz(PRESOCDZ), .presocdz_ns(presocdz_ns),
+		.stopbaseck(stopbaseck),
+		.baseckhs(BASECKHS), .nsresb(NSRESB), .fhltst_p1(fhltst_p1),
+		.dmaen(DMAEN), .opwden(OPWDEN),
+		.tesdbt(TESDBT), .stopbaseck_bt(STPBCKBT),
+		.preswdtz_ns(preswdtz_ns), .preswdtz(PRESWDTZ),
+		.penable(PENABLE), .pclkrw(PCLKRW), .r15kout(R15KOUT),
+		.reqpclksa(REQPCLKSA),   .reqpclkad(REQPCLKAD), .bbreqpclk(BBREQPCLK),
+		.testmod(TESTMOD), .optbct(OPTBCT), .wutmmck0(wutmmck0), .exclk1(EXCLK1),
+		.reqocd(REQOCD), .gofirm(GOFIRM), .ocdmod(OCDMOD),
+		.intrclk(INTRCLK), .wdttesck(WDTTESCK), .cksel(CKSEL), .reqpclk_all(reqpclk_all), .resb(RESB),
+		.prsclk1(PRSCLK1),     .prsclk2(PRSCLK2),     .prsclk3(PRSCLK3),
+		.prsclk4(PRSCLK4),     .prsclk5(PRSCLK5),     .prsclk6(PRSCLK6),     .prsclk7(PRSCLK7),
+		.prsclk8(PRSCLK8),     .prsclk9(PRSCLK9),     .prsclk10(PRSCLK10),   .prsclk11(PRSCLK11),
+		.prsclk12(PRSCLK12),   .prsclk13(PRSCLK13),   .prsclk14(PRSCLK14),   .prsclk15(PRSCLK15),
+		.svperi0(SVPERI0), .svperi1(SVPERI1), .pclktst(PCLKTST), .scanclk(SCANCLK),
+		.nvmrcend(NVMRCEND), .rsts(RSTS),
+		.pclkfcb(PCLKFCB), .flroact(FLROACT), .flspm(FLSPM), .eeemd(EEEMD), .incdecmd(INCDECMD),
+		.baseckhsen(BCKHSEN)
+		) ;
+
+	QLK0RCSC1V2_CG_MONI moni (
+		.scanclk(SCANCLK), .scanresz(SCANRESZ), .scan_moni(),
+		.in1(reglc_ns), .in2(reglv_ns), .in3(oscsel_ns), .in4(exclk_ns), .in5(testresb),
+		.in6(clr_mcnt_ns), .in7(fsub2_st), .in8(liosc_user_stpz), .in9(MSTOP), .in10(XTSTOP),
+		.in11(preswdtz_ns), .in12(r32m_user_stp), .in13(presocdz_ns), .in14(fih_en)
+		) ;
+
+endmodule
+
+
+//****************************************************************************
+//	レジスター集合モジュール
+//****************************************************************************
+module QLK0RCSC1V2_CG_REGI (
+	pclkrw, pclktst, resb, nsresb, testmod, scanmode, scanresz,
+	re_cmc, re_csc, re_ckc, re_osts, re_osmc, re_per0, re_ostc,
+	we_cmc, we_csc, we_ckc, we_osts, we_osmc, we_per0,
+	dmstop_neg, hiostop_neg, subck,
+	most8, most9, most10, most11, most13, most15, most17, most18,
+	osts2, osts1, osts0,
+	css, fmxst, mcm0, sdiv, dexclk, doscsel, amph,
+	dexclks, doscsels, amphs1, amphs0, dxtstop,
+	per0, din, dout, testresb, we_tcsc0, we_tcsc1, re_tcsc0, re_tcsc1,
+	xtwkup, rtclpc, wutmmck0, re_rmc, we_rmc,
+	ampsel, tselhio2, tselhio1, tselhio0,
+        toregon, tr32mon, losctest, twwdtstp, tregnv, treghc, tstn, tflstopc, tflstopd,
+	wdvol, dpaenb
+	);
+
+	input		pclkrw, pclktst, resb, nsresb, testmod, scanmode, scanresz ;
+	input		we_cmc, we_csc, we_ckc, we_osts, we_osmc, we_per0 ;
+	input		we_tcsc0, we_tcsc1, we_rmc ;
+	input		re_cmc, re_csc, re_ckc, re_osts, re_osmc, re_per0, re_ostc;
+	input		re_tcsc0, re_tcsc1, re_rmc ;
+	input		most8, most9, most10, most11, most13, most15, most17, most18;
+	input		subck, fmxst ;
+	input	[15:0]	din;
+
+	output		dmstop_neg, hiostop_neg;
+	output		osts2, osts1, osts0;
+	output		css, mcm0, sdiv ;
+	output		dexclk, doscsel, amph ;
+	output		dexclks, doscsels, amphs1, amphs0, dxtstop ;
+	output	[7:0]	per0;
+	output	[15:0]	dout;
+	output		testresb ;
+	output		xtwkup, rtclpc, wutmmck0, wdvol, dpaenb ;
+	output		toregon, ampsel, tselhio2, tselhio1, tselhio0 ;
+	output		tr32mon, losctest, twwdtstp, tregnv, treghc, tstn, tflstopc, tflstopd ;
+
+	wire		clrb_wdvol, re_tcsc0_rd, re_tcsc1_rd ;
+
+	//        +--------+--------+--------+---------+--------+--------+---------+---------+
+	//  name  |  bit7  |  bit6  |  bit5  |  bit4   |  bit3  |  bit2  |  bit1   |  bit0   |
+	//        +--------+--------+--------+---------+--------+--------+---------+---------+
+	//  CMC   | EXCLK  | OSCSEL | EXCLKS | OSCSELS |   ---  | AMPHS1 |  AMPHS0 |  AMPH   |
+	//        +--------+--------+--------+---------+--------+--------+---------+---------+
+	//  CMCレジスタは、リセット解除後、1回しか書き込めないようにする。
+
+	reg	we_cmc_mask ;
+	reg	dexclk, doscsel, dexclks, doscsels, amphs1, amphs0, amph ;
+
+	// synopsys async_set_reset "resb"
+	always @( posedge pclkrw or negedge resb ) begin
+	   if ( !resb )		we_cmc_mask <= 1'b0 ;
+	   else if ( we_cmc )	we_cmc_mask <= 1'b1 ;
+	end
+
+	// synopsys async_set_reset "resb"
+        always @( posedge pclkrw or negedge resb ) begin
+          if ( !resb ) begin
+            { dexclk, doscsel, dexclks, doscsels, amphs1, amphs0, amph } <= 7'b0000000 ;
+          end
+          else if( we_cmc && !we_cmc_mask ) begin
+            { dexclk, doscsel, dexclks, doscsels, amphs1, amphs0, amph } <= { din[7:4], din[2:0] };
+          end
+        end
+
+	//        +--------+--------+---------+--------+--------+--------+---------+---------+
+	//  name  |  bit7  |  bit6  |  bit5   |  bit4  |  bit3  |  bit2  |  bit1   |  bit0   |
+	//        +--------+--------+---------+--------+--------+--------+---------+---------+
+	//  CSC   |  MSTOP | XTSTOP | XTWKUP  |    0   |   0    |    0   |    0    | HIOSTOP |
+	//        +--------+--------+---------+--------+--------+--------+---------+---------+
+	reg	dmstop , dxtstop , hiostop ;
+	reg	xtwkup ;
+
+	// synopsys async_set_reset "resb"
+        always @ ( posedge pclkrw or negedge resb ) begin
+           if ( !resb ) begin
+              dmstop	<= 1'b1 ;
+              dxtstop	<= 1'b1 ;
+              xtwkup	<= 1'b0 ;
+              hiostop	<= 1'b0 ;
+           end
+           else if ( we_csc ) begin 
+              dmstop	<= din[15] ;	// 奇数アドレスの為din15を入力
+              dxtstop	<= din[14] ;	// 奇数アドレスの為din14を入力
+              xtwkup	<= din[13] ;	// 奇数アドレスの為din13を入力
+              hiostop	<= din[8]  ;	// 奇数アドレスの為din8を入力
+           end
+        end
+
+	// SS2nd v1.30 : 発振器停止は、立ち下がりで制御する。
+	//         サブ動作中、OSC停止でチップREG=1.8V/OSC動作でチップREG=2.5Vになるが、
+	//         チップREGの変化点とOSCの動作開始タイミングを同じにするため。
+	//         レギュレータの動作モード切り替えタイミングをflashの
+	//         データサンプリングとずらす為、立下り制御する。それに伴い、
+	//         メイン/HIOSC発振停止も立下りに併せる
+	reg	dmstop_neg , hiostop_neg ;
+
+	// synopsys async_set_reset "resb"
+        always @ ( negedge pclkrw or negedge resb ) begin
+           if ( !resb ) dmstop_neg <= 1'b1 ;
+           else         dmstop_neg <= dmstop ;
+        end
+
+	// synopsys async_set_reset "resb"
+        always @ ( negedge pclkrw or negedge resb ) begin
+           if ( !resb ) hiostop_neg <= 1'b0 ;
+           else         hiostop_neg <= hiostop ;
+        end
+
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  name  |  bit7  |  bit6  |  bit5  |  bit4  |  bit3  |  bit2  |  bit1  |  bit0  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  OSTC  | MOST8  | MOST9  | MOST10 | MOST11 | MOST13 | MOST15 | MOST17 | MOST18 |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  name  |  bit7  |  bit6  |  bit5  |  bit4  |  bit3  |  bit2  |  bit1  |  bit0  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  OSTS  |   0    |   0    |   0    |   0    |   0    |  OSTS2 |  OSTS1 |  OSTS0 |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	reg	osts2, osts1 ,osts0 ;
+
+	// synopsys async_set_reset "resb"
+	always @ ( posedge pclkrw or negedge resb ) begin
+	   if ( !resb ) begin
+	      osts2 <= 1'b1 ;
+	      osts1 <= 1'b1 ;
+	      osts0 <= 1'b1 ;
+	   end
+	   else if ( we_osts ) begin
+	      osts2 <= din[10] ;	// 奇数アドレスの為din10を入力
+	      osts1 <= din[9]  ;	// 奇数アドレスの為din9を入力
+	      osts0 <= din[8]  ;	// 奇数アドレスの為din8を入力
+	   end
+	end
+
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  name  |  bit7  |  bit6  |  bit5  |  bit4  |  bit3  |  bit2  |  bit1  |  bit0  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  CKC   |  CLS   |  CSS   |  MCS   |  MCM0  | SDIV   |   0    |   0    |   0    |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	reg	sdiv ;
+	reg	css, mcm0;
+
+	// synopsys async_set_reset "resb"
+      always @ ( posedge pclkrw or negedge resb ) begin
+           if ( !resb ) begin
+              css   <= 1'b0 ;
+              mcm0  <= 1'b0 ;
+              sdiv  <= 1'b0 ;
+          end
+           else if( we_ckc ) begin
+              css   <= din[6] ;
+              mcm0  <= din[4] ;
+              sdiv  <= din[3] ;
+           end
+        end
+
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  name  |  bit7  |  bit6  |  bit5  |  bit4  |  bit3  |  bit2  |  bit1  |  bit0  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  TCSC0 | TOREGON|   0    |   0    |   0    |TBIASAMP|TSELHIO2|TSELHIO1|TSELHIO0|
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  name  |  bit7  |  bit6  |  bit5  |  bit4  |  bit3  |  bit2  |  bit1  |  bit0  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  TCSC1 | TR32MON|  TLOSC |TWWDTSTP| TREGNV | TREGHC |  TSTN  |TFLSTOPC|TFLSTOPD|
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+
+	// テストレジスタ(TESTモードでしか書き込めない)
+	reg	testresb, resb_dft ;
+	reg	toregon, tr32mon, losctest, twwdtstp, tregnv, treghc, tstn, tflstopc, tflstopd ;
+	reg	ampsel, tselhio2, tselhio1, tselhio0 ;
+
+	always @ ( testmod or nsresb ) begin
+		casex ( { testmod , nsresb } ) // synopsys parallel_case
+			2'b0x	: testresb = 1'b0 ;	//TESTモード以外では常にリセット
+			2'b10	: testresb = 1'b0 ;	//TESTモードではnsresbによる
+			default	: testresb = 1'b1 ;
+		endcase
+	end
+
+	always @ ( scanmode or scanresz or testresb ) begin
+		casex ( { scanmode , scanresz , testresb } ) // synopsys parallel_case
+			3'b10x	: resb_dft = 1'b0 ;	//SCAN中はscanreszによる
+			3'b0x0	: resb_dft = 1'b0 ;	//SCAN以外ではtestresbによる
+			default	: resb_dft = 1'b1 ;
+		endcase
+	end
+
+	// synopsys async_set_reset "resb_dft"
+        always @ ( posedge pclktst or negedge resb_dft ) begin
+           if ( !resb_dft ) begin
+              toregon	<= 1'b0 ;
+              ampsel	<= 1'b0 ;
+              tselhio2	<= 1'b0 ;
+              tselhio1	<= 1'b0 ;
+              tselhio0	<= 1'b0 ;
+           end
+           else if ( we_tcsc0 ) begin 
+              toregon	<= din[7] ;	// bit7
+              ampsel	<= din[3] ;	// bit3
+              tselhio2	<= din[2] ;	// bit2
+              tselhio1	<= din[1] ;	// bit1
+              tselhio0	<= din[0] ;	// bit0
+           end
+        end
+
+	// synopsys async_set_reset "resb_dft"
+        always @ ( posedge pclktst or negedge resb_dft ) begin
+           if ( !resb_dft ) begin
+              tr32mon	<= 1'b0 ;
+              losctest	<= 1'b0 ;
+              twwdtstp	<= 1'b0 ;
+              tregnv	<= 1'b0 ;
+              treghc	<= 1'b0 ;
+              tstn	<= 1'b1 ;
+              tflstopc	<= 1'b0 ;
+              tflstopd	<= 1'b0 ;
+           end
+           else if ( we_tcsc1 ) begin 
+              tr32mon	<= din[15] ;	// 奇数アドレスの為din15を入力
+              losctest	<= din[14] ;	// 奇数アドレスの為din14を入力
+              twwdtstp	<= din[13] ;	// 奇数アドレスの為din13を入力
+              tregnv	<= din[12] ;	// 奇数アドレスの為din12を入力
+              treghc	<= din[11] ;	// 奇数アドレスの為din11を入力
+              tstn	<= din[10] ;	// 奇数アドレスの為din10を入力
+              tflstopc	<= din[9] ;	// 奇数アドレスの為din9を入力
+              tflstopd	<= din[8] ;	// 奇数アドレスの為din8を入力
+           end
+        end
+
+	//        +-------+-------+-------+-------+-------+-------+-------+-------+
+	//  name  | bit7  | bit6  | bit5  | bit4  | bit3  | bit2  | bit1  | bit0  |
+	//        +-------+-------+-------+-------+-------+-------+-------+-------+
+	//  PER0  | PER07 | PER06 | PER05 | PER04 | PER03 | PER02 | PER01 | PER00 |
+	//        +-------+-------+-------+-------+-------+-------+-------+-------+
+	reg	[7:0]	per0;
+
+	// synopsys async_set_reset "resb"
+        always @(posedge pclkrw or negedge resb) begin
+           if ( !resb ) begin
+              per0[7:0] <= 8'h00 ;
+           end
+           else if( we_per0 ) begin
+              per0[7:0] <= din[7:0] ;
+           end
+        end
+
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  name  |  bit7  |  bit6  |  bit5  |  bit4  |  bit3  |  bit2  |  bit1  |  bit0  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  OSMC  | RTCLPC |   0    |   0    |WUTMMCK0|   0    |   0    |   0    |   0    |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+
+	reg	rtclpc, wutmmck0 ;
+
+	// synopsys async_set_reset "resb"
+        always @ ( posedge pclkrw or negedge resb ) begin
+           if ( !resb ) begin
+              rtclpc <= 1'b0 ;
+              wutmmck0 <= 1'b0 ;
+           end
+           else if ( we_osmc ) begin
+              rtclpc <= din[15] ;		// 奇数アドレスの為din15を入力
+              wutmmck0 <= din[12] ;		// 奇数アドレスの為din12を入力
+           end
+        end
+
+	//        +-------+-------+-------+-------+-------+-------+-------+-------+
+	//  name  | bit7  | bit6  | bit5  | bit4  | bit3  | bit2  | bit1  | bit0  |
+	//        +-------+-------+-------+-------+-------+-------+-------+-------+
+	//  RMC   | WDVOL |   0   |   0   |   0   |   0   |   0   |   0   | PAENB |
+	//        +---------------------------------------------------------------+
+	reg	we_rmc_mask ;
+	reg	wdvol, dpaenb;
+
+// modi V2.20
+//	assign clrb_wdvol = (scanmode) ? scanresz : ( nsresb & sprgmod ) ;
+//
+//	// synopsys async_set_reset "clrb_wdvol"
+//	always @( posedge pclkrw or negedge clrb_wdvol ) begin
+//	   if ( !clrb_wdvol ) begin
+//		we_rmc_mask <= 1'b0 ;
+//	   end
+//	   else if( we_rmc ) begin
+//		we_rmc_mask <= 1'b1 ;
+//	   end
+//	end
+//
+//	// synopsys async_set_reset "clrb_wdvol"
+//      always @( posedge pclkrw or negedge clrb_wdvol ) begin
+//        if ( !clrb_wdvol ) begin
+//		wdvol <= 1'b0 ;
+//	  end
+//          else if( we_rmc && !we_rmc_mask ) begin
+//		wdvol <= din[7] ;
+//	  end
+//      end
+
+	// synopsys async_set_reset "resb"
+        always @( posedge pclkrw or negedge resb ) begin
+          if ( !resb ) begin
+		wdvol <= 1'b0 ;
+	  end
+          else if( we_rmc ) begin
+		wdvol <= din[7] ;
+	  end
+        end
+
+	// synopsys async_set_reset "resb"
+        always @(posedge pclkrw or negedge resb) begin
+           if ( !resb ) begin
+              dpaenb <= 1'b0 ;
+           end
+           else if( we_rmc ) begin
+              dpaenb <= din[0] ;
+           end
+        end
+
+	//
+	assign re_tcsc0_rd = re_tcsc0 & testmod ;
+	assign re_tcsc1_rd = re_tcsc1 & testmod ;
+
+	// ----- DATA READ -----
+	assign dout	= (re_cmc)	? {8'h00, dexclk, doscsel, dexclks, doscsels, 1'b0, amphs1,  amphs0, amph}
+			: (re_csc)	? {dmstop, dxtstop, xtwkup, 4'b0000, hiostop, 8'h00}
+			: (re_ostc)	? {8'h00, most8, most9, most10, most11, most13, most15, most17, most18}
+			: (re_osts)	? {5'b00000, osts2, osts1, osts0, 8'h00}
+			: (re_ckc)	? {8'h00, subck, css, fmxst, mcm0, sdiv, 3'h0}
+			: (re_tcsc0_rd)	? {8'h00, toregon, 3'b000, ampsel, tselhio2, tselhio1, tselhio0}
+			: (re_tcsc1_rd)	? {tr32mon, losctest, twwdtstp, tregnv, treghc, tstn, tflstopc, tflstopd, 8'h00}
+			: (re_per0)	? {8'h00, per0[7:0]}
+			: (re_osmc)	? {rtclpc, 2'b00, wutmmck0, 4'b0000, 8'h00}
+			: (re_rmc)	? {8'h00, wdvol, 6'b000000, dpaenb}
+			: 16'h0000;
+
+endmodule
+
+//****************************************************************************
+//	15KリングOSCコントロール
+//****************************************************************************
+module QLK0RCSC1V2_CG_LIOSCCTL (
+	resetb, tesdbt, opwden, fstpst, fhltst_p2, opwdstby,
+	r15kstpz, optiddq, liosc_user_stpz, wutmmck0, reqlvi, resb, twwdtstp, wden
+	) ;
+
+	input		opwden, fstpst, fhltst_p2, tesdbt,
+			opwdstby, resetb, optiddq, wutmmck0, reqlvi, resb, twwdtstp ;
+
+	output		r15kstpz, liosc_user_stpz, wden ;
+
+	reg		liosc_user_stpz, r15kstpz ;
+	wire		wden ;
+
+	// 240K-OSC停止信号生成回路 <Lowで停止>
+	//  GASMODE  (1=松下仕様、0=標準仕様) 1で停止　←削除
+	//  OPWDEN   (1=WDT動作、0=WDT停止) 0で停止
+	//  OPWDSTBY (1=スタンバイ中WDT動作、0=スタンバイ中WDT停止) 0でSTB中停止
+	//  (tesdbtのときは強制的に動かす)
+
+	always @ ( reqlvi or wutmmck0 or opwden or fstpst or fhltst_p2 or opwdstby ) begin
+		casex ( { reqlvi , wutmmck0 , opwden , fstpst , fhltst_p2 , opwdstby } ) // synopsys parallel_case
+			6'b000xxx : liosc_user_stpz = 1'b0 ;	//WDT動作禁止、或いはインターバルタイマが15kHz動作していない
+			6'b001010 : liosc_user_stpz = 1'b0 ;	//スタンバイ中のWDT動作禁止設定で、HALT時は停止
+			6'b001100 : liosc_user_stpz = 1'b0 ;	//スタンバイ中のWDT動作禁止設定で、STOP時は停止
+			default   : liosc_user_stpz = 1'b1 ;
+		endcase
+	end
+
+	always @(resetb or resb or optiddq or tesdbt or liosc_user_stpz) begin
+		if (!resetb)		r15kstpz = 1'b0; //RESETB=0の時は停止
+		else if (!resb)		r15kstpz = 1'b1; //RESB=0の時は強制動作
+		else if (optiddq)	r15kstpz = 1'b0; //SCANMODEで停止
+		else if (tesdbt)	r15kstpz = 1'b1; //SCANMODEで動作
+		else			r15kstpz = liosc_user_stpz;
+	end
+
+	assign wden = opwden & ~twwdtstp ;
+
+endmodule
+
+//****************************************************************************
+//	32MリングOSCコントロール
+//****************************************************************************
+module QLK0RCSC1V2_CG_HIOSCCTL (
+	r32mout, scanmode, scanclk, exclk1, optexcck, scanresz,
+	oscoutm, ptesinst, subck, hiostop_neg, rsts, fmxst,
+	resetb, nsresb, mcm0, tesdbt, r32mostp, oregstp,
+	tesusr, ostend, mtmc,
+	fmain, toregon, tr32mon, optiddq,
+	r32m_user_stp, oscsel,
+	dresetb, resb, bbckselr, bbclkr, frqsel4, frqsel3, frqsel2, frqsel1, frqsel0,
+	stpst3, reqfl, reqocd, reqpclk_all, bbmode, hiomsk, vsetend, tmdenclk, stposcm,
+	tselhio2, tselhio1, tselhio0, tseloreg, tselires, ttemp, pclktst, reqr32m, tselbgr, bbckstr,
+	optexcck_neg, bbhioon, bbckselm, bbclkm, bbckstm, scanen, fih_en
+	) ;
+
+	input		r32mout, exclk1, scanmode, scanclk, scanresz,
+			oscoutm, ptesinst, optexcck, mtmc,
+			subck, hiostop_neg, resetb, nsresb, mcm0,
+			tesdbt, tesusr, bbmode,
+			toregon, tr32mon, optiddq, oscsel ;
+	input		stpst3, frqsel4, frqsel3, frqsel2, frqsel1, frqsel0 ;
+	input		dresetb, resb, bbckselr, bbclkr, reqfl, reqocd, reqpclk_all, hiomsk ;
+	input		vsetend, stposcm ;
+	input		tselhio2, tselhio1, tselhio0, pclktst, bbhioon, bbckselm, bbclkm, scanen ;
+
+	output		ostend, r32mostp, rsts, fmxst, oregstp, fmain, r32m_user_stp, tmdenclk ;
+	output		tselbgr, tseloreg, tselires, ttemp, reqr32m, bbckstr, optexcck_neg, bbckstm, fih_en ;
+
+	wire		fih_p3 ;
+
+	QLK0RCSC1V2_CG_HIOSCCTL_FMAINSEL fmain_sel (
+		.scanmode(scanmode), .optexcck(optexcck), .exclk1(exclk1), .scanclk(scanclk),
+		.mcm0(mcm0), .tesusr(tesusr), .oscoutm(oscoutm), .bbckselr(bbckselr), .bbclkr(bbclkr),
+		.nsresb(nsresb), .oscsel(oscsel), .ptesinst(ptesinst), .resetb(resetb),
+		.fmain(fmain), .fmxst(fmxst), .fih_p3(fih_p3),
+		.bbmode(bbmode), .frqsel4(frqsel4), .reqr32m(reqr32m),
+		.r32mout(r32mout), .hiomsk(hiomsk), .vsetend(vsetend), .pclktst(pclktst), .bbckstr(bbckstr),
+		.optexcck_neg(optexcck_neg), .bbckselm(bbckselm), .bbclkm(bbclkm), .bbckstm(bbckstm),
+		.scanen(scanen), .resb(resb), .fih_en(fih_en), .scanresz(scanresz)
+		);
+
+
+	//FIH同期回路(高精度発振安定待ちカウンタ、高精度安定終了ステータス、高精度安定終了)
+	//            (レギュレータ安定まち)
+	//            (Flashセットアップ待ちカウンタ、終了信号) ←削除
+	QLK0RCSC1V2_CG_FIHSYNC fihsync (
+		.fih_p3(fih_p3), .fmxst(fmxst), .rsts(rsts), .ostend(ostend), .mtmc(mtmc),
+		.frqsel4(frqsel4), .frqsel3(frqsel3), .frqsel2(frqsel2), .frqsel1(frqsel1), .frqsel0(frqsel0),
+		.scanmode(scanmode), .scanresz(scanresz), .scanclk(scanclk),
+		.resetb(resetb), .tmdenclk(tmdenclk), .stposcm(stposcm), .reqpclk_all(reqpclk_all)
+		 );
+
+	//32MRINGストップ制御
+	QLK0RCSC1V2_CG_HIOSCCTL_STOPCTL	stopctl (
+		.hiostop_neg(hiostop_neg), .fmxst(fmxst),
+		.subck(subck)    , .tesdbt(tesdbt)      ,
+		.r32mostp(r32mostp),
+		.oregstp(oregstp), .ptesinst(ptesinst), .toregon(toregon), .tr32mon(tr32mon)  ,
+		.optiddq(optiddq), .rsts(rsts),
+		.r32m_user_stp(r32m_user_stp),
+		.dresetb(dresetb), .resb(resb), .nsresb(nsresb), .reqpclk_all(reqpclk_all),
+		.reqfl(reqfl), .reqocd(reqocd), .stpst3(stpst3), .reqr32m(reqr32m),
+		.bbckstr(bbckstr), .bbhioon(bbhioon)
+		 ) ;
+
+	//
+	QLK0RCSC1V2_CG_HIOSCCTL_TESTCTL	testctl (
+		.scanmode(scanmode), .tselhio2(tselhio2), .tselhio1(tselhio1), .tselhio0(tselhio0),
+		.tselbgr(tselbgr), .tseloreg(tseloreg), .tselires(tselires), .ttemp(ttemp)
+		 ) ;
+
+endmodule
+
+module QLK0RCSC1V2_CG_HIOSCCTL_MASKCTL (
+	fih_p1, hiomsk, resetb, fih, vsetend, reqr32m, bbckselr, resb, optexcck, scanen, fih_en,
+	scanmode, scanresz
+	);
+
+	input	fih_p1, hiomsk, resetb, vsetend, reqr32m, bbckselr, resb, optexcck ;
+	input	scanmode, scanresz, scanen ;
+	output	fih, fih_en ;
+	reg	vsetend_f1, vsetend_f2, hiomsk_f1, hiomsk_f2, mskct_1, mskct_2 ;
+	reg	clrb_hiomsk_f_ns, reqfih_f1, reqfih_f2 ;
+
+	wire	reqfih, fih_en, clrb_hiomsk_f, clrb_mskct ;
+
+        assign  clrb_hiomsk_f = (scanmode) ? scanresz : clrb_hiomsk_f_ns ;
+
+	//SS3rd
+        // synopsys async_set_reset "clrb_hiomsk_f"
+        always @ ( posedge fih_p1 or negedge clrb_hiomsk_f ) begin
+                if ( !clrb_hiomsk_f )	hiomsk_f1 <= 1'b0 ;
+                else if ( hiomsk )	hiomsk_f1 <= 1'b1 ;
+        end
+
+        // synopsys async_set_reset "clrb_hiomsk_f"
+        always @ ( posedge fih_p1 or negedge clrb_hiomsk_f ) begin
+                if ( !clrb_hiomsk_f )	hiomsk_f2 <= 1'b0 ;
+                else 			hiomsk_f2 <= hiomsk_f1 ;
+        end
+
+        assign  clrb_mskct = (scanmode) ? scanresz : hiomsk_f2 ;
+
+        // synopsys async_set_reset "hiomsk_f2"
+        always @ ( posedge fih_p1 or negedge clrb_mskct ) begin
+                if ( !clrb_mskct )	mskct_1 <= 1'b0 ;
+                else 			mskct_1 <= 1'b1 ;
+        end
+
+        // synopsys async_set_reset "hiomsk_f2"
+        always @ ( posedge fih_p1 or negedge clrb_mskct ) begin
+                if ( !clrb_mskct )	mskct_2 <= 1'b0 ;
+                else 			mskct_2 <= mskct_1 ;
+        end
+
+        // synopsys async_set_reset "resetb"
+        always @ ( posedge fih_p1 or negedge resetb ) begin
+                if ( !resetb )		vsetend_f1 <= 1'b0 ;
+                else 			vsetend_f1 <= vsetend ;
+        end
+
+        // synopsys async_set_reset "resetb"
+        always @ ( posedge fih_p1 or negedge resetb ) begin
+                if ( !resetb )		vsetend_f2 <= 1'b0 ;
+                else 			vsetend_f2 <= vsetend_f1 ;
+        end
+
+        // synopsys async_set_reset "resetb"
+        always @ ( posedge fih_p1 or negedge resetb ) begin
+                if ( !resetb )		clrb_hiomsk_f_ns <= 1'b0 ;
+                else 			clrb_hiomsk_f_ns <= ~( mskct_2 & vsetend_f2 ) ;
+        end
+
+	assign reqfih = reqr32m | bbckselr | optexcck ;
+
+        // synopsys async_set_reset "resb"
+        always @ ( posedge fih_p1 or negedge resb ) begin
+                if ( !resb )		reqfih_f1 <= 1'b1 ;
+                else 			reqfih_f1 <= reqfih ;
+        end
+
+        // synopsys async_set_reset "resb"
+        always @ ( posedge fih_p1 or negedge resb ) begin
+                if ( !resb )		reqfih_f2 <= 1'b1 ;
+                else 			reqfih_f2 <= reqfih_f1 ;
+        end
+
+	assign fih_en = ~hiomsk_f2 & reqfih_f2 ;
+
+	TBGTSMLALADCLX2 fih_gate (.N01(fih),  .H01(fih_en),  .H02(fih_p1), .H03(scanen));
+
+endmodule
+
+//
+module QLK0RCSC1V2_CG_HIOSCCTL_FMAINSEL (
+	scanmode, optexcck, exclk1, scanclk, mcm0, tesusr, oscoutm, bbckselr, bbclkr, nsresb,
+	oscsel, ptesinst, resetb, fmain, fmxst, bbmode, frqsel4, pclktst,
+	reqr32m, r32mout, hiomsk, vsetend, bbckstr, optexcck_neg, bbckselm, bbclkm, bbckstm, scanen,
+	fih_p3, resb, fih_en, scanresz
+	);
+
+	input		scanmode, optexcck, exclk1, scanclk, mcm0, tesusr, oscoutm, bbckselr ;
+	input		bbclkr, nsresb, oscsel, ptesinst, resetb ;
+	input		bbmode, frqsel4, pclktst, reqr32m, r32mout, hiomsk, vsetend ;
+	input		bbckselm, bbclkm, scanen, resb, scanresz ;
+
+	output		fmain, fmxst, bbckstr, bbckstm, optexcck_neg, fih_p3, fih_en ;
+
+	reg		optexcck_neg,fih_p2_sel ;
+
+	wire		fih, fih_p1, fih_p2, fmx, tclkfih, fmain_p, clrb_cksel_fih_p2 ;
+
+	//TCLK32M <-> SCANCLKセレクタ
+	QLK0RCSC1V2_CG_MUX tclkfih_mux (
+		.in1(scanclk), .in2(exclk1), .sel1(scanmode), .out(tclkfih) ) ;
+
+	//32M <-> TCLK32M/SCANCLKセレクタ(CTSルート付)
+	QLK0RCSC1V2_CG_CTS_FIH fih_p3_cts (
+		.clkin(r32mout), .scanclk(tclkfih), .scanmode(scanmode|optexcck), .clkout(fih_p3) );
+
+	assign clrb_cksel_fih_p2 = resetb | frqsel4 ;
+
+	always @ ( bbckselr or frqsel4 ) begin
+		case ( { bbckselr , frqsel4 } ) // synopsys parallel_case
+			2'b00   : fih_p2_sel = 1'b0 ;   //
+			default : fih_p2_sel = 1'b1 ;
+		endcase
+	end
+
+	//MAIN<->BBCLKRセレクタ
+	//  bbckselr=0 : fmain= 32MHz(from 32M-RingOSC)
+	//  bbckselr=1 : fmain= BBCLKR
+	QLK0RCSC1V2_CG_CKSEL2 cksel_fih_p2 (
+		.clk1(fih_p3), .clk2(bbclkr), .clrb(clrb_cksel_fih_p2), .sel2(fih_p2_sel), .clkout(fih_p2),
+		.mclst(bbckstr), .scanmode(scanmode), .mask2_a(bbmode), .mask2_b(1'b1) ) ;
+
+	//32M <-> TCLK32M/SCANCLKセレクタ(CTSルート付)
+	QLK0RCSC1V2_CG_CTS_FIH fih_p1_cts (
+		.clkin(fih_p2), .scanclk(scanclk), .scanmode(scanmode), .clkout(fih_p1) );
+
+	QLK0RCSC1V2_CG_HIOSCCTL_MASKCTL maskctl (
+	.fih_p1(fih_p1), .hiomsk(hiomsk), .resetb(resetb), .bbckselr(bbckselr),
+	.fih(fih), .vsetend(vsetend), .reqr32m(reqr32m), .resb(resb), .optexcck(optexcck),
+	.scanen(scanen), .fih_en(fih_en), .scanmode(scanmode), .scanresz(scanresz)
+	);
+
+	//MAIN<->BBCLKMセレクタ
+	//  bbckselm=0 : fmain= OSCOUTM(from X1)
+	//  bbckselm=1 : fmain= BBCLKR
+	QLK0RCSC1V2_CG_CKSEL2 cksel_fmx (
+		.clk1(oscoutm), .clk2(bbclkm), .clrb(resetb), .sel2(bbckselm), .clkout(fmx),
+		.mclst(bbckstm), .scanmode(scanmode), .mask2_a(bbmode), .mask2_b(1'b1) ) ;
+
+	//32M<->MAINセレクタ
+	//  mcm0=0 : fmain= 32MHz(from 32M-RingOSC)
+	//  mcm0=1 : fmain= oscout(from X1)
+
+	// SS2nd v1.30 : 切替回路のラッチ初期化(リセット)後、発振器出力にノイズがのったとき、そちらが
+	//         選択されてデッドロックしてしまう対策。(10Kシリーズのフィードバック)
+	//         fihが動き出すまでは、oscoutmはAND論理でマスクするようにする。
+	//         RESBとOSCSELの2本でプロテクトの強化をはかる。
+	QLK0RCSC1V2_CG_CKSEL2 cksel_fmain_p (
+		.clk1(fih), .clk2(fmx), .clrb(resetb), .sel2(mcm0), .clkout(fmain_p),
+		.mclst(fmxst), .scanmode(scanmode), .mask2_a(nsresb), .mask2_b(oscsel) ) ;
+
+        // synopsys async_set_reset "resb"
+        always @ ( negedge pclktst or negedge resb ) begin
+                if ( !resb )	optexcck_neg <= 1'b0 ;
+                else 		optexcck_neg <= optexcck ;
+        end
+
+	wire tes_fmxsel = (ptesinst & ~optexcck_neg) | tesusr ;
+	QLK0RCSC1V2_CG_MUX fmain_mux (
+		.in1(oscoutm), .in2(fmain_p), .out(fmain), .sel1(tes_fmxsel) ) ;
+
+endmodule
+
+// *********************************************************
+//  RINGのクロック発振制御回路
+//  RINGの発振制御信号生成
+//  X1(OSC)の発振制御信号生成
+//  ソースクロック(X1/RING)の切換制御信号生成
+// *********************************************************
+module QLK0RCSC1V2_CG_HIOSCCTL_STOPCTL (
+	hiostop_neg, fmxst, subck, tesdbt,
+	r32mostp,
+	oregstp, ptesinst, toregon, tr32mon, rsts,
+	optiddq, r32m_user_stp, dresetb, resb, nsresb, reqpclk_all,reqfl, reqocd, stpst3, reqr32m, bbckstr,
+	bbhioon
+	);
+
+	input		hiostop_neg, fmxst  , subck   , tesdbt ,
+			ptesinst, toregon, tr32mon, optiddq, rsts ;
+	input		dresetb, resb, nsresb, reqfl, reqocd, reqpclk_all, stpst3, bbckstr, bbhioon ;
+
+	output		r32mostp, oregstp ;
+	output		r32m_user_stp, reqr32m ;
+
+	reg	r32m_user_stp_bitctl, r32m_user_stp, reqr32m, reqr32m_user ;
+
+	// r32mostp(高精度32MHzRING停止)信号生成回路
+	//SS3rd:OCDクロック要求時は常に発振する。
+	//　　　FLASHクロック要求時はRUN中は発振。STOP中は要求を受け付けない。
+	//　　　周辺マクロクロック要求はSTOP中のみ受け付ける。
+	always @ ( bbhioon or bbckstr or fmxst or subck or hiostop_neg ) begin
+		casex ( { bbhioon , bbckstr , fmxst , subck , hiostop_neg } ) // synopsys parallel_case
+			5'b01001	: r32m_user_stp_bitctl = 1'b1 ;	//BBCLKR HIOSTOPbit=1なら停止
+			5'bxx1x1	: r32m_user_stp_bitctl = 1'b1 ;	//サブOSC動作中、HIOSTOPbit=1なら停止
+			5'bxx011	: r32m_user_stp_bitctl = 1'b1 ;	//メインOSC動作中、HIOSTOPbit=1なら停止
+			default		: r32m_user_stp_bitctl = 1'b0 ;
+		endcase
+	end
+
+	always @ ( reqocd or stpst3 or rsts or reqpclk_all or r32m_user_stp_bitctl ) begin
+		casex ( { reqocd , stpst3 , rsts , reqpclk_all , r32m_user_stp_bitctl } ) // synopsys parallel_case
+			5'b001x1	: r32m_user_stp = 1'b1 ;	//RUN中なら停止ビットによる
+			5'b01x0x	: r32m_user_stp = 1'b1 ;	//STOP中、REQPCLK=0なら停止
+			default		: r32m_user_stp = 1'b0 ;
+		endcase
+	end
+
+	reg r32mostp ;	// 高精度32MHzRING停止信号
+	always @( reqfl or dresetb or resb or optiddq or tesdbt or ptesinst or tr32mon or r32m_user_stp ) begin
+		if	(reqfl&&!optiddq)	r32mostp = 1'b0;
+		else if (!dresetb)		r32mostp = 1'b1; //DRESETB=0の時は停止
+		else if (!resb)			r32mostp = 1'b0; //RESB=0の時は強制動作
+		else if (optiddq)		r32mostp = 1'b1; //SCANMODEで停止
+		else if (tesdbt)		r32mostp = 1'b0; //SCANMODEで動作
+		else if (ptesinst&&tr32mon)	r32mostp = 1'b0; //PTESINST時はテストビットによる
+		else				r32mostp = r32m_user_stp;
+	end
+
+	reg oregstp ;	// 32M用REG停止
+	always @( reqfl or dresetb or resb or optiddq or tesdbt or ptesinst or toregon or r32m_user_stp ) begin
+		if	(reqfl&&!optiddq)	oregstp = 1'b0;
+		else if (!dresetb)		oregstp = 1'b1; //DRESETB=0の時は停止
+		else if (!resb)			oregstp = 1'b0; //RESB=0の時は強制動作
+		else if (optiddq)		oregstp = 1'b1; //SCANMODEで停止
+		else if (tesdbt)		oregstp = 1'b0; //SCANMODEで動作
+		else if (ptesinst&&toregon)	oregstp = 1'b0; //PTESINST時はテストビットによる
+		else				oregstp = r32m_user_stp;
+	end
+
+	//SS3rd
+	always @ ( stpst3 or rsts or reqpclk_all or r32m_user_stp_bitctl ) begin
+		casex ( { stpst3 , rsts , reqpclk_all , r32m_user_stp_bitctl } ) // synopsys parallel_case
+			4'b01x1	: reqr32m_user = 1'b0 ;	//RUN中、REQFL=0なら停止ビットによる
+			4'b1x0x	: reqr32m_user = 1'b0 ;	//STOP中、REQPCLK=0なら停止
+			default	: reqr32m_user = 1'b1 ;
+		endcase
+	end
+
+	always @( nsresb or optiddq or tesdbt or ptesinst or tr32mon or reqr32m_user ) begin
+		if (!nsresb)			reqr32m = 1'b1; //RESB=0の時は強制動作
+		else if (optiddq)		reqr32m = 1'b0; //SCANMODEで停止
+		else if (tesdbt)		reqr32m = 1'b1; //SCANMODEで動作
+		else if (ptesinst&&tr32mon)	reqr32m = 1'b1; //PTESINST時はテストビットによる
+		else				reqr32m = reqr32m_user;
+	end
+
+
+endmodule
+
+//*********************************************************
+//低精度RINGでの同期回路群
+//  低精度RINGは、MAX10MHz(100ns)で計算
+//  低精度RINGは、16Mモードになっても8Mのまま動作する
+//*********************************************************
+module QLK0RCSC1V2_CG_FIHSYNC (
+	mtmc, scanmode, scanresz, scanclk,
+	frqsel4, frqsel3, frqsel2, frqsel1, frqsel0,
+	resetb, tmdenclk, stposcm, reqpclk_all, fih_p3,
+	fmxst,		//8MHz<->MAIN切り替え。MAINステータス。次のOSTENDへ
+	rsts,		//安定終了ステータス
+	ostend		//安定終了
+	);
+
+	input	fih_p3, fmxst, mtmc, scanmode, scanresz, scanclk ;
+	input	frqsel4, frqsel3, frqsel2, frqsel1, frqsel0, resetb, stposcm, reqpclk_all ;
+
+	output	rsts, ostend, tmdenclk ;
+
+        reg             rsts ;
+        reg		cnt_rsts_reg_async_4, cnt_rsts_reg_async_3, cnt_rsts_reg_async_2 ;
+        reg		cnt_rsts_reg_async_1, cnt_rsts_reg_async_0 ;
+
+	reg	[5:0]	cnt_rsts_reg_sync ;
+	reg		cnt_rsts ;
+	reg		tmdenclk ;
+
+        wire            rstsclr_dft, fih4 ;
+        wire		cnt_10, cnt_9, cnt_8, cnt_7, cnt_6, cnt_5, cnt_4, cnt_3, cnt_2, cnt_1, cnt_0 ;
+
+	//
+        assign  rstsclr_dft = (scanmode) ? ~scanresz : ( ~reqpclk_all & stposcm ) ;
+
+        // synopsys async_set_reset "rstsclr_dft"
+        always @ ( posedge fih_p3 or posedge rstsclr_dft )
+          if ( rstsclr_dft )		cnt_rsts_reg_async_0 <= 1'b0 ;
+          else if ( rsts && tmdenclk )	cnt_rsts_reg_async_0 <= cnt_rsts_reg_async_0 ;
+          else				cnt_rsts_reg_async_0 <= ~cnt_rsts_reg_async_0 ;
+
+        // synopsys async_set_reset "rstsclr_dft"
+        always @ ( negedge cnt_rsts_reg_async_0 or posedge rstsclr_dft )
+          if ( rstsclr_dft )    cnt_rsts_reg_async_1 <= 1'b0 ;
+          else                  cnt_rsts_reg_async_1 <= ~cnt_rsts_reg_async_1 ;
+
+        // synopsys async_set_reset "rstsclr_dft"
+        always @ ( negedge cnt_rsts_reg_async_1 or posedge rstsclr_dft )
+          if ( rstsclr_dft )    cnt_rsts_reg_async_2 <= 1'b0 ;
+          else                  cnt_rsts_reg_async_2 <= ~cnt_rsts_reg_async_2 ;
+
+        // synopsys async_set_reset "rstsclr_dft"
+        always @ ( negedge cnt_rsts_reg_async_2 or posedge rstsclr_dft )
+          if ( rstsclr_dft )    cnt_rsts_reg_async_3 <= 1'b0 ;
+          else                  cnt_rsts_reg_async_3 <= ~cnt_rsts_reg_async_3 ;
+
+        // synopsys async_set_reset "rstsclr_dft"
+        always @ ( negedge cnt_rsts_reg_async_3 or posedge rstsclr_dft )
+          if ( rstsclr_dft )    cnt_rsts_reg_async_4 <= 1'b0 ;
+          else                  cnt_rsts_reg_async_4 <= ~cnt_rsts_reg_async_4 ;
+
+	//HIOSC4分周<->SCANCLKセレクタ(CTSルート付)
+	QLK0RCSC1V2_CG_CTS_FIH4 fih4_cts (
+		.clkin(cnt_rsts_reg_async_4), .scanclk(scanclk), .scanmode(scanmode), .clkout(fih4) );
+
+
+        // synopsys async_set_reset "rstsclr_dft"
+        always @ ( negedge fih4 or posedge rstsclr_dft )
+          if ( rstsclr_dft )    cnt_rsts_reg_sync <= 6'b000000 ;
+          else			cnt_rsts_reg_sync <= cnt_rsts_reg_sync + 1'b1 ;
+
+	assign cnt_0  = (scanmode) ? cnt_rsts_reg_sync[0] : cnt_rsts_reg_async_0 ; 
+	assign cnt_1  = (scanmode) ? cnt_rsts_reg_sync[0] : cnt_rsts_reg_async_1 ; 
+	assign cnt_2  = (scanmode) ? cnt_rsts_reg_sync[0] : cnt_rsts_reg_async_2 ; 
+	assign cnt_3  = (scanmode) ? cnt_rsts_reg_sync[0] : cnt_rsts_reg_async_3 ; 
+	assign cnt_4  = (scanmode) ? cnt_rsts_reg_sync[0] : cnt_rsts_reg_async_4 ; 
+	assign cnt_5  = cnt_rsts_reg_sync[0] ; 
+	assign cnt_6  = cnt_rsts_reg_sync[1] ; 
+	assign cnt_7  = cnt_rsts_reg_sync[2] ; 
+	assign cnt_8  = cnt_rsts_reg_sync[3] ; 
+	assign cnt_9  = cnt_rsts_reg_sync[4] ; 
+	assign cnt_10 = cnt_rsts_reg_sync[5] ; 
+
+	//
+	always @ ( frqsel4 or frqsel3 or frqsel2 or frqsel1 or frqsel0 or
+		   cnt_10 or cnt_9 or cnt_8 or cnt_7 or cnt_6 or cnt_5 or cnt_4 or cnt_3 or cnt_2 or cnt_1 or cnt_0 ) begin
+		case ( { frqsel4 , frqsel3 , frqsel2 , frqsel1 , frqsel0 } )
+		 5'b00_000 : cnt_rsts = (      cnt_8&cnt_7&                              cnt_1&cnt_0) ; // 24MHz 1/1  387count 0110000011
+		 5'b00_001 : cnt_rsts = (            cnt_7&cnt_6&                        cnt_1      ) ; // 24MHz 1/2  194count 0011000010
+		 5'b00_010 : cnt_rsts = (                  cnt_6&cnt_5&                        cnt_0) ; // 24MHz 1/4  97 count 0001100001
+		 5'b00_011 : cnt_rsts = (                        cnt_5&cnt_4&                  cnt_0) ; // 24MHz 1/8  49 count 0000110001
+		 5'b00_100 : cnt_rsts = (                              cnt_4&cnt_3&            cnt_0) ; // 24MHz 1/16 25 count 0000011001
+		 5'b00_101 : cnt_rsts = (                                    cnt_3&cnt_2&      cnt_0) ; // 24MHz 1/32 13 count 0000001101
+		 5'b01_000 : cnt_rsts = (      cnt_8&cnt_7&cnt_6&cnt_5&      cnt_3                  ) ; // 32MHz 1/1  488count 0111101000
+		 5'b01_001 : cnt_rsts = (            cnt_7&cnt_6&cnt_5&cnt_4&      cnt_2            ) ; // 32MHz 1/2  244count 0011110100
+		 5'b01_010 : cnt_rsts = (                  cnt_6&cnt_5&cnt_4&cnt_3&      cnt_1      ) ; // 32MHz 1/4  122count 0001111010
+		 5'b01_011 : cnt_rsts = (                        cnt_5&cnt_4&cnt_3&cnt_2&      cnt_0) ; // 32MHz 1/8  61 count 0000111101
+		 5'b01_100 : cnt_rsts = (                              cnt_4&cnt_3&cnt_2&cnt_1&cnt_0) ; // 32MHz 1/16 31 count 0000011111
+		 5'b01_101 : cnt_rsts = (                              cnt_4                        ) ; // 32MHz 1/32 16 count 0000010000
+		 5'b10_000 : cnt_rsts = (cnt_9&            cnt_6&cnt_5&cnt_4&      cnt_2&      cnt_0) ; // 48MHz 1/1  629count 1001110101
+		 5'b10_001 : cnt_rsts = (      cnt_8&            cnt_5&cnt_4&cnt_3&      cnt_1&cnt_0) ; // 48MHz 1/2  315count 0100111011
+		 5'b10_010 : cnt_rsts = (            cnt_7&            cnt_4&cnt_3&cnt_2&cnt_1      ) ; // 48MHz 1/4  158count 0010011110
+		 5'b10_011 : cnt_rsts = (                  cnt_6&      cnt_4                        ) ; // 48MHz 1/8  80 count 0001010000
+		 5'b10_100 : cnt_rsts = (                        cnt_5&      cnt_3                  ) ; // 48MHz 1/16 40 count 0000101000
+		 5'b10_101 : cnt_rsts = (                              cnt_4&      cnt_2            ) ; // 48MHz 1/32 20 count 0000010100
+		 5'b11_000 : cnt_rsts = (cnt_9&cnt_8&      cnt_6&      cnt_4&                  cnt_0) ; // 64MHz 1/1  849count 1101010001
+		 5'b11_001 : cnt_rsts = (      cnt_8&cnt_7&      cnt_5&      cnt_3&            cnt_0) ; // 64MHz 1/2  425count 0110101001
+		 5'b11_010 : cnt_rsts = (            cnt_7&cnt_6&      cnt_4&      cnt_2&      cnt_0) ; // 64MHz 1/4  213count 0011010101
+		 5'b11_011 : cnt_rsts = (                  cnt_6&cnt_5&      cnt_3&      cnt_1&cnt_0) ; // 64MHz 1/8  107count 0001101011
+		 5'b11_100 : cnt_rsts = (                        cnt_5&cnt_4&      cnt_2&cnt_1      ) ; // 64MHz 1/16 54 count 0000110110
+		 5'b11_101 : cnt_rsts = (                              cnt_4&cnt_3&      cnt_1&cnt_0) ; // 64MHz 1/32 27 count 0000011011
+		 default   : cnt_rsts = ((~cnt_10)&cnt_9&cnt_8&      cnt_6&      cnt_4&                  cnt_0) ; // other      864count 1101010001
+		endcase
+	end
+
+
+        // synopsys async_set_reset "rstsclr_dft"
+        always @ ( posedge fih_p3 or posedge rstsclr_dft ) begin
+                if ( rstsclr_dft )	rsts <= 1'b0 ;
+                else if ( cnt_rsts )	rsts <= 1'b1 ;
+        end
+
+        // =============================================================
+        //  OSTEND FOR 32M-RING OSC
+        // =============================================================
+
+        assign ostend = ( fmxst ) ?  mtmc : rsts ;
+
+
+        //テストモードへの移行許可信号
+        // synopsys async_set_reset "resetb"
+        always @ ( negedge fih_p3 or negedge resetb ) begin
+                if ( !resetb )				tmdenclk <= 1'b0 ;
+                else if ( cnt_5 )			tmdenclk <= 1'b1 ;
+        end
+
+endmodule
+
+module QLK0RCSC1V2_CG_HIOSCCTL_TESTCTL (
+	scanmode, tselhio2, tselhio1, tselhio0, tselbgr, tseloreg, tselires, ttemp
+	);
+
+	input	scanmode, tselhio2, tselhio1, tselhio0 ;
+	output	tselbgr, tseloreg, tselires, ttemp ;
+	reg	tselbgr, tseloreg, tselires, ttemp ;
+
+	always @ ( scanmode or tselhio2 or  tselhio1 or tselhio0 ) begin
+		casex ( { scanmode , tselhio2 , tselhio1 , tselhio0 } ) // synopsys parallel_case
+			4'b1xxx	: { tselbgr, tseloreg, tselires, ttemp } = 4'b0000 ;	//
+			4'b0000	: { tselbgr, tseloreg, tselires, ttemp } = 4'b0000 ;	//
+			4'b0001	: { tselbgr, tseloreg, tselires, ttemp } = 4'b0100 ;	//
+			4'b0010	: { tselbgr, tseloreg, tselires, ttemp } = 4'b0010 ;	//
+			4'b0011	: { tselbgr, tseloreg, tselires, ttemp } = 4'b0001 ;	//
+			4'b01xx	: { tselbgr, tseloreg, tselires, ttemp } = 4'b1000 ;	//
+		endcase
+	end
+
+endmodule
+
+//****************************************************************************
+//	MAINOSCクロックカウンタ
+//****************************************************************************
+module QLK0RCSC1V2_CG_MOSCCNT (
+	oscoutm,	resstp_dft,	scanmode,	scanclk,	dmstop_neg,	svstop,
+	exclk,		ptesinst,	optexcck_neg,	osts2,		osts1,		osts0,
+	most8,		most9,		most10,		most11,		most13,		most15,
+	most17,		most18,		mtmc,		clr_mcnt_ns,
+	r15kout,	rswdtres,	nsresb,		fmxst,		subck
+	) ;
+
+	input		oscoutm,	resstp_dft,	scanmode,	scanclk,	dmstop_neg,	svstop,
+			exclk,		ptesinst,	optexcck_neg,	osts2,		osts1,		osts0 ;
+	input		r15kout,	nsresb,		fmxst,		subck ;
+
+        output		most8,		most9,		most10,		most11,		most13,		most15,
+			most17,		most18,		mtmc ;
+	output		clr_mcnt_ns ;
+	output		rswdtres ;
+
+	reg	[13:0]	main_counter ;
+	reg		clr_mcnt_ns, clr_mcnt, count_en ;
+	reg		most8, most9, most10, most11, most13, most15, most17, most18, mwovf, mtmc ;
+	wire		mcnt4, fmx4 ;
+	wire		mcnt18, mcnt17, mcnt15, mcnt13, mcnt11, mcnt10, mcnt9, mcnt8 ;
+	wire		mcntclk ;
+	wire		mcnt7 ;
+
+	//ソースクロック選択
+	QLK0RCSC1V2_CG_MUX mcntclk_mux (
+		.in1(r15kout), .in2(oscoutm), .out(mcntclk), .sel1(~nsresb) ) ;
+
+	//カウンターをクリアする条件
+	// RESSTPか、MAINストップしたとき
+	// (PTESINSTのときは、MSTOPではクリアしない)
+	//assign clr_mcnt_ns = dmstop_neg & ~(ptesinst&~optexcck_neg);
+	//assign clr_mcnt = resstp_dft | ( clr_mcnt_ns & ~scanmode ) ;
+	always @ ( nsresb or ptesinst or optexcck_neg or fmxst or subck or dmstop_neg ) begin
+		casex ( { nsresb , ptesinst , optexcck_neg , fmxst , subck , dmstop_neg } ) // synopsys parallel_case
+			6'b10x001	: clr_mcnt_ns = 1'b1 ;	// USERモード中 MSTOP=1ならカウンタクリア
+			6'b10xx11	: clr_mcnt_ns = 1'b1 ;	// USERモード中 MSTOP=1ならカウンタクリア
+			6'b111001	: clr_mcnt_ns = 1'b1 ;	// 外部クロックテストモード中 MSTOP=1ならカウンタクリア
+			6'b111x11	: clr_mcnt_ns = 1'b1 ;	// 外部クロックテストモード中 MSTOP=1ならカウンタクリア
+			default		: clr_mcnt_ns = 1'b0 ;
+		endcase
+	end
+
+	always @ ( resstp_dft or scanmode or clr_mcnt_ns ) begin
+		casex ( { resstp_dft , scanmode , clr_mcnt_ns } ) // synopsys parallel_case
+			3'b1xx	: clr_mcnt = 1'b1 ;	// リセット、STOP中はカウンタクリア
+			3'b001	: clr_mcnt = 1'b1 ;	// SCANモード以外で、clr_mcnt_ns=1ならカウンタクリア
+			default	: clr_mcnt = 1'b0 ;
+		endcase
+	end
+
+	//カウンターを動かす条件
+	// オーバーフローしておらず、SVSTOP=0のとき
+	//assign count_en = ~mtmc & ~svstop ;
+
+	always @ ( resstp_dft or nsresb or mtmc or svstop ) begin
+		casex ( { resstp_dft , nsresb , mtmc , svstop } ) // synopsys parallel_case
+			4'b00xx	: count_en = 1'b1 ;	// リセットSEQ中は動作
+			4'b0100	: count_en = 1'b1 ;	// 安定待ち完了前かつSVSTOP=0なら動作
+			default	: count_en = 1'b0 ;
+		endcase
+	end
+
+	//メイン発振器の初期ひげ取り用バイナリカウンタ
+	QLK0RCSC1V2_CG_MAINOSC_COUNTER5 count5 (
+		.clk(mcntclk), .count_en(count_en), .clr(clr_mcnt), .count4(mcnt4) ) ;
+
+	//メイン4分周<->SCANCLKセレクタ(CTSルート付)
+	QLK0RCSC1V2_CG_CTS_FMX4 fmx4_cts (
+		.clkin(mcnt4), .scanclk(scanclk), .scanmode(scanmode), .clkout(fmx4) );
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      (clr_mcnt)	main_counter <= 14'b0 ;
+		else if (count_en)	main_counter <= main_counter + 1'b1;
+	end
+
+	assign mcnt18 = main_counter[13] ;
+	assign mcnt17 = main_counter[12] ;
+	assign mcnt15 = main_counter[10] ;
+	assign mcnt13 = main_counter[8] ;
+	assign mcnt11 = main_counter[6] ;
+	assign mcnt10 = main_counter[5] ;
+	assign mcnt9  = main_counter[4] ;
+	assign mcnt8  = main_counter[3] ;
+	assign mcnt7  = main_counter[2] ;
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      (clr_mcnt)	most8 <= 1'b0;
+		else if (mcnt8)		most8 <= 1'b1;
+	end
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      (clr_mcnt)	most9 <= 1'b0;
+		else if (mcnt9)		most9 <= 1'b1;
+	end
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      (clr_mcnt)	most10 <= 1'b0;
+		else if (mcnt10)	most10 <= 1'b1;
+	end
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      (clr_mcnt)	most11 <= 1'b0;
+		else if (mcnt11)	most11 <= 1'b1;
+	end
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      (clr_mcnt)	most13 <= 1'b0;
+		else if (mcnt13)	most13 <= 1'b1;
+	end
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      (clr_mcnt)	most15 <= 1'b0;
+		else if (mcnt15)	most15 <= 1'b1;
+	end
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      (clr_mcnt)	most17 <= 1'b0;
+		else if (mcnt17)	most17 <= 1'b1;
+	end
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      (clr_mcnt)	most18 <= 1'b0;
+		else if (mcnt18)	most18 <= 1'b1;
+	end
+
+	// SS2nd v1.30 : mwovf=mcnt4時、mtmcのクロックとデータが同じで競合してしまっていた。
+	//         外部クロックとPTESINSTモードのときは1'b1に修正。
+
+	// 発振安定時間選択回路   X1のOSTEND(mtmc)作成
+	always @ ( nsresb  or exclk or ptesinst or optexcck_neg or osts2 or osts1 or osts0 or mcnt8 or
+		   mcnt9 or mcnt10 or mcnt7 or mcnt11 or mcnt13 or mcnt15 or mcnt17 or mcnt18 ) begin
+	    casex ( { nsresb , exclk , (ptesinst&&!optexcck_neg) , osts2 , osts1 , osts0 } ) // synopsys parallel_case
+		6'b0xxxxx  : mwovf = mcnt7  ;				// 2^7/R15KOUT
+		6'b1x1xxx  : mwovf = 1'b1   ;				// 2^4/fx
+		6'b110xxx  : mwovf = 1'b1   ;				// 2^4/fx
+		6'b100000  : mwovf = mcnt8  ;				// 2^8/fx
+		6'b100001  : mwovf = mcnt9  ;				// 2^9/fx
+		6'b100010  : mwovf = mcnt10 ;				// 2^10/fx
+		6'b100011  : mwovf = mcnt11 ;				// 2^11/fx
+		6'b100100  : mwovf = mcnt13 ;				// 2^13/fx
+		6'b100101  : mwovf = mcnt15 ;				// 2^15/fx
+		6'b100110  : mwovf = mcnt17 ;				// 2^17/fx
+		6'b100111  : mwovf = mcnt18 ;				// 2^18/fx
+	    endcase
+	end
+
+	// main発振安定時間終了信号(mtmc)生成回路
+
+	// synopsys async_set_reset "clr_mcnt"
+	always @ ( posedge fmx4 or posedge clr_mcnt ) begin
+		if      ( clr_mcnt )	mtmc <= 1'b0 ;
+		else if ( mwovf )	mtmc <= 1'b1 ;
+	end
+
+	//リセットSEQ中のウォッチドックリセット
+	assign rswdtres = ~nsresb & mtmc ;
+
+endmodule
+
+// *********************************************************
+//  WAIT COUNTER FOR MAINOSC SETUP TIME 
+// *********************************************************
+module QLK0RCSC1V2_CG_MAINOSC_COUNTER5 (
+	clk, count_en, clr, count4 ) ;
+
+        input	clk, count_en, clr ;
+        output	count4 ;
+
+        reg	count0 , count1 , count2 , count3 , count4  ;
+
+	// synopsys async_set_reset "clr"
+        always @ ( posedge clk or posedge clr )
+          if ( clr )		count0 <= 1'b0 ;
+          else if ( count_en )	count0 <= ~count0 ;
+
+	// synopsys async_set_reset "clr"
+        always @ ( negedge count0 or posedge clr )
+          if ( clr )	count1 <= 1'b0 ;
+          else		count1 <= ~count1 ;
+
+	// synopsys async_set_reset "clr"
+        always @ ( negedge count1 or posedge clr )
+          if ( clr )	count2 <= 1'b0 ;
+          else		count2 <= ~count2 ;
+
+	// synopsys async_set_reset "clr"
+        always @ ( negedge count2 or posedge clr )
+          if ( clr )	count3 <= 1'b0 ;
+          else		count3 <= ~count3 ;
+
+	// synopsys async_set_reset "clr"
+        always @ ( negedge count3 or posedge clr )
+          if ( clr )	count4 <= 1'b0 ;
+          else		count4 <= ~count4 ;
+
+endmodule
+
+//****************************************************************************
+//	TBASE
+//****************************************************************************
+//*************************************************************************************************
+//
+// fclk         基本クロック。メインとサブの切り替え後、スタンバイ制御前。
+// baseck       基本クロック。fclkの後のスタンバイ制御後。CPUがこのクロックで動作する。
+// baseckhs     基本クロック。HALT中停止するBASECK。
+// stbrele      INTからのスタンバイリリース。非同期で入ってくる。
+// ostend       RINGCTLから8MHzのRING安定、レギュレータの安定後出てくる。
+// fsub         サブ発振クロック。SCANクロックへの切り替え後。
+// resetb       POCリセット、端子リセット、WDTリセット、LVIリセットの全てのリセットで立つ。
+// hltst        HALT要求信号。CPUが命令をデコードして出してくる。
+// stpst        STOP要求信号。CPUが命令をデコードして出してくる。
+// fmain        メイン発振クロック。低速と高速の8MHz切り替え後とメイン発振器の切り替え後の信号。
+// cpustart     CPU動作許可信号。OSTENDをもらい、Flashの安定待ちが終わったらHighとなる。
+// resstp       リセット、ストップ時に出る信号。resetbにSTOP要因が追加されているリセット。
+// resstp_dft   resstpにSCANリセットをからめた信号。CG内部で使う。
+// resb         CPU,周辺用リセット。リセット解除後にリセットシーケンスが終わったあとリリースする。
+// nsresb       SCANモード時にSCANRESZにならないRESB。CIB,RG用。
+// stposcm      発振器停止信号。レギュレータを低電圧に切り替える事にも使う。
+// subck        サブ発振器に切り替わった信号。
+// css          サブ発振器に切り替えるレジスタの出力。
+// sdiv         CPUのsubクロック分周比選択信号。レジスタの出力。
+// ftrmend      リセットシーケンスのFlashのトリミング終了信号。最初は16分周を選択し、終わったら戻す。
+// scanmode     スキャンモード。
+// scanresz     スキャンリセット。
+// nvmrcend     リセットシーケンス終了信号。リセット解除後はこの信号でスタートする。
+// fstpst       STOP信号。STPSTより１クロック遅く、解除時はスタンバイリリース信号が来たらすぐに落ちる。
+// fhltst       HALT信号。HLTSTより１クロック遅く、解除時はスタンバイリリース信号が来たらすぐに落ちる。
+// stopbaseck   スタンバイ制御信号。BASECKを止める。
+// waitfl       FSELフラグに１を書き込んだ時のWAIT信号。CPUへ。
+//
+//*************************************************************************************************
+module QLK0RCSC1V2_CG_TBASE (
+	fclk, baseckhs, stbrele, ostend, oscouts_nf, resetb, hltst, stpst,
+	fmain, cpustart, resstp_dft, resstp, resb, nsresb, stposcm, subck, css, sdiv,
+	scanmode, scanclk, scanresz, nvmrcend, fstpst, fhltst, fhltst_p1, fhltst_p2,
+	stopbaseck, rsts, fsub2_st, oscsels,
+	psubmode, dmaen, pstn, iceck60m, stpst3,
+	rdsetup, vsetend, incdecmd, crchlten, rt0lpm, ressqsta, tmdenclk, stdwait, warmup, sysresb,
+	ocdasen, cpuclken, rtclpc, oscouts_nf_p, oscouts_nf_en, xtstop, ememramclk
+	) ;
+
+	input		baseckhs, ostend, oscouts_nf, resetb, hltst, stpst, fmain, nvmrcend,
+			stbrele, sdiv, css, scanmode,
+			scanclk, scanresz, rsts, oscsels ;
+	input		psubmode, dmaen ;
+	input		iceck60m ;
+	input		rdsetup, vsetend, incdecmd, crchlten, tmdenclk, stdwait, sysresb ;
+	input		rtclpc, oscouts_nf_p, xtstop ;
+
+	output		cpustart, fclk, resstp_dft, resstp, resb, nsresb, stposcm, subck,
+			fstpst, fhltst, fhltst_p1, fhltst_p2, stopbaseck ;
+	output		fsub2_st, warmup, cpuclken ;
+	output		pstn, stpst3, ressqsta, rt0lpm, ocdasen, oscouts_nf_en ;
+	output		ememramclk ;
+
+	wire		fsub2, fclk_p ;
+
+	//SDIVによる原発以外の分周回路。
+        QLK0RCSC1V2_CG_TBASE_DIVIDER divider (
+		.resb(resb), .oscouts_nf(oscouts_nf), .fsub2(fsub2), .sdiv(sdiv), .fsub2_st(fsub2_st)
+		) ;
+
+	//原発と分周クロックの切り替え、メインとサブの切り替え回路。fclk_pクロック生成。
+        QLK0RCSC1V2_CG_FMAIN_FSUB_SEL fmain_fsub_sel (
+		.baseckhs(baseckhs), .css(css), .fmain(fmain),
+		.resetb(resetb), .subck(subck), .scanmode(scanmode),
+		.fclk_p(fclk_p), .sdiv(sdiv),
+		.oscouts_nf(oscouts_nf), .fsub2(fsub2), .resb(resb), .nsresb(nsresb),
+		.fsub2_st(fsub2_st), .oscsels(oscsels)
+		);
+
+	//FCLK<->SCANCLKセレクタ(CTSルート付)
+	QLK0RCSC1V2_CG_CTS_FCLK fclk_cts (
+		.clkin(fclk_p), .scanclk(scanclk), .scanmode(scanmode), .clkout(fclk), .ramclk(ememramclk) );
+
+        QLK0RCSC1V2_CG_TBASE_STBY stby (
+		.fclk(fclk), .ostend(ostend), .resetb(resetb), .hltst(hltst), .stpst(stpst), .subck(subck),
+		.cpustart(cpustart),
+		.rsts(rsts), .resstp_dft(resstp_dft), .resstp(resstp), .resb(resb), .nsresb(nsresb),
+		.stposcm(stposcm), .stbrele(stbrele), .scanmode(scanmode),
+		.scanresz(scanresz), .nvmrcend(nvmrcend), .fstpst(fstpst), .fhltst(fhltst), .fhltst_p1(fhltst_p1), .fhltst_p2(fhltst_p2),
+		.baseckhs(baseckhs), .stopbaseck(stopbaseck),
+                .psubmode(psubmode), .dmaen(dmaen), .pstn(pstn), .stpst3(stpst3),
+		.iceck60m(iceck60m),
+		.rdsetup(rdsetup), .vsetend(vsetend), .incdecmd(incdecmd), .crchlten(crchlten),
+		.ressqsta(ressqsta), .rt0lpm(rt0lpm), .tmdenclk(tmdenclk),
+		.stdwait(stdwait), .warmup(warmup), .sysresb(sysresb), .ocdasen(ocdasen), .cpuclken(cpuclken),
+		.rtclpc(rtclpc), .oscouts_nf_p(oscouts_nf_p), .oscouts_nf_en(oscouts_nf_en), .css(css), .xtstop(xtstop)
+		) ;
+
+endmodule
+
+module QLK0RCSC1V2_CG_TBASE_DIVIDER (
+	resb, oscouts_nf, fsub2, sdiv, fsub2_st
+	);
+
+	input 		resb, oscouts_nf, sdiv, fsub2_st ;
+
+	output		fsub2 ;
+
+	wire		sdiv_gate ;
+
+	reg		fsub2 ;
+
+	assign	sdiv_gate = sdiv | fsub2_st ;
+
+	// synopsys async_set_reset "resb"
+	always @ (posedge oscouts_nf or negedge resb) begin
+		if ( !resb )		fsub2 <= 1'b0;
+		else if ( sdiv_gate )	fsub2 <= ~fsub2;
+	end
+
+endmodule
+
+//クロック切り替えの非同期部分をまとめた。
+module QLK0RCSC1V2_CG_FMAIN_FSUB_SEL (
+	baseckhs, css, fmain, resetb, fclk_p,
+	subck, scanmode, oscouts_nf, fsub2, sdiv, resb, nsresb,
+	fsub2_st, oscsels
+	);
+
+	input		baseckhs, css, fmain,
+			resetb, oscouts_nf, fsub2, scanmode, sdiv, resb, nsresb, oscsels ;
+
+	output		fclk_p, subck ;
+	output		fsub2_st ;
+
+	reg 		css_delay ;
+	wire		fsub ;
+
+	//サブの原発と分周を切り替える。
+	QLK0RCSC1V2_CG_CKSEL1 cksel_fsub0_fsub2 (
+		.clk1(oscouts_nf), .clk2(fsub2), .clrb(resetb),
+		.sel2(sdiv), .clkout(fsub), .mclst(fsub2_st),
+		.scanmode(scanmode)) ;
+
+	//サブ->メイン時のFlash待ち時間確保のため、CSSを1クロック遅らせて切替える。
+	// synopsys async_set_reset "resb"
+	always @ (posedge baseckhs or negedge resb) begin
+		if (!resb)	css_delay <= 1'b0;
+	else		css_delay <= css;
+	end
+
+	//メインとサブの切り替え
+	// SS2nd v1.30 : 切替回路のラッチ初期化(リセット)後、発振器出力にノイズがのったとき、そちらが
+	//         選択されてデッドロックしてしまう対策。(10Kシリーズのフィードバック)
+	//         fmain_selが動き出すまでは、fsubはAND論理でマスクするようにする。
+	//         ...とはいっても、サブは分周側が選択されており、分周回路はRESBでリセットされて
+	//         いるので、サブ発振器出力にノイズがのってもここまで伝搬しない。
+	//         だが、念のため、RESBとOSCSELSの2本でプロテクト。
+	QLK0RCSC1V2_CG_CKSEL2 cksel_fmain_fsub (
+		.clk1(fmain), .clk2(fsub), .clrb(resetb),
+		.sel2(css_delay), .clkout(fclk_p), .mclst(subck),
+		.scanmode(scanmode), .mask2_a(nsresb), .mask2_b(oscsels) ) ;
+
+endmodule
+
+//
+//	リセット／ＳＴＯＰ／ＨＡＬＴ制御回路
+//
+module QLK0RCSC1V2_CG_TBASE_STBY (
+	fclk, ostend, resetb, hltst, stpst, subck, cpustart,
+	rsts, resstp_dft, resstp, resb, nsresb, stposcm,
+	stbrele, scanmode, scanresz, nvmrcend, fstpst, fhltst, fhltst_p1, fhltst_p2, stopbaseck,
+	baseckhs, psubmode, dmaen, pstn, stpst3, tmdenclk,
+	iceck60m, rdsetup, vsetend, incdecmd, crchlten, ressqsta, rt0lpm, stdwait, warmup, sysresb,
+	ocdasen, cpuclken, rtclpc, oscouts_nf_p, oscouts_nf_en, css, xtstop
+	) ;
+
+	input 		fclk, ostend, resetb, hltst, stpst, subck, tmdenclk, stdwait,
+			stbrele, nvmrcend, scanmode, scanresz,
+			rsts, baseckhs, iceck60m,
+                        psubmode, dmaen, rdsetup, vsetend, incdecmd, crchlten, sysresb,
+			rtclpc, oscouts_nf_p, css, xtstop ;
+
+	output 		cpustart, resstp_dft, resstp, resb, nsresb, stposcm, fstpst, fhltst, fhltst_p1, fhltst_p2,
+			stopbaseck, pstn, stpst3, ressqsta, rt0lpm, warmup, ocdasen,
+			cpuclken, oscouts_nf_en ;
+
+	wire		rsts, ocdasen_p, ocdasen_pp, ressqsta ;
+
+	reg 		cpustart, stopbaseck, ressqsta_p, ressqsta_pp ;
+	reg		clr_cpuclken, cpuclken, fsubgate ;
+	reg	[2:0]	h_cnt_reg ;
+	reg		flash_setup_end_h, clr_h_cnt, psubmode_b, stbrele_halt, stpst_neg ;
+
+	// synopsys async_set_reset "resb"
+	always @ ( negedge baseckhs or negedge resb ) begin
+	   if	(!resb)	stpst_neg <= 1'b0;
+	   else 	stpst_neg <= stpst;
+	end
+
+	// SUB動作中にSTOP命令が来ても無視
+	wire	stpst_main;
+	assign	stpst_main = stpst_neg & ~subck;
+
+	// STOP時
+	// BASECK START条件は、以下の全てが完了したとき。
+	// 発振安定待ち完了。レギュレータ安定完了。8MHz安定完了。
+	// SS2nd v1.20 : 8MHz安定完了信号をからめると、8MHz止めてメインSTOP入れたとき、BASECK停止の
+	//         タイミングが変わってしまう。
+	//         STOP時には、常にRESSTPでBASECKが停止するように修正。(regurator_setup_end=1
+	//         になってたときは、必ずrsts=1)
+	//         rstsを単純に抜いてしまうと、リセットシーケンスの動きが変わってしまうので、
+	//         STOP時のみrstsが影響しないようにした。
+
+	//start_baseck = ostend & rdsetup & rsts ;
+	reg	start_baseck;
+	always @( ostend or rdsetup or rsts ) begin
+		case ( {ostend , rdsetup , rsts} )
+			3'b111   : start_baseck = 1'b1;
+			default  : start_baseck = 1'b0;
+		endcase
+	end
+
+	// synopsys async_set_reset "resstp_dft"
+	always @ ( posedge fclk or posedge resstp_dft ) begin
+	   if      (resstp_dft)		stopbaseck <= 1'b1;
+	   else if (start_baseck)	stopbaseck <= 1'b0;
+	   else if (stpst_main)		stopbaseck <= 1'b1;	//STOP要求ですぐにBASECK停止
+	end
+
+	QLK0RCSC1V2_CG_TBASE_RESBGEN	resbgen	( 
+		.resb(resb), .nsresb(nsresb), .baseckhs(baseckhs), .resetb(resetb),
+		.cpustart(cpustart), .scanmode(scanmode), .scanresz(scanresz)
+		 ) ;
+
+
+	//電源投入時１回だけLVIリセットのオプションを読み出す。その認識のため、
+	//電源投入時はLow。その後CPUが動き出したらHighとなる信号
+	reg 	warmup ;
+	// synopsys async_set_reset "sysresb"
+	always @ ( posedge baseckhs or negedge sysresb ) begin
+		if ( ~sysresb )		warmup <= 1'b0 ;
+		else if ( cpustart )	warmup <= 1'b1 ;
+	end
+
+	//STPSTの１クロック後、stpst1の信号立ち上げ
+	//STPSTの２クロック後、stpst2の信号立ち上げ
+	//STPSTの３クロック後、stpst3の信号立ち上げ
+	//
+
+	reg  stpst_hold, stpst1, stpst2, stpst3, fhltst_p0, fhltst_p2, hltst1, hltst1_neg ;
+	wire fstpst, fhltst_p1, clr_stpst ;
+
+	// STOPステータス生成
+	// FLASHのSTOP信号(FLSTOP)生成
+
+	wire stpst3_delay ;
+
+	QLK0RCSC1V2_TBFILTER1X2 stpst3_dly ( .out(stpst3_delay), .in(stpst3), .iceclk(iceck60m) ) ; // STOP幅確保
+
+	assign clr_stpst = ~resb | ((stbrele & stpst3_delay) & ~scanmode) ;
+
+	// synopsys async_set_reset "resb"
+	always @(posedge fclk or negedge resb) begin
+		if (!resb)    stpst_hold <= 1'b0 ;
+		else          stpst_hold <= stpst_main ;
+	end
+
+	// synopsys async_set_reset "clr_stpst"
+	always @(posedge fclk or posedge clr_stpst) begin
+		if      (clr_stpst)			stpst1 <= 1'b0 ;
+		else if (stpst_main && !stpst_hold)	stpst1 <= 1'b1 ;
+	end
+
+	// synopsys async_set_reset "clr_stpst"
+	always @(posedge fclk or posedge clr_stpst) begin
+		if (clr_stpst)     stpst2 <= 1'b0 ;
+		else if (!stdwait) stpst2 <= stpst1 ;
+	end
+
+	// synopsys async_set_reset "clr_stpst"
+	always @(posedge fclk or posedge clr_stpst) begin
+		if (clr_stpst) stpst3 <= 1'b0 ;
+		else           stpst3 <= stpst2 ;
+	end
+
+	assign fstpst = stpst1 & ~stdwait ; // SS3rd modify
+
+	// レギュレータを低消費モードにする信号として従来はstoposcmを使用していたが、
+	// リセット中はNVLCモードとする仕様変更のため、stpst3を使用する。
+
+	// HALTステータス生成
+	// FLASHのHALT信号(SRCUT)生成
+	// SS2nd v1.20 : STBRELEがヒゲったとき、CGまで到達しなかった時の対策で
+	//         HALTは同期回路にする。
+
+	always @( css or xtstop or psubmode_b or stbrele or crchlten ) begin
+		casex ( { css , xtstop , psubmode_b , stbrele , crchlten } )
+			5'b0x001	: stbrele_halt = 1'b1;
+			5'b10101	: stbrele_halt = 1'b1;
+			5'b11x01	: stbrele_halt = 1'b1;
+			5'b0x01x	: stbrele_halt = 1'b1;
+			5'b1011x	: stbrele_halt = 1'b1;
+			5'b11x1x	: stbrele_halt = 1'b1;
+			default		: stbrele_halt = 1'b0;
+		endcase
+	end
+
+	// synopsys async_set_reset "resb"
+	always @(posedge fclk or negedge resb) begin
+		if (!resb)	hltst1 <= 1'b0 ;
+		else if ( hltst && !(stbrele || crchlten ) )	hltst1 <= 1'b1 ;
+		else if ( hltst && stbrele_halt )		hltst1 <= 1'b0 ;
+	end
+
+	// synopsys async_set_reset "resb"
+	always @(negedge fclk or negedge resb) begin
+		if (!resb)	hltst1_neg <= 1'b0 ;
+		else		hltst1_neg <= hltst1 ;
+	end
+
+	// synopsys async_set_reset "resb"
+	always @(posedge fclk or negedge resb) begin
+		if (!resb)	psubmode_b <= 1'b0 ;
+		else		psubmode_b <= psubmode ;
+	end
+
+	always @( css or xtstop or psubmode_b or hltst1 ) begin
+		casex ( { css , xtstop , psubmode_b , hltst1 } )
+			4'b0x01	: fhltst_p2 = 1'b1;
+			4'b1011	: fhltst_p2 = 1'b1;
+			4'b11x1	: fhltst_p2 = 1'b1;
+			default : fhltst_p2 = 1'b0;
+		endcase
+	end
+
+	assign fhltst_p1 = fhltst_p2 & ~incdecmd ;
+
+	// synopsys async_set_reset "resb"
+	always @(posedge fclk or negedge resb) begin
+		if (!resb)	fhltst_p0 <= 1'b0 ;
+		else		fhltst_p0 <= fhltst_p1 ;
+	end
+
+	assign fhltst = fhltst_p0 & fhltst_p1 ;
+
+	// ===============================================================
+	// RESSTP作成
+	//
+	assign resstp = (~resetb & ~scanmode) | stpst2 ;
+	assign resstp_dft = (scanmode) ? ~scanresz : resstp;
+
+	// STPOSCM作成
+	//
+	assign stposcm = (~resetb & ~scanmode) | stpst3 ;
+//	assign stposcm_dft = (scanmode) ? ~scanresz : stposcm;
+
+	// FLASH HALT 安定待ちカウント
+	// SS3rd ：HALT解除時のFLASH安定待ちはCSCで待つ
+
+	//assign clr_h_cnt = ~resb | ( ( ~subck & hltst1_neg ) & ~scanmode ) ;
+	always @( resb or scanmode or subck or hltst1_neg ) begin
+		casex ( { resb , scanmode , subck , hltst1_neg } )
+			4'b0xxx : clr_h_cnt = 1'b1;
+			4'b1001 : clr_h_cnt = 1'b1;
+			default : clr_h_cnt = 1'b0;
+		endcase
+	end
+
+	always @ (posedge baseckhs or posedge clr_h_cnt) begin
+		if ( clr_h_cnt )		h_cnt_reg <= 3'b0 ;
+		else if ( flash_setup_end_h )	h_cnt_reg <= h_cnt_reg ;
+		else				h_cnt_reg <= h_cnt_reg + 1'b1 ;
+	end
+
+	always @ (posedge baseckhs or posedge clr_h_cnt ) begin
+		if ( clr_h_cnt )			flash_setup_end_h <= 1'b0 ;
+		else if ( subck )			flash_setup_end_h <= 1'b1 ;
+		else if ( h_cnt_reg[2:0] == 3'b101 )	flash_setup_end_h <= 1'b1 ;
+	end
+
+	// CPUSTART作成
+	// SS2nd v1.20 : STOP実行時、CPUSTART=0にするタイミングをSTPST↑と同じにする。
+	//         IF=1でSTOP実行したとき、CPUSTART=1だとCPUがすぐにSTPST信号を落してしまうため。
+	//SS3rd:Flash安定待ち制御を、カウンタ制御からRDSETUPに変更
+
+	reg	clr_cpustart;
+	// assign	clr_cpustart = ~resetb | (((stpst_main & ~stpst_hold) | hltst1_neg) & ~scanmode) ;
+	always @( resetb or scanmode or hltst1_neg or stpst_main or stpst_hold ) begin
+		casex ( { resetb , scanmode , hltst1_neg , stpst_main , stpst_hold } )
+			5'b0xxxx   : clr_cpustart = 1'b1;
+			5'b101xx   : clr_cpustart = 1'b1;
+			5'b10010   : clr_cpustart = 1'b1;
+			default    : clr_cpustart = 1'b0;
+		endcase
+	end
+
+	reg	nvmrcend_b, nvmrcend_b2 ;
+	// synopsys async_set_reset "resetb"
+	always @(posedge baseckhs or negedge resetb) begin
+		if      ( !resetb )	nvmrcend_b <= 1'b0;
+		else if ( nvmrcend )	nvmrcend_b <= 1'b1;
+	end
+
+	// synopsys async_set_reset "resetb"
+	always @(posedge baseckhs or negedge resetb) begin
+		if      ( !resetb )	nvmrcend_b2 <= 1'b0;
+		else if ( nvmrcend_b )	nvmrcend_b2 <= 1'b1;
+	end
+
+	wire	cpustarten;
+	assign cpustarten = ~cpustart & nvmrcend_b2 ;
+	
+	// synopsys async_set_reset "clr_cpustart"
+	always @(posedge baseckhs or posedge clr_cpustart) begin
+		if      ( clr_cpustart )	cpustart <= 1'b0;
+		else if ( hltst )		cpustart <= (flash_setup_end_h);
+		else if ( stpst_main )		cpustart <= (rdsetup & ostend);
+		else if ( cpustarten )		cpustart <= (vsetend & rdsetup);
+	end
+
+	// RAMスタンバイ信号PSTN作成
+	//
+	//   ・STOP中
+	//   ・SUB-HALT中且つDMA動作していないとき
+	//   にアクティブ(L)とする。
+
+	reg pstn ;
+	//assign pstn = ~( (psubmode & fhltst & ~dmaen) | fstpst ) & tbub ;
+	always @ ( fstpst or psubmode or fhltst or dmaen ) begin
+		casex ( { fstpst , psubmode , fhltst , dmaen } ) // synopsys parallel_case
+			4'b1xxx : pstn = 1'b0 ;
+			4'b0110 : pstn = 1'b0 ;
+			default : pstn = 1'b1 ;
+		endcase
+	end
+
+	//SS3rd:リセット解除後、Flashセットアップが完了したら
+	//	リセットシーケンススタート
+	always @ ( posedge fclk or negedge resetb ) begin
+	   if      ( !resetb )			ressqsta_pp <= 1'b0;
+	   else if ( rdsetup && tmdenclk )	ressqsta_pp <= 1'b1;
+	end
+
+	always @ ( posedge fclk or negedge resetb ) begin
+	   if	( !resetb )	ressqsta_p <= 1'b0 ;
+	   else			ressqsta_p <= ressqsta_pp ;
+	end
+
+	QLK0RCSC1V2_DLY3X2_3  ressqsta_buf ( .out( ressqsta ), .in( ressqsta_p ), .iceclk( iceck60m ) ) ;
+
+	//
+	assign rt0lpm = ~cpustart & ~dmaen ;
+
+	// ocdマクロの非同期割り込み(強制ブレイク)イネーブル生成
+	assign ocdasen_pp = fstpst | ~cpuclken ;
+	QLK0RCSC1V2_DLY3X2_5 ocdasen_buf ( .out( ocdasen_p ) , .in( ocdasen_pp ) , .iceclk( iceck60m ) );
+	assign ocdasen = ocdasen_p | ocdasen_pp ;
+
+	//
+	always @ ( resb or stbrele or psubmode or fhltst or fstpst or rtclpc ) begin
+		casex ( { resb , stbrele , psubmode , fhltst , fstpst , rtclpc } ) // synopsys parallel_case
+			6'b0xxxxx : fsubgate = 1'b1 ;	//
+			6'b101101 : fsubgate = 1'b1 ;	//
+			6'b10x011 : fsubgate = 1'b1 ;	//
+			default   : fsubgate = 1'b0 ;	//
+		endcase
+	end
+
+	always @ ( resb or stbrele ) begin
+		casex ( { resb , stbrele } ) // synopsys parallel_case
+			2'b0x : clr_cpuclken = 1'b1 ;	//
+			2'b11 : clr_cpuclken = 1'b1 ;	//
+			2'b10 : clr_cpuclken = 1'b0 ;	//
+		endcase
+	end
+
+        //synopsys async_set_reset "clr_cpuclken"
+        always @ ( posedge oscouts_nf_p or posedge clr_cpuclken ) begin
+            if ( clr_cpuclken )	cpuclken <= 1'b1 ;
+            else		cpuclken <= ~fsubgate ;
+        end
+
+	//SS3rd:クロック発振直後1発目をマスクする
+	reg oscouts_nf_en ;
+        // synopsys async_set_reset "fsubgate"
+        always @ ( posedge oscouts_nf_p or posedge fsubgate ) begin
+                if ( fsubgate )	oscouts_nf_en <= 1'b0 ;
+                else		oscouts_nf_en <= 1'b1 ;
+        end
+
+
+endmodule
+
+//****************************************************************************
+//	CPU,周辺用のクロック生成。分割してクロックを供給する。
+//****************************************************************************
+module QLK0RCSC1V2_CG_PEC (
+	per0, baseck, fclk, scanclk, scanmode, scanen, scanresz,
+	pclk7,   pclk6,   pclk5,   pclk4,   pclk3,   pclk2,   pclk1,  pclk0,
+	pres7z,  pres6z,  pres5z,  pres4z,  pres3z,  pres2z,  pres1z, pres0z,
+	sprgmod, stopbaseck, nsresb, fhltst_p1,
+	pclkocd, presocdz, presocdz_ns, baseckhs,
+	dmaen, tesdbt, opwden,
+	stopbaseck_bt,
+	preswdtz_ns, preswdtz,
+	penable, pclkrw,
+	prsclk1  , prsclk2  , prsclk3  ,
+	prsclk4  , prsclk5  , prsclk6  , prsclk7  ,
+	prsclk8  , prsclk9  , prsclk10 , prsclk11 ,
+	prsclk12 , prsclk13 , prsclk14 , prsclk15 ,
+	svperi0, svperi1,
+	optbct, testmod, reqocd,
+	reqpclksa , reqpclkad , bbreqpclk ,
+	gofirm, ocdmod, exclk1, wutmmck0,
+	cksel, intrclk, pclktst, wdttesck, r15kout, reqpclk_all, resb, nvmrcend, rsts,
+	pclkfcb, flroact, flspm, eeemd, incdecmd, baseckhsen
+	 );
+
+	input	[7:0]	per0;
+	input		fclk, scanmode, scanen, scanresz, sprgmod, stopbaseck ;
+	input		nsresb, fhltst_p1, dmaen, opwden, scanclk, tesdbt ;
+	input		penable, svperi0, svperi1 ;
+	input		optbct, testmod, reqocd ;
+	input		reqpclksa,  reqpclkad,  bbreqpclk ;
+	input		gofirm, ocdmod, exclk1, wutmmck0, r15kout, resb, nvmrcend, rsts, flspm, eeemd, incdecmd ;
+
+	output		baseck, baseckhs ;
+	output		pclk7,   pclk6,   pclk5,   pclk4,   pclk3,   pclk2,   pclk1,  pclk0  ;
+	output		pres7z,  pres6z,  pres5z,  pres4z,  pres3z,  pres2z,  pres1z, pres0z ;
+	output		pclkocd, pclkfcb, presocdz, presocdz_ns ;
+	output		preswdtz ;
+	output		preswdtz_ns ;
+	output		stopbaseck_bt ;
+	output		prsclk1  , prsclk2  , prsclk3  ;
+	output		prsclk4  , prsclk5  , prsclk6  , prsclk7  ;
+	output		prsclk8  , prsclk9  , prsclk10 , prsclk11 ;
+	output		prsclk12 , prsclk13 , prsclk14 , prsclk15 ;
+	output		pclkrw, cksel, intrclk, pclktst, wdttesck, reqpclk_all, flroact, baseckhsen ;
+
+	wire		pclkprsu, presprsuz, intrclk_p, reqpclk_all_pp ;
+
+	reg		fcben, flroact, reqpclk_all_p ;
+
+	assign reqpclk_all_pp = reqpclksa | reqpclkad | bbreqpclk ;
+	// BTモード時は、BASECKは常時動かす。(活性化UP)
+	//
+	wire stopbaseck_bt = stopbaseck & ~tesdbt;
+
+	wire basecken   = ~stopbaseck_bt;
+	assign baseckhsen = (~fhltst_p1 | dmaen) & ~stopbaseck_bt;
+	wire ocden      = reqocd  & ~stopbaseck_bt;
+	wire prclk7en   = per0[7] & ( ( reqpclk_all_pp  & rsts ) | ~stopbaseck_bt);
+	wire prclk6en   = per0[6] & ( ( reqpclk_all_pp  & rsts ) | ~stopbaseck_bt);
+	wire prclk5en   = per0[5] & ( ( reqpclk_all_pp  & rsts ) | ~stopbaseck_bt);
+	wire prclk4en   = per0[4] & ( ( reqpclk_all_pp  & rsts ) | ~stopbaseck_bt);
+	wire prclk3en   = per0[3] & ( ( reqpclk_all_pp  & rsts ) | ~stopbaseck_bt);
+	wire prclk2en   = per0[2] & ( ( reqpclk_all_pp  & rsts ) | ~stopbaseck_bt);
+	wire prclk1en   = per0[1] & ( ( reqpclk_all_pp  & rsts ) | ~stopbaseck_bt);
+	wire prclk0en   = per0[0] & ( ( reqpclk_all_pp  & rsts ) | ~stopbaseck_bt);
+
+	wire pclkrwen   = ( penable | ~nvmrcend ) & ~stopbaseck_bt;
+	wire pclktsten  = testmod & ~stopbaseck_bt;
+
+	wire prsuen     = ( per0[7] | per0[6] | per0[5] | per0[4] | per0[3] | per0[2] | per0[1] | per0[0] ) &
+			  ( ( reqpclk_all_pp & rsts )
+			  | ~stopbaseck_bt);
+
+	always @( stopbaseck_bt or testmod or flspm or eeemd or nvmrcend or penable ) begin
+		casex ( { stopbaseck_bt , testmod , flspm , eeemd , nvmrcend , penable } )
+			6'b01xxxx	: fcben = 1'b1 ; //
+			6'b001xxx	: fcben = 1'b1 ; //
+			6'b0001xx	: fcben = 1'b1 ; //
+			6'b00000x	: fcben = 1'b1 ; //
+			6'b000011	: fcben = 1'b1 ; //
+			default		: fcben = 1'b0 ;
+		endcase 
+	end
+
+	always @( stopbaseck_bt or testmod or flspm or eeemd or nvmrcend or incdecmd ) begin
+		casex ( { stopbaseck_bt , testmod , flspm , eeemd , nvmrcend , incdecmd } )
+			6'b01xxxx	: flroact = 1'b1 ; //
+			6'b001xxx	: flroact = 1'b1 ; //
+			6'b0001xx	: flroact = 1'b1 ; //
+			6'b00000x	: flroact = 1'b1 ; //
+			6'b000011	: flroact = 1'b1 ; //
+			default		: flroact = 1'b0 ;
+		endcase 
+	end
+
+	TBGTSMLALADCLX2 cpu_gate   (.N01(baseck),   .H01(basecken),   .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 port_gate  (.N01(baseckhs), .H01(baseckhsen), .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 ocd_gate   (.N01(pclkocd),  .H01(ocden),      .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 fcb_gate   (.N01(pclkfcb),  .H01(fcben),      .H02(fclk), .H03(scanen));
+
+	TBGTSMLALADCLX2 per07_gate (.N01(pclk7),   .H01(prclk7en),   .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 per06_gate (.N01(pclk6),   .H01(prclk6en),   .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 per05_gate (.N01(pclk5),   .H01(prclk5en),   .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 per04_gate (.N01(pclk4),   .H01(prclk4en),   .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 per03_gate (.N01(pclk3),   .H01(prclk3en),   .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 per02_gate (.N01(pclk2),   .H01(prclk2en),   .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 per01_gate (.N01(pclk1),   .H01(prclk1en),   .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 per00_gate (.N01(pclk0),   .H01(prclk0en),   .H02(fclk), .H03(scanen));
+
+	TBGTSMLALADCLX2 pclkrw_gate (.N01(pclkrw), .H01(pclkrwen),   .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 prsu_gate  (.N01(pclkprsu), .H01(prsuen),    .H02(fclk), .H03(scanen));
+	TBGTSMLALADCLX2 pclktst_gate (.N01(pclktst), .H01(pclktsten), .H02(fclk), .H03(scanen));
+
+	// SS3rd: RTC テスト用クロック生成
+	QLK0RCSC1V2_CG_MUX intrclk_p_mux ( 
+		.in1(exclk1), .in2(scanclk), .out(intrclk_p), .sel1(optbct&~scanmode) ) ;
+
+	QLK0RCSC1V2_CG_MUX intrclk_mux ( 
+		.in1(r15kout), .in2(intrclk_p), .out(intrclk), .sel1(wutmmck0&~optbct&~scanmode) ) ;
+
+	assign cksel  = scanmode | optbct | wutmmck0 ;
+
+	// SS3rd: WWDT テスト用クロック生成
+	QLK0RCSC1V2_CG_MUX wdttesck_mux ( 
+		.in1(exclk1), .in2(scanclk), .out(wdttesck), .sel1(optbct&~scanmode) ) ;
+
+
+	//SS3rd:reqpclkを1段きりなおす。
+        //synopsys async_set_reset "resb"
+        always @(posedge fclk or negedge resb) begin
+                if (!resb)	reqpclk_all_p <= 1'b0;
+                else		reqpclk_all_p <= reqpclk_all_pp ;
+        end
+
+	assign reqpclk_all = reqpclk_all_p | reqpclk_all_pp ;
+
+	assign presocdz_ns = ( reqocd ) ? nsresb : 1'b0 ;
+	assign presocdz    = ( scanmode ) ? scanresz : presocdz_ns ;
+
+	reg preswdtz_ns ;
+	always @( opwden or gofirm or sprgmod or ocdmod or nsresb ) begin
+		casex ( { opwden , gofirm , sprgmod , ocdmod , nsresb } )
+			5'b0xxxx : preswdtz_ns = 1'b0 ; // WDT動作許可ビット=0ならリセット
+			5'b1100x : preswdtz_ns = 1'b0 ; // プリモード中はリセット
+			5'b1x1xx : preswdtz_ns = 1'b0 ; // シリアルプログラミングモード中はリセット
+			5'b1x010 : preswdtz_ns = 1'b0 ; // OCDモード中はnsresbによる
+			5'b10000 : preswdtz_ns = 1'b0 ; // USERモード中はnsresbによる
+			default  : preswdtz_ns = 1'b1 ;
+		endcase 
+	end
+	assign preswdtz    = ( scanmode ) ? scanresz : preswdtz_ns ;
+
+	assign pres7z  = ( scanmode ) ? scanresz : per0[7] ;
+	assign pres6z  = ( scanmode ) ? scanresz : per0[6] ;
+	assign pres5z  = ( scanmode ) ? scanresz : per0[5] ;
+	assign pres4z  = ( scanmode ) ? scanresz : per0[4] ;
+	assign pres3z  = ( scanmode ) ? scanresz : per0[3] ;
+	assign pres2z  = ( scanmode ) ? scanresz : per0[2] ;
+	assign pres1z  = ( scanmode ) ? scanresz : per0[1] ;
+	assign pres0z  = ( scanmode ) ? scanresz : per0[0] ;
+
+	assign presprsuz = ( scanmode ) ? scanresz : 
+					( per0[7] | per0[6] | per0[5] | per0[4] | per0[3] | per0[2] | per0[1] | per0[0] ) ;
+
+QLK0RCSC1V2_CG_PEC_PRSU  prsu  (
+		.pclk(pclkprsu),         .preset(presprsuz),
+		.prsclk1(prsclk1),     .prsclk2(prsclk2),   .prsclk3(prsclk3),
+		.prsclk4(prsclk4),     .prsclk5(prsclk5),   .prsclk6(prsclk6),   .prsclk7(prsclk7),
+		.prsclk8(prsclk8),     .prsclk9(prsclk9),   .prsclk10(prsclk10), .prsclk11(prsclk11),
+		.prsclk12(prsclk12),   .prsclk13(prsclk13), .prsclk14(prsclk14), .prsclk15(prsclk15),
+		.svperi0(svperi0), .svperi1(svperi1)
+		);
+
+endmodule
+
+//****************************************************************************
+//	周辺マクロ用分周回路
+//****************************************************************************
+module QLK0RCSC1V2_CG_PEC_PRSU (
+	pclk      , preset    , 
+	prsclk1  , prsclk2  , prsclk3  ,
+	prsclk4  , prsclk5  , prsclk6  , prsclk7  ,
+	prsclk8  , prsclk9  , prsclk10 , prsclk11 ,
+	prsclk12 , prsclk13 , prsclk14 , prsclk15 ,
+	svperi0, svperi1
+	);
+
+	input         pclk;
+	input         preset;
+
+	input         svperi0, svperi1;
+
+	output        prsclk1 , prsclk2 , prsclk3 ;
+	output        prsclk4 , prsclk5 , prsclk6 , prsclk7  ;
+	output        prsclk8 , prsclk9 , prsclk10, prsclk11 ;
+	output        prsclk12, prsclk13, prsclk14, prsclk15 ;
+
+	reg [15:1]    counter_reg;
+
+	wire          up_count_en1;
+	wire          up_count_en2;
+	wire          up_count_en3;
+
+	wire	svstop = svperi0 & svperi1;
+
+	// プリスケーラカウンタのゲーティング信号
+	// 下位ビットのキャリーなしで、上位ビットにクロックを供給する。
+	// プリスケーラの3-1はゲーティングしない。
+	assign up_count_en1 = (counter_reg[3:1]  ==  3'b111) & ~svstop ;
+	assign up_count_en2 = (counter_reg[7:1]  ==  7'b1111111) & ~svstop ;
+	assign up_count_en3 = (counter_reg[11:1] == 11'b11111111111) & ~svstop ;
+	
+	
+	// プリスケーラ3-1。
+	// VPSTOP時はこの回路を止める。
+	// PRSU内F/Fでゲーティングされないのは、このalways文内のレジスタだけ。
+	//synopsys async_set_reset "preset"
+	always @(posedge pclk or negedge preset) begin
+	    if (!preset) begin
+	      counter_reg[3:1] <= 3'b111;
+	    end
+	    else if (svstop) begin
+	      counter_reg[3:1] <= counter_reg[3:1];
+	    end
+	    else begin
+	      counter_reg[3:1] <= counter_reg[3:1]+1'b1;
+	    end
+	end
+
+	
+	// プリスケーラの7-4ビット
+	//synopsys async_set_reset "preset"
+	always @(posedge pclk or negedge preset) begin
+	    if (!preset) begin
+	      counter_reg[7:4] <= 4'hf;
+	    end
+	    else if (up_count_en1) begin
+	      counter_reg[7:4] <= counter_reg[7:4]+1'b1;
+	    end
+	end
+	
+	// プリスケーラの11-8ビット
+	//synopsys async_set_reset "preset"
+	always @(posedge pclk or negedge preset) begin
+	    if (!preset) begin
+	      counter_reg[11:8] <= 4'hf;
+	    end
+	    else if (up_count_en2) begin
+	      counter_reg[11:8] <= counter_reg[11:8]+1'b1;
+	    end
+	end
+	
+	// プリスケーラの15-12ビット
+	//synopsys async_set_reset "preset"
+	always @(posedge pclk or negedge preset) begin
+	    if (!preset) begin
+	      counter_reg[15:12] <= 4'hf;
+	    end
+	    else if (up_count_en3) begin
+	      counter_reg[15:12] <= counter_reg[15:12]+1'b1;
+	    end
+	end
+
+	// 分周クロックのデコード回路
+	// prsclk0は常に1となる為、ここでは作成しない。
+	wire prsclk1  =             counter_reg[1];
+	wire prsclk2  = prsclk1  & counter_reg[2];
+	wire prsclk3  = prsclk2  & counter_reg[3];
+	wire prsclk4  = prsclk3  & counter_reg[4];
+	wire prsclk5  = prsclk4  & counter_reg[5];
+	wire prsclk6  = prsclk5  & counter_reg[6];
+	wire prsclk7  = prsclk6  & counter_reg[7];
+	wire prsclk8  = prsclk7  & counter_reg[8];
+	wire prsclk9  = prsclk8  & counter_reg[9];
+	wire prsclk10 = prsclk9  & counter_reg[10];
+	wire prsclk11 = prsclk10 & counter_reg[11];
+	wire prsclk12 = prsclk11 & counter_reg[12];
+	wire prsclk13 = prsclk12 & counter_reg[13];
+	wire prsclk14 = prsclk13 & counter_reg[14];
+	wire prsclk15 = prsclk14 & counter_reg[15];
+
+endmodule
+
+//****************************************************************************
+//	チップレギュレータコントロール
+//****************************************************************************
+module	QLK0RCSC1V2_CG_REGCTL (
+	scanmode, tesscan3, tesscan4, resetb, subck, dmstop_neg, hiostop_neg,
+	css, baseck, resb, psubmode, stpst3, reqpclk_all, fclk, reqocd, rlowspy, paenb,
+	reglc, reglv, reglc_ns, reglv_ns, nvmrcend, pocrelnf, baseckhs, hispeed, tregnv, treghc, dpaenb,
+	wdvol, bbregctl, trmrd1
+	);
+
+	input		scanmode, tesscan3, tesscan4, resetb, subck, hiostop_neg ;
+	input		dmstop_neg, css, baseck, resb, fclk, reqocd, rlowspy ;
+	input		stpst3, reqpclk_all, nvmrcend, pocrelnf, baseckhs, hispeed, tregnv, treghc, dpaenb ;
+	input		wdvol, bbregctl, trmrd1 ;
+
+	output		psubmode ;
+	output		reglc, reglv, reglc_ns, reglv_ns, paenb ;
+
+	reg	reglv_ns, reglc_ns ;
+	reg	subck_delay, nvmrcend_delay_p, nvmrcend_delay ;
+	wire	resetb_dft ;
+	wire	psubmode ;
+	wire	main_ring_stop_submode, pocrelnf_dft ;
+
+	//FLASHサブ動作
+	//   FMODEに入るとき    ＝BASECK(RDCLK)がSUBに切り替わってから
+	//                        BASECK=1のときに立ち上がらないといけないので、
+	//                        BASECKの立ち上がりで切り直す。
+	//   FMODEから抜けるとき＝CSSに0を書いたとき
+
+	// synopsys async_set_reset "resb"
+	always @ (posedge baseck or negedge resb) begin
+		if (!resb)	subck_delay <= 1'b0;
+		else		subck_delay <= subck;
+	end
+
+	assign psubmode = subck_delay & css;
+
+	// レギュレータ低消費モード移行タイミング
+	reg psubmode_delay ;
+	// synopsys async_set_reset "resb"
+	always @ (negedge baseck or negedge resb) begin
+		if (!resb)	psubmode_delay <= 1'b0;
+		else		psubmode_delay <= psubmode ;
+	end
+
+
+	//サブ動作中MSTOP書き込み時の、REGLC変化は、BASECK立ち下がり変化にする。
+	//                         (BASECK立ち上がりでFlashがサンプリングしているため)
+	//サブ動作中メインに切替え(MSTOP=1)にしてすぐにメイン(Fih or Fmx)に切替えた場合、
+	//REG変化からFMODE変化まで、サブ半クロックしかないが、安定待ちは9USなので問題なし。
+	//SS3rd :dscon_negを削除
+
+	assign main_ring_stop_submode = hiostop_neg & dmstop_neg & psubmode_delay ;
+
+	assign	resetb_dft = resetb | scanmode ;
+
+        //synopsys async_set_reset "resetb"
+        always @ ( posedge baseckhs or negedge resetb ) begin
+            if (!resetb)	nvmrcend_delay_p <= 1'b0 ;
+            else 		nvmrcend_delay_p <= nvmrcend ;
+        end
+
+        //synopsys async_set_reset "resetb"
+        always @ ( negedge baseckhs or negedge resetb ) begin
+            if (!resetb)	nvmrcend_delay <= 1'b0 ;
+            else 		nvmrcend_delay <= nvmrcend_delay_p ;
+        end
+
+	always @( nvmrcend_delay or wdvol or bbregctl or stpst3 or reqpclk_all or reqocd or main_ring_stop_submode or hispeed ) begin
+		casex ( { nvmrcend_delay , wdvol , bbregctl , stpst3 , reqpclk_all , reqocd , main_ring_stop_submode } )
+		7'b0xxxxxx :	reglv_ns = 1'b0;  //
+		7'b11xxxxx :	reglv_ns = 1'b1;  //
+		7'b100100x :	reglv_ns = 1'b1;  //
+		7'b1000x01 :	reglv_ns = 1'b1;  //
+		default   :	reglv_ns = ~hispeed;  //
+		endcase
+	end
+
+	always @( nvmrcend_delay or bbregctl or stpst3 or reqpclk_all or reqocd or main_ring_stop_submode ) begin
+		casex ( { nvmrcend_delay , bbregctl , stpst3 , reqpclk_all , reqocd , main_ring_stop_submode } )
+		6'b0xxxxx :	reglc_ns = 1'b0;  //
+		6'b10100x :	reglc_ns = 1'b1;  //
+		6'b100x01 :	reglc_ns = 1'b1;  //
+		default  :	reglc_ns = 1'b0;  //
+		endcase
+	end
+
+	reg	reglv, reglc ;
+
+	always @( pocrelnf or trmrd1 or resetb_dft or scanmode or tesscan3 or tesscan4 or tregnv or treghc or reglc_ns or reglv_ns ) begin
+		if	(!pocrelnf)		{ reglv, reglc } = 2'b00; // POCRESET中はNVHC
+		else if	(trmrd1)		{ reglv, reglc } = 2'b00; // TRMRD1中はNVHC
+		else if	(!resetb_dft)		{ reglv, reglc } = 2'b01; // RESET中はNVLC
+		else if (tesscan3)		{ reglv, reglc } = 2'b11; // TESSCAN4の時は低消費(IDDQテスト用)
+		else if (tesscan4)		{ reglv, reglc } = 2'b11; // TESSCAN4の時は低消費(IDDQテスト用)
+		else if (scanmode)		{ reglv, reglc } = 2'b00; // 上記以外のSCAN時は通常モード
+		else if (  tregnv && !treghc )	{ reglv, reglc } = { 1'b0    , reglc_ns } ; //
+		else if ( !tregnv &&  treghc )	{ reglv, reglc } = { reglv_ns, 1'b0     } ; //
+		else if (  tregnv &&  treghc )	{ reglv, reglc } = { 1'b0    , 1'b0     } ; //
+		else 				{ reglv, reglc } = { reglv_ns, reglc_ns } ;
+	end
+
+
+	reg	paenb ;
+
+	always @( tesscan3 or tesscan4 or scanmode or resb or reglc or rlowspy or dpaenb ) begin
+		casex ( { tesscan3 , tesscan4 , scanmode , resb , reglc , rlowspy , dpaenb } )
+		7'b1xxxxxx :	paenb = 1'b1;  //
+		7'b01xxxxx :	paenb = 1'b1;  //
+		7'b001xxxx :	paenb = 1'b0;  //
+		7'b0000xxx :	paenb = 1'b0;  //
+		7'b00011xx :	paenb = 1'b1;  //
+		7'b000101x :	paenb = 1'b0;  //
+		7'b0001001 :	paenb = 1'b1;  //
+		7'b0001000 :	paenb = 1'b0;  //
+		endcase
+	end
+
+
+endmodule
+
+//****************************************************************************
+//	メイン、サブ発振器コントロール
+//****************************************************************************
+module  QLK0RCSC1V2_CG_OSCCTL (
+	scanmode, ptesinst, optexcck_neg, doscsel, dexclk, doscsels, dexclks, oscouts,
+	dxtstop, oscsel, mstop, exclk, oscsels, xtstop, exclks, subck, iceck60m,
+	tesusr, oscsel_ns, exclk_ns, fmxst, dmstop_neg, stposcm, oscouts_nf,
+	per07, rtcclken, oscouts_nf_p, oscouts_nf_en
+	) ;
+
+	input		scanmode, ptesinst, optexcck_neg, subck, tesusr, iceck60m, oscouts,
+			doscsel, dexclk, doscsels, dexclks, dxtstop, fmxst, dmstop_neg, stposcm;
+	input		per07, oscouts_nf_en ;
+
+	output		oscsel, mstop, exclk, oscsels, xtstop, exclks;
+	output		oscsel_ns, exclk_ns ;
+	output		rtcclken, oscouts_nf, oscouts_nf_p ;
+
+	wire		rtcclken ;
+
+// ---------------------+--------+-------+--------+---------------
+// For mainosc          | OSCSEL | EXCLK | MSTOP  | FRCUT
+// ---------------------+--------+-------+--------+---------------
+// ユーザーモード        doscsel  dexclk  dmstop    (mstop|optiddq) <=レジスタによる
+// テストモード(SCAN)       0       0     dmstop    (mstop|optiddq) <=PORTモード
+// テストモード(外部CK)     1       1     dmstop    (mstop|optiddq) <=外部クロックモード
+// テストモード(OPEXCK)  doscsel  dexclk  dmstop    (mstop|optiddq) <=レジスタによる
+//
+//      *BT時のSCANモードはOSCはPORT固定とする。(同一PKGでのBT板共有のため)
+//      *OSCのAMPHはレジスタの値をそのままつなげる
+//
+	wire	oscsel, exclk, exclk_mode ;
+	wire	oscsel_ns, exclk_ns ;
+
+	//外部クロックモード
+	assign	exclk_mode = ( ptesinst & ~optexcck_neg ) | tesusr ;
+
+	assign	oscsel_ns = ( exclk_mode ) ? 1'b1 : doscsel ;
+	assign	oscsel    = oscsel_ns & ~scanmode ;
+
+	assign	exclk_ns = ( exclk_mode ) ? 1'b1 : dexclk ;
+	assign	exclk    = exclk_ns & ~scanmode ;
+
+	// MOCSTP(メイン発振器)信号生成回路
+	reg mstop ;
+	always @( stposcm or tesusr or ptesinst or optexcck_neg or fmxst or subck or dmstop_neg ) begin
+		casex ( { stposcm , tesusr , ptesinst , optexcck_neg , fmxst , subck , dmstop_neg } )
+			7'b1xxxxxx	: mstop = 1'b1 ; //
+			7'b0000001	: mstop = 1'b1 ; //
+			7'b0000x11	: mstop = 1'b1 ; //
+			7'b0011001	: mstop = 1'b1 ; //
+			7'b0011x11	: mstop = 1'b1 ; //
+			default		: mstop = 1'b0 ; //
+		endcase
+	end
+
+// ---------------------+---------+--------+-------+----------------
+// For subosc            OSCSELS  EXCLKS  XTSTOP  FRCUTXT
+// ---------------------+---------+--------+-------+----------------
+// ユーザーモード        doscsels  dexclks  dxtstop (xtstop|optiddq) <=レジスタによる
+// テストモード(SCAN)       0        0      dxtstop (xtstop|optiddq) <=PORTモード
+// テストモード(その他)  doscsels  dexclks  dxtstop (xtstop|optiddq) <=レジスタによる
+//
+//      *OSCのAMPHはレジスタの値をそのままつなげる
+//
+	wire	oscsels, exclks, xtstop ;
+
+	assign oscsels	= ( scanmode ) ? 1'b0 : doscsels ;
+	assign exclks	= ( scanmode ) ? 1'b0 : dexclks ;
+	assign xtstop	= ( ~subck & dxtstop ) ;	// subck動作中はXTSTOP=1にしない。
+
+	// 
+	assign	rtcclken = per07 ;
+
+	//SS3rd:ノイズフィルタ
+	QLK0RCSC1V2_NF_300NSDLY root_oscouts ( .out(oscouts_nf_p) , .in(oscouts) , .iceclk( iceck60m ) ) ;
+
+	TBGTSMLALADCLX2 oscouts_nf_gate (.N01(oscouts_nf),  .H01(oscouts_nf_en),  .H02(oscouts_nf_p), .H03(1'b0));
+	
+endmodule
+
+//*********************************************************
+//  clock selector
+//*********************************************************
+
+module QLK0RCSC1V2_CG_CKSEL1 (
+	clk1, clk2, clrb, sel2, clkout, mclst, scanmode ) ;
+
+	input	clk1 , clk2 , clrb , sel2 , scanmode ;
+	output	clkout , mclst ;
+
+	wire	clk1_p , clk2_p , clkout , mclst ;
+	reg	ckmsk1 , ckmsk2 ;
+
+	// synopsys async_set_reset "clrb"
+	always @( negedge clk1 or negedge clrb ) begin
+		if (!clrb) ckmsk1 <= 1'b0 ;
+		else       ckmsk1 <= ~sel2 & ~ckmsk2 ;
+	end
+
+	// synopsys async_set_reset "clrb"
+	always @( negedge clk2 or negedge clrb ) begin
+		if (!clrb) ckmsk2 <= 1'b0 ;
+		else       ckmsk2 <= sel2 & ~ckmsk1 ;
+	end
+
+	TBND2X2 clk1_gate ( .N01(clk1_p) , .H01(clk1)   , .H02(ckmsk1) ) ;
+	TBND2X2 clk2_gate ( .N01(clk2_p) , .H01(clk2)   , .H02(ckmsk2) ) ;
+	TBND2X2 clk_gate  ( .N01(clkout) , .H01(clk1_p) , .H02(clk2_p) ) ;
+
+	assign  mclst = (scanmode) ? sel2 : ckmsk2 ;
+
+endmodule
+
+// SS2nd v1.30 : クロックマスク追加。
+//         初期化後、最初に選択されない方のクロックをマスクする。
+//         注意！！初期化後、最初にclk2を選択する場合は修正が必要。
+module QLK0RCSC1V2_CG_CKSEL2 (
+	clk1, clk2, clrb, sel2, clkout, mclst, scanmode, mask2_a, mask2_b ) ;
+
+	input	clk1 , clk2 , clrb , sel2 , scanmode ;
+	input	mask2_a , mask2_b ;
+	output	clkout , mclst ;
+
+	wire	clk1_p , clk2_p , clkout , mclst ;
+	wire	clk2_m ;
+	reg	ckmsk1 , ckmsk1_p , ckmsk2 , ckmsk2_p ;
+
+	assign clk2_m = clk2 & mask2_a & mask2_b ;
+
+	//synopsys async_set_reset "clrb"
+	always @( negedge clk2_m or negedge clrb ) begin
+		if (!clrb) ckmsk1_p <= 1'b1 ;
+		else       ckmsk1_p <= ~sel2 & ~ckmsk2_p ;
+	end
+
+	//synopsys async_set_reset "clrb"
+	always @( negedge clk1 or negedge clrb ) begin
+		if (!clrb) ckmsk2_p <= 1'b1 ;
+		else       ckmsk2_p <= sel2 & ~ckmsk1_p ;
+	end
+
+	//synopsys async_set_reset "clrb"
+	always @( negedge clk1 or negedge clrb ) begin
+		if (!clrb) ckmsk1 <= 1'b0 ;
+		else       ckmsk1 <= ckmsk1_p & ~ckmsk2 ;
+	end
+
+	//synopsys async_set_reset "clrb"
+	always @( negedge clk2_m or negedge clrb ) begin
+		if (!clrb) ckmsk2 <= 1'b0 ;
+		else       ckmsk2 <= ckmsk2_p & ~ckmsk1 ;
+	end
+
+	TBND2X2 clk1_gate ( .N01(clk1_p) , .H01(clk1)   , .H02(ckmsk1) ) ;
+	TBND2X2 clk2_gate ( .N01(clk2_p) , .H01(clk2_m) , .H02(ckmsk2) ) ;
+	TBND2X2 root      ( .N01(clkout) , .H01(clk1_p) , .H02(clk2_p)  ) ;
+
+	assign  mclst = (scanmode) ? sel2 : ckmsk2 ;
+
+endmodule
+
+//*********************************************************
+//  clock selector
+//*********************************************************
+
+module QLK0RCSC1V2_CG_MUX ( in1 , in2 , out , sel1 ) ;
+
+	input	in1 , in2 , sel1 ;
+	output	out ;
+
+	wire	sel1z, in1a, in2a;
+
+	TBINVX4 sc_inv ( .N01(sel1z), .H01(sel1) );
+
+	TBND2X2 clk_gate0 ( .N01(in1a) , .H01(in1)  , .H02(sel1)  ) ;
+	TBND2X2 clk_gate1 ( .N01(in2a) , .H01(in2)  , .H02(sel1z) ) ;
+	TBND2X2 root      ( .N01(out)  , .H01(in1a) , .H02(in2a)  ) ;
+
+endmodule
+
+module QLK0RCSC1V2_CG_MONI ( scanclk, scanresz, scan_moni,
+	in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11, in12, in13, in14 ) ;
+
+	input	scanclk, scanresz;
+	input	in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11, in12, in13, in14 ;
+	output	scan_moni;
+
+	wire	eor_in;
+	reg	scan_moni;
+
+	assign  eor_in = in1^in2^in3^in4^in5^in6^in7^in8^in9^in10^in11^in12^in13^in14 ;
+
+	// synopsys async_set_reset "scanresz"
+	always @ ( posedge scanclk or negedge scanresz ) begin
+	   if ( !scanresz )	scan_moni <= 1'b0 ;
+	   else			scan_moni <= eor_in ;
+	end
+
+endmodule
+
+module QLK0RCSC1V2_CG_TBASE_RESBGEN ( 
+		resb, nsresb, baseckhs, resetb, cpustart, scanmode, scanresz
+		 ) ;
+
+	input	baseckhs, resetb, cpustart ;
+	input	scanmode, scanresz ;
+	output	resb, nsresb ;
+
+	reg	nsresb ;
+	wire	resb ;
+
+        // synopsys async_set_reset "resetb"
+        always @ ( posedge baseckhs or negedge resetb ) begin
+                if ( !resetb )          nsresb <= 1'b0 ;
+                else if ( cpustart )    nsresb <= 1'b1 ;
+        end
+
+        assign	resb = (scanmode) ? scanresz : nsresb ;
+
+endmodule
+
+module QLK0RCSC1V2_RG     ( 
+			BASECK   , BASECKHS , PCLKRW   , PCLKTST  , RESB     , CPUSTART , RESSQSTA ,
+                        PWDATA15 , PWDATA14 , PWDATA13 , PWDATA8  , PWDATA7  , PWDATA0  ,
+                        RESETINBNF, RESETB  , OCDRESMK , we_lvim  , we_lvis  ,
+			dout	 , sel_lvim , sel_lvis , sel_resf , re_lvim  , re_lvis  , re_resf  ,
+                        POCRELNF , WDTRES   , SVSTOP   , SCANMODE , SYSRESB  ,
+                        LVIEN    , LVIOUTZNF, INTLVI   , LVIS3   , LVIS2   , LVIS1   , LVIS0   ,
+                        SCANRESZ , SOFTBRK  , OCDMOD   , SCANCLK  ,
+                        TESDBT   , OPTIDDQ  , PTESINST  , TPOCREL  , TLVIF    , POCREL  ,
+			SRESREQ  ,
+			ICECK60M , ICEMKWDT , ICEMKLVI , ICEMKSRQ ,
+			DRESETB  ,
+			SCANEN   , NSRESB   , CIBRESRQ , RSWDTRES , we_rpectl, re_rpectl, sel_rpectl,
+			RPERR    , IAWRES   , SBRFONLY ,
+			OPVPOC2  , OPVPOC1  , OPVPOC0  , OPLVIS1  , OPLVIS0  , OPLVIMDS1  , OPLVIMDS0   ,
+			OPBOEN   , WARMUP   , R15KOUT  , TESTMOD  ,
+			LVITEST  , LVITSEL  , vsetend  , reqlvi   , R32MOUT  , BBRPERR  , PSYSRESB  ,
+			GOFIRMR  , OPTBCT   ,
+			TRAPINP
+			);
+
+        input           BASECK   , BASECKHS , PCLKRW   , PCLKTST  , RESB     , CPUSTART ;
+	input		RESSQSTA ;
+        input           PWDATA15 , PWDATA14 , PWDATA13 , PWDATA8  , PWDATA7  , PWDATA0  ;
+        input           SVSTOP   , SCANMODE , SCANCLK  , SCANRESZ ;
+	input		RESETINBNF, POCRELNF, WDTRES   , LVIOUTZNF, OCDRESMK ;
+	input		SOFTBRK  , OCDMOD   ;
+	input		TESDBT   , OPTIDDQ  , PTESINST , POCREL  ;
+	input		SRESREQ  ;
+	input		ICECK60M , ICEMKWDT , ICEMKLVI , ICEMKSRQ ;
+	input		SCANEN   , NSRESB ;
+	input		CIBRESRQ , RSWDTRES , RPERR    , IAWRES   , R32MOUT  , BBRPERR  ;
+
+	input		we_lvim  , we_lvis  , we_rpectl ;
+	input		sel_lvim , sel_lvis , sel_resf , sel_rpectl ;
+	input		re_lvim  , re_lvis  , re_resf , re_rpectl ;
+	input		OPVPOC2  , OPVPOC1  , OPVPOC0  , OPLVIS1  , OPLVIS0  , OPLVIMDS1 , OPLVIMDS0 , OPBOEN ;
+	input		WARMUP   , R15KOUT  , TESTMOD  , GOFIRMR  , OPTBCT   ;
+
+	output		LVIEN    , INTLVI   , LVIS3   , LVIS2   , LVIS1   , LVIS0   , RESETB   , SYSRESB , PSYSRESB ; 
+        output          TPOCREL  , TLVIF    ;
+	output		DRESETB  , SBRFONLY ;
+	output		LVITEST  , LVITSEL  , vsetend  , reqlvi ;
+	output		TRAPINP  ;
+
+
+	output	[15:0]	dout ;
+
+	wire		resf_r7  , resf_r4  , resf_r1  , resf_r2  , resf_r0  ;
+	wire		rpectl_r7, rpectl_r0 ;
+        wire            lvim_r7  , lvim_r6  , lvim_r5  , lvim_r1  , lvim_r0  ; 
+        wire            lvis_r7  ,                       lvis_r0  ; 
+	wire		resseq   , resb_s   , RESETB ;
+	wire		lviresb  , lvimclr  , lvi_error ;
+	wire		resctl_moni, lvictl_moni ;
+	wire	[15:0]	dout ;
+
+	QLK0RCSC1V2_RG_APBBI	bi   (
+                        .dout( dout )          , .sel_lvim(sel_lvim)    , .sel_lvis(sel_lvis)    , .sel_resf(sel_resf)    ,     
+			.resf_r7  ( resf_r7  ) , .resf_r4  ( resf_r4  ) , .resf_r2  ( resf_r2  ) , .resf_r1  ( resf_r1  ) ,
+			.resf_r0  ( resf_r0  ) ,
+                        .lvim_r7  ( lvim_r7  ) , .lvim_r6  ( lvim_r6  ) , .lvim_r5  ( lvim_r5  ) ,
+			.lvim_r1  ( lvim_r1  ) , .lvim_r0  ( lvim_r0  ) ,
+                        .lvis_r7  ( lvis_r7  ) ,                                                   .lvis_r0  ( lvis_r0  ) ,
+			.sel_rpectl(sel_rpectl), .rpectl_r7( rpectl_r7) , .rpectl_r0( rpectl_r0) ) ;
+
+	QLK0RCSC1V2_RG_RESCTL_MAIN	resctl_main (
+                        .resf_r7  ( resf_r7  ) , .resf_r4  ( resf_r4  ) , .resf_r2  ( resf_r2  ) , .resf_r1  ( resf_r1  ) ,
+			.resf_r0  ( resf_r0  ) ,
+			.baseck   ( BASECK   ) , .baseckhs ( BASECKHS ) , .pclkrw   ( PCLKRW   ) ,
+                        .lviresb  ( lviresb  ) , .wdtres   ( WDTRES   ) , .lvimclr  ( lvimclr  ) ,
+                        .re_resf  ( re_resf  ) , .ocdresmk ( OCDRESMK ) , .scanmode ( SCANMODE ) , .resetb   ( RESETB   ) ,
+                        .svstop   ( SVSTOP   ) , .sysresb  ( SYSRESB  ) , .resb     ( RESB     ) , .scanresz ( SCANRESZ ) ,
+                        .pocrelnf ( POCRELNF ) , .resetinbnf(RESETINBNF), .scanclk  ( SCANCLK  ) , .lvi_error( lvi_error) ,
+                        .softbrk  ( SOFTBRK  ) , .ocdmod   ( OCDMOD   ) , .sresreq  ( SRESREQ  ) ,
+                        .resseq   ( resseq   ) , .resb_s   ( resb_s   ) , .ptesinst  ( PTESINST  ) , 
+			.tpocrel  ( TPOCREL  ) , .pocrel  ( POCREL  ) ,
+			.iceck60m ( ICECK60M ) , .icemkwdt ( ICEMKWDT ) , .icemklvi ( ICEMKLVI ) , .icemksrq ( ICEMKSRQ ) ,
+			.dresetb ( DRESETB  ) ,
+			.resctl_moni( resctl_moni ), .cibresrq(CIBRESRQ), .rswdtres ( RSWDTRES ) ,
+			.re_rpectl( re_rpectl) , .we_rpectl( we_rpectl) , .rperr    ( RPERR    ) ,
+			.rpectl_r7( rpectl_r7) , .rpectl_r0( rpectl_r0) , .iawres   ( IAWRES   ) , .din15    ( PWDATA15 ) ,
+			.din8     ( PWDATA8  ) , .sbrfonly ( SBRFONLY ) , .r32mout  ( R32MOUT  ) , .bbrperr  ( BBRPERR  ) ,
+			.psysresb ( PSYSRESB ) , .gofirmr  ( GOFIRMR  ) , .optbct   ( OPTBCT   ) ,
+			.trap_in_p( TRAPINP  )
+			) ;
+
+        QLK0RCSC1V2_RG_LVICTL       lvictl      (
+                        .lvim_r7  ( lvim_r7  ) , .lvim_r6  ( lvim_r6  ) , .lvim_r5  ( lvim_r5  ) ,
+			.lvim_r1  ( lvim_r1  ) , .lvim_r0  ( lvim_r0  ) ,
+                        .lvis_r7  ( lvis_r7  ) ,                                                   .lvis_r0  ( lvis_r0  ) ,
+                        .pwdata7  ( PWDATA7  ) ,                                                   .pwdata0  ( PWDATA0  ) ,
+                        .pwdata15 ( PWDATA15 ) , .pwdata14 ( PWDATA14 ) , .pwdata13 ( PWDATA13 ) , .scanclk  ( SCANCLK  ) ,
+                        .scanmode ( SCANMODE ) , .re_lvim  ( re_lvim  ) , .lvi_error( lvi_error ),
+                        .lvimclr  ( lvimclr  ) , .lviresb  ( lviresb  ) , .intlvi   ( INTLVI   ) , .lvioutznf( LVIOUTZNF) ,
+                        .lvien    ( LVIEN    ) , .we_lvim  ( we_lvim  ) , .we_lvis  ( we_lvis  ) , .re_lvis  ( re_lvis  ) ,
+                        .lvis3    ( LVIS3    ) , .lvis2    ( LVIS2    ) , .lvis1    ( LVIS1    ) , .lvis0    ( LVIS0    ) ,
+                        .baseckhs ( BASECKHS ) , .resb_s   ( resb_s   ) , .cpustart ( CPUSTART ) , .ressqsta ( RESSQSTA ) ,
+                                                 .resseq   ( resseq   ) , .optiddq  (  OPTIDDQ  ) ,
+                        .tesdbt   ( TESDBT   ) , .scanresz ( SCANRESZ ) , .ptesinst  ( PTESINST  ) , .tlvif    ( TLVIF    ) ,
+			.testmod  ( TESTMOD  ) , .iceck60m ( ICECK60M ) , .scanen   ( SCANEN   ) , 
+			.resetb   ( RESETB   ) , .lvictl_moni( lvictl_moni ), .resb( RESB )	 , .nsresb ( NSRESB )     ,
+	                .opvpoc2  ( OPVPOC2  ) , .opvpoc1  ( OPVPOC1  ) , .opvpoc0  ( OPVPOC0  ) , .oplvis1  ( OPLVIS1  ) ,
+                        .oplvis0  ( OPLVIS0  ) , .oplvimds1  ( OPLVIMDS1  ) , .oplvimds0  ( OPLVIMDS0  ) , .opboen   ( OPBOEN )   ,
+			.warmup   ( WARMUP   ) , .r15kout  ( R15KOUT  ) ,
+                        .lvitest  ( LVITEST  ) , .lvitsel  ( LVITSEL  ) , .vsetend  ( vsetend  ) , .reqlvi   ( reqlvi  )  ,
+			.pclkrw   ( PCLKRW   ) , .pclktst  ( PCLKTST  )
+			) ; 
+
+	QLK0RCSC1V2_RG_MONI	moni ( .scanclk(SCANCLK), .scanresz(SCANRESZ), .scan_moni(),
+					.in1(resctl_moni), .in2(lvictl_moni)
+					) ;
+
+endmodule
+
+module QLK0RCSC1V2_RG_MONI (
+		scanclk, scanresz, scan_moni, in1, in2
+		) ;
+
+	input	in1, in2 ;
+	input	scanclk, scanresz ;
+	output	scan_moni ;
+
+	wire	eor_in ;
+	reg	scan_moni ;
+
+	assign eor_in = in1^in2 ;
+
+        // synopsys async_set_reset "scanresz"
+        always @ ( posedge scanclk or negedge scanresz ) begin
+           if ( !scanresz )     scan_moni <= 1'b0 ;
+           else                 scan_moni <= eor_in ;
+        end
+
+endmodule
+
+//********************************************************************//
+//                                                                    //
+//  QLK0RCSC1V2_RG_APBBI_LV5                                          //
+//                                                                    //
+//********************************************************************//
+
+module QLK0RCSC1V2_RG_APBBI ( 
+			dout     , sel_lvis , sel_lvim , sel_resf , sel_rpectl ,
+                        resf_r7  , resf_r4  , resf_r2  , resf_r1  , resf_r0  ,
+                        lvim_r7  , lvim_r6  , lvim_r5  , lvim_r1  , lvim_r0  ,
+                        lvis_r7  ,                       lvis_r0  ,
+			rpectl_r7, rpectl_r0
+			) ;
+
+        input 		sel_resf , sel_lvim , sel_lvis , sel_rpectl ;
+        input           resf_r7  , resf_r4  , resf_r2  , resf_r1  , resf_r0  ;
+        input           lvim_r7  , lvim_r6  , lvim_r5  , lvim_r1  , lvim_r0  ;
+        input           lvis_r7  ,                       lvis_r0  ;
+	input		rpectl_r7, rpectl_r0 ;
+        
+	output [15:0]	dout ;
+
+        wire		sel_resf , sel_lvim , sel_lvis , sel_rpectl ;
+	reg    [15:0]	dout ;
+
+  //-- Output -----------------------------------------------------
+
+        always @ ( sel_resf or sel_lvim or sel_lvis or sel_rpectl or resf_r7 or resf_r4 or resf_r2 or resf_r1 or resf_r0 or 
+                   lvim_r7 or lvim_r6 or lvim_r5 or lvim_r1 or lvim_r0 or lvis_r7 or lvis_r0 or 
+		   rpectl_r7 or rpectl_r0 )
+          begin
+            case ( { sel_resf , sel_lvim , sel_lvis , sel_rpectl } ) //synopsys parallel_case
+              4'b1000 : dout = { 8'h00, resf_r7 , 2'b00 , resf_r4 , 1'b0, resf_r2, resf_r1, resf_r0 } ;
+              4'b0100 : dout = { lvim_r7 , lvim_r6 , lvim_r5 , 3'b000 , lvim_r1 , lvim_r0 , 8'h00 } ;
+              4'b0010 : dout = { 8'h00 , lvis_r7 , 6'b000000 , lvis_r0 } ;
+              4'b0001 : dout = { rpectl_r7 , 6'b00 , rpectl_r0 , 8'h00 } ;
+              default : dout = 16'h0000  ;
+            endcase
+          end
+
+endmodule
+
+//********************************************************************//
+//                                                                    //
+//             QLK0RCSC1V2_RG_RESCTL_MAIN                             //
+//                                                                    //
+//********************************************************************//
+
+module QLK0RCSC1V2_RG_RESCTL_MAIN (
+			resf_r7  , resf_r4  , resf_r1  , resf_r2  , resf_r0  , re_resf  ,
+			resetinbnf, pocrelnf, rswdtres , lvi_error,
+			lviresb  , wdtres   , lvimclr  , ocdresmk , scanmode , scanresz , scanclk  , 
+                        resetb   , svstop   , sysresb  , psysresb , resb     , resb_s   ,
+                        softbrk  , ocdmod   , resseq   , baseck   , baseckhs , pclkrw   , ptesinst ,
+			tpocrel  , pocrel  , sresreq  ,
+			iceck60m , icemkwdt , icemklvi , icemksrq ,
+			r32mout , dresetb , iawres  ,
+			cibresrq , we_rpectl, re_rpectl, rpectl_r7, rpectl_r0, rperr    ,
+			resctl_moni , din15 , din8     , sbrfonly , bbrperr  , gofirmr	, optbct   ,
+			trap_in_p
+			) ;
+
+	input		re_resf  , resetinbnf, pocrelnf, rswdtres , lviresb  ; 
+	input		wdtres   , ocdresmk , scanmode , svstop   , scanresz ;
+	input		resseq   , resb     , scanclk  , lvi_error ;
+	input		softbrk  , ocdmod   , baseck   , baseckhs , pclkrw   , ptesinst  , pocrel  ;
+	input		sresreq	 ;
+	input		iceck60m , icemkwdt , icemklvi , icemksrq ;
+	input		r32mout ;
+	input		cibresrq , we_rpectl, re_rpectl, rperr    , iawres   , din15    , din8 ;
+	input		bbrperr  , gofirmr  , optbct   ;
+
+        output          lvimclr  , resetb   , sysresb  , psysresb ;
+	output		resf_r7  , resf_r4  , resf_r2  , resf_r1  , resf_r0  ;
+        output          resb_s   , tpocrel  ;
+	output		dresetb  , rpectl_r7, rpectl_r0;
+	output		resctl_moni , sbrfonly;
+	output		trap_in_p;
+
+        wire            lviresb_m, softbrk_m ;
+	wire		lvires_in, wdtres_in, wdtres_m , wdtresnf , rswdtresnf ;
+        wire            soft_w1  , soft_w2  , trap_in  , iawres_in  ;
+        wire            resb_s   , resseq   , tpocrel  ;
+
+	wire		sresreq_w1, sresreq_m, sreq_in, iawres_w1, iawres_m ;
+	wire		wdtres_ice, sresreq_ice, lviresb_ice ;
+	wire		resetb  , dresetb, lvimclr_p, resetb_p ;
+	wire		resctl_moni ;
+	wire		lviresb_in_p, wdtres_in_p, sreq_in_p, iawres_in_p ;
+	wire		rpef_in, rpef_m, rpef_in_p, rpef_mask, r32mout_rg, scanmode_dly ;
+	wire		dsysresb, sysresb_p, dpsysresb, psysresb_p ;
+
+
+// ICE用RESETマスク回路 
+//
+// 本チップではマスクせず、スルーさせる。
+
+	QLK0RCSC1V2_ICE_RES_MASK1  icemsk_wdt ( .res_out  ( wdtres_ice  ) , .res_in  ( wdtres  ) , .mask( icemkwdt ) ) ;
+	QLK0RCSC1V2_ICE_RES_MASK1  icemsk_srq ( .res_out  ( sresreq_ice ) , .res_in  ( sresreq ) , .mask( icemksrq ) ) ;
+
+	QLK0RCSC1V2_ICE_RES_MASK2  icemsk_lvi ( .res_out_b( lviresb_ice ) , .res_in_b( lviresb ) , .mask( icemklvi ) ) ;
+
+
+
+// POC TEST用
+//
+
+	assign	tpocrel    = pocrel & ptesinst ;
+
+
+// LVI RESET
+//
+	reg	lviresb_m_ns ;
+
+	always @ ( ocdmod or gofirmr or ocdresmk or lviresb_ice ) begin
+		casex ( { ocdmod , gofirmr , ocdresmk , lviresb_ice } ) // synopsys parallel_case
+			4'b00x0	: lviresb_m_ns = 1'b0 ;	//
+			4'b1x00	: lviresb_m_ns = 1'b0 ;	//
+			default	: lviresb_m_ns = 1'b1 ;
+		endcase
+	end
+
+	// RESET用F/Fに入力される周辺リセットはSCANMODE中はインアクティブにする。
+	assign	lviresb_m = lviresb_m_ns | scanmode ;
+
+
+
+// ウォッチドッグタイマによるRESET
+//
+
+	// RESET幅確保(TBFILTER1X2)
+        QLK0RCSC1V2_TBFILTER1X2  resetctl_nf1 ( .out( wdtresnf ) , .in( wdtres_ice ) , .iceclk( iceck60m ) ) ;
+
+	wire	wdtres_m_ns ;
+        assign  wdtres_m_ns   =  wdtresnf  & ~ocdresmk & ~optbct ;
+
+	// RESET用F/Fに入力される周辺リセットはSCANMODE中はインアクティブにする。
+	assign wdtres_m = wdtres_m_ns & ~scanmode ;
+
+// RAMパリティエラーによるRESET
+//
+
+	wire	rpef_m_ns ;
+	// RESET幅確保(TBFILTER1X2)
+        QLK0RCSC1V2_TBFILTER1X2  resetctl_nf6 ( .out( rpef_m_ns ) , .in( rpef_mask ) , .iceclk( iceck60m ) ) ;
+
+	// RESET用F/Fに入力される周辺リセットはSCANMODE中はインアクティブにする。
+	assign rpef_m = rpef_m_ns & ~scanmode ;
+
+// 不正命令実行によるRESET
+//
+
+	wire	softbrk_m_ns ;
+
+        assign  soft_w1    = softbrk & ~ocdmod ;
+
+	// RESET要求保持
+	QLK0RCSC1V2_RESREQ_SET	trap_req     ( .req_out( soft_w2 ), .req_in( soft_w1 ), .clk( baseck ), .clrb( resb ) ) ;
+
+	// RESET幅確保(TBFILTER1X2)
+        QLK0RCSC1V2_TBFILTER1X2    resetctl_nf2 ( .out( softbrk_m_ns ), .in( soft_w2 ), .iceclk( iceck60m ) ) ;
+
+	// RESET用F/Fに入力される周辺リセットはSCANMODE中はインアクティブにする。
+	assign  softbrk_m = softbrk_m_ns & ~scanmode ;
+
+// 特殊機能RESET
+//
+// BASECK立ち上がり同期、1クロック幅の要求
+// RESB=L期間中にもRESETを発生する必要があ為、要求保持
+// 回路はRESETBで初期化する。
+
+
+	// RESET要求保持
+	QLK0RCSC1V2_RESREQ_SET	sres_req   ( .req_out( sresreq_w1 ), .req_in( sresreq_ice ), .clk( baseck ), .clrb( resetb ) ) ;
+
+	wire sresreq_m_ns ;
+
+	// RESET幅確保(TBFILTER1X2)
+        QLK0RCSC1V2_TBFILTER1X2  resetctl_nf3 ( .out( sresreq_m_ns ) , .in( sresreq_w1 ) , .iceclk( iceck60m ) ) ;
+
+	// RESET用F/Fに入力される周辺リセットはSCANMODE中はインアクティブにする。
+	assign sresreq_m = sresreq_m_ns & ~scanmode ;
+
+
+// 安全機能リセット
+//
+// BASECK立ち上がり同期、1クロック幅の要求
+// RESB=L期間中にもRESETを発生する必要があ為、要求保持
+// 回路はRESETBで初期化する。
+
+        assign  iawres_w1  = iawres & ~ocdresmk ;
+
+	wire iawres_m_ns ;
+
+	// RESET幅確保(TBFILTER1X2)
+        QLK0RCSC1V2_TBFILTER1X2  resetctl_nf4 ( .out( iawres_m_ns ) , .in( iawres_w1 ) , .iceclk( iceck60m ) ) ;
+
+	// RESET用F/Fに入力される周辺リセットはSCANMODE中はインアクティブにする。
+	assign iawres_m = iawres_m_ns & ~scanmode ;
+
+
+//// BB用RESERVE
+////
+//// アクティブHの要求であること。
+//// 要求保持回路及び、RESET幅確保のためのアナログディレイは要求側で対処すること。
+//
+//	wire	resreq2_m_ns ;
+//	assign resreq2_m_ns = resreq2_ice & ~ocdresmk ;
+//
+//	// RESET用F/Fに入力される周辺リセットはSCANMODE中はインアクティブにする。
+//	assign	resreq2_m = resreq2_m_ns & ~scanmode ;
+
+// リセットシーケンス用ウォッチドッグタイマ
+//  EMS対策リセット
+
+	wire	rswdtresnf_ns, rswdtres_in ;
+
+	assign rswdtres_in = rswdtres | lvi_error | cibresrq ;
+
+	// RESET幅確保(TBFILTER1X2)
+      QLK0RCSC1V2_TBFILTER1X2  resetctl_nf5 ( .out( rswdtresnf_ns ) , .in( rswdtres_in ) , .iceclk( iceck60m ) ) ;
+
+	// RESET用F/Fに入力される周辺リセットはSCANMODE中はインアクティブにする。
+	assign	rswdtresnf = rswdtresnf_ns & ~scanmode ;
+
+// メタス対策用
+//
+
+	TBGTSMLALADCLX2 r32mout_rg_gate   (.N01(r32mout_rg),   .H01(~resetb),   .H02(r32mout), .H03(1'b0));
+
+	assign dsysresb = pocrelnf & resetinbnf & ~rswdtresnf ;
+	assign dpsysresb = pocrelnf & resetinbnf ;
+	assign dresetb  = dsysresb & lviresb_m & ~wdtres_m & ~softbrk_m & ~sresreq_m & ~iawres_m  & ~rpef_m ;
+
+	QLK0RCSC1V2_RESET_FF1   sysresb_ff  ( .resoutb(sysresb_p),    .resinb(dsysresb),              .clk(r32mout_rg) ) ;
+	QLK0RCSC1V2_RESET_FF1   psysresb_ff ( .resoutb(psysresb_p),   .resinb(dpsysresb),             .clk(r32mout_rg) ) ;
+
+	QLK0RCSC1V2_RESET_FF2_L lviresb_ff  ( .resoutb(lviresb_in_p), .resinb(lviresb_m &  dsysresb), .clk(r32mout_rg), .enable(sysresb_p) );
+
+	QLK0RCSC1V2_RESET_FF2_H wdtres_ff   ( .resout(wdtres_in_p),   .resin(wdtres_m   | ~dsysresb), .clk(r32mout_rg), .enable(sysresb_p) );
+	QLK0RCSC1V2_RESET_FF2_H rpef_ff     ( .resout(rpef_in_p),     .resin(rpef_m     | ~dsysresb), .clk(r32mout_rg), .enable(sysresb_p) );
+	QLK0RCSC1V2_RESET_FF2_H trapres_ff  ( .resout(trap_in_p),     .resin(softbrk_m  | ~dsysresb), .clk(r32mout_rg), .enable(sysresb_p) );
+	QLK0RCSC1V2_RESET_FF2_H sreqres_ff  ( .resout(sreq_in_p),     .resin(sresreq_m  | ~dsysresb), .clk(r32mout_rg), .enable(sysresb_p) );
+	QLK0RCSC1V2_RESET_FF2_H iawres_ff   ( .resout(iawres_in_p),   .resin(iawres_m   | ~dsysresb), .clk(r32mout_rg), .enable(sysresb_p) );
+
+// SCAN TEST用セレクタ
+
+        // クロックの直接制御性
+        QLK0RCSC1V2_RG_SEL gate_sel1 ( .sig_out( resb_s ) ,    .sig_in1( resb )         , .sig_in2( scanclk )    , .sig_in3( scanmode ) );
+
+        // リセットの直接制御性
+        QLK0RCSC1V2_RG_SEL gate_sel3 ( .sig_out( lvires_in ) , .sig_in1( lviresb_in_p ) , .sig_in2 (  scanresz ) , .sig_in3 ( scanmode ) );
+        QLK0RCSC1V2_RG_SEL gate_sel4 ( .sig_out( trap_in )   , .sig_in1( trap_in_p )    , .sig_in2 ( ~scanresz ) , .sig_in3 ( scanmode ) );
+        QLK0RCSC1V2_RG_SEL gate_sel6 ( .sig_out( wdtres_in ) , .sig_in1( wdtres_in_p )  , .sig_in2 ( ~scanresz ) , .sig_in3 ( scanmode ) );
+        QLK0RCSC1V2_RG_SEL gate_sel22 ( .sig_out( rpef_in )  , .sig_in1( rpef_in_p )    , .sig_in2 ( ~scanresz ) , .sig_in3 ( scanmode ) );
+        QLK0RCSC1V2_RG_SEL gate_sel15 ( .sig_out( sreq_in )   , .sig_in1( sreq_in_p )   , .sig_in2 ( ~scanresz ) , .sig_in3 ( scanmode ) );
+	QLK0RCSC1V2_RG_SEL gate_sel16 ( .sig_out( iawres_in ) , .sig_in1( iawres_in_p ) , .sig_in2 ( ~scanresz ) , .sig_in3 ( scanmode ) );
+
+// 各種リセット信号生成
+
+        QLK0RCSC1V2_RG_SEL gate_selxx ( .sig_out(sysresb) ,  .sig_in1(sysresb_p), .sig_in2 (scanresz) , .sig_in3 (scanmode) );
+        QLK0RCSC1V2_RG_SEL gate_selpsys ( .sig_out(psysresb) ,  .sig_in1(psysresb_p), .sig_in2 (scanresz) , .sig_in3 (scanmode) );
+
+	assign  lvimclr_p = ~sysresb_p | wdtres_in_p | trap_in_p | sreq_in_p | iawres_in_p | rpef_in_p ;
+        QLK0RCSC1V2_RG_SEL gate_sel2 ( .sig_out( lvimclr ), .sig_in1( lvimclr_p )   , .sig_in2 ( ~scanresz ) , .sig_in3 ( scanmode ) );
+
+	assign  resetb_p   = ~lvimclr_p & lviresb_in_p ;
+	QLK0RCSC1V2_DLY3X2_5 scanmode_buf ( .out( scanmode_dly ) , .in( scanmode ) , .iceclk( iceck60m ) );
+        QLK0RCSC1V2_RG_SEL gate_sel5 ( .sig_out( resetb ),  .sig_in1( resetb_p )    , .sig_in2 (  scanresz ) , .sig_in3 ( scanmode_dly ) );
+
+// RESFレジスタ制御ブロック
+	QLK0RCSC1V2_RG_RESF_REG_WR	resf_reg_wr (
+		        .resf_r7  ( resf_r7  ) , .resf_r4   ( resf_r4  ) , .resf_r2  ( resf_r2  ) , .resf_r1  ( resf_r1  ) ,
+			.resf_r0  ( resf_r0  ) , .rpectl_r7 ( rpectl_r7) , .rpectl_r0( rpectl_r0) ,
+                        .re_resf  ( re_resf  ) , .scanresz  ( scanresz ) , .scanclk  ( scanclk  ) ,
+			.sysresb  ( sysresb  ) , .svstop    ( svstop   ) , .resb_s   ( resb_s   ) ,
+			.wdtres_in( wdtres_in) , .lvires_in ( lvires_in) , .scanmode ( scanmode ) , .resseq   ( resseq   ) ,
+                        .trap_in  ( trap_in  ) , .sreq_in   ( sreq_in  ) , .iawres_in( iawres_in) , .rpef_in  ( rpef_in  ) ,
+			.baseck   ( baseck   ) , .baseckhs  ( baseckhs ) , .pclkrw   ( pclkrw   ) , .resb     ( resb     ) ,
+			.iceck60m ( iceck60m ) , .we_rpectl ( we_rpectl) , .rpef_mask( rpef_mask) , .rperr    ( rperr    ) ,
+			.sbrfonly ( sbrfonly ) , .din15     ( din15    ) , .din8     ( din8     ) , .re_rpectl( re_rpectl) ,
+			.ocdresmk ( ocdresmk ) , .bbrperr   ( bbrperr  )
+			 ) ;
+
+// FOR SCAN TEST
+	assign resctl_moni = wdtres_ice^sresreq_ice^iawres_w1^soft_w2^rswdtres_in^rpef_mask ;
+
+
+endmodule
+
+//====================================================================//
+//                                                                    //
+//      QLK0RCSC1V2_RG_RESF_REG_WR                                    //
+//                                                                    //
+//====================================================================//
+
+// *** RESF ***
+// +--7---+--6--+--5--+---4---+--3--+--2--+---1---+---0---+
+// | trap |  0  |  0  | wdtrf |  0  |  0  | iawrf | lvirf |
+// | req1 |     |     |       |     |     |       |       |
+// +------+-----+-----+-------+-----+-----+-------+-------+
+
+module QLK0RCSC1V2_RG_RESF_REG_WR ( 
+			sysresb   , wdtres_in , lvires_in , iawres_in , rpef_in   ,
+			scanmode  , scanresz  , re_resf   , svstop    , trap_in   , scanclk  ,
+                        resf_r7   , resf_r4   , resf_r2   , resf_r1   , resf_r0   , resseq   ,
+                        resb_s    , baseck    , baseckhs  , pclkrw    ,resb      , sreq_in   ,
+			iceck60m  , we_rpectl , sbrfonly  , rpectl_r7 , rpectl_r0 ,
+			din15     , din8      , rperr     , rpef_mask , re_rpectl , ocdresmk ,
+			bbrperr
+			 ) ;
+
+	input	        sysresb   , wdtres_in , lvires_in ; 
+	input	        scanmode  , scanresz  , re_resf   , svstop    , resb_s    ;
+	input	        resseq    , trap_in   , scanclk   ;
+	input		baseck    , baseckhs  , pclkrw    , resb      ;
+	input		sreq_in   , iawres_in , rpef_in   ;
+	input		iceck60m  , we_rpectl , din15 , din8 , rperr, re_rpectl, ocdresmk, bbrperr ;
+
+    	output          resf_r7     , resf_r4      , resf_r2     , resf_r1      , resf_r0      ;
+    	output          rpectl_r7   , rpectl_r0    ;
+	output		sbrfonly  , rpef_mask ;
+
+	reg	        resf_r7     , resf_r4      , resf_r2     , resf_r1      , resf_r0      ;
+    	reg	        rpectl_r7   , rpectl_r0    ;
+        reg             trap        , wdtrf        , sreq        , lvirf        , iawrf        , rperf        ;
+        reg             trap_master , wdtrf_master , sreq_master , lvirf_master , iawrf_master , rperf_master ;
+	reg		rperdis     , rpef         , sbrfonly    ;
+
+	wire		resf_or   , resf_or_dly , resf_or_pulse , rperr_m ,
+			resf_slave_clr_b ,
+			resf_slave_clr_b_s ;
+
+	wire		trap_clr_b   , wdtrf_clr_b   , sreq_clr_b   , lvirf_clr_b   , iawrf_clr_b   , rperf_clr_b   ;
+        wire            trap_clr_b_s , wdtrf_clr_b_s , sreq_clr_b_s , lvirf_clr_b_s , iawrf_clr_b_s , rperf_clr_b_s ;
+	wire		wdtres_in_dly ,  lvires_in_m ;
+        wire            trap_in_s    , wdtres_in_s   , sreq_in_s    , lvires_in_s   , iawrf_in_s    , rperf_in_s    ;
+
+  //------------- RESF,RPECTL reg read & reset control ----------------------------
+
+	always @ ( re_resf or trap or sreq or wdtrf or rperf or iawrf or lvirf )
+	  begin
+	    case ( re_resf ) //synopsys parallel_case
+	      1'b1           : { resf_r7, resf_r4, resf_r2, resf_r1, resf_r0 } = { (trap|sreq), wdtrf, rperf, iawrf, lvirf };
+	      default        : { resf_r7, resf_r4, resf_r2, resf_r1, resf_r0 } = { 5'b00000  };
+	    endcase
+	  end
+
+	always @ ( re_rpectl or rperdis or rpef )
+	  begin
+	    case ( re_rpectl ) //synopsys parallel_case
+	      1'b1           : { rpectl_r7, rpectl_r0 } = { rperdis, rpef };
+	      default        : { rpectl_r7, rpectl_r0 } = { 2'b00  };
+	    endcase
+	  end
+
+  //------------- sbrfonly ----------------------------
+	
+	always @ ( trap or sreq or wdtrf or rperf or iawrf or lvirf ) begin
+		case ( { trap , sreq , wdtrf , rperf , iawrf , lvirf } )
+			6'b100000	: sbrfonly = 1'b1 ;	//
+			default		: sbrfonly = 1'b0 ;
+		endcase
+	end
+
+    //-- slave reg clear ---------------
+
+
+	wire	re_resf_sv ;
+	reg	resf_clr ;
+
+	assign	re_resf_sv = re_resf & ~svstop ;
+
+	// synopsys async_set_reset "resb"
+	always @( posedge baseck or negedge resb ) begin
+		if ( !resb )	resf_clr <= 1'b0 ;
+		else		resf_clr <= re_resf_sv ;
+	end
+
+    //-- slave reg clear ---------------
+
+	assign resf_or = resf_clr ;
+
+	QLK0RCSC1V2_DLY3X2_3  resf_buf ( .out( resf_or_dly ), .in( resf_or ), .iceclk( iceck60m ) ) ;
+
+	assign resf_or_pulse      = ~resf_or & resf_or_dly ; 
+	assign resf_slave_clr_b   = sysresb & ~resf_or_pulse ;
+
+	QLK0RCSC1V2_RG_SEL gate_sel7 
+               ( .sig_out( resf_slave_clr_b_s ) , .sig_in1 ( resf_slave_clr_b ) , .sig_in2 ( scanresz  ) , .sig_in3 ( scanmode   ) );
+
+    //-- master reg clear ---------------
+
+	assign trap_clr_b    = sysresb & ~( resf_clr & trap  ) ;
+	assign wdtrf_clr_b   = sysresb & ~( resf_clr & wdtrf ) ;
+	assign rperf_clr_b   = sysresb & ~( resf_clr & rperf ) ;
+	assign iawrf_clr_b   = sysresb & ~( resf_clr & iawrf ) ;
+	assign sreq_clr_b    = sysresb & ~( resf_clr & sreq  ) ;
+	assign lvirf_clr_b   = sysresb & ~( resf_clr & lvirf ) ;
+
+        QLK0RCSC1V2_RG_SEL gate_sel8 ( .sig_out ( trap_clr_b_s  ) , .sig_in1 ( trap_clr_b  ) ,
+                                       .sig_in2 ( scanresz      ) , .sig_in3 ( scanmode    ) );
+	QLK0RCSC1V2_RG_SEL gate_sel9 ( .sig_out ( wdtrf_clr_b_s ) , .sig_in1 ( wdtrf_clr_b ) ,
+                                       .sig_in2 ( scanresz      ) , .sig_in3 ( scanmode    ) );
+        QLK0RCSC1V2_RG_SEL gate_sel22 ( .sig_out ( rperf_clr_b_s ) , .sig_in1 ( rperf_clr_b ) ,
+                                       .sig_in2 ( scanresz      ) , .sig_in3 ( scanmode    ) );
+	QLK0RCSC1V2_RG_SEL gate_sel10 ( .sig_out ( lvirf_clr_b_s ) , .sig_in1 ( lvirf_clr_b ) ,
+                                       .sig_in2 ( scanresz      ) , .sig_in3 ( scanmode    ) );
+
+        QLK0RCSC1V2_RG_SEL gate_sel17 ( .sig_out ( sreq_clr_b_s  ) , .sig_in1 ( sreq_clr_b  ) ,
+                                       .sig_in2 ( scanresz      ) , .sig_in3 ( scanmode    ) );
+        QLK0RCSC1V2_RG_SEL gate_sel18 ( .sig_out ( iawrf_clr_b_s ) , .sig_in1 ( iawrf_clr_b ) ,
+                                       .sig_in2 ( scanresz      ) , .sig_in3 ( scanmode    ) );
+
+    //-- master clk ---------------------
+
+	QLK0RCSC1V2_DLY3X2_5 wdtres_buf ( .out( wdtres_in_dly ) , .in( wdtres_in ) , .iceclk( iceck60m ) );
+
+        QLK0RCSC1V2_RG_SEL gate_sel11 ( .sig_out ( trap_in_s ) , .sig_in1 ( trap_in ) ,
+                                   .sig_in2 ( scanclk ) , .sig_in3 ( scanmode ) );
+
+        QLK0RCSC1V2_RG_SEL gate_sel12 ( .sig_out ( wdtres_in_s ) , .sig_in1 ( wdtres_in_dly ) ,
+                                   .sig_in2 ( scanclk ) , .sig_in3 ( scanmode ) );
+
+        assign lvires_in_m = ~lvires_in & ~resseq ;
+
+        QLK0RCSC1V2_RG_SEL gate_sel23 ( .sig_out ( rperf_in_s ) , .sig_in1 ( rpef_in ) ,
+                                   .sig_in2 ( scanclk ) , .sig_in3 ( scanmode ) );
+
+        QLK0RCSC1V2_RG_SEL gate_sel13 ( .sig_out ( lvires_in_s ) , .sig_in1 ( lvires_in_m ) ,
+                                   .sig_in2 ( scanclk ) , .sig_in3 ( scanmode ) );
+
+        QLK0RCSC1V2_RG_SEL gate_sel19 ( .sig_out ( sreq_in_s ) , .sig_in1 ( sreq_in ) ,
+                                   .sig_in2 ( scanclk ) , .sig_in3 ( scanmode ) );
+
+        QLK0RCSC1V2_RG_SEL gate_sel20 ( .sig_out ( iawrf_in_s ) , .sig_in1 ( iawres_in ) ,
+                                   .sig_in2 ( scanclk ) , .sig_in3 ( scanmode ) );
+
+    //-- master reg ---------------------
+
+	// SCANMODE時出力がトグルするように各マスターF/Fにデータを入力する。
+	wire	master_data ;
+	assign	master_data = ( scanmode )?  ~trap_master : 1'b1 ;
+
+        // synopsys async_set_reset "trap_clr_b_s"
+        always @ ( negedge trap_clr_b_s or negedge trap_in_s )
+          begin
+            if ( !trap_clr_b_s )
+              trap_master <= 1'b0 ;
+            else
+              trap_master <= master_data ;
+          end
+
+	// synopsys async_set_reset "wdtrf_clr_b_s"
+	always @ ( negedge wdtrf_clr_b_s or negedge wdtres_in_s )
+	  begin
+	    if ( !wdtrf_clr_b_s )
+	      wdtrf_master <= 1'b0 ;
+	    else 
+	      wdtrf_master <= master_data ;
+	  end
+	// synopsys async_set_reset "rperf_clr_b_s"
+	always @ ( negedge rperf_clr_b_s or negedge rperf_in_s )
+	  begin
+	    if ( !rperf_clr_b_s )
+	      rperf_master <= 1'b0 ;
+	    else 
+	      rperf_master <= master_data ;
+	  end
+
+        // synopsys async_set_reset "iawrf_clr_b_s"
+        always @ ( negedge iawrf_clr_b_s or negedge iawrf_in_s )
+          begin
+            if ( !iawrf_clr_b_s )
+              iawrf_master <= 1'b0 ;
+            else
+              iawrf_master <= master_data ;
+          end
+
+        // synopsys async_set_reset "sreq_clr_b_s"
+        always @ ( negedge sreq_clr_b_s or negedge sreq_in_s )
+          begin
+            if ( !sreq_clr_b_s )
+              sreq_master <= 1'b0 ;
+            else
+              sreq_master <= master_data ;
+          end
+
+	// synopsys async_set_reset "lvirf_clr_b_s"
+	always @ ( negedge lvirf_clr_b_s or negedge lvires_in_s )
+	  begin
+	    if ( !lvirf_clr_b_s )
+	      lvirf_master <= 1'b0 ;
+	    else 
+	      lvirf_master <= master_data ;
+	  end
+
+    //-- slave reg ----------------------
+
+	// synopsys async_set_reset "resf_slave_clr_b_s"
+	always @ ( negedge resf_slave_clr_b_s or posedge resb_s )
+	  begin
+	    if ( !resf_slave_clr_b_s )
+	      { trap, sreq, wdtrf, rperf, iawrf, lvirf } <= 6'b000000 ;
+	    else   
+	      { trap, sreq, wdtrf, rperf, iawrf, lvirf } <= { trap_master, sreq_master, wdtrf_master, rperf_master, iawrf_master, lvirf_master }; 
+	  end
+
+	//        +---------+--------+---------+--------+--------+--------+---------+---------+
+	//  name  |  bit7   |  bit6  |  bit5   |  bit4  |  bit3  |  bit2  |  bit1   |  bit0   |
+	//        +---------+--------+---------+--------+--------+--------+---------+---------+
+	//  RPECTL| RPERDIS |    0   |    0    |    0   |   0    |    0   |    0    |  RPEF   |
+	//        +---------+--------+---------+--------+--------+--------+---------+---------+
+
+	// synopsys async_set_reset "resb"
+        always @ ( posedge pclkrw or negedge resb ) begin
+           if ( !resb ) begin
+              rperdis <= 1'b0 ;
+           end
+           else if ( we_rpectl ) begin 
+              rperdis <= din15 ;	// bit7
+           end
+        end
+
+	assign rperr_m = ( rperr | bbrperr ) & ~ocdresmk ;
+
+	// synopsys async_set_reset "resb"
+        always @ ( posedge baseckhs or negedge resb ) begin
+           if ( !resb ) begin
+              rpef    <= 1'b0 ;
+           end
+           else if ( we_rpectl && !din8) begin 
+              rpef    <= 1'b0  ;	// bit0
+           end
+           else if ( rperr_m ) begin 
+              rpef    <= 1'b1 ;
+           end
+        end
+
+	assign rpef_mask = rpef & ~rperdis ;
+endmodule
+
+
+//********************************************************************//
+//                                                                    //
+//      QLK0RCSC1V2_RG_LVICTL Module                                  //
+//                                                                    //
+//********************************************************************//
+
+module QLK0RCSC1V2_RG_LVICTL (
+
+                        baseckhs , resb     , resetb   , cpustart ,
+                        lvioutznf, lvimclr  , nsresb   , resb_s   ,
+			ressqsta ,
+                        we_lvim  , we_lvis  , re_lvim  , re_lvis  ,
+                        pwdata15 , pwdata14 , pwdata13 ,
+                        pwdata7  , pwdata0  , 
+                        opboen   , warmup   , 
+                        opvpoc2  , opvpoc1  , opvpoc0  ,
+                        oplvis1  , oplvis0  , oplvimds1  , oplvimds0  ,
+                        scanmode , scanclk  , scanresz , scanen   ,
+                        tesdbt   , optiddq  , ptesinst , testmod  ,
+                        iceck60m ,
+                        r15kout  ,
+                        lvim_r7  , lvim_r6  , lvim_r5  , lvim_r1  , lvim_r0  , 
+                        lvis_r7  , lvis_r0  , 
+                        lvien    ,
+                        lvis3    , lvis2    , lvis1    , lvis0    ,
+                        lviresb  , intlvi   , lvi_error,
+                        resseq   , vsetend  , reqlvi   ,
+                        lvitest  , lvitsel  ,
+                        tlvif    , lvictl_moni, pclkrw , pclktst
+                         );
+
+        input           baseckhs , resb     , resetb   , cpustart ,
+                        lvioutznf, lvimclr  , nsresb   , resb_s ;
+	input		ressqsta ;
+        input           we_lvim  , we_lvis  , re_lvim  , re_lvis  ;
+        input           pwdata15 , pwdata14 , pwdata13 , pwdata7  , pwdata0  ;
+        input           opboen   , warmup   ;
+        input           opvpoc2  , opvpoc1  , opvpoc0  ;
+        input           oplvis1  , oplvis0  , oplvimds1  , oplvimds0 ;
+        input           scanmode , scanclk  , scanresz , scanen , testmod  ;
+        input           tesdbt   , optiddq  , ptesinst  ;
+        input           iceck60m ; 
+        input           r15kout  , pclkrw   , pclktst  ;
+
+        output          lvim_r7  , lvim_r6  , lvim_r5  , lvim_r1  , lvim_r0  ;
+        output          lvis_r7  , lvis_r0  ;
+        output          lvien    , lvis3    , lvis2    , lvis1    , lvis0    ;
+        output          lviresb  , intlvi   , lvi_error;
+        output          resseq   , vsetend ;
+        output          lvitest  , lvitsel ;
+
+        output          tlvif    , lvictl_moni ;
+        output          reqlvi ;
+
+        wire            lvisen   , lvilv_exor ;
+	wire		lvimd    , lvilv     , lviomsk , lvif  ; 
+        wire            lvictl_moni, lvi_error  ;
+        wire            lvi_setup_end_neg ;
+        wire            reqlvi ;
+        wire            tlvif   , lvitest  , lvitsel ;
+	wire		uop_set , setup_end_pulse ;
+
+
+
+
+        QLK0RCSC1V2_RG_LVICTL_REG       regi    ( 
+                                        .pwdata15( pwdata15 ) , .pwdata14( pwdata14 ) , .pwdata13( pwdata13 ) , 
+                                        .pclkrw( pclkrw )     , .pclktst( pclktst )   , .lvimclr( lvimclr)    , .nsresb( nsresb )     ,
+                                        .we_lvim( we_lvim )   , .re_lvim( re_lvim )   , .re_lvis( re_lvis )   ,
+                                        .scanmode( scanmode ) , .scanresz( scanresz ) , .ptesinst( ptesinst ) ,
+                                        .lvimd( lvimd )       , .lvilv( lvilv )       , .lviomsk( lviomsk )   , .lvif( lvif )         ,
+                                        .oplvis1( oplvis1 )   , .oplvis0( oplvis0 )   , .oplvimds1( oplvimds1 )   , .oplvimds0( oplvimds0 )   ,
+                                        .lvisen( lvisen )     , .lvitest( lvitest )   , .lvitsel( lvitsel )   ,
+                                        .lvim_r7( lvim_r7 )   , .lvim_r6( lvim_r6 )   , .lvim_r5( lvim_r5 )   ,
+					.lvim_r1( lvim_r1 )   , .lvim_r0( lvim_r0 )   ,
+                                        .lvis_r7( lvis_r7 )   , .lvis_r0( lvis_r0 ) 
+                                        ) ;
+
+
+        QLK0RCSC1V2_RG_LVICTL_COUNTER   counter (
+                                        .r15kout( r15kout )   , .warmup( warmup )          , .nsresb ( nsresb )    , 
+                                        .lvien( lvien )       , .lvilv_exor( lvilv_exor )  , .lvimclr( lvimclr )   ,
+                                        .scanmode( scanmode ) , .scanclk( scanclk )        , .scanen( scanen )     ,
+                                        .lvi_setup_end_neg( lvi_setup_end_neg )  ,
+                                        .reqlvi( reqlvi )     , .uop_set(uop_set)          , .setup_end_pulse( setup_end_pulse )
+                                        ) ;
+
+        QLK0RCSC1V2_RG_LVICTL_MAIN      main    (
+                                        .baseckhs( baseckhs )   , .resb( resb )         , .resetb( resetb )      ,
+					.ressqsta( ressqsta )   , .cpustart( cpustart ) ,
+                                        .lvioutznf( lvioutznf ) , .lvimclr( lvimclr )   , .nsresb( nsresb )      , .resb_s( resb_s )     , 
+                                        .we_lvis( we_lvis )     , .pwdata7( pwdata7 )   , .pwdata0( pwdata0 )    ,
+                                        .opvpoc2( opvpoc2 )     , .opvpoc1( opvpoc1 )   , .opvpoc0( opvpoc0 )    , .oplvis1( oplvis1 )   , 
+                                        .oplvis0( oplvis0 )     , .oplvimds1( oplvimds1 )   , .oplvimds0( oplvimds0 )    ,
+                                        .opboen( opboen )       , .warmup( warmup )     , .lvi_setup_end_neg( lvi_setup_end_neg )        , 
+                                        .lvisen( lvisen )       , .setup_end_pulse( setup_end_pulse ) ,
+                                        .scanmode( scanmode )   , .scanclk( scanclk )   , .scanen( scanen )    ,
+                                        .tesdbt( tesdbt )       , .optiddq( optiddq )   , .ptesinst( ptesinst )     , .testmod ( testmod ) ,
+                                        .iceck60m( iceck60m )   ,
+                                        .lvien( lvien )         , .lvis3( lvis3 )       , .lvis2( lvis2 )         , .lvis1( lvis1 )      ,
+                                        .lviresb( lviresb )     , .intlvi( intlvi )     , .lvi_error( lvi_error ) , .lvis0( lvis0 )      ,
+					.lvif ( lvif )          , .lvimd ( lvimd )      , .lvilv ( lvilv )        , .lvilv_exor ( lvilv_exor ) ,
+                                        .resseq( resseq )       , .vsetend( vsetend )   , .lviomsk( lviomsk )     ,
+                                        .tlvif( tlvif )         , .lvictl_moni( lvictl_moni ) , .uop_set(uop_set) , .pclkrw( pclkrw )
+                                        ) ;
+
+endmodule
+
+module  QLK0RCSC1V2_RG_LVICTL_REG (
+                                pwdata15 , pwdata14 , pwdata13 ,
+                                pclkrw   , pclktst  , lvimclr  , nsresb   ,
+                                we_lvim  , re_lvim  , re_lvis  ,
+                                scanmode , scanresz , ptesinst ,
+                                lvimd    , lvilv    , lviomsk  , lvif     ,
+                                oplvis1  , oplvis0  , oplvimds1  , oplvimds0  ,
+                                lvisen   , lvitest  , lvitsel  , 
+                                lvim_r7  , lvim_r6  , lvim_r5  , lvim_r1  , lvim_r0 ,
+                                lvis_r7  , lvis_r0 
+                                ) ; 
+
+
+        input            pwdata15 , pwdata14 , pwdata13 ;
+        input            pclkrw   , pclktst  , lvimclr  , nsresb   ;
+        input            we_lvim  , re_lvim  , re_lvis  ; 
+        input            lvimd    , lvilv    , lviomsk  , lvif     ;
+        input            oplvis1  , oplvis0  , oplvimds1  , oplvimds0  ;
+        input            scanmode , scanresz , ptesinst ;
+
+        output           lvisen   , lvitest  , lvitsel ;
+        output           lvim_r7  , lvim_r6  , lvim_r5 , lvim_r1  , lvim_r0 ;
+        output           lvis_r7  , lvis_r0  ;
+
+        reg              lvisen   , lvitest_p, lvitsel_p ;
+        reg              lvim_r7  , lvim_r6  , lvim_r5 , lvim_r1  , lvim_r0 ;
+        reg              lvis_r7  , lvis_r0  ;
+
+
+        //        +--------+-------+-------+-------+-------+-------+-------+-------+
+        //  name  | bit7   | bit6  | bit5  | bit4  | bit3  | bit2  | bit1  | bit0  |
+        //        +--------+-------+-------+-------+-------+-------+-------+-------+
+        //  LVIM  | LVISEN |LVITEST|LVITSEL|   0   |   0   |   0   |   0   | LVIF  |
+        //        +--------+-------+-------+-------+-------+-------+-------+-------+
+
+        wire   wen_lvim ;
+        assign wen_lvim = oplvimds1 & ~oplvimds0 & we_lvim ;
+
+        // synopsys async_set_reset "lvimclr"
+        always @ ( posedge pclkrw or posedge lvimclr ) begin
+            if ( lvimclr )       lvisen <= 1'b0 ;
+            else if ( wen_lvim ) lvisen <= pwdata15 ;   // bit7
+        end
+
+
+        wire   testresb,  resb_dft, lvitest, lvitsel  ;
+        assign testresb = ptesinst & nsresb ;
+        assign resb_dft = ( scanmode )? scanresz : testresb ;
+
+        // synopsys async_set_reset "resb_dft"
+        always @ ( posedge pclktst or negedge resb_dft ) begin
+            if ( !resb_dft ) begin
+                lvitest_p <= 1'b0 ;
+                lvitsel_p <= 1'b0 ;
+            end
+            else if ( we_lvim ) begin
+                lvitest_p <= pwdata14 ; // bit6
+                lvitsel_p <= pwdata13 ; // bit5
+            end
+        end
+
+        assign lvitest = ~scanmode & lvitest_p ;
+        assign lvitsel = ~scanmode & lvitsel_p ;
+
+        //        +--------+-------+-------+-------+-------+-------+-------+-------+
+        //  name  | bit7   | bit6  | bit5  | bit4  | bit3  | bit2  | bit1  | bit0  |
+        //        +--------+-------+-------+-------+-------+-------+-------+-------+
+        //  LVIS  | LVIMD  |   0   |   0   |   0   |   0   |   0   |   0   | LVILV |
+        //        +--------+-------+-------+-------+-------+-------+-------+-------+
+
+
+        // ----- DATA READ -----
+
+        always @ ( re_lvim or lvisen or lvitest_p or lvitsel_p or lviomsk or lvif )
+        begin
+           case ( re_lvim ) // synopsys parallel_case
+               1'b1    : { lvim_r7 , lvim_r6 , lvim_r5 , lvim_r1 , lvim_r0 } = { lvisen , lvitest_p , lvitsel_p , lviomsk , lvif } ;
+               default : { lvim_r7 , lvim_r6 , lvim_r5 , lvim_r1 , lvim_r0 } = { 5'b00000 };
+           endcase
+        end
+
+
+
+        wire   lvilv_r0_p ;
+        assign lvilv_r0_p = lvilv | ( ~oplvimds1 | oplvimds0 | ( oplvis1 & oplvis0 ) ) ;
+
+        always @ ( re_lvis or lvimd or lvilv_r0_p )
+        begin
+           case ( re_lvis ) // synopsys parallel_case
+               1'b1    : { lvis_r7 , lvis_r0 } = { lvimd , lvilv_r0_p } ;
+               default : { lvis_r7 , lvis_r0 } = { 2'b00 } ;
+           endcase
+        end
+
+
+endmodule 
+
+module  QLK0RCSC1V2_RG_LVICTL_COUNTER (
+                                r15kout  , warmup  , nsresb ,
+                                lvien  , lvilv_exor , uop_set , lvimclr ,
+                                scanmode , scanclk  , scanen  ,
+                                lvi_setup_end_neg ,
+				reqlvi, setup_end_pulse
+                                ) ;
+
+        input            r15kout  , warmup     , nsresb ;
+        input            lvien    , lvilv_exor , uop_set  , lvimclr ;
+        input            scanmode , scanclk    , scanen ;
+
+        output           lvi_setup_end_neg ;
+        output           reqlvi, setup_end_pulse   ;
+
+        wire             reqlvi_set_p , reqlvi_set , reqlvi_clear,
+			 fil15kin_p   , fil15kin   , count_clear  ;
+	wire		 count_clock_p, count_clock ;
+	wire		setup_end_pulse_p, setup_end_pulse ;
+
+        reg              reqlvi, cken ;
+        reg   [2:0]      cnt_lvi ;
+        reg              lvi_setup_end_p, lvi_setup_end, lvi_setup_end_neg ;
+
+
+
+//      assign reqlvi_set_p     = ( uop_set & ~warmup ) | lvilv_exor ;
+        QLK0RCSC1V2_RG_ANDORGATE  reqlvi_set_p_ao ( .data_out(reqlvi_set_p), .data_in1(lvilv_exor), .data_in2(~warmup), .data_in3(uop_set));
+
+        QLK0RCSC1V2_CG_MUX reqlvi_set_mux (
+                .in1(scanclk), .in2(reqlvi_set_p), .sel1(scanmode), .out(reqlvi_set) ) ;
+
+
+        assign reqlvi_clear   = lvimclr | ( lvi_setup_end_neg & ~scanmode ) ;
+
+        // synopsys async_set_reset "reqlvi_clear"
+        always @(negedge reqlvi_set or posedge reqlvi_clear ) begin
+                if      ( reqlvi_clear )  reqlvi  <= 1'b0;
+                else                      reqlvi  <= 1'b1;
+        end
+
+	assign fil15kin_p = r15kout & reqlvi ;
+
+        QLK0RCSC1V2_CG_MUX fil15kin_mux (
+                .in1(scanclk), .in2(fil15kin_p), .sel1(scanmode), .out(fil15kin) ) ;
+
+        assign count_clear   = lvimclr | ( lvilv_exor & ~scanmode  ) ;
+
+        // synopsys async_set_reset "count_clear"
+        always @(negedge fil15kin or posedge count_clear ) begin
+                if      ( count_clear )   cken  <= 1'b0;
+                else                      cken  <= 1'b1;
+        end
+
+
+	assign count_clock_p = fil15kin & cken ;
+
+        QLK0RCSC1V2_CG_MUX count_clock_mux (
+                .in1(scanclk), .in2(count_clock_p), .sel1(scanmode), .out(count_clock) ) ;
+
+        // synopsys async_set_reset "count_clear"
+        always @(posedge count_clock or posedge count_clear ) begin
+                if      ( count_clear )   cnt_lvi  <= 3'b000;
+                else                      cnt_lvi  <= cnt_lvi + 1'b1 ;
+        end
+
+
+        // synopsys async_set_reset "count_clear"
+        always @(posedge count_clock or posedge count_clear ) begin
+                if      ( count_clear )                                                     lvi_setup_end_p  <= 1'b0 ;
+                else if ( ( nsresb == 1'b0 ) && ( lvien == 1'b0 ) && ( cnt_lvi == 3'b000 ) )  lvi_setup_end_p  <= 1'b1 ;
+                else if ( ( nsresb == 1'b0 ) && ( lvien == 1'b1 ) && ( cnt_lvi == 3'b100 ) )  lvi_setup_end_p  <= 1'b1 ;
+                else if ( ( nsresb == 1'b1 ) && ( cnt_lvi == 3'b010 ) )                      lvi_setup_end_p  <= 1'b1 ;
+                else                                                                        lvi_setup_end_p  <= lvi_setup_end_p ;
+        end
+
+        // synopsys async_set_reset "count_clear"
+        always @(posedge count_clock or posedge count_clear ) begin
+                if      ( count_clear )   lvi_setup_end  <= 1'b0 ;
+                else                      lvi_setup_end  <= lvi_setup_end_p ;
+        end
+
+        // synopsys async_set_reset "count_clear"
+        always @(negedge count_clock or posedge count_clear ) begin
+                if      ( count_clear )   lvi_setup_end_neg  <= 1'b0 ;
+                else                      lvi_setup_end_neg  <= lvi_setup_end ;
+        end
+
+
+	assign setup_end_pulse_p = lvi_setup_end_p & ~lvi_setup_end ;
+
+        TBGTSMLALADCLX2 lvi_setup_gate  (.N01(setup_end_pulse), .H01(setup_end_pulse_p), .H02(count_clock), .H03(scanen));
+
+
+
+endmodule
+
+module QLK0RCSC1V2_RG_LVICTL_MAIN (
+                        baseckhs , resb     , resetb   , cpustart , ressqsta ,
+                        lvioutznf, lvimclr  , nsresb   , resb_s   ,
+                        we_lvis  , pwdata7  , pwdata0  ,
+                        opvpoc2  , opvpoc1  , opvpoc0  , oplvis1  , oplvis0  , oplvimds1 , oplvimds0 ,
+                        opboen   , warmup   , 
+                        lvisen   , lvi_setup_end_neg , setup_end_pulse  ,
+                        scanmode , scanclk  , scanen   , testmod  ,
+                        tesdbt   , optiddq  , ptesinst  ,
+                        iceck60m ,
+                        lvien    , lvis3    , lvis2    , lvis1    , lvis0    ,
+			lvif     , lvimd    , lvilv    , lviomsk  ,
+                        lviresb  , intlvi   , lvi_error, lvilv_exor ,
+                        resseq   , vsetend  ,
+                        tlvif    , lvictl_moni , uop_set , pclkrw
+                        );
+
+        input           baseckhs , resb     , resetb   , cpustart ,
+                        lvioutznf, lvimclr  , nsresb   , resb_s ;
+	input		ressqsta ;
+        input           we_lvis  ;
+        input           pwdata7  , pwdata0  ;
+        input           opvpoc2  , opvpoc1  , opvpoc0  ,  oplvis1  , oplvis0  , oplvimds1 , oplvimds0 ;
+        input           opboen   , warmup   , pclkrw   ;
+
+        input           lvisen   , lvi_setup_end_neg , setup_end_pulse ;
+
+        input           scanmode , scanclk  , scanen , testmod   ;
+        input           tesdbt   , optiddq  , ptesinst  ;
+        input           iceck60m ;
+
+        output          lvien    , lvis3    , lvis2    , lvis1    , lvis0 ;
+	output		lvif	 , lvimd    , lvilv    , lviomsk  ;
+        output          lviresb  , intlvi   , lvi_error , lvilv_exor ;
+        output          resseq   , vsetend ;
+        output          tlvif    , lvictl_moni  , uop_set ;
+
+        wire            clear_pulse, lviomsk_set , lviomsk_clear , lviomsk_data ;
+        wire            lvis3 , lvis2 , lvis1 , lvis0 ;
+        wire            lvien_ns , lvien_w , lvien ;
+        wire            lvioutz_w1 , lvien_eor , lvioutz_w2 , lviresb_p , lviresb ;
+        wire            intlvi1 , intlvi2_p , intlvi2 , intlvi, intlvi_p ;
+        wire            lvif , tlvif ;
+        wire            lvi_error ;
+        wire            lvictl_moni ;
+        wire            lvimd_err, lvilv_err ;
+        wire            lvilv_dly_p , lvilv_dly , lvilv_exor ;
+        wire            vsetend ;
+
+        wire            wen_lvis, uop_set, lvimd_set,
+                        lvimd_r_res, lvimd_clear_pulse, lvimd_clear, opin, lvimd, opin_p,
+			lvimd_rsq_data ;
+        wire    [2:0]   lvimd_data ;
+
+        wire            lvilv_set, lvilv_set_p,
+                        lvilv_r_resb, lvilv_clear_pulse, lvilv_clear, lvilv, lvioutz_msk ;
+        wire    [2:0]   lvilv_data ;
+
+        reg             resseq, lviomsk_p ;
+        reg             lvimd_clr_en, lvimd_r_1, lvimd_r_2 , lvimd_rsq ;
+        reg     [2:0]   lvimd_p ;
+        reg             lvilv_clr_en, lvilv_r_1, lvilv_r_2 ;
+        reg     [2:0]   lvilv_p ;
+
+
+//
+// resseq
+//
+// LVI以外のリセットで始まるリセットシーケンスを表す信号
+
+
+        // SCAN用データトグル処理
+        wire   resseq_data ;
+        assign resseq_data = ( scanmode ) ?     ~resseq :       1'b0 ;
+
+        //synopsys async_set_reset "lvimclr"
+        always @ ( posedge resb_s or posedge lvimclr ) begin
+            if ( lvimclr )     resseq <= 1'b1 ;
+            else               resseq <= resseq_data ;
+        end
+
+
+//
+// lviomsk
+//
+// LVIRESB,INTLVIマスク信号
+
+
+	assign clear_pulse    = setup_end_pulse  | ( cpustart & ~nsresb ) ;
+        assign lviomsk_clear  = ~resetb | ( clear_pulse & ~scanmode ) ; 
+
+        QLK0RCSC1V2_CG_MUX lviomsk_set_mux (
+                .in1(scanclk), .in2(lvilv_exor), .sel1(scanmode), .out(lviomsk_set) ) ;
+
+        assign lviomsk_data   = ( scanmode ) ? ~lviomsk_p  : 1'b1 ;
+
+
+        //synopsys async_set_reset "lviomsk_clear"
+        always @ ( negedge lviomsk_set or posedge lviomsk_clear ) begin
+            if ( lviomsk_clear )     lviomsk_p <= 1'b0 ;
+            else                     lviomsk_p <= lviomsk_data ;
+        end
+
+	assign  lviomsk = ( ressqsta & ~cpustart & ~nsresb ) | lviomsk_p | lvisen ;
+
+
+//
+// lvis3-0
+//
+
+        assign lvis3 = opvpoc1 ;
+        assign lvis2 = opvpoc0 ;
+        assign lvis1 = ( ~oplvimds1 | oplvimds0 ) ? oplvis1 : ( oplvis1 | lvilv ) ;
+        assign lvis0 = ( ~oplvimds1 | oplvimds0 ) ? oplvis0 : ( oplvis0 | lvilv ) ;
+
+
+//
+// lvien
+//
+
+        assign  lvien_ns  = ~opvpoc2  ;
+
+        assign  lvien_w   = lvien_ns & ~scanmode & ~optiddq ;
+        assign  lvien     = lvien_w | tesdbt ;
+
+
+// lviresb
+//
+
+        assign  lvioutz_w1 = lvioutznf | tesdbt ;
+
+        QLK0RCSC1V2_RG_EXORGATE en_eor ( .clk_out ( lvien_eor ) , .clk_in ( lviomsk ) , .clk_en ( lvien_w ) );
+
+        assign  lvioutz_w2 = ( scanmode  ) ? lvien_eor : lvioutz_w1 ;
+        assign  lviresb_p  = ( lvien_ns & lvimd ) ? lvioutz_w2 : 1'b1 ;
+
+        assign  lviresb    = lviresb_p | lviomsk ;
+
+//
+// intlvi
+//
+
+	assign	lvioutz_msk = lvioutz_w2 | lviomsk ;
+
+        assign  intlvi1 = ( lvien_ns & ~lvimd ) ? ~lvioutz_msk : 1'b0 ;
+
+        QLK0RCSC1V2_DLY3X2_3 intlvi_buf ( .out( intlvi2_p ) , .in ( intlvi1 ) , .iceclk( iceck60m ) ) ;
+
+        assign  intlvi2 =  scanmode | intlvi2_p ;
+
+        QLK0RCSC1V2_RG_EXORGATE intlvi_eor( .clk_out ( intlvi_p )  , .clk_in ( intlvi1 )  , .clk_en ( intlvi2 )  );
+
+	assign intlvi = intlvi_p & ~lvilv & ~lviomsk ;
+
+//
+// lvif, tlvif
+//
+
+        assign  lvif = ~lvioutz_w2 & lvien_ns ;
+
+        assign  tlvif = lvif & ptesinst ;
+
+//
+// lvi_error
+//
+
+        assign lvi_error = lvimd_err | lvilv_err ;
+
+//
+// lvictl_moni
+//
+
+        assign  lvictl_moni = lviresb ^ resseq ^ lvien_ns ^lvis3 ^ lvis2 ^ lvis1 ^ lvis0 ^ opin_p ;
+
+//
+// lvimd
+//
+
+
+
+	assign wen_lvis    = oplvimds1 &  ~oplvimds0 & lvisen & we_lvis ;
+        assign opin_p      = oplvimds1 & ( oplvimds0 | ( oplvis0 & oplvis1 ) ) ;
+        assign opin        =  opin_p & ~ptesinst ;
+
+	assign lvimd_r_res = lvimclr | ( opin  & ~scanmode )  ;
+
+        // synopsys async_set_reset "lvimd_r_res"
+        always @ ( posedge pclkrw or posedge lvimd_r_res ) begin
+            if ( lvimd_r_res  )              lvimd_clr_en <= 1'b0 ;
+            else                             lvimd_clr_en <= wen_lvis & ~pwdata7 ;
+        end
+
+
+        // synopsys async_set_reset "lvimd_r_res"
+        always @ ( posedge baseckhs or posedge lvimd_r_res ) begin
+            if ( lvimd_r_res  )              lvimd_r_1 <= 1'b1 ;
+            else if ( wen_lvis && !pwdata7 )  lvimd_r_1 <= 1'b0 ;
+            else if ( lvimd_clr_en )         lvimd_r_1 <= ~lvimd ;
+            else                             lvimd_r_1 <= lvimd_r_1 ;
+        end
+
+        // synopsys async_set_reset "lvimd_r_res"
+        always @ ( posedge baseckhs or posedge lvimd_r_res ) begin
+            if ( lvimd_r_res  )              lvimd_r_2 <= 1'b1 ;
+            else                             lvimd_r_2 <= lvimd_r_1 ;
+        end
+
+
+
+        TBGTSMLALADCLX2 lvimd_gate  (.N01(uop_set), .H01(opboen), .H02(baseckhs), .H03(scanen));
+
+//	assign lvimd_set    = uop_set | ( setup_end_pulse & ~scanmode ) ;
+        QLK0RCSC1V2_RG_ANDORGATE  lvimd_set_ao ( .data_out(lvimd_set), .data_in1(uop_set), .data_in2(~scanmode), .data_in3(setup_end_pulse));
+
+	assign lvimd_clear_pulse = ~lvimd_r_1 & lvimd_r_2 ;
+        assign lvimd_clear       = lvimclr | ( lvimd_clear_pulse & ~scanmode ) ;
+
+        assign lvimd_data   = ( nsresb )  ?  3'b101 : { opin , ~opin , opin } ;
+
+        // synopsys async_set_reset "lvimd_clear"
+        always @ ( posedge lvimd_set or posedge lvimd_clear ) begin
+            if ( lvimd_clear )    lvimd_p <= 3'b010 ;
+            else                  lvimd_p <= lvimd_data[2:0] ;
+        end
+
+
+	assign lvimd_rsq_data = ( scanmode ) ?  ~lvimd_rsq : ~ptesinst ;
+
+        // synopsys async_set_reset "lvimclr"
+        always @ ( posedge uop_set or posedge lvimclr) begin
+            if ( lvimclr )        lvimd_rsq <= 1'b0 ;
+            else                  lvimd_rsq <= lvimd_rsq_data ;
+        end
+
+
+        assign lvimd = lvimd_p[0]  | ( lvimd_rsq & ~nsresb ) ;
+
+        QLK0RCSC1V2_RG_LVICTL_FT3 lvimd_ft ( .in(lvimd_p[2:0]), .err(lvimd_err) ) ;
+
+
+//
+// lvilv
+//
+
+
+	assign lvilv_r_resb = resb & ( ~opin | scanmode ) ;
+
+        // synopsys async_set_reset "lvilv_r_resb"
+        always @ ( posedge pclkrw or negedge lvilv_r_resb ) begin
+            if ( !lvilv_r_resb )                lvilv_clr_en <= 1'b0 ;
+            else                                lvilv_clr_en <= wen_lvis & ~pwdata0 ;
+        end
+
+        // synopsys async_set_reset "lvilv_r_resb"
+        always @ ( posedge baseckhs or negedge lvilv_r_resb ) begin
+            if ( !lvilv_r_resb )                lvilv_r_1 <= 1'b1 ;
+            else if ( wen_lvis && !pwdata0  )    lvilv_r_1 <= 1'b0 ;
+            else if ( lvilv_clr_en )            lvilv_r_1 <= ~lvilv ;
+            else                                lvilv_r_1 <= lvilv_r_1 ;
+        end
+
+        // synopsys async_set_reset "lvilv_r_resb"
+        always @ ( posedge baseckhs or negedge lvilv_r_resb ) begin
+            if ( !lvilv_r_resb )                lvilv_r_2 <= 1'b1 ;
+            else                                lvilv_r_2 <= lvilv_r_1 ;
+        end
+
+
+	assign lvilv_set_p     = oplvimds1 & ~oplvimds0 & ~lvilv & intlvi ;
+
+        QLK0RCSC1V2_CG_MUX lvilv_set_mux (
+                .in1(scanclk), .in2(lvilv_set_p), .sel1(scanmode), .out(lvilv_set) ) ;
+
+        assign lvilv_clear_pulse = ~lvilv_r_1 & lvilv_r_2 ;
+        assign lvilv_clear       = ~resb  | ( lvilv_clear_pulse & ~scanmode ) ;
+
+	assign lvilv_data    = ( scanmode ) ?  { ~lvilv_p[2], ~lvilv_p[1], ~lvilv_p[0] }  : 3'b101 ;
+
+        // synopsys async_set_reset "lvilv_clear"
+        always @ ( negedge lvilv_set or posedge lvilv_clear ) begin
+            if ( lvilv_clear )    lvilv_p <= 3'b010 ;
+            else                  lvilv_p <= lvilv_data[2:0] ;
+        end
+
+
+        assign lvilv = lvilv_p[0] ;
+
+        QLK0RCSC1V2_RG_LVICTL_FT3 lvilv_ft ( .in(lvilv_p[2:0]), .err(lvilv_err) ) ;
+
+//
+// lvilv_exor
+//
+
+        QLK0RCSC1V2_DLY3X2_5 lvilv_buf ( .out( lvilv_dly_p ) , .in ( lvilv ) , .iceclk( iceck60m ) ) ;
+
+        assign  lvilv_dly =  scanmode | lvilv_dly_p ;
+
+        QLK0RCSC1V2_RG_EXORGATE  lvilv_eor ( .clk_out ( lvilv_exor )  , .clk_in ( lvilv )  , .clk_en ( lvilv_dly )  );
+
+//
+// vsetend
+//
+
+        assign vsetend = lvi_setup_end_neg | warmup | testmod ;
+
+endmodule
+
+
+//--------------------------------------------------------------------//
+//   QLK0RCSC1V2_RG_SEL                                               //
+//--------------------------------------------------------------------//
+
+module QLK0RCSC1V2_RG_SEL ( sig_out , sig_in1 , sig_in2 , sig_in3 ) ;
+
+        input           sig_in1 , sig_in2 , sig_in3 ;
+        output          sig_out ;
+
+        TBMUX2X1    selgate ( .N01( sig_out ) , .H01( sig_in1 ) , .H02( sig_in2 ) , .H03( sig_in3 ) ) ;
+
+endmodule
+
+
+//--------------------------------------------------------------------//
+//   QLK0RCSC1V2_RG_EXORGATE                                          //
+//--------------------------------------------------------------------//
+
+module QLK0RCSC1V2_RG_EXORGATE ( clk_out , clk_in , clk_en ) ;
+
+        input           clk_in  , clk_en ;
+        output          clk_out ;
+
+        TBXR2X1  eorfunc ( .H01( clk_in ) , .H02( clk_en ) , .N01( clk_out ) ) ;
+  
+endmodule
+
+//--------------------------------------------------------------------//
+//   QLK0RCSC1V2_RG_ANDORGATE                                          //
+//--------------------------------------------------------------------//
+
+module QLK0RCSC1V2_RG_ANDORGATE ( data_out , data_in1 , data_in2 , data_in3 ) ;
+
+        input           data_in1 , data_in2 , data_in3 ;
+        output          data_out ;
+
+	TBAO12X1 aofunc (.N01(data_out), .H01(data_in1), .H02(data_in2), .H03(data_in3));
+  
+endmodule
+
+
+//--------------------------------------------------------------------//
+//   QLK0RCSC1V2_RESREQ_SET                                           //
+//--------------------------------------------------------------------//
+
+module QLK0RCSC1V2_RESREQ_SET ( req_out , req_in , clk , clrb ) ;
+
+        input   req_in , clk , clrb ;
+        output  req_out ;
+        reg     req_out ;
+
+        //synopsys async_set_reset "clrb" 
+        always @ ( negedge clrb or posedge clk ) begin
+              if ( !clrb )    req_out <= 1'b0 ;
+              else            req_out <= ( req_in | req_out ) ;
+        end
+
+endmodule
+
+//--------------------------------------------------------------------//
+//   QLK0RCSC1V2_RESET_FF1                                            //
+//--------------------------------------------------------------------//
+
+module QLK0RCSC1V2_RESET_FF1 ( resoutb, resinb, clk ) ;
+
+        input   clk , resinb ;
+        output  resoutb ;
+	wire	resoutb ;
+        reg     resoutb1, resoutb2, resoutb3 ;
+
+        //synopsys async_set_reset "resinb"
+        always @ ( negedge resinb or posedge clk ) begin
+              if ( !resinb )    resoutb1 <= 1'b0 ;
+              else              resoutb1 <= 1'b1 ;
+        end
+
+        //synopsys async_set_reset "resinb"
+        always @ ( negedge resinb or posedge clk ) begin
+              if ( !resinb )    resoutb2 <= 1'b0 ;
+              else              resoutb2 <= resoutb1 ;
+        end
+
+        //synopsys async_set_reset "resinb"
+        always @ ( negedge resinb or posedge clk ) begin
+              if ( !resinb )    resoutb3 <= 1'b0 ;
+              else              resoutb3 <= resoutb2 ;
+        end
+
+//	assign resoutb = resoutb2 ;
+	assign resoutb = resoutb3 ;
+
+endmodule
+
+//--------------------------------------------------------------------//
+//   QLK0RCSC1V2_RESET_FF2_L                                          //
+//--------------------------------------------------------------------//
+
+module QLK0RCSC1V2_RESET_FF2_L ( resoutb, resinb, clk, enable ) ;
+
+        input   clk , resinb, enable ;
+        output  resoutb ;
+	wire	resoutb ;
+        reg     resoutb1, resoutb2 ;
+
+        //synopsys async_set_reset "resinb"
+        always @ ( negedge resinb or posedge clk ) begin
+              if ( !resinb )    resoutb1 <= 1'b0 ;
+              else              resoutb1 <= 1'b1 ;
+        end
+
+        //synopsys async_set_reset "resinb"
+        always @ ( negedge resinb or posedge clk ) begin
+              if ( !resinb )    resoutb2 <= 1'b0 ;
+              else              resoutb2 <= resoutb1 ;
+        end
+
+	assign resoutb = resoutb2 & enable ;
+
+endmodule
+
+//--------------------------------------------------------------------//
+//   QLK0RCSC1V2_RESET_FF2_H                                          //
+//--------------------------------------------------------------------//
+
+module QLK0RCSC1V2_RESET_FF2_H ( resout, resin, clk, enable ) ;
+
+        input   clk , resin, enable ;
+        output  resout ;
+	wire	resout ;
+        reg     resout1, resout2 ;
+
+        //synopsys async_set_reset "resin"
+        always @ ( posedge resin or posedge clk ) begin
+              if ( resin )    resout1 <= 1'b1 ;
+              else            resout1 <= 1'b0 ;
+        end
+
+        //synopsys async_set_reset "resin"
+        always @ ( posedge resin or posedge clk ) begin
+              if ( resin )    resout2 <= 1'b1 ;
+              else            resout2 <= resout1 ;
+        end
+
+	assign resout = resout2 & enable ;
+
+endmodule
+
+//--------------------------------------------------------------------//
+//   QLK0RCSC1V2_RG_LVICTL_FT3                                        //
+//--------------------------------------------------------------------//
+
+module QLK0RCSC1V2_RG_LVICTL_FT3 (  in, err ) ;
+
+        input   [2:0]   in ;
+        output          err ;
+
+        reg             err ;
+
+        always @ ( in )
+         case ( in )
+          3'b000 : err = 1'b1;
+          3'b001 : err = 1'b1;
+          3'b010 : err = 1'b0;
+          3'b011 : err = 1'b1;
+          3'b100 : err = 1'b1;
+          3'b101 : err = 1'b0;
+          3'b110 : err = 1'b1;
+          3'b111 : err = 1'b1;
+        endcase
+
+endmodule
+
+
+// ===============================================================
+// CG
+// ===============================================================
+// ====================
+// CG部のDelay 1
+// ====================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_DLY3X2_3 ( out , in , iceclk ) ;
+        input   in  ;
+        input   iceclk ;
+        output  out ;
+
+        wire    net1, net2 ;
+
+        TBDLY3X2 dly1 ( .N01(net1), .H01(in)   );
+        TBDLY3X2 dly2 ( .N01(net2), .H01(net1) );
+        TBDLY3X2 dly3 ( .N01(out),  .H01(net2) );
+
+endmodule
+`else
+module QLK0RCSC1V2_DLY3X2_3 ( out , in , iceclk ) ;
+        input   in  ;
+        input   iceclk ;
+        output  out ;
+
+	reg [1:0]  in_dly;
+	always @( posedge iceclk ) begin
+		in_dly <= {in_dly[0], in};
+	end
+	assign out = in_dly[1];
+
+endmodule
+`endif
+
+// ====================
+// CG部のDelay 2
+// ====================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_TBFILTER1X2 ( out , in , iceclk ) ;
+        input   in  ;
+        input   iceclk ;
+        output  out ;
+
+        TBFILTER1X2 dly50n ( .N01(out), .H01(in) );
+
+endmodule
+`else
+module QLK0RCSC1V2_TBFILTER1X2 ( out , in , iceclk ) ;
+        input   in  ;
+        input   iceclk ;
+        output  out ;
+
+	reg [2:0] dly;
+	reg out;
+	always @( posedge iceclk ) begin
+		dly <= {dly[1:0], in};
+		if ((dly[0]==in)&&(dly[1]==in)&&(dly[2]==in)) begin
+			out <= dly[2];
+		end
+	end
+
+endmodule
+`endif
+
+// ====================
+// fclk cts
+// ====================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_CG_CTS_FCLK ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+        wire    scanmodez, scanclk_a, clkin_a;
+
+        TBINVX4 sc_inv ( .N01(scanmodez), .H01(scanmode) );
+
+        TBND2X2 clk_gate0 ( .N01(scanclk_a) , .H01(scanclk)   , .H02(scanmode)  ) ;
+        TBND2X2 clk_gate1 ( .N01(clkin_a)   , .H01(clkin)     , .H02(scanmodez) ) ;
+        TBND2X2 root      ( .N01(clkout)  , .H01(scanclk_a) , .H02(clkin_a)   ) ;
+
+endmodule
+`endif
+
+// ====================
+// fih cts
+// ====================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_CG_CTS_FIH ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+        wire    scanmodez, scanclk_a, clkin_a;
+
+        TBINVX4 sc_inv ( .N01(scanmodez), .H01(scanmode) );
+
+        TBND2X2 clk_gate0 ( .N01(scanclk_a) , .H01(scanclk)   , .H02(scanmode)  ) ;
+        TBND2X2 clk_gate1 ( .N01(clkin_a)   , .H01(clkin)     , .H02(scanmodez) ) ;
+        TBND2X2 root      ( .N01(clkout)  , .H01(scanclk_a) , .H02(clkin_a)   ) ;
+
+endmodule
+`endif
+
+// ====================
+// fmx4 cts
+// ====================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_CG_CTS_FMX4 ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+        wire    scanmodez, scanclk_a, clkin_a;
+
+        TBINVX4 sc_inv ( .N01(scanmodez), .H01(scanmode) );
+
+        TBND2X2 clk_gate0 ( .N01(scanclk_a) , .H01(scanclk)   , .H02(scanmode)  ) ;
+        TBND2X2 clk_gate1 ( .N01(clkin_a)   , .H01(clkin)     , .H02(scanmodez) ) ;
+        TBND2X2 root      ( .N01(clkout)  , .H01(scanclk_a) , .H02(clkin_a)   ) ;
+
+endmodule
+`endif
+
+// ====================
+// fih4 cts
+// ====================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_CG_CTS_FIH4 ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+        wire    scanmodez, scanclk_a, clkin_a;
+
+        TBINVX4 sc_inv ( .N01(scanmodez), .H01(scanmode) );
+
+        TBND2X2 clk_gate0 ( .N01(scanclk_a) , .H01(scanclk)   , .H02(scanmode)  ) ;
+        TBND2X2 clk_gate1 ( .N01(clkin_a)   , .H01(clkin)     , .H02(scanmodez) ) ;
+        TBND2X2 root      ( .N01(clkout)  , .H01(scanclk_a) , .H02(clkin_a)   ) ;
+
+endmodule
+`endif
+
+// ===============================================================
+// RG
+// ===============================================================
+
+// ====================
+// DLY1,2
+// ====================
+// module QLK0RCSC1V2_DLY3X2_3 ( out , in , iceclk ) ;
+
+// ====================
+// DLY 3
+// ====================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_DLY3X2_5 ( out , in , iceclk ) ;
+	input           in  ;
+	input           iceclk ;
+	output          out ;
+	wire            sig_a , sig_b , sig_c , sig_d ;
+
+         TBDLY3X2 delay1 ( .H01( in    )  , .N01( sig_a ) ); 
+         TBDLY3X2 delay2 ( .H01( sig_a )  , .N01( sig_b ) ); 
+         TBDLY3X2 delay3 ( .H01( sig_b )  , .N01( sig_c ) );
+         TBDLY3X2 delay4 ( .H01( sig_c )  , .N01( sig_d ) );
+         TBDLY3X2 delay5 ( .H01( sig_d )  , .N01( out ) );
+ 
+endmodule
+`else
+module QLK0RCSC1V2_DLY3X2_5 ( out , in , iceclk ) ;
+	input           in  ;
+	input           iceclk ;
+	output          out ;
+ 
+	reg [1:0]  in_dly;
+	always @( posedge iceclk ) begin
+		in_dly <= {in_dly[0], in};
+	end
+	assign out = in_dly[1];
+
+endmodule
+`endif
+
+// ====================
+// TRAP/WDT reset mask
+// ====================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_ICE_RES_MASK1 ( res_out , res_in , mask ) ;
+        input           res_in, mask ;
+        output          res_out ;
+        wire            res_out ;
+
+	// 製品ではMASKしない。
+        assign res_out = res_in ;
+
+endmodule
+`else
+module QLK0RCSC1V2_ICE_RES_MASK1 ( res_out , res_in , mask ) ;
+        input           res_in, mask ;
+        output          res_out ;
+        wire            res_out ;
+
+	assign res_out = res_in & ~mask ;
+
+endmodule
+`endif
+
+// ====================
+// LVI reset mask
+// ====================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_ICE_RES_MASK2 ( res_out_b , res_in_b , mask ) ;
+ 
+         input           res_in_b, mask ;
+         output          res_out_b ;
+         wire            res_out_b ;
+ 
+         // 製品ではMASKしない。
+         assign res_out_b = res_in_b ;
+ 
+endmodule
+`else
+module QLK0RCSC1V2_ICE_RES_MASK2 ( res_out_b , res_in_b , mask ) ;
+ 
+         input           res_in_b, mask ;
+         output          res_out_b ;
+         wire            res_out_b ;
+ 
+	assign res_out_b = res_in_b | mask ;
+ 
+endmodule
+`endif
+
+// =================================
+// LVIM/LVISレジスタライトイネーブル
+// =================================
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_DLY3X2_1 ( out , in , iceclk ) ;
+        input   in  ;
+        input   iceclk ;
+        output  out ;
+
+        TBDLY3X2 dly ( .N01(out), .H01(in)   );
+
+endmodule
+`else
+module QLK0RCSC1V2_DLY3X2_1 ( out , in , iceclk ) ;
+        input   in  ;
+        input   iceclk ;
+        output  out ;
+
+	reg [1:0]  in_dly;
+	always @( posedge iceclk ) begin
+		in_dly <= {in_dly[0], in};
+	end
+	assign out = in_dly[1];
+
+endmodule
+`endif
+
+`ifndef FPGA_ICE
+module QLK0RCSC1V2_NF_300NSDLY ( out , in , iceclk ) ;
+        input   in  ;
+        input   iceclk ;
+        output  out ;
+
+        QAHNFI4BN300NV1 dly300n ( .NFOUT(out), .NFIN(in) );
+
+endmodule
+`else
+module QLK0RCSC1V2_NF_300NSDLY ( out , in , iceclk ) ;
+        input   in  ;
+        input   iceclk ;
+        output  out ;
+
+	reg [17:0] dly;
+	reg out;
+	always @( posedge iceclk ) begin
+		dly <= {dly[16:0], in};
+		if ((dly[0]==in)&&(dly[1]==in)&&(dly[2]==in)&&
+		    (dly[3]==in)&&(dly[4]==in)&&(dly[5]==in)&&
+		    (dly[6]==in)&&(dly[7]==in)&&(dly[8]==in)&&
+		    (dly[9]==in)&&(dly[10]==in)&&(dly[11]==in)&&
+		    (dly[12]==in)&&(dly[13]==in)&&(dly[14]==in)&&
+		    (dly[15]==in)&&(dly[16]==in)&&(dly[17]==in)) begin
+			out <= dly[17];
+		end
+	end
+
+endmodule
+`endif
+

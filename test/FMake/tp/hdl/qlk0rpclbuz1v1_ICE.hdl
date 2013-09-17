@@ -1,0 +1,44 @@
+module QLK0RPCLBUZ1V1_CTS_PCLSEL0 ( clkin , scanclk , scanmode , clkout );
+
+input	clkin;
+input	scanclk; 
+input	scanmode;
+
+output	clkout;
+
+//	BUFG    root ( .I(clkin), .O(clkout) );
+	assign	clkout = clkin;
+
+endmodule
+
+module QLK0RPCLBUZ1V1_CTS_PCLSEL1 ( clkin , scanclk , scanmode , clkout );
+
+input   clkin;
+input   scanclk;
+input   scanmode;
+
+output  clkout;
+
+//	BUFG    root ( .I(clkin), .O(clkout) );
+	assign	clkout = clkin;
+
+endmodule
+
+module QLK0RPCLBUZ1V1_CTS_FMAIN ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+	BUFG    root ( .I(clkin), .O(clkout) );
+
+endmodule
+
+module QLK0RPCLBUZ1V1_CTS_FSUB ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+	BUFG    root ( .I(clkin), .O(clkout) );
+
+endmodule
+

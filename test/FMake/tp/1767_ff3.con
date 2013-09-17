@@ -1,0 +1,5 @@
+RESB	cspf_wrapper.flash_code.dOut.RESB
+O		FF3_O:terminal
+VIMDS1	cspf_wrapper.cspf.bus.VIMDS1
+VIMDS0	cspf_wrapper.cspf.bus.VIMDS0
+		

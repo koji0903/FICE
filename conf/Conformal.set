@@ -1,0 +1,20 @@
+#####################################################################
+#
+# Setting File for Conformal
+#
+#   Author: Koji HIJKURO <koji.hijikuro.rj@rms.renesas.com
+#
+#####################################################################
+#
+# [FILE FORMAT]
+#
+#
+#####################################################################
+
+# Generate Conformal RunScript & Dofile
+GenerateSubModuleConformal:D78F1070
+
+# Display between Modules port difference
+PortDiff:QLK0RCIBCM3SF1V1,ICE_TOP
+PortDiff:KX4_PORGA,ICE_TOP
+

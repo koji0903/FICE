@@ -1,0 +1,325 @@
+//===========================================================================//
+//                                                                           //
+//                 Key Return Macro
+//                
+//
+//===========================================================================//
+//                 Macro Version 1.00
+//===========================================================================//
+//     Create Date : 2005.10.06 (V1.00) org:QPK0RKR08V1
+//
+//===========================================================================//
+//             Layer Structure
+//==========================================================================//
+//              QPK0RKR08V1-------+----------QPK0RKR08V1_MAIN
+//                                    |
+//                                    |
+//                                    +----------QPK0RKR08V1_BI
+//
+//==========================================================================//
+//                Module Description
+//==========================================================================//
+//
+//         QPK0RKR08V1            :       Top Module
+//         QPK0RKR08V1_BI         :       Bus Interface Module
+//         QPK0RKR08V1_MAIN       :       Main Block Mudule
+//=======================================================================
+// Bus Interface Signal Description
+//      Signal Name    I/O               Description
+//=======================================================================
+//      PSEL            input          Macro Select Signal
+//      PADDR6-4        input          Peripheral Address Bus
+//      PWDATA[7:0]     input          Peripheral Input Data Bus
+//      PRDATA[7:0]     output         Peripheral Output Data Bus
+//      PWRITE          input          Read/Write Status Signal
+//      PENABLE         input          Bus Strobe Signal
+//      VPUENZ          input          High Byte Access Enable Signal
+//	VPTRIEN		input	       Tri-state and usual output control enable signal   // DEL
+//
+//      din[7:0]        output         Main Block Data Input Signal
+//      dout[7:0]       input          Main Block Data Output Signal
+//      sel_krm         output         KRM/TREG0 Register Select Signal  
+//      sel_treg12      output         TREG1/TREG2 Register Select Signal		// DEL
+//      we_krm          output         KRM Register Write Signal
+//      we_treg0        output         TREG0 Register Write Signal		// DEL
+//      we_treg1        output         TREG1 Register Write Signal		// DEL
+//      we_treg2        output         TREG2 Register Write Signal		// DEL
+//
+
+module QPK0RKR08V1_BI( 
+		 
+                    //PSEL   , VPCA6 , VPCA5 , VPCA4 ,						// DEL VPCA1
+                    PSEL   ,						// add 2010.02.10
+                    PWDATA   , PRDATA   , PENABLE  , PWRITE , 			// DEL VPTRIEN , VPUBENZ
+		    din , dout ,
+                    we_krm 				// DEL we_treg0   , we_treg1   , we_treg2
+                    ) ;
+
+//input		PSEL   , VPCA6 , VPCA5 , VPCA4 ;       			// DEL VPCA1
+input		PSEL   ;       			                        // add 2010.02.10
+input		PENABLE  , PWRITE ;			// DEL VPTRIEN  , VPUBENZ
+output		we_krm ;				// DEL sel_treg12 , we_treg0 , we_treg1 , we_treg2 
+input	[7:0]   dout ;					// change [15:0] -> [7:0]
+input	[7:0]	PWDATA ;					// change [15:0] -> [7:0]
+output	[7:0]	PRDATA ;					// change [15:0] -> [7:0]
+output	[7:0]	din ;					// change [15:0] -> [7:0]
+
+wire	[7:0]	din ;					// change [15:0] -> [7:0]
+wire    [7:0]	PRDATA ;					// change [15:0] -> [7:0]
+wire		sel_krm ;				// ADD sel_krm  (V0.00)
+wire		we_krm  ;				// DEL we_treg0 , we_treg1 , we_treg2
+wire		we_krm_en0 , we_krm_en ;			// ADD we_krm_en0 , we_krm_en  (V0.00)
+
+wire		re_krm ; 				// DEL re_treg0 , re_treg1 , re_treg2  (V0.00)
+wire            msk_penable ;				// ADD msk_penable(V0.01)
+/********************    Selection signal generation circuit       ******************************************************/
+
+assign sel_krm = PSEL ;
+
+/********************    Key Return mode register (KRM) Read/Write control signal  **************************************/
+
+//assign we_krm_en0  = sel_krm & PWRITE  & ~VPCA6 & VPCA5 & VPCA4 ; 			// ADD V0.00
+assign we_krm_en0  = sel_krm & PWRITE ; 			// add 2010.02.10
+assign we_krm_en = we_krm_en0 ;
+
+QPK0RKR08V1_ANDG and_we  ( .clk_out(we_krm) , .clk_in(PENABLE) , .clk_en(we_krm_en) ) ; // add 2004.01.12
+
+assign msk_penable = PENABLE ;
+
+//wire psel_en = PSEL & ~PWRITE & ~VPCA6 & VPCA5 & VPCA4 ;				// add 2004.01.12
+wire psel_en = PSEL & ~PWRITE ;					// add 2010.02.10
+QPK0RKR08V1_ANDG and_re  ( .clk_out(re_krm) , .clk_in(msk_penable) , .clk_en(psel_en) ) ; // add 2004.01.12
+
+/********************   Output/Input bus driver part control signal part    ************************************************/
+
+assign PRDATA[7:0] = (re_krm==1'b1) ? dout[7:0] : 8'b0 ;			// ADD V0.00
+
+assign din[7:0] = PWDATA[7:0] ;							// modify V0.00
+
+endmodule
+
+/***************************************   QPK0RKR08V1 Bus Interface Block   **************************************************/
+
+
+//===========================================================================//
+//                                                                           //
+//                 Key Return Macro Based NPB 
+//                 (CMB Macro)
+//                
+//
+//===========================================================================//
+//                 Process  MF2
+//===========================================================================//
+//     Create Date : 2003.8.14
+//===========================================================================//
+//             Layer Structure
+//==========================================================================//
+//              QPK0RKR08V1-------+----------QPK0RKR08V1_MAIN
+//                                    |
+//                                    |
+//                                    +----------QPK0RKR08V1_BI
+//
+//==========================================================================//
+//                      Module Description
+//==========================================================================//
+//
+//         QPK0RKR08V1           :       Top Module
+//         QPK0RKR08V1_BI        :       Bus Interface Module
+//         QPK0RKR08V1_MAIN      :       Main Block Mudule
+//=======================================================================
+//  Key Return Main Block Signal Description
+//      Signal Name    I/O               Description
+//=======================================================================
+
+//      din[7:0]        input          Main Block Data Input Signal
+//      dout[7:0]       output         Main Block Data Output Signal
+//      sel_krm         input          KRM/TREG0 Register Select Signal  
+//      sel_treg12      input          TREG1/TREG2 Register Select Signal  // DEL
+//      we_krm          input          KRM Register Write Signal
+//      we_treg0        input          TREG0 Register Write Signal	// DEL
+//      we_treg1        input          TREG1 Register Write Signal     // DEL
+//      we_treg2        input          TREG2 Register Write Signal     // DEL
+//
+//	PCLKRW		input		BASECLK
+//      PRESETZ         input            Usual Register Global Reset Signal
+//      TESEN           input            Test Enable Signal
+//	VPTRIEN		input		Tri-state selection control signal	// DEL
+
+//      PKR0            input          External Interrupt Signal Input 0
+//      PKR1            input          External Interrupt Signal Input 1
+//      PKR2            input          External Interrupt Signal Input 2
+//      PKR3            input          External Interrupt Signal Input 3
+//      PKR4            input          External Interrupt Signal Input 4
+//      PKR5            input          External Interrupt Signal Input 5
+//      PKR6            input          External Interrupt Signal Input 6
+//      PKR7            input          External Interrupt Signal Input 7
+
+//      INTKR           output         Interrupt Output Signal
+
+module QPK0RKR08V1_MAIN ( we_krm , 			// DEL sel_treg12 , we_treg0 , we_treg1 , we_treg2
+                       din    , dout      ,
+                       INTKR  ,
+                       PKR0   , PKR1      , PKR2      , PKR3  ,
+                       PKR4   , PKR5      , PKR6      , PKR7  ,
+		       PCLKRW , PRESETZ 		// DEL TESEN
+                     ) ;
+input		we_krm ;				// DEL sel_treg12 , we_treg0 , we_treg1 , we_treg2
+input		PKR0   , PKR1      , PKR2      , PKR3  , PKR4    , PKR5    , PKR6   , PKR7 ;
+input		PCLKRW , PRESETZ ;				// DEL TESEN
+output		INTKR  ;
+input	[7:0]	din ;						// change [15:0] -> [7:0]
+output  [7:0]	dout ;						// change [15:0] -> [7:0]
+  
+wire    [7:0]   dout ;						// ADD    (V0.00)
+wire		INTKR ;
+
+wire	[7:0]	ikr1  ;
+
+reg	[7:0]	KRM ;
+/***************    KRM register initial and Write control process     ******************************/
+
+//synopsys async_set_reset "PRESETZ"
+always @(  posedge PCLKRW or negedge PRESETZ )begin
+       if( !PRESETZ ) 
+            KRM <= 8'b0000_0000 ;
+       else if( we_krm )
+            KRM <= din[7:0] ;
+       else  
+            KRM <= KRM ;
+end
+
+/***************************   Internal signal ikr1 generation      ****************************************/
+
+assign ikr1  =  { PKR7, PKR6, PKR5, PKR4, PKR3, PKR2, PKR1, PKR0 } ;
+
+/****************************   Internal signal IINTKR signal generation    ********************************/
+
+assign        INTKR = (~ikr1[7] & KRM[7]) |(~ikr1[6] & KRM[6]) |(~ikr1[5] & KRM[5]) |(~ikr1[4] & KRM[4]) |
+                  (~ikr1[3] & KRM[3]) |(~ikr1[2] & KRM[2]) |(~ikr1[1] & KRM[1]) |(~ikr1[0] & KRM[0]) ; 
+
+/************************    All register data output control  **********************************************/
+
+assign  dout = KRM ;           // ADD 2003.08.26 , modify V0.00
+
+endmodule            			
+/**************************************     QPK0RKR08V1 Main Block     ***************************************************/
+
+
+//===========================================================================//
+//                                                                           //
+//                 Key Return Macro Based NPB 
+//                 (CMB Macro)
+//                 
+//
+//===========================================================================//
+//                 Process MF2
+//===========================================================================//
+//     Create Date : 2003.8.14
+//===========================================================================//
+//              Layer Structure
+//==========================================================================//
+//              QPK0RKR08V1-------+----------QPK0RKR08V1_MAIN
+//                                    |
+//                                    |
+//                                    +----------QPK0RKR08V1_BI
+//
+//==========================================================================//
+//             QPK0RKR08V1 Top Module Description
+//==========================================================================//
+//
+//         QPK0RKR08V1           :       Top Module
+//         QPK0RKR08V1_BI        :       Bus Interface Module
+//         QPK0RKR08V1_MAIN      :       Main Block Mudule
+//=======================================================================
+//       QPK0RKR08V1 Macro  Signal Description
+//      Signal Name    I/O               Description
+//=======================================================================
+
+//      PSEL            input           Macro Select Signal
+//      PADDR6~4          input           Peripheral Address Bus
+//      PWDATA7--0        input           Peripheral Input Data Bus
+//      PRDATA7--0        output          Peripheral Output Data Bus
+//      PWRITE         input           Read/Write Status Signal
+//      PENABLE           input           Bus Strobe Signal
+//      VPUENZ          input           High Byte Access Enable Signal
+//	VPTRIEN		input		Tri-state selection control signal	// DEL
+//
+//      PRESETZ          input           Usual Register Global Reset Signal
+//      TESEN           input           Test Enable Signal
+
+
+//      PKR0            input           External Interrupt Signal Input 0
+//      PKR1            input           External Interrupt Signal Input 1
+//      PKR2            input           External Interrupt Signal Input 2
+//      PKR3            input           External Interrupt Signal Input 3
+//      PKR4            input           External Interrupt Signal Input 4
+//      PKR5            input           External Interrupt Signal Input 5
+//      PKR6            input           External Interrupt Signal Input 6
+//      PKR7            input           External Interrupt Signal Input 7
+
+//      INTKR           output          Interrupt Output Signal
+
+   
+module QPK0RKR08V1(
+                 //PSEL   , PADDR6 , PADDR5 , PADDR4 ,					// DEL PADDR1
+                 PSEL   ,					// add 2010.02.10
+                 PWDATA7  , PWDATA6  , PWDATA5  , PWDATA4  , PWDATA3  , PWDATA2  , PWDATA1 , PWDATA0 , 
+	         PRDATA7  , PRDATA6  , PRDATA5  , PRDATA4  , PRDATA3  , PRDATA2  , PRDATA1 , PRDATA0 , 
+		 PENABLE  , PWRITE , PRESETZ , PCLKRW , 			// DEL VPUBENZ , VPTRIEN , TESEN
+                 INTKR  , 
+                 PKR0    , PKR1    , PKR2    , PKR3     , PKR4     , PKR5    , PKR6   , PKR7
+                ) ;
+// input           PSEL   , PADDR6 , PADDR5 , PADDR4 ;       					// DEL PADDR1
+ input           PSEL   ;       					// add 2010.02.10
+ input           PENABLE  , PWRITE , PRESETZ , PCLKRW ;			        // DEL VPUBENZ , VPTRIEN , TESEN 
+ input           PKR0    , PKR1    , PKR2    , PKR3     , PKR4     , PKR5    , PKR6   , PKR7 ;
+ input		PWDATA7  , PWDATA6  , PWDATA5  , PWDATA4  , PWDATA3  , PWDATA2  , PWDATA1 , PWDATA0 ;
+ output		PRDATA7  , PRDATA6  , PRDATA5  , PRDATA4  , PRDATA3  , PRDATA2  , PRDATA1 , PRDATA0 ;
+ output          INTKR;
+
+ wire    [7:0]  din , dout ;						// modify (V0.00)
+ wire		we_krm ;
+
+/***********************************************   QPK0RKR08V1 Bus Interface Block Connection   *************************************/
+ QPK0RKR08V1_BI     QPK0RKR08V1_BI (  
+
+                          //.PSEL(PSEL)            , .VPCA6(PADDR6) , .VPCA5(PADDR5) , .VPCA4(PADDR4) ,           // DEL VPCA1(PADDR1)
+                          .PSEL(PSEL)            ,           // add 2010.02.10
+
+                          .PWDATA({PWDATA7  , PWDATA6  , PWDATA5  , PWDATA4  , PWDATA3  , PWDATA2  , PWDATA1 , PWDATA0})  ,	// modify (V0.00)
+                          .PRDATA({PRDATA7  , PRDATA6  , PRDATA5  , PRDATA4  , PRDATA3  , PRDATA2  , PRDATA1 , PRDATA0}) ,	// modify (V0.00)
+
+                          .PENABLE(PENABLE)           , .PWRITE(PWRITE)     ,           // DEL .VPUBENZ(VPUBENZ), .VPTRIEN(VPTRIEN)
+                          .din(din)               , .dout(dout)           , .we_krm(we_krm)
+
+			) ;
+
+/***********************************************   QPK0RKR08V1 Main Block Connection  ***********************************************/
+
+ QPK0RKR08V1_MAIN    QPK0RKR08V1_MAIN ( 
+
+                            .din(din)                 , .dout(dout)         , .we_krm(we_krm)       , 
+
+                            .INTKR(INTKR)             , .PKR0(PKR0)         , .PKR1(PKR1)           , .PKR2(PKR2)           , 
+
+                            .PKR3(PKR3)               , .PKR4(PKR4)         , .PKR5(PKR5)           , .PKR6(PKR6)           , 
+
+                            .PKR7(PKR7)               , .PCLKRW(PCLKRW)	    , .PRESETZ(PRESETZ)      		// TESEN
+
+                           );
+
+endmodule
+
+// add 2004.01.12
+module QPK0RKR08V1_ANDG ( clk_out , clk_in , clk_en ) ;
+ 
+ 	input clk_in , clk_en ;
+ 	output clk_out ;
+ 
+ 	wire clk_out ;
+ 
+ 	assign clk_out = clk_in & clk_en ;
+ 
+endmodule
+
+ /********************************************   QPK0RKR08V1 Macro Description End    ************************************************/                                                                                                                                                                                                                                                                                                                                                                                        

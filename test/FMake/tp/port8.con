@@ -1,0 +1,4 @@
+PTTL2	PTTL08:terminal
+PTTL	P80:terminal
+rst_b	RESETB:terminal
+#rst_b	reset_b:terminal

@@ -1,0 +1,3 @@
+clk_out add_ff.clk
+SYSRSOUTB		cspf_wrapper.flash_code.rst_sysrsout_n
+CLK60MHz		cspf_wrapper.iceck60m

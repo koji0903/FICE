@@ -1,0 +1,127 @@
+#-----------------------------------------------------------------------------------------
+# FMake Connect File (TypeB approach)
+#   Please divide connection informations which depend on the macro into each macro as
+#   much as possible. It may facilitate to distinguish product dependent information from
+#   macro common information.
+#   (1) Please list a connection information in a higher-priority module.
+#         -> It becomes the emulation specification like?
+#       +---------------------------------------------------------------------------+
+#       | Priority High<- - - - - - - - - - - - - - - - - - - - - - - - - - - ->Low |
+#       |               Fmake-Limit  ADD1  Replace  ADD2  KeepChange  ADD3  ICE     |
+#       +---------------------------------------------------------------------------+
+#       Replace -> It except Code-Flash, Data-Flash and RAM (They are included in ICE Macro).
+#       ADD1 -> primary function of ICE   : inspect, PUCTL, FixedPin, prtyerr
+#       ADD2 -> related to replace macro  : admux, iawif
+#       Add3 -> secondary function of ICE : svmodif, CLK240BASE, ieICEControl, iePortControl
+#   (2) Please divide it into three following categories.
+#         - common     : There are no parameters which should be changed.
+#         - local      : It may be necessary to modify the instance for each product.
+#         - Limitation : FMake Limitation.
+#   (3) Please separate the parameter to files below.
+#         - <Macro>_common.con : connection information that is not changed.
+#         - <Macro>_local.con  : connection information that may be changed for product.
+#         - <Macro>.con        : connection information for local macro.
+#- History -------------------------------------------------------------------------------
+# 2012.7.9
+# initial
+# T.Tsunoda
+#-----------------------------------------------------------------------------------------
+
+#=========================================================================================
+# Following Connection match FMake Limitation #1789
+#=========================================================================================
+
+# macro pin is single-line but use bus-style to their interconnect.
+MA			cspf.mc200.cpu_ma    	# [15:0] Bus-Connection (cpu)
+PA			cspf.mc200.cpu_pa	# [19:2] Bus-Connection (cpu)
+EXMA			cspf.mc200.cpu_exma	# [3:0]  Bus-Connection (cpu)
+MDW			cspf.mc200.cpu_mdw	# [15:0] Bus-Connection (cpu)
+A			cspf.mc200.cibc_a	# [19:2] Bus-Connection (cibc)
+BTBLS			cspf.mc200.cibc_btbls	# [1:0]  Bus-Connection (cibc)
+DW			cspf.fcb_dw		# [37:0] Bus-Connection (fcb)
+AF			cspf.mc200.fcb_af	# [19:0] Bus-Connection (fcb)
+BEU            		cspf.mc200.fcb_beu	# [2:0]  Bus-Connection (fcb)
+DA			cspf.mc200.cibd_da	# [9:0]  Bus-Connection (cibd)
+
+#=========================================================================================
+# It may be necessary to modify the signal below for each product.
+#=========================================================================================
+
+#------------------------------------------------
+# Connection to Device
+#------------------------------------------------
+# WAITDTC      PULLDOWN    # DTC macro exists ? Connect to DTC (in DTC.con) : PULLDOWN
+
+#------------------------------------------------
+# ICE System Clock
+#------------------------------------------------
+CLK60MHZ		cspf.iceck60m,pericore.fpga_clk60mhz # [TobeChanged!!]
+
+#------------------------------------------------
+# PSEUDO Emulation Block I/F
+#------------------------------------------------
+#  0                    : use for regm LVI Reset (regm)
+#  1                    : use for TRAP (csc)
+# PSEUDOON2		: Free
+# PSEUDOON3		: Free
+# PSEUDOON4		: Free
+# PSEUDOON5		: Free
+# PSEUDOON6		: Free
+# PSEUDOON7		: Free
+#  8                    : use for regm LVI Interrupt (regm)
+# PSEUDOON9		: Free
+# 10                    : use for IAW Reset (csc)
+# PSEUDOON11		: Free
+# PSEUDOON12		: Free
+# PSEUDOON13		: Free
+# PSEUDOON14		: Free
+# PSEUDOON15		: Free
+# PSEUDOON16		: Free
+# PSEUDOON17		: Free
+# PSEUDOON18		: Free
+# PSEUDOON19		: Free
+# PSEUDOON20 		: Free
+# PSEUDOON21		: Free
+# PSEUDOON22		: Free
+# PSEUDOON23		: Free
+# PSEUDOON24		: Free
+# PSEUDOON25		: Free
+# PSEUDOON26		: Free
+# PSEUDOON27		: use for SIP
+# PSEUDOON28		: use for SIP
+# PSEUDOON29		: Free
+# PSEUDOON30		: Free
+# 31                : use for EMVDD Discharge (ieicecontrol)
+
+#------------------------------------------------
+# Clock Block I/F
+#------------------------------------------------
+# 31 : (clk240base)
+LOCKFAIL30		PULLDOWN
+LOCKFAIL29		PULLDOWN
+LOCKFAIL28		PULLDOWN
+LOCKFAIL27		PULLDOWN
+LOCKFAIL26		PULLDOWN
+LOCKFAIL25		PULLDOWN
+LOCKFAIL24		PULLDOWN
+LOCKFAIL23		PULLDOWN
+LOCKFAIL22		PULLDOWN
+LOCKFAIL21		PULLDOWN
+# 20 : internal use (ice.clockctl)
+LOCKFAIL19		PULLDOWN
+LOCKFAIL18		PULLDOWN
+LOCKFAIL17		PULLDOWN
+LOCKFAIL16		PULLDOWN
+LOCKFAIL15		PULLDOWN
+LOCKFAIL14		PULLDOWN
+LOCKFAIL13		PULLDOWN
+LOCKFAIL12		PULLDOWN
+LOCKFAIL11		PULLDOWN
+LOCKFAIL10		PULLDOWN
+LOCKFAIL9		PULLDOWN
+# 8   : LOCK40FAIL (h_rosc)
+# 7   : LOCKHROSCFAIL (h_rosc)
+# 6   : LOCK48FAIL (h_rosc)
+# 5   : LOCK64FAIL (h_rosc)
+# 4-0 : internal use (ice.clockctl)
+

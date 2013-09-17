@@ -1,0 +1,57 @@
+###################################################
+#
+# Setting File for FMake
+#
+###################################################
+
+# PROJECT Name
+# This Parameter use synthesis directory name
+PROJECT         = test
+
+# Circuit File List 
+# When there are some files, separate files using ":"
+FILE            = ../src/test.v
+
+# SDC File List
+SDC             = 
+
+# Top Module Name
+# Synthesis top module as this module
+TOP_MODULE      = test
+
+
+#
+# Output root directory
+#
+WORK_DIR         = 00macro_synthesis
+
+#
+# For Synplify Pro Synthesis OPTION
+#
+
+# Synthesis operation (ON/OFF)
+SYNTHESIS       = ON
+
+# FPGA Thechnology
+TECHNOLOGY      = Virtex4
+
+# FPGA Part
+PART            = XC4VLX80
+
+# FPGA Package
+PACKAGE         = FF1148
+
+# FPGA Speed Grade
+SPEED_GRADE     = -10
+
+# Setting for gated clock (ON/OFF)
+FIX_GATED_CLOCK = ON
+
+
+
+#
+# For ISE Place & Route OPTION
+#
+
+# ISE Place & Route Operation (ON/OFF)
+PLACE_AND_ROUTE = ON

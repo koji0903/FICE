@@ -1,0 +1,4 @@
+# Nothing
+da_data	cspf_wrapper.cspf.mc200.port7.DADATA
+FMAIN_FCLK  pericore.connectA.I,pericore.connectB.I
+FCLK		cspf_wrapper.cspf.cpu.FCLK

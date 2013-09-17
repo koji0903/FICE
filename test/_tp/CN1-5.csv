@@ -1,0 +1,550 @@
+ProductName=,,,,IX4,Para Ver.=,1.00,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,Connect FPGA Signal,Pin Lock,PORT Pulldown,Buffer type for UCF,Fix output signal,Pin Para ,FPGAでの処理の選択肢
+1,1,-,-,GND,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,,[PORT DATA]
+1,2,7,AL24,P50,P200,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P200, define_attribute {P200}  xc_loc {AL24};, define_attribute {P200}   xc_pulldown {1};,"NET ""P200""  IOSTANDARD = LVCMOS33 ;",,,[PORT PIO]
+1,3,7,AL25,P51,P201,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P201, define_attribute {P201}  xc_loc {AL25};, define_attribute {P201}   xc_pulldown {1};,"NET ""P201""  IOSTANDARD = LVCMOS33 ;",,,[PORT PPUP]
+1,4,7,AL26,P52,,I/O,3.3V,Port,[Pull Down],,,,,,,,,,[Use Signal]
+1,5,7,AK26,P53,OAINS0,I,3.3V,Port,[Use Signal],PGA制御信号出力,,,OAINS0, define_attribute {OAINS0}  xc_loc {AK26};,,"NET ""OAINS0""  IOSTANDARD = LVCMOS33 ;",,,[High固定]
+1,6,7,AN22,P54,OAINS1,I,3.3V,Port,[Use Signal],PGA制御信号出力,,,OAINS1, define_attribute {OAINS1}  xc_loc {AN22};,,"NET ""OAINS1""  IOSTANDARD = LVCMOS33 ;",,,[Low固定]
+1,7,7,AN23,P55,OAINS2,I,3.3V,Port,[Use Signal],PGA制御信号出力,,,OAINS2, define_attribute {OAINS2}  xc_loc {AN23};,,"NET ""OAINS2""  IOSTANDARD = LVCMOS33 ;",,,[Pull Down]
+1,8,7,AJ25,AP1(P56),CMP5OUT,O,3.3V,Port,[Use Signal],CMP擬似出力用の入力信号,,,CMP5OUT, define_attribute {CMP5OUT}  xc_loc {AJ25};,,"NET ""CMP5OUT""  IOSTANDARD = LVCMOS33 ;",,,[電源/GND]
+1,9,7,AH25,AP2(P57),C0VRS1,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C0VRS1, define_attribute {C0VRS1}  xc_loc {AH25};,,"NET ""C0VRS1""  IOSTANDARD = LVCMOS33 ;",,,-
+1,10,7,AP24,PIO50,PIO201,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO201, define_attribute {PIO201}  xc_loc {AP24};,,"NET ""PIO201""  IOSTANDARD = LVCMOS33 ;",,,[Use Signal PullDown]
+1,11,7,AN24,PIO51,PIO202,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO202, define_attribute {PIO202}  xc_loc {AN24};,,"NET ""PIO202""  IOSTANDARD = LVCMOS33 ;",,,[Use Signal PullUp]
+1,12,7,AM26,PIO52,,I,3.3V,Port,[High固定],,,,fixH_AM26, define_attribute {fixH_AM26}  xc_loc {AM26};,,"NET ""fixH_AM26""  IOSTANDARD = LVCMOS33 ;",assign fixH_AM26 = 1'b1;  // PIO52 High fix,fixH_AM26 TYPE OUT  // PIO52 High fix,
+1,13,7,AM27,PIO53,,I,3.3V,Port,[High固定],,,,fixH_AM27, define_attribute {fixH_AM27}  xc_loc {AM27};,,"NET ""fixH_AM27""  IOSTANDARD = LVCMOS33 ;",assign fixH_AM27 = 1'b1;  // PIO53 High fix,fixH_AM27 TYPE OUT  // PIO53 High fix,
+1,14,7,AL23,PIO54,,I,3.3V,Port,[High固定],,,,fixH_AL23, define_attribute {fixH_AL23}  xc_loc {AL23};,,"NET ""fixH_AL23""  IOSTANDARD = LVCMOS33 ;",assign fixH_AL23 = 1'b1;  // PIO54 High fix,fixH_AL23 TYPE OUT  // PIO54 High fix,
+1,15,7,AM23,PIO55,,I,3.3V,Port,[High固定],,,,fixH_AM23, define_attribute {fixH_AM23}  xc_loc {AM23};,,"NET ""fixH_AM23""  IOSTANDARD = LVCMOS33 ;",assign fixH_AM23 = 1'b1;  // PIO55 High fix,fixH_AM23 TYPE OUT  // PIO55 High fix,
+1,16,7,AN25,APIO1(PIO56),,I,3.3V,Port,[High固定],,,,fixH_AN25, define_attribute {fixH_AN25}  xc_loc {AN25};,,"NET ""fixH_AN25""  IOSTANDARD = LVCMOS33 ;",assign fixH_AN25 = 1'b1;  // APIO1(PIO56) High fix,fixH_AN25 TYPE OUT  // APIO1(PIO56) High fix,
+1,17,7,AM25,APIO2(PIO57),,I,3.3V,Port,[High固定],,,,fixH_AM25, define_attribute {fixH_AM25}  xc_loc {AM25};,,"NET ""fixH_AM25""  IOSTANDARD = LVCMOS33 ;",assign fixH_AM25 = 1'b1;  // APIO2(PIO57) High fix,fixH_AM25 TYPE OUT  // APIO2(PIO57) High fix,
+1,18,7,AP21,P140,,I/O,3.3V,Port,[Pull Down],,,,,,,,,,
+1,19,7,AP22,P141,C3VRS0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3VRS0, define_attribute {C3VRS0}  xc_loc {AP22};,,"NET ""C3VRS0""  IOSTANDARD = LVCMOS33 ;",,,
+1,20,7,AP29,AP3(P142),C3VRS1,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3VRS1, define_attribute {C3VRS1}  xc_loc {AP29};,,"NET ""C3VRS1""  IOSTANDARD = LVCMOS33 ;",,,
+1,21,7,AN29,AP4(P143),C3VRS2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3VRS2, define_attribute {C3VRS2}  xc_loc {AN29};,,"NET ""C3VRS2""  IOSTANDARD = LVCMOS33 ;",,,
+1,22,7,AK24,AP5(P144),C3VRS3,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3VRS3, define_attribute {C3VRS3}  xc_loc {AK24};,,"NET ""C3VRS3""  IOSTANDARD = LVCMOS33 ;",,,
+1,23,7,AJ24,AP6(P145),C3VRS4,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3VRS4, define_attribute {C3VRS4}  xc_loc {AJ24};,,"NET ""C3VRS4""  IOSTANDARD = LVCMOS33 ;",,,
+1,24,7,AK27,P146,,I/O,3.3V,Port,[Pull Down],,,,,,,,,,
+1,25,7,AK28,P147,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P147, define_attribute {P147}  xc_loc {AK28};, define_attribute {P147}   xc_pulldown {1};,"NET ""P147""  IOSTANDARD = LVCMOS33 ;",,,
+1,26,7,AG23,PIO140,,I,3.3V,Port,[High固定],,,,fixH_AG23, define_attribute {fixH_AG23}  xc_loc {AG23};,,"NET ""fixH_AG23""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG23 = 1'b1;  // PIO140 High fix,fixH_AG23 TYPE OUT  // PIO140 High fix,
+1,27,7,AF24,PIO141,,I,3.3V,Port,[High固定],,,,fixH_AF24, define_attribute {fixH_AF24}  xc_loc {AF24};,,"NET ""fixH_AF24""  IOSTANDARD = LVCMOS33 ;",assign fixH_AF24 = 1'b1;  // PIO141 High fix,fixH_AF24 TYPE OUT  // PIO141 High fix,
+1,28,7,AG25,APIO3(PIO142),,I,3.3V,Port,[High固定],,,,fixH_AG25, define_attribute {fixH_AG25}  xc_loc {AG25};,,"NET ""fixH_AG25""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG25 = 1'b1;  // APIO3(PIO142) High fix,fixH_AG25 TYPE OUT  // APIO3(PIO142) High fix,
+1,29,7,AG26,APIO4(PIO143),,I,3.3V,Port,[High固定],,,,fixH_AG26, define_attribute {fixH_AG26}  xc_loc {AG26};,,"NET ""fixH_AG26""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG26 = 1'b1;  // APIO4(PIO143) High fix,fixH_AG26 TYPE OUT  // APIO4(PIO143) High fix,
+1,30,7,AH23,APIO5(PIO144),,I,3.3V,Port,[High固定],,,,fixH_AH23, define_attribute {fixH_AH23}  xc_loc {AH23};,,"NET ""fixH_AH23""  IOSTANDARD = LVCMOS33 ;",assign fixH_AH23 = 1'b1;  // APIO5(PIO144) High fix,fixH_AH23 TYPE OUT  // APIO5(PIO144) High fix
+1,31,7,AH24,APIO6(PIO145),,I,3.3V,Port,[High固定],,,,fixH_AH24, define_attribute {fixH_AH24}  xc_loc {AH24};,,"NET ""fixH_AH24""  IOSTANDARD = LVCMOS33 ;",assign fixH_AH24 = 1'b1;  // APIO6(PIO145) High fix,fixH_AH24 TYPE OUT  // APIO6(PIO145) High fix
+1,32,7,AN28,PIO146,,I,3.3V,Port,[High固定],,,,fixH_AN28, define_attribute {fixH_AN28}  xc_loc {AN28};,,"NET ""fixH_AN28""  IOSTANDARD = LVCMOS33 ;",assign fixH_AN28 = 1'b1;  // PIO146 High fix,fixH_AN28 TYPE OUT  // PIO146 High fix
+1,33,7,AM28,PIO147,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO147, define_attribute {PIO147}  xc_loc {AM28};,,"NET ""PIO147""  IOSTANDARD = LVCMOS33 ;",,
+1,34,7,AK29,P00,C3VRS5,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3VRS5, define_attribute {C3VRS5}  xc_loc {AK29};,,"NET ""C3VRS5""  IOSTANDARD = LVCMOS33 ;",,
+1,35,7,AJ29,P01,,I/O,3.3V,Port,[Pull Down],,,,,,,,,
+1,36,7,AF28,P02,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P02, define_attribute {P02}  xc_loc {AF28};, define_attribute {P02}   xc_pulldown {1};,"NET ""P02""  IOSTANDARD = LVCMOS33 ;",,
+1,37,7,AE27,P03,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P03, define_attribute {P03}  xc_loc {AE27};, define_attribute {P03}   xc_pulldown {1};,"NET ""P03""  IOSTANDARD = LVCMOS33 ;",,
+1,38,7,AF26,P04,CMP4OUT,O,3.3V,Port,[Use Signal],CMP擬似出力用の入力信号,,,CMP4OUT, define_attribute {CMP4OUT}  xc_loc {AF26};,,"NET ""CMP4OUT""  IOSTANDARD = LVCMOS33 ;",,
+1,39,7,AE26,P05,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P05, define_attribute {P05}  xc_loc {AE26};, define_attribute {P05}   xc_pulldown {1};,"NET ""P05""  IOSTANDARD = LVCMOS33 ;",,
+1,40,7,AN32,P06,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P06, define_attribute {P06}  xc_loc {AN32};, define_attribute {P06}   xc_pulldown {1};,"NET ""P06""  IOSTANDARD = LVCMOS33 ;",,
+1,41,7,AN33,AP7(P07),C2MODESEL0,I/O,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2MODESEL0, define_attribute {C2MODESEL0}  xc_loc {AN33};,,"NET ""C2MODESEL0""  IOSTANDARD = LVCMOS33 ;",,
+1,42,7,AK21,PIO00,,I,3.3V,Port,[High固定],,,,fixH_AK21, define_attribute {fixH_AK21}  xc_loc {AK21};,,"NET ""fixH_AK21""  IOSTANDARD = LVCMOS33 ;",assign fixH_AK21 = 1'b1;  // PIO00 High fix,fixH_AK21 TYPE OUT  // PIO00 High fix
+1,43,7,AL21,PIO01,,I,3.3V,Port,[High固定],,,,fixH_AL21, define_attribute {fixH_AL21}  xc_loc {AL21};,,"NET ""fixH_AL21""  IOSTANDARD = LVCMOS33 ;",assign fixH_AL21 = 1'b1;  // PIO01 High fix,fixH_AL21 TYPE OUT  // PIO01 High fix
+1,44,7,AH28,PIO02,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO02, define_attribute {PIO02}  xc_loc {AH28};,,"NET ""PIO02""  IOSTANDARD = LVCMOS33 ;",,
+1,45,7,AH29,PIO03,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO03, define_attribute {PIO03}  xc_loc {AH29};,,"NET ""PIO03""  IOSTANDARD = LVCMOS33 ;",,
+1,46,7,AP30,PIO04,,I,3.3V,Port,[PORT PIO],,,,PIO04, define_attribute {PIO04}  xc_loc {AP30};,,"NET ""PIO04""  IOSTANDARD = LVCMOS33 ;",,
+1,47,7,AN30,PIO05,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO05, define_attribute {PIO05}  xc_loc {AN30};,,"NET ""PIO05""  IOSTANDARD = LVCMOS33 ;",,
+1,48,7,AG27,PIO06,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO06, define_attribute {PIO06}  xc_loc {AG27};,,"NET ""PIO06""  IOSTANDARD = LVCMOS33 ;",,
+1,49,7,AG28,APIO7(PIO07),,I,3.3V,Port,[High固定],,,,fixH_AG28, define_attribute {fixH_AG28}  xc_loc {AG28};,,"NET ""fixH_AG28""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG28 = 1'b1;  // APIO7(PIO07) High fix,fixH_AG28 TYPE OUT  // APIO7(PIO07) High fix
+1,50,-,-,GND,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,,,,,,
+1,51,-,-,GND,,-,-,-,[電源/GND],[電源/GND],,,,,,,,
+1,52,2,AJ22,P40,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P40, define_attribute {P40}  xc_loc {AJ22};, define_attribute {P40}   xc_pulldown {1};,"NET ""P40""  IOSTANDARD = LVCMOS33 ;",,
+1,53,2,AJ21,P41,,I/O,3.3V,Port,[Pull Down],,,,,,,,,
+1,54,2,AC15,P42,,I/O,3.3V,Port,[Pull Down],,,,,,,,,
+1,55,2,AB15,P43,C1VRS0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C1VRS0, define_attribute {C1VRS0}  xc_loc {AB15};,,"NET ""C1VRS0""  IOSTANDARD = LVCMOS33 ;",,
+1,56,2,AG22,AP8(P44),,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+1,57,2,AH22,AP9(P45),,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+1,58,2,AL14,AP10(P46),,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+1,59,2,AK14,AP11(P47),,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+1,60,2,AG21,PIO40,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO40, define_attribute {PIO40}  xc_loc {AG21};,,"NET ""PIO40""  IOSTANDARD = LVCMOS33 ;",,
+1,61,2,AF20,PIO41,,I,3.3V,Port,[High固定],,,,fixH_AF20, define_attribute {fixH_AF20}  xc_loc {AF20};,,"NET ""fixH_AF20""  IOSTANDARD = LVCMOS33 ;",assign fixH_AF20 = 1'b1;  // PIO41 High fix,fixH_AF20 TYPE OUT  // PIO41 High fix
+1,62,2,AF14,PIO42,,I,3.3V,Port,[High固定],,,,fixH_AF14, define_attribute {fixH_AF14}  xc_loc {AF14};,,"NET ""fixH_AF14""  IOSTANDARD = LVCMOS33 ;",assign fixH_AF14 = 1'b1;  // PIO42 High fix,fixH_AF14 TYPE OUT  // PIO42 High fix
+1,63,2,AG13,PIO43,,I,3.3V,Port,[High固定],,,,fixH_AG13, define_attribute {fixH_AG13}  xc_loc {AG13};,,"NET ""fixH_AG13""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG13 = 1'b1;  // PIO43 High fix,fixH_AG13 TYPE OUT  // PIO43 High fix
+1,64,2,AE21,APIO8(PIO44),,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_AE21, define_attribute {fixH_AE21}  xc_loc {AE21};,,"NET ""fixH_AE21""  IOSTANDARD = LVCMOS33 ;",assign fixH_AE21 = 1'b1;  // APIO8(PIO44) High fix,fixH_AE21 TYPE OUT  // APIO8(PIO44) High fix
+1,65,2,AF21,APIO9(PIO45),,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_AF21, define_attribute {fixH_AF21}  xc_loc {AF21};,,"NET ""fixH_AF21""  IOSTANDARD = LVCMOS33 ;",assign fixH_AF21 = 1'b1;  // APIO9(PIO45) High fix,fixH_AF21 TYPE OUT  // APIO9(PIO45) High fix
+1,66,2,AP15,APIO10(PIO46),,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_AP15, define_attribute {fixH_AP15}  xc_loc {AP15};,,"NET ""fixH_AP15""  IOSTANDARD = LVCMOS33 ;",assign fixH_AP15 = 1'b1;  // APIO10(PIO46) High fix,fixH_AP15 TYPE OUT  // APIO10(PIO46) High fix
+1,67,2,AN15,APIO11(PIO47),,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_AN15, define_attribute {fixH_AN15}  xc_loc {AN15};,,"NET ""fixH_AN15""  IOSTANDARD = LVCMOS33 ;",assign fixH_AN15 = 1'b1;  // APIO11(PIO47) High fix,fixH_AN15 TYPE OUT  // APIO11(PIO47) High fix
+1,68,7,AM21,PTTL03,,O,3.3V,Port(TTL),[Use Signal],TTL受け用ポート信号,,,PTTL03, define_attribute {PTTL03}  xc_loc {AM21};,,"NET ""PTTL03""  IOSTANDARD = LVCMOS33 ;",,
+1,69,7,AM22,PTTL04,,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,70,7,AM30,PTTL10,,O,3.3V,Port(TTL),[Use Signal],TTL受け用ポート信号,,,PTTL10, define_attribute {PTTL10}  xc_loc {AM30};,,"NET ""PTTL10""  IOSTANDARD = LVCMOS33 ;",,
+1,71,7,AL30,PTTL11,,O,3.3V,Port(TTL),[Use Signal],TTL受け用ポート信号,,,PTTL11, define_attribute {PTTL11}  xc_loc {AL30};,,"NET ""PTTL11""  IOSTANDARD = LVCMOS33 ;",,
+1,72,7,AP27,PTTL13,,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,73,7,AN27,PTTL14,,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,74,7,AP31,PTTL15,,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,75,7,AP32,PTTL16,,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,76,7,AK22,PTTL17,,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,77,7,AK23,TTL_AP8(P44),,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,78,7,AL28,TTL_AP20(P95),,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,79,7,AL29,TTL_AP21(P96),,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,80,7,AP25,TTL_AP12(P125),,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,81,7,AP26,TTL_AP13(P126),,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,82,7,AJ27,TTL_AP3(P142),,O,3.3V,Port(TTL),[Pull Down],TTL受け用ポート信号,,,,,,,,
+1,83,7,AH27,P120_L,,I/O,3.3V,Port,[PORT DATA],"[PORT DATA]
+中/大チップのP120に対応",,,P120_L, define_attribute {P120_L}  xc_loc {AH27};, define_attribute {P120_L}   xc_pulldown {1};,"NET ""P120_L""  IOSTANDARD = LVCMOS33 ;",,
+1,84,2,AD21,P120,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P120, define_attribute {P120}  xc_loc {AD21};, define_attribute {P120}   xc_pulldown {1};,"NET ""P120""  IOSTANDARD = LVCMOS33 ;",,
+1,85,2,AD20,P121,,O,3.3V,Port,[PORT DATA],[PORT DATA],,,P121, define_attribute {P121}  xc_loc {AD20};, define_attribute {P121}   xc_pulldown {1};,"NET ""P121""  IOSTANDARD = LVCMOS33 ;",,
+1,86,2,AM15,P122,,O,3.3V,Port,[PORT DATA],[PORT DATA],,,P122, define_attribute {P122}  xc_loc {AM15};, define_attribute {P122}   xc_pulldown {1};,"NET ""P122""  IOSTANDARD = LVCMOS33 ;",,
+1,87,2,AL15,P123,,O,3.3V,Port,[PORT DATA],[PORT DATA],,,P123, define_attribute {P123}  xc_loc {AL15};, define_attribute {P123}   xc_pulldown {1};,"NET ""P123""  IOSTANDARD = LVCMOS33 ;",,
+1,88,2,AJ20,P124,,O,3.3V,Port,[PORT DATA],[PORT DATA],,,P124, define_attribute {P124}  xc_loc {AJ20};, define_attribute {P124}   xc_pulldown {1};,"NET ""P124""  IOSTANDARD = LVCMOS33 ;",,
+1,89,2,AL20,AP12(P125),C0VRS6,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C0VRS6, define_attribute {C0VRS6}  xc_loc {AL20};,,"NET ""C0VRS6""  IOSTANDARD = LVCMOS33 ;",,
+1,90,2,AJ15,AP13(P126),CVRE0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CVRE0, define_attribute {CVRE0}  xc_loc {AJ15};,,"NET ""CVRE0""  IOSTANDARD = LVCMOS33 ;",,
+1,91,2,AJ14,AP14(P127),CVRE1,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CVRE1, define_attribute {CVRE1}  xc_loc {AJ14};,,"NET ""CVRE1""  IOSTANDARD = LVCMOS33 ;",,
+1,92,2,AG20,PIO120,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO120, define_attribute {PIO120}  xc_loc {AG20};,,"NET ""PIO120""  IOSTANDARD = LVCMOS33 ;",,
+1,93,2,AH20,PIO121,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO121, define_attribute {PIO121}  xc_loc {AH20};,,"NET ""PIO121""  IOSTANDARD = LVCMOS33 ;",,
+1,94,2,AG15,PIO122,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO122, define_attribute {PIO122}  xc_loc {AG15};,,"NET ""PIO122""  IOSTANDARD = LVCMOS33 ;",,
+1,95,2,AH14,PIO123,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO123, define_attribute {PIO123}  xc_loc {AH14};,,"NET ""PIO123""  IOSTANDARD = LVCMOS33 ;",,
+1,96,2,AD19,PIO124,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO124, define_attribute {PIO124}  xc_loc {AD19};,,"NET ""PIO124""  IOSTANDARD = LVCMOS33 ;",,
+1,97,2,AE19,APIO12(PIO125),,I,3.3V,Port,[High固定],,,,fixH_AE19, define_attribute {fixH_AE19}  xc_loc {AE19};,,"NET ""fixH_AE19""  IOSTANDARD = LVCMOS33 ;",assign fixH_AE19 = 1'b1;  // APIO12(PIO125) High fix,fixH_AE19 TYPE OUT  // APIO12(PIO125) High fix
+1,98,2,AL16,APIO13(PIO126),,I,3.3V,Port,[High固定],,,,fixH_AL16, define_attribute {fixH_AL16}  xc_loc {AL16};,,"NET ""fixH_AL16""  IOSTANDARD = LVCMOS33 ;",assign fixH_AL16 = 1'b1;  // APIO13(PIO126) High fix,fixH_AL16 TYPE OUT  // APIO13(PIO126) High fix
+1,99,2,AK16,APIO14(PIO127),,I,3.3V,Port,[High固定],,,,fixH_AK16, define_attribute {fixH_AK16}  xc_loc {AK16};,,"NET ""fixH_AK16""  IOSTANDARD = LVCMOS33 ;",assign fixH_AK16 = 1'b1;  // APIO14(PIO127) High fix,fixH_AK16 TYPE OUT  // APIO14(PIO127) High fix
+1,100,-,-,GND,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,,,,,,
+2,1,-,-,-,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,
+2,2,4,AE17,EVAOSCMCLK,,O,3.3V,User Clock I/F,[Use Signal],ユーザクロックI/F,,,EVAOSCMCLK, define_attribute {EVAOSCMCLK}  xc_loc {AE17};,,"NET ""EVAOSCMCLK""  IOSTANDARD = LVCMOS33 ;",,
+2,3,-,-,GND,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,
+2,4,8,AL11,TTL_AP4(P143),,O,3.3V,Port(TTL),[Pull Down],TTL受け用Port信号,,,,,,,,
+2,5,-,-,NC,,-,-,-,-,-,,,,,,,,
+2,6,8,AL10,PALMiCE_FPGA_CLK,,I,3.3V,PALMiCE用コネクタ,[Pull Down],FPGAデバッグで使用,,,,,,,,
+2,7,8,AF11,ICESYSRES,,I,3.3V,Port,[Use Signal],ICEコントロール部システムリセット,,,ICESYSRES, define_attribute {ICESYSRES}  xc_loc {AF11};,,"NET ""ICESYSRES""  IOSTANDARD = LVCMOS33 ;",,
+2,8,-,-,DONE,,O,3.3V,拡張コネクタ,-,-,,,,,,,,
+2,9,8,AM12,TRESET_33_B,,O,3.3V,Target Reset Control,[Use Signal],ターゲットIF部ターゲットリセット信号,,,TRESET_33_B, define_attribute {TRESET_33_B}  xc_loc {AM12};,,"NET ""TRESET_33_B""  IOSTANDARD = LVCMOS33 ;",,
+2,10,8,AM11,EACONNECT_B,,O,3.3V,Target I/F,[Use Signal PullUp],ターゲットIF部EA検出信号,,,EACONNECT_B, define_attribute {EACONNECT_B}  xc_loc {AM11};, define_attribute {EACONNECT_B}   xc_pullup {1};,"NET ""EACONNECT_B""  IOSTANDARD = LVCMOS33 ;",,
+2,11,8,AL9,TCCONNECT_B,,O,3.3V,Target I/F,[Use Signal PullUp],ターゲットIF部TC検出信号,,,TCCONNECT_B, define_attribute {TCCONNECT_B}  xc_loc {AL9};, define_attribute {TCCONNECT_B}   xc_pullup {1};,"NET ""TCCONNECT_B""  IOSTANDARD = LVCMOS33 ;",,
+2,12,8,AK9,TVDDSEL_B,,I,3.3V,Power Select,[Use Signal],電源選択部内部外部切り替え信号,,,TVDDSEL_B, define_attribute {TVDDSEL_B}  xc_loc {AK9};,,"NET ""TVDDSEL_B""  IOSTANDARD = LVCMOS33 ;",,
+2,13,-,-,CF_TCK,,I,3.3V,拡張コネクタ,-,-,,,,,,,,
+2,14,-,-,CF_TMS,,I,3.3V,拡張コネクタ,-,-,,,,,,,,
+2,15,-,-,CF_TDI,,I,3.3V,拡張コネクタ,-,,,,,,,,,
+2,16,-,-,CF_TDO,,O,3.3V,拡張コネクタ,-,,,,,,,,,
+2,17,0,V14,PALMiCE_FPGA_TCK,,O,3.3V,PALMiCE用コネクタ,[Pull Down],FPGAデバッグで使用,,,,,,,,
+2,18,0,V13,PALMiCE_FPGA_TMS,,O,3.3V,PALMiCE用コネクタ,[Pull Down],FPGAデバッグで使用,,,,,,,,
+2,19,0,W17,PALMiCE_FPGA_TDI,,O,3.3V,PALMiCE用コネクタ,[Pull Down],FPGAデバッグで使用,,,,,,,,
+2,20,0,V18,PALMiCE_FPGA_TDO,,I,3.3V,PALMiCE用コネクタ,[Pull Down],FPGAデバッグで使用,,,,,,,,
+2,21,-,-,NC,,-,3.3V,-,-,-,,,,,,,,
+2,22,8,AP11,P10,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P10, define_attribute {P10}  xc_loc {AP11};, define_attribute {P10}   xc_pulldown {1};,"NET ""P10""  IOSTANDARD = LVCMOS33 ;",,
+2,23,8,AP10,P11,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P11, define_attribute {P11}  xc_loc {AP10};, define_attribute {P11}   xc_pulldown {1};,"NET ""P11""  IOSTANDARD = LVCMOS33 ;",,
+2,24,8,AH10,P12,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P12, define_attribute {P12}  xc_loc {AH10};, define_attribute {P12}   xc_pulldown {1};,"NET ""P12""  IOSTANDARD = LVCMOS33 ;",,
+2,25,8,AG10,P13,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P13, define_attribute {P13}  xc_loc {AG10};, define_attribute {P13}   xc_pulldown {1};,"NET ""P13""  IOSTANDARD = LVCMOS33 ;",,
+2,26,4,AH19,,,,,,,,,,,,,,,
+2,27,8,AN12,P14,WCSEL2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,WCSEL2, define_attribute {WCSEL2}  xc_loc {AN12};,,"NET ""WCSEL2""  IOSTANDARD = LVCMOS33 ;",,
+2,28,8,AP12,P15,WCSEL0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,WCSEL0, define_attribute {WCSEL0}  xc_loc {AP12};,,"NET ""WCSEL0""  IOSTANDARD = LVCMOS33 ;",,
+2,29,8,AP9,P16,OAVG1,I,3.3V,Port,[Use Signal],PGA制御信号出力,,,OAVG1, define_attribute {OAVG1}  xc_loc {AP9};,,"NET ""OAVG1""  IOSTANDARD = LVCMOS33 ;",,
+2,30,8,AN9,P17,OAVG0,I,3.3V,Port,[Use Signal],PGA制御信号出力,,,OAVG0, define_attribute {OAVG0}  xc_loc {AN9};,,"NET ""OAVG0""  IOSTANDARD = LVCMOS33 ;",,
+2,31,-,-,EMVDD,,-,EMVDD,Target I/F,[電源/GND],[電源/GND],,,,,,,,
+2,32,-,-,TVDD,,-,TVDD,Target I/F,[電源/GND],[電源/GND],,,,,,,,
+2,33,-,-,NC,,-,-,-,-,-,,,,,,,,
+2,34,-,-,1.2V,,-,1.2V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,35,-,-,1.2V,,-,1.2V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,36,-,-,1.2V,,-,1.2V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,37,-,-,1.8V,,-,1.8V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,38,-,-,2.5V,,-,2.5V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,39,-,-,3.3V,,-,3.3V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,40,-,-,3.3V,,-,3.3V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,41,-,-,3.3V,,-,3.3V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,42,-,-,3.3V,,-,3.3V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,43,-,-,3.3V,,-,3.3V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,44,-,-,3.3V,,-,3.3V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,45,-,-,3.3V,,-,3.3V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,46,-,-,5.5V,,-,5.5V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,47,-,-,5.5V,,-,5.5V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,48,-,-,NC,,-,-,-,-,-,,,,,,,,
+2,49,-,-,15V,,-,15V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+2,50,-,-,15V,,-,15V,検査I/F,[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,,,,,,
+2,51,-,-,GND,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,
+2,52,4,AK18,EC_CH1,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,53,8,AH12,PIO10,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO10, define_attribute {PIO10}  xc_loc {AH12};,,"NET ""PIO10""  IOSTANDARD = LVCMOS33 ;",,
+2,54,8,AG11,PIO11,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO11, define_attribute {PIO11}  xc_loc {AG11};,,"NET ""PIO11""  IOSTANDARD = LVCMOS33 ;",,
+2,55,8,AN7,PIO12,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO12, define_attribute {PIO12}  xc_loc {AN7};,,"NET ""PIO12""  IOSTANDARD = LVCMOS33 ;",,
+2,56,8,AM7,PIO13,,I,3.3V,Port,[High固定],[High固定],,,fixH_AM7, define_attribute {fixH_AM7}  xc_loc {AM7};,,"NET ""fixH_AM7""  IOSTANDARD = LVCMOS33 ;",assign fixH_AM7 = 1'b1;  // PIO13 High fix,fixH_AM7 TYPE OUT  // PIO13 High fix
+2,57,8,AN10,PIO14,,I,3.3V,Port,[High固定],[High固定],,,fixH_AN10, define_attribute {fixH_AN10}  xc_loc {AN10};,,"NET ""fixH_AN10""  IOSTANDARD = LVCMOS33 ;",assign fixH_AN10 = 1'b1;  // PIO14 High fix,fixH_AN10 TYPE OUT  // PIO14 High fix
+2,58,4,AG18,EC_CH2,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,59,8,AM10,PIO15,,I,3.3V,Port,[High固定],[High固定],,,fixH_AM10, define_attribute {fixH_AM10}  xc_loc {AM10};,,"NET ""fixH_AM10""  IOSTANDARD = LVCMOS33 ;",assign fixH_AM10 = 1'b1;  // PIO15 High fix,fixH_AM10 TYPE OUT  // PIO15 High fix
+2,60,8,AF10,PIO16,,I,3.3V,Port,[High固定],[High固定],,,fixH_AF10, define_attribute {fixH_AF10}  xc_loc {AF10};,,"NET ""fixH_AF10""  IOSTANDARD = LVCMOS33 ;",assign fixH_AF10 = 1'b1;  // PIO16 High fix,fixH_AF10 TYPE OUT  // PIO16 High fix
+2,61,8,AE9,PIO17,,I,3.3V,Port,[High固定],[High固定],,,fixH_AE9, define_attribute {fixH_AE9}  xc_loc {AE9};,,"NET ""fixH_AE9""  IOSTANDARD = LVCMOS33 ;",assign fixH_AE9 = 1'b1;  // PIO17 High fix,fixH_AE9 TYPE OUT  // PIO17 High fix
+2,62,8,AJ12,AP15(P90),C1VRS4,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C1VRS4, define_attribute {C1VRS4}  xc_loc {AJ12};,,"NET ""C1VRS4""  IOSTANDARD = LVCMOS33 ;",,
+2,63,8,AK12,AP16(P91),C2MODESEL2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2MODESEL2, define_attribute {C2MODESEL2}  xc_loc {AK12};,,"NET ""C2MODESEL2""  IOSTANDARD = LVCMOS33 ;",,
+2,64,8,AN8,AP17(P92),CMP2EN,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CMP2EN, define_attribute {CMP2EN}  xc_loc {AN8};,,"NET ""CMP2EN""  IOSTANDARD = LVCMOS33 ;",,
+2,65,8,AM8,AP18(P93),,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+2,66,8,AJ11,AP19(P94),C3VRS6,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3VRS6, define_attribute {C3VRS6}  xc_loc {AJ11};,,"NET ""C3VRS6""  IOSTANDARD = LVCMOS33 ;",,
+2,67,8,AK11,AP20(P95),C2VRS0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2VRS0, define_attribute {C2VRS0}  xc_loc {AK11};,,"NET ""C2VRS0""  IOSTANDARD = LVCMOS33 ;",,
+2,68,8,AP7,AP21(P96),C2VRS1,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2VRS1, define_attribute {C2VRS1}  xc_loc {AP7};,,"NET ""C2VRS1""  IOSTANDARD = LVCMOS33 ;",,
+2,69,8,AP6,AP22(P97),C2VRS2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2VRS2, define_attribute {C2VRS2}  xc_loc {AP6};,,"NET ""C2VRS2""  IOSTANDARD = LVCMOS33 ;",,
+2,70,8,AL5,APIO15(PIO90),,I,3.3V,Port,[High固定],[High固定],,,fixH_AL5, define_attribute {fixH_AL5}  xc_loc {AL5};,,"NET ""fixH_AL5""  IOSTANDARD = LVCMOS33 ;",assign fixH_AL5 = 1'b1;  // APIO15(PIO90) High fix,fixH_AL5 TYPE OUT  // APIO15(PIO90) High fix
+2,71,8,AL4,APIO16(PIO91),,I,3.3V,Port,[High固定],[High固定],,,fixH_AL4, define_attribute {fixH_AL4}  xc_loc {AL4};,,"NET ""fixH_AL4""  IOSTANDARD = LVCMOS33 ;",assign fixH_AL4 = 1'b1;  // APIO16(PIO91) High fix,fixH_AL4 TYPE OUT  // APIO16(PIO91) High fix
+2,72,8,AK4,APIO17(PIO92),,I,3.3V,Port,[High固定],[High固定],,,fixH_AK4, define_attribute {fixH_AK4}  xc_loc {AK4};,,"NET ""fixH_AK4""  IOSTANDARD = LVCMOS33 ;",assign fixH_AK4 = 1'b1;  // APIO17(PIO92) High fix,fixH_AK4 TYPE OUT  // APIO17(PIO92) High fix
+2,73,8,AJ4,APIO18(PIO93),,I,3.3V,Port,[Pull Down],[PORT PIO],,,,,,,,
+2,74,8,AP4,APIO19(PIO94),,I,3.3V,Port,[High固定],[High固定],,,fixH_AP4, define_attribute {fixH_AP4}  xc_loc {AP4};,,"NET ""fixH_AP4""  IOSTANDARD = LVCMOS33 ;",assign fixH_AP4 = 1'b1;  // APIO19(PIO94) High fix,fixH_AP4 TYPE OUT  // APIO19(PIO94) High fix
+2,75,8,AN4,APIO20(PIO95),,I,3.3V,Port,[High固定],[High固定],,,fixH_AN4, define_attribute {fixH_AN4}  xc_loc {AN4};,,"NET ""fixH_AN4""  IOSTANDARD = LVCMOS33 ;",assign fixH_AN4 = 1'b1;  // APIO20(PIO95) High fix,fixH_AN4 TYPE OUT  // APIO20(PIO95) High fix
+2,76,8,AD10,APIO21(PIO96),,I,3.3V,Port,[High固定],[High固定],,,fixH_AD10, define_attribute {fixH_AD10}  xc_loc {AD10};,,"NET ""fixH_AD10""  IOSTANDARD = LVCMOS33 ;",assign fixH_AD10 = 1'b1;  // APIO21(PIO96) High fix,fixH_AD10 TYPE OUT  // APIO21(PIO96) High fix
+2,77,8,AD9,APIO22(PIO97),,I,3.3V,Port,[High固定],[High固定],,,fixH_AD9, define_attribute {fixH_AD9}  xc_loc {AD9};,,"NET ""fixH_AD9""  IOSTANDARD = LVCMOS33 ;",assign fixH_AD9 = 1'b1;  // APIO22(PIO97) High fix,fixH_AD9 TYPE OUT  // APIO22(PIO97) High fix
+2,78,-,-,NC,,I/O,3.3V,-,,,,,,,,,,
+2,79,8,AM13,EC_CH3,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,80,8,AN13,EC_CH4,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,81,8,AM6,EC_CH5,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,82,8,AM5,EC_CH6,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,83,8,AJ10,EC_CH7,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,84,8,AN14,P130,,I,3.3V,Port,[Low固定],[Low固定],,,fixL_AN14, define_attribute {fixL_AN14}  xc_loc {AN14};,,"NET ""fixL_AN14""  IOSTANDARD = LVCMOS33 ;",assign fixL_AN14 = 1'b0;  // P130 Low fix,fixL_AN14 TYPE OUT  // P130 Low fix
+2,85,8,AP14,AP23(P131),CVRE2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CVRE2, define_attribute {CVRE2}  xc_loc {AP14};,,"NET ""CVRE2""  IOSTANDARD = LVCMOS33 ;",,
+2,86,8,AJ6,EC_CH8,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,87,8,AJ5,EC_CH9,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,88,8,AK7,EC_CH10,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,89,8,AJ7,EC_CH11,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,90,8,AN3,EC_CH12,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,91,8,AN2,P137,,I/O,3.3V,Port,[PORT PIO],[PORT PIO],,,P137, define_attribute {P137}  xc_loc {AN2};,,"NET ""P137""  IOSTANDARD = LVCMOS33 ;",,
+2,92,8,AK13,PIO130,,I,3.3V,Port,[High固定],[High固定],,,fixH_AK13, define_attribute {fixH_AK13}  xc_loc {AK13};,,"NET ""fixH_AK13""  IOSTANDARD = LVCMOS33 ;",assign fixH_AK13 = 1'b1;  // PIO130 High fix,fixH_AK13 TYPE OUT  // PIO130 High fix
+2,93,8,AL13,APIO23(PIO131),,I,3.3V,,[High固定],[High固定],,,fixH_AL13, define_attribute {fixH_AL13}  xc_loc {AL13};,,"NET ""fixH_AL13""  IOSTANDARD = LVCMOS33 ;",assign fixH_AL13 = 1'b1;  // APIO23(PIO131) High fix,fixH_AL13 TYPE OUT  // APIO23(PIO131) High fix
+2,94,8,AL6,EC_CH13,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,95,8,AK6,EC_CH14,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,96,8,AL8,EC_CH15,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,97,8,AK8,EC_CH16,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,98,8,AH8,EC_CH17,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+2,99,8,AH7,EMVDDSEL_B,,I,3.3V,電源選択部,[Use Signal],大チップ用の仕込み。AVDD選択用。,,,EMVDDSEL_B, define_attribute {EMVDDSEL_B}  xc_loc {AH7};,,"NET ""EMVDDSEL_B""  IOSTANDARD = LVCMOS33 ;",,
+2,100,-,-,GND,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,,,,,,
+3,1,-,-,GND,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,
+3,2,14,U6,AP24(P110),C1VRS5,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C1VRS5, define_attribute {C1VRS5}  xc_loc {U6};,,"NET ""C1VRS5""  IOSTANDARD = LVCMOS33 ;",,
+3,3,14,U5,AP25(P111),C1VRS6,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C1VRS6, define_attribute {C1VRS6}  xc_loc {U5};,,"NET ""C1VRS6""  IOSTANDARD = LVCMOS33 ;",,
+3,4,14,V3,AP26(P112),C2VRS5,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2VRS5, define_attribute {C2VRS5}  xc_loc {V3};,,"NET ""C2VRS5""  IOSTANDARD = LVCMOS33 ;",,
+3,5,14,V2,AP27(P113),C2VRS6,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2VRS6, define_attribute {C2VRS6}  xc_loc {V2};,,"NET ""C2VRS6""  IOSTANDARD = LVCMOS33 ;",,
+3,6,14,AA5,AP28(P114),C1VRS0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C1VRS0, define_attribute {C1VRS0}  xc_loc {AA5};,,"NET ""C1VRS0""  IOSTANDARD = LVCMOS33 ;",,
+3,7,14,AA4,AP29(P115),C1VRS1,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C1VRS1, define_attribute {C1VRS1}  xc_loc {AA4};,,"NET ""C1VRS1""  IOSTANDARD = LVCMOS33 ;",,
+3,8,14,AA1,AP30(P116),C1VRS2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C1VRS2, define_attribute {C1VRS2}  xc_loc {AA1};,,"NET ""C1VRS2""  IOSTANDARD = LVCMOS33 ;",,
+3,9,14,Y1,AP31(P117),C1VRS3,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C1VRS3, define_attribute {C1VRS3}  xc_loc {Y1};,,"NET ""C1VRS3""  IOSTANDARD = LVCMOS33 ;",,
+3,10,14,AB3,APIO24(PIO110),,I,3.3V,Port,[High固定],[High固定],,,fixH_AB3, define_attribute {fixH_AB3}  xc_loc {AB3};,,"NET ""fixH_AB3""  IOSTANDARD = LVCMOS33 ;",assign fixH_AB3 = 1'b1;  // APIO24(PIO110) High fix,fixH_AB3 TYPE OUT  // APIO24(PIO110) High fix
+3,11,14,AA3,APIO25(PIO111),,I,3.3V,Port,[High固定],[High固定],,,fixH_AA3, define_attribute {fixH_AA3}  xc_loc {AA3};,,"NET ""fixH_AA3""  IOSTANDARD = LVCMOS33 ;",assign fixH_AA3 = 1'b1;  // APIO25(PIO111) High fix,fixH_AA3 TYPE OUT  // APIO25(PIO111) High fix
+3,12,14,AB2,APIO26(PIO112),,I,3.3V,Port,[High固定],[High固定],,,fixH_AB2, define_attribute {fixH_AB2}  xc_loc {AB2};,,"NET ""fixH_AB2""  IOSTANDARD = LVCMOS33 ;",assign fixH_AB2 = 1'b1;  // APIO26(PIO112) High fix,fixH_AB2 TYPE OUT  // APIO26(PIO112) High fix
+3,13,14,AB1,APIO27(PIO113),,I,3.3V,Port,[High固定],[High固定],,,fixH_AB1, define_attribute {fixH_AB1}  xc_loc {AB1};,,"NET ""fixH_AB1""  IOSTANDARD = LVCMOS33 ;",assign fixH_AB1 = 1'b1;  // APIO27(PIO113) High fix,fixH_AB1 TYPE OUT  // APIO27(PIO113) High fix
+3,14,14,AA6,APIO28(PIO114),,I,3.3V,Port,[High固定],[High固定],,,fixH_AA6, define_attribute {fixH_AA6}  xc_loc {AA6};,,"NET ""fixH_AA6""  IOSTANDARD = LVCMOS33 ;",assign fixH_AA6 = 1'b1;  // APIO28(PIO114) High fix,fixH_AA6 TYPE OUT  // APIO28(PIO114) High fix
+3,15,14,Y6,APIO29(PIO115),,I,3.3V,Port,[High固定],[High固定],,,fixH_Y6, define_attribute {fixH_Y6}  xc_loc {Y6};,,"NET ""fixH_Y6""  IOSTANDARD = LVCMOS33 ;",assign fixH_Y6 = 1'b1;  // APIO29(PIO115) High fix,fixH_Y6 TYPE OUT  // APIO29(PIO115) High fix
+3,16,14,Y8,APIO30(PIO116),,I,3.3V,Port,[High固定],[High固定],,,fixH_Y8, define_attribute {fixH_Y8}  xc_loc {Y8};,,"NET ""fixH_Y8""  IOSTANDARD = LVCMOS33 ;",assign fixH_Y8 = 1'b1;  // APIO30(PIO116) High fix,fixH_Y8 TYPE OUT  // APIO30(PIO116) High fix
+3,17,14,Y7,APIO31(PIO117),,I,3.3V,Port,[High固定],[High固定],,,fixH_Y7, define_attribute {fixH_Y7}  xc_loc {Y7};,,"NET ""fixH_Y7""  IOSTANDARD = LVCMOS33 ;",assign fixH_Y7 = 1'b1;  // APIO31(PIO117) High fix,fixH_Y7 TYPE OUT  // APIO31(PIO117) High fix
+3,18,10,F1,P60,CMP3OUT,O,3.3V,Port,[Use Signal],CMP擬似出力用入力信号,,,CMP3OUT, define_attribute {CMP3OUT}  xc_loc {F1};,,"NET ""CMP3OUT""  IOSTANDARD = LVCMOS33 ;",,
+3,19,10,G1,P61,CMP2OUT,O,3.3V,Port,[Use Signal],CMP擬似出力用入力信号,,,CMP2OUT, define_attribute {CMP2OUT}  xc_loc {G1};,,"NET ""CMP2OUT""  IOSTANDARD = LVCMOS33 ;",,
+3,20,10,J4,P62,CMP1OUT,O,3.3V,Port,[Use Signal],CMP擬似出力用入力信号,,,CMP1OUT, define_attribute {CMP1OUT}  xc_loc {J4};,,"NET ""CMP1OUT""  IOSTANDARD = LVCMOS33 ;",,
+3,21,10,K4,P63,CMP0OUT,O,3.3V,Port,[Use Signal],CMP擬似出力用入力信号,,,CMP0OUT, define_attribute {CMP0OUT}  xc_loc {K4};,,"NET ""CMP0OUT""  IOSTANDARD = LVCMOS33 ;",,
+3,22,10,H3,AP32(P64),C0VRS2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C0VRS2, define_attribute {C0VRS2}  xc_loc {H3};,,"NET ""C0VRS2""  IOSTANDARD = LVCMOS33 ;",,
+3,23,10,H2,AP33(P65),C0VRS3,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C0VRS3, define_attribute {C0VRS3}  xc_loc {H2};,,"NET ""C0VRS3""  IOSTANDARD = LVCMOS33 ;",,
+3,24,10,P10,AP34(P66),C0VRS4,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C0VRS4, define_attribute {C0VRS4}  xc_loc {P10};,,"NET ""C0VRS4""  IOSTANDARD = LVCMOS33 ;",,
+3,25,10,P9,AP35(P67),C0VRS5,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C0VRS5, define_attribute {C0VRS5}  xc_loc {P9};,,"NET ""C0VRS5""  IOSTANDARD = LVCMOS33 ;",,
+3,26,10,M7,PIO60,,I,3.3V,Port,[Low固定],[Low固定],,,fixL_M7, define_attribute {fixL_M7}  xc_loc {M7};,,"NET ""fixL_M7""  IOSTANDARD = LVCMOS33 ;",assign fixL_M7 = 1'b0;  // PIO60 Low fix,fixL_M7 TYPE OUT  // PIO60 Low fix
+3,27,10,N7,PIO61,,I,3.3V,Port,[Low固定],[Low固定],,,fixL_N7, define_attribute {fixL_N7}  xc_loc {N7};,,"NET ""fixL_N7""  IOSTANDARD = LVCMOS33 ;",assign fixL_N7 = 1'b0;  // PIO61 Low fix,fixL_N7 TYPE OUT  // PIO61 Low fix
+3,28,10,L5,PIO62,,I,3.3V,Port,[Low固定],[Low固定],,,fixL_L5, define_attribute {fixL_L5}  xc_loc {L5};,,"NET ""fixL_L5""  IOSTANDARD = LVCMOS33 ;",assign fixL_L5 = 1'b0;  // PIO62 Low fix,fixL_L5 TYPE OUT  // PIO62 Low fix
+3,29,10,L4,PIO63,,I,3.3V,Port,[Low固定],[Low固定],,,fixL_L4, define_attribute {fixL_L4}  xc_loc {L4};,,"NET ""fixL_L4""  IOSTANDARD = LVCMOS33 ;",assign fixL_L4 = 1'b0;  // PIO63 Low fix,fixL_L4 TYPE OUT  // PIO63 Low fix
+3,30,10,J2,APIO32(PIO64),,I,3.3V,Port,[High固定],[High固定],,,fixH_J2, define_attribute {fixH_J2}  xc_loc {J2};,,"NET ""fixH_J2""  IOSTANDARD = LVCMOS33 ;",assign fixH_J2 = 1'b1;  // APIO32(PIO64) High fix,fixH_J2 TYPE OUT  // APIO32(PIO64) High fix
+3,31,10,J1,APIO33(PIO65),,I,3.3V,Port,[High固定],[High固定],,,fixH_J1, define_attribute {fixH_J1}  xc_loc {J1};,,"NET ""fixH_J1""  IOSTANDARD = LVCMOS33 ;",assign fixH_J1 = 1'b1;  // APIO33(PIO65) High fix,fixH_J1 TYPE OUT  // APIO33(PIO65) High fix
+3,32,10,R11,APIO34(PIO66),,I,3.3V,Port,[High固定],[High固定],,,fixH_R11, define_attribute {fixH_R11}  xc_loc {R11};,,"NET ""fixH_R11""  IOSTANDARD = LVCMOS33 ;",assign fixH_R11 = 1'b1;  // APIO34(PIO66) High fix,fixH_R11 TYPE OUT  // APIO34(PIO66) High fix
+3,33,10,T11,APIO35(PIO67),,I,3.3V,Port,[High固定],[High固定],,,fixH_T11, define_attribute {fixH_T11}  xc_loc {T11};,,"NET ""fixH_T11""  IOSTANDARD = LVCMOS33 ;",assign fixH_T11 = 1'b1;  // APIO35(PIO67) High fix,fixH_T11 TYPE OUT  // APIO35(PIO67) High fix
+3,34,10,C4,P70,P202,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P202, define_attribute {P202}  xc_loc {C4};, define_attribute {P202}   xc_pulldown {1};,"NET ""P202""  IOSTANDARD = LVCMOS33 ;",,
+3,35,10,C3,P71,P203,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P203, define_attribute {P203}  xc_loc {C3};, define_attribute {P203}   xc_pulldown {1};,"NET ""P203""  IOSTANDARD = LVCMOS33 ;",,
+3,36,10,F5,P72,P204,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P204, define_attribute {P204}  xc_loc {F5};, define_attribute {P204}   xc_pulldown {1};,"NET ""P204""  IOSTANDARD = LVCMOS33 ;",,
+3,37,10,G5,P73,P205,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P205, define_attribute {P205}  xc_loc {G5};, define_attribute {P205}   xc_pulldown {1};,"NET ""P205""  IOSTANDARD = LVCMOS33 ;",,
+3,38,10,D4,P74,P206,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P206, define_attribute {P206}  xc_loc {D4};, define_attribute {P206}   xc_pulldown {1};,"NET ""P206""  IOSTANDARD = LVCMOS33 ;",,
+3,39,10,E4,P75,P207,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P207, define_attribute {P207}  xc_loc {E4};, define_attribute {P207}   xc_pulldown {1};,"NET ""P207""  IOSTANDARD = LVCMOS33 ;",,
+3,40,10,M10,P76,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P76, define_attribute {P76}  xc_loc {M10};, define_attribute {P76}   xc_pulldown {1};,"NET ""P76""  IOSTANDARD = LVCMOS33 ;",,
+3,41,10,L9,P77,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P77, define_attribute {P77}  xc_loc {L9};, define_attribute {P77}   xc_pulldown {1};,"NET ""P77""  IOSTANDARD = LVCMOS33 ;",,
+3,42,10,N13,PIO70,PIO202,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO202, define_attribute {PIO202}  xc_loc {N13};,,"NET ""PIO202""  IOSTANDARD = LVCMOS33 ;",,
+3,43,10,N12,PIO71,PIO203,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO203, define_attribute {PIO203}  xc_loc {N12};,,"NET ""PIO203""  IOSTANDARD = LVCMOS33 ;",,
+3,44,10,F4,PIO72,PIO204,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO204, define_attribute {PIO204}  xc_loc {F4};,,"NET ""PIO204""  IOSTANDARD = LVCMOS33 ;",,
+3,45,10,F3,PIO73,PIO205,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO205, define_attribute {PIO205}  xc_loc {F3};,,"NET ""PIO205""  IOSTANDARD = LVCMOS33 ;",,
+3,46,10,C2,PIO74,PIO206,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO206, define_attribute {PIO206}  xc_loc {C2};,,"NET ""PIO206""  IOSTANDARD = LVCMOS33 ;",,
+3,47,10,D2,PIO75,PIO207,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO207, define_attribute {PIO207}  xc_loc {D2};,,"NET ""PIO207""  IOSTANDARD = LVCMOS33 ;",,
+3,48,10,D1,PIO76,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO76, define_attribute {PIO76}  xc_loc {D1};,,"NET ""PIO76""  IOSTANDARD = LVCMOS33 ;",,
+3,49,10,E1,PIO77,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO77, define_attribute {PIO77}  xc_loc {E1};,,"NET ""PIO77""  IOSTANDARD = LVCMOS33 ;",,
+3,50,-,-,GND,,-,GND,GND,[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,,,,,,
+3,51,-,-,GND,,-,GND,GND,[電源/GND],[電源/GND],,,,,,,,
+3,52,10,E3,AP36(P150),,I,3.3V,Port,[Use Signal],CMP制御信号出力,,AP36,AP36, define_attribute {AP36}  xc_loc {E3};,,"NET ""AP36""  IOSTANDARD = LVCMOS33 ;",,
+3,53,10,E2,AP37(P151),,I,3.3V,Port,[Use Signal],CMP制御信号出力,,AP37,AP37, define_attribute {AP37}  xc_loc {E2};,,"NET ""AP37""  IOSTANDARD = LVCMOS33 ;",,
+3,54,10,J6,AP38(P152),,I,3.3V,Port,[Use Signal],CMP制御信号出力,,AP38,AP38, define_attribute {AP38}  xc_loc {J6};,,"NET ""AP38""  IOSTANDARD = LVCMOS33 ;",,
+3,55,10,J5,AP39(P153),,I,3.3V,Port,[Use Signal],CMP制御信号出力,,AP39,AP39, define_attribute {AP39}  xc_loc {J5};,,"NET ""AP39""  IOSTANDARD = LVCMOS33 ;",,
+3,56,10,H5,AP40(P154),,I,3.3V,Port,[Use Signal],CMP制御信号出力,,AP40,AP40, define_attribute {AP40}  xc_loc {H5};,,"NET ""AP40""  IOSTANDARD = LVCMOS33 ;",,
+3,57,10,H4,AP41(P155),,I,3.3V,Port,[Use Signal],CMP制御信号出力,,AP41,AP41, define_attribute {AP41}  xc_loc {H4};,,"NET ""AP41""  IOSTANDARD = LVCMOS33 ;",,
+3,58,10,N10,AP42(P156),,I,3.3V,Port,[Use Signal],CMP制御信号出力,,AP42,AP42, define_attribute {AP42}  xc_loc {N10};,,"NET ""AP42""  IOSTANDARD = LVCMOS33 ;",,
+3,59,10,N9,AP43(P157),,I,3.3V,Port,[Use Signal],CMP制御信号出力,,AP43,AP43, define_attribute {AP43}  xc_loc {N9};,,"NET ""AP43""  IOSTANDARD = LVCMOS33 ;",,
+3,60,10,P12,APIO36(PIO150),,I,3.3V,Port,[High固定],[High固定],,,fixH_P12, define_attribute {fixH_P12}  xc_loc {P12};,,"NET ""fixH_P12""  IOSTANDARD = LVCMOS33 ;",assign fixH_P12 = 1'b1;  // APIO36(PIO150) High fix,fixH_P12 TYPE OUT  // APIO36(PIO150) High fix
+3,61,10,P11,APIO37(PIO151),,I,3.3V,Port,[High固定],[High固定],,,fixH_P11, define_attribute {fixH_P11}  xc_loc {P11};,,"NET ""fixH_P11""  IOSTANDARD = LVCMOS33 ;",assign fixH_P11 = 1'b1;  // APIO37(PIO151) High fix,fixH_P11 TYPE OUT  // APIO37(PIO151) High fix
+3,62,10,G3,APIO38(PIO152),,I,3.3V,Port,[High固定],[High固定],,,fixH_G3, define_attribute {fixH_G3}  xc_loc {G3};,,"NET ""fixH_G3""  IOSTANDARD = LVCMOS33 ;",assign fixH_G3 = 1'b1;  // APIO38(PIO152) High fix,fixH_G3 TYPE OUT  // APIO38(PIO152) High fix
+3,63,10,G2,APIO39(PIO153),,I,3.3V,Port,[High固定],[High固定],,,fixH_G2, define_attribute {fixH_G2}  xc_loc {G2};,,"NET ""fixH_G2""  IOSTANDARD = LVCMOS33 ;",assign fixH_G2 = 1'b1;  // APIO39(PIO153) High fix,fixH_G2 TYPE OUT  // APIO39(PIO153) High fix
+3,64,10,L8,APIO40(PIO154),,I,3.3V,Port,[High固定],[High固定],,,fixH_L8, define_attribute {fixH_L8}  xc_loc {L8};,,"NET ""fixH_L8""  IOSTANDARD = LVCMOS33 ;",assign fixH_L8 = 1'b1;  // APIO40(PIO154) High fix,fixH_L8 TYPE OUT  // APIO40(PIO154) High fix
+3,65,10,M8,APIO41(PIO155),,I,3.3V,Port,[High固定],[High固定],,,fixH_M8, define_attribute {fixH_M8}  xc_loc {M8};,,"NET ""fixH_M8""  IOSTANDARD = LVCMOS33 ;",assign fixH_M8 = 1'b1;  // APIO41(PIO155) High fix,fixH_M8 TYPE OUT  // APIO41(PIO155) High fix
+3,66,10,K6,APIO42(PIO156),,I,3.3V,Port,[High固定],[High固定],,,fixH_K6, define_attribute {fixH_K6}  xc_loc {K6};,,"NET ""fixH_K6""  IOSTANDARD = LVCMOS33 ;",assign fixH_K6 = 1'b1;  // APIO42(PIO156) High fix,fixH_K6 TYPE OUT  // APIO42(PIO156) High fix
+3,67,10,L6,APIO43(PIO157),,I,3.3V,Port,[High固定],[High固定],,,fixH_L6, define_attribute {fixH_L6}  xc_loc {L6};,,"NET ""fixH_L6""  IOSTANDARD = LVCMOS33 ;",assign fixH_L6 = 1'b1;  // APIO43(PIO157) High fix,fixH_L6 TYPE OUT  // APIO43(PIO157) High fix
+3,68,10,K3,AP44(P160),C0MODESEL0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C0MODESEL0, define_attribute {C0MODESEL0}  xc_loc {K3};,,"NET ""C0MODESEL0""  IOSTANDARD = LVCMOS33 ;",,
+3,69,10,L3,AP45(P161),C0MODESEL1,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C0MODESEL1, define_attribute {C0MODESEL1}  xc_loc {L3};,,"NET ""C0MODESEL1""  IOSTANDARD = LVCMOS33 ;",,
+3,70,10,K2,AP46(P162),C0MODESEL2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C0MODESEL2, define_attribute {C0MODESEL2}  xc_loc {K2};,,"NET ""C0MODESEL2""  IOSTANDARD = LVCMOS33 ;",,
+3,71,10,K1,AP47(P163),CMP0EN,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CMP0EN, define_attribute {CMP0EN}  xc_loc {K1};,,"NET ""CMP0EN""  IOSTANDARD = LVCMOS33 ;",,
+3,72,10,M6,EC_CH18,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+3,73,10,M5,EC_CH19,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+3,74,10,M3,EC_CH20,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+3,75,10,M2,EC_CH21,,I/O,3.3V,拡張コネクタ,[Pull Down],BB用信号,,,,,,,,
+3,76,10,L1,APIO44(PIO160),,I,3.3V,Port,[High固定],[High固定],,,fixH_L1, define_attribute {fixH_L1}  xc_loc {L1};,,"NET ""fixH_L1""  IOSTANDARD = LVCMOS33 ;",assign fixH_L1 = 1'b1;  // APIO44(PIO160) High fix,fixH_L1 TYPE OUT  // APIO44(PIO160) High fix
+3,77,10,M1,APIO45(PIO161),,I,3.3V,Port,[High固定],[High固定],,,fixH_M1, define_attribute {fixH_M1}  xc_loc {M1};,,"NET ""fixH_M1""  IOSTANDARD = LVCMOS33 ;",assign fixH_M1 = 1'b1;  // APIO45(PIO161) High fix,fixH_M1 TYPE OUT  // APIO45(PIO161) High fix
+3,78,10,N5,APIO46(PIO162),,I,3.3V,Port,[High固定],[High固定],,,fixH_N5, define_attribute {fixH_N5}  xc_loc {N5};,,"NET ""fixH_N5""  IOSTANDARD = LVCMOS33 ;",assign fixH_N5 = 1'b1;  // APIO46(PIO162) High fix,fixH_N5 TYPE OUT  // APIO46(PIO162) High fix
+3,79,10,P5,APIO47(PIO163),,I,3.3V,Port,[High固定],[High固定],,,fixH_P5, define_attribute {fixH_P5}  xc_loc {P5};,,"NET ""fixH_P5""  IOSTANDARD = LVCMOS33 ;",assign fixH_P5 = 1'b1;  // APIO47(PIO163) High fix,fixH_P5 TYPE OUT  // APIO47(PIO163) High fix
+3,80,10,P7,EC_CH22,,I/O,3.3V,拡張コネクタ,[Pull Down],,,,,,,,,
+3,81,10,P6,EC_CH23,,I/O,3.3V,拡張コネクタ,[Pull Down],,,,,,,,,
+3,82,10,T10,EC_CH24,,I/O,3.3V,拡張コネクタ,[Pull Down],,,,,,,,,
+3,83,10,R9,"EC_CH25/ICEMKOP0
+/PALMiCE_FPGA_CH0",,(I/O) / I/I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],FPGAデバッグ用端子,,,,,,,,
+3,84,6,D12,AP48(P80),C4MODESEL1,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C4MODESEL1, define_attribute {C4MODESEL1}  xc_loc {D12};,,"NET ""C4MODESEL1""  IOSTANDARD = LVCMOS33 ;",,
+3,85,6,C12,AP49(P81),C4MODESEL2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C4MODESEL2, define_attribute {C4MODESEL2}  xc_loc {C12};,,"NET ""C4MODESEL2""  IOSTANDARD = LVCMOS33 ;",,
+3,86,6,B10,AP50(P82),CMP4EN,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CMP4EN, define_attribute {CMP4EN}  xc_loc {B10};,,"NET ""CMP4EN""  IOSTANDARD = LVCMOS33 ;",,
+3,87,6,C10,AP51(P83),C3MODESEL0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3MODESEL0, define_attribute {C3MODESEL0}  xc_loc {C10};,,"NET ""C3MODESEL0""  IOSTANDARD = LVCMOS33 ;",,
+3,88,6,A11,AP52(P84),C3MODESEL1,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3MODESEL1, define_attribute {C3MODESEL1}  xc_loc {A11};,,"NET ""C3MODESEL1""  IOSTANDARD = LVCMOS33 ;",,
+3,89,6,B11,AP53(P85),C3MODESEL2,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C3MODESEL2, define_attribute {C3MODESEL2}  xc_loc {B11};,,"NET ""C3MODESEL2""  IOSTANDARD = LVCMOS33 ;",,
+3,90,6,C9,AP54(P86),CMP3EN,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CMP3EN, define_attribute {CMP3EN}  xc_loc {C9};,,"NET ""CMP3EN""  IOSTANDARD = LVCMOS33 ;",,
+3,91,6,C8,AP55(P87),C2MODESEL0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2MODESEL0, define_attribute {C2MODESEL0}  xc_loc {C8};,,"NET ""C2MODESEL0""  IOSTANDARD = LVCMOS33 ;",,
+3,92,6,G12,APIO48(PIO80),,I,3.3V,Port,[High固定],[High固定],,,fixH_G12, define_attribute {fixH_G12}  xc_loc {G12};,,"NET ""fixH_G12""  IOSTANDARD = LVCMOS33 ;",assign fixH_G12 = 1'b1;  // APIO48(PIO80) High fix,fixH_G12 TYPE OUT  // APIO48(PIO80) High fix
+3,93,6,G11,APIO49(PIO81),,I,3.3V,Port,[High固定],[High固定],,,fixH_G11, define_attribute {fixH_G11}  xc_loc {G11};,,"NET ""fixH_G11""  IOSTANDARD = LVCMOS33 ;",assign fixH_G11 = 1'b1;  // APIO49(PIO81) High fix,fixH_G11 TYPE OUT  // APIO49(PIO81) High fix
+3,94,6,F10,APIO50(PIO82),,I,3.3V,Port,[High固定],[High固定],,,fixH_F10, define_attribute {fixH_F10}  xc_loc {F10};,,"NET ""fixH_F10""  IOSTANDARD = LVCMOS33 ;",assign fixH_F10 = 1'b1;  // APIO50(PIO82) High fix,fixH_F10 TYPE OUT  // APIO50(PIO82) High fix
+3,95,6,G10,APIO51(PIO83),,I,3.3V,Port,[High固定],[High固定],,,fixH_G10, define_attribute {fixH_G10}  xc_loc {G10};,,"NET ""fixH_G10""  IOSTANDARD = LVCMOS33 ;",assign fixH_G10 = 1'b1;  // APIO51(PIO83) High fix,fixH_G10 TYPE OUT  // APIO51(PIO83) High fix
+3,96,6,D11,APIO52(PIO84),,I,3.3V,Port,[High固定],[High固定],,,fixH_D11, define_attribute {fixH_D11}  xc_loc {D11};,,"NET ""fixH_D11""  IOSTANDARD = LVCMOS33 ;",assign fixH_D11 = 1'b1;  // APIO52(PIO84) High fix,fixH_D11 TYPE OUT  // APIO52(PIO84) High fix
+3,97,6,D10,APIO53(PIO85),,I,3.3V,Port,[High固定],[High固定],,,fixH_D10, define_attribute {fixH_D10}  xc_loc {D10};,,"NET ""fixH_D10""  IOSTANDARD = LVCMOS33 ;",assign fixH_D10 = 1'b1;  // APIO53(PIO85) High fix,fixH_D10 TYPE OUT  // APIO53(PIO85) High fix
+3,98,6,H10,APIO54(PIO86),,I,3.3V,Port,[High固定],[High固定],,,fixH_H10, define_attribute {fixH_H10}  xc_loc {H10};,,"NET ""fixH_H10""  IOSTANDARD = LVCMOS33 ;",assign fixH_H10 = 1'b1;  // APIO54(PIO86) High fix,fixH_H10 TYPE OUT  // APIO54(PIO86) High fix
+3,99,6,H9,APIO55(PIO87),,I,3.3V,Port,[High固定],[High固定],,,fixH_H9, define_attribute {fixH_H9}  xc_loc {H9};,,"NET ""fixH_H9""  IOSTANDARD = LVCMOS33 ;",assign fixH_H9 = 1'b1;  // APIO55(PIO87) High fix,fixH_H9 TYPE OUT  // APIO55(PIO87) High fix
+3,100,-,-,GND,,-,GND,GND,[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,,,,,,
+4,1,-,-,GND,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,
+4,2,5,B23,PORTEN_B0,,I,3.3V,AD、兼用P20　切替え信号,[Use Signal],,,,PORTEN_B0, define_attribute {PORTEN_B0}  xc_loc {B23};,,"NET ""PORTEN_B0""  IOSTANDARD = LVCMOS33 ;",,
+4,3,5,A23,PORTEN_B1,,I,3.3V,AD、兼用P21　切替え信号,[Use Signal],,,,PORTEN_B1, define_attribute {PORTEN_B1}  xc_loc {A23};,,"NET ""PORTEN_B1""  IOSTANDARD = LVCMOS33 ;",,
+4,4,5,A26,PORTEN_B2,,I,3.3V,AD、兼用P22　切替え信号,[Use Signal],,,,PORTEN_B2, define_attribute {PORTEN_B2}  xc_loc {A26};,,"NET ""PORTEN_B2""  IOSTANDARD = LVCMOS33 ;",,
+4,5,5,B26,PORTEN_B3,,I,3.3V,AD、兼用P23　切替え信号,[Use Signal],,,,PORTEN_B3, define_attribute {PORTEN_B3}  xc_loc {B26};,,"NET ""PORTEN_B3""  IOSTANDARD = LVCMOS33 ;",,
+4,6,5,A24,PORTEN_B4,,I,3.3V,AD、兼用P24　切替え信号,[Use Signal],,,,PORTEN_B4, define_attribute {PORTEN_B4}  xc_loc {A24};,,"NET ""PORTEN_B4""  IOSTANDARD = LVCMOS33 ;",,
+4,7,5,A25,PORTEN_B5,,I,3.3V,AD、兼用P25　切替え信号,[Use Signal],,,,PORTEN_B5, define_attribute {PORTEN_B5}  xc_loc {A25};,,"NET ""PORTEN_B5""  IOSTANDARD = LVCMOS33 ;",,
+4,8,5,G25,PORTEN_B6,,I,3.3V,AD、兼用P26　切替え信号,[Use Signal],,,,PORTEN_B6, define_attribute {PORTEN_B6}  xc_loc {G25};,,"NET ""PORTEN_B6""  IOSTANDARD = LVCMOS33 ;",,
+4,9,5,H25,PORTEN_B7,,I,3.3V,AD、兼用P27　切替え信号,[Use Signal],,,,PORTEN_B7, define_attribute {PORTEN_B7}  xc_loc {H25};,,"NET ""PORTEN_B7""  IOSTANDARD = LVCMOS33 ;",,
+4,10,5,C23,PORTEN_B8,,I,3.3V,AD、兼用P03　切替え信号,[Use Signal],,,,PORTEN_B8, define_attribute {PORTEN_B8}  xc_loc {C23};,,"NET ""PORTEN_B8""  IOSTANDARD = LVCMOS33 ;",,
+4,11,5,C24,PORTEN_B9,,I,3.3V,AD、兼用P02　切替え信号,[Use Signal],,,,PORTEN_B9, define_attribute {PORTEN_B9}  xc_loc {C24};,,"NET ""PORTEN_B9""  IOSTANDARD = LVCMOS33 ;",,
+4,12,5,F25,PORTEN_B10,,I,3.3V,AD、兼用P147　切替え信号,[Use Signal],,,,PORTEN_B10, define_attribute {PORTEN_B10}  xc_loc {F25};,,"NET ""PORTEN_B10""  IOSTANDARD = LVCMOS33 ;",,
+4,13,5,F26,PORTEN_B11,,I,3.3V,AD、兼用P120　切替え信号,[Use Signal],,,,PORTEN_B11, define_attribute {PORTEN_B11}  xc_loc {F26};,,"NET ""PORTEN_B11""  IOSTANDARD = LVCMOS33 ;",,
+4,14,5,D24,A0,,I,3.3V,AD、ANI選択信号,[Use Signal],,,,A0, define_attribute {A0}  xc_loc {D24};,,"NET ""A0""  IOSTANDARD = LVCMOS33 ;",,
+4,15,5,D25,A1,,I,3.3V,AD、ANI選択信号,[Use Signal],,,,A1, define_attribute {A1}  xc_loc {D25};,,"NET ""A1""  IOSTANDARD = LVCMOS33 ;",,
+4,16,5,B27,A2,,I,3.3V,AD、ANI選択信号,[Use Signal],,,,A2, define_attribute {A2}  xc_loc {B27};,,"NET ""A2""  IOSTANDARD = LVCMOS33 ;",,
+4,17,5,C27,A3,,I,3.3V,AD、ANI選択信号,[Use Signal],,,,A3, define_attribute {A3}  xc_loc {C27};,,"NET ""A3""  IOSTANDARD = LVCMOS33 ;",,
+4,18,5,C22,A4,,I,3.3V,AD、ANI選択信号,[Use Signal],,,,A4, define_attribute {A4}  xc_loc {C22};,,"NET ""A4""  IOSTANDARD = LVCMOS33 ;",,
+4,19,5,B22,ADVSELMOD,,I,3.3V,AD、AVREFP選択信号,[Use Signal],,,,ADVSELMOD, define_attribute {ADVSELMOD}  xc_loc {B22};,,"NET ""ADVSELMOD""  IOSTANDARD = LVCMOS33 ;",,
+4,20,5,A30,ADGSELMOD,,I,3.3V,AD、AVREFM選択信号,[Use Signal],,,,ADGSELMOD, define_attribute {ADGSELMOD}  xc_loc {A30};,,"NET ""ADGSELMOD""  IOSTANDARD = LVCMOS33 ;",,
+4,21,1,N19,PORTEN_B12,,I,3.3V,AD、兼用P120_L　切換え信号,[Pull Down],中/大チップP120に対応,,,,,,,,
+4,22,1,N18,PORTEN_B13,,I,3.3V,AD、兼用AP36　切替え信号,[Pull Down],,,,,,,,,
+4,23,1,L15,PORTEN_B14,,I,3.3V,AD、兼用AP37　切替え信号,[Pull Down],,,,,,,,,
+4,24,1,L14,PORTEN_B15,,I,3.3V,AD、兼用AP38　切替え信号,[Pull Down],,,,,,,,,
+4,25,1,E21,PORTEN_B16,,I,3.3V,AD、兼用AP39　切替え信号,[Pull Down],,,,,,,,,
+4,26,1,D21,PORTEN_B17,,I,3.3V,AD、兼用AP40　切替え信号,[Pull Down],,,,,,,,,
+4,27,1,J14,PORTEN_B18,,I,3.3V,AD、兼用AP41　切替え信号,[Pull Down],,,,,,,,,
+4,28,1,K14,PORTEN_B19,,I,3.3V,AD、兼用AP42　切替え信号,[Pull Down],,,,,,,,,
+4,29,1,N20,PORTEN_B20,,I,3.3V,AD、兼用AP43　切替え信号,[Pull Down],,,,,,,,,
+4,30,1,M20,PORTEN_B21,,I,3.3V,AD、兼用P_ANALOG0　切替え信号,[Pull Down],,,,,,,,,
+4,31,1,H14,PORTEN_B22,,I,3.3V,AD、兼用P_ANALOG1　切替え信号,[Pull Down],,,,,,,,,
+4,32,1,H13,PORTEN_B23,,I,3.3V,AD、兼用P_ANALOG2　切替え信号,[Pull Down],,,,,,,,,
+4,33,1,H22,PORTEN_B24,,I,3.3V,AD、兼用P_ANALOG3　切替え信号,[Pull Down],,,,,,,,,
+4,34,1,J21,PORTEN_B25,,I,3.3V,AD、兼用P_ANALOG4　切替え信号,[Pull Down],,,,,,,,,
+4,35,1,F13,PORTEN_B26,,I,3.3V,AD、兼用P_ANALOG5　切換え信号,[Pull Down],,,,,,,,,
+4,36,1,G13,,,,,,[Pull Down],,,,,,,,,
+4,37,1,K16,,,,,,[Pull Down],,,,,,,,,
+4,38,1,L16,,,,,,[Pull Down],,,,,,,,,
+4,39,1,J20,,,,,,[Pull Down],,,,,,,,,
+4,40,1,L19,EC_CH26/PALMiCE_FPGA_CH1,,(I/O) /I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],FPGAデバッグ用端子,,,,,,,,
+4,41,5,B30,ADRD_B,,I,3.3V,ADリード信号,[Use Signal],ADCのRD端子に接続,,,ADRD_B, define_attribute {ADRD_B}  xc_loc {B30};,,"NET ""ADRD_B""  IOSTANDARD = LVCMOS33 ;",,
+4,42,5,K24,ADSH_B,,I,3.3V,ADのS/H制御入力信号,[Use Signal],ADCのS/H端子に接続,,,ADSH_B, define_attribute {ADSH_B}  xc_loc {K24};,,"NET ""ADSH_B""  IOSTANDARD = LVCMOS33 ;",,
+4,43,5,J24,,,,,,[Pull Down],,,,,,,,,
+4,44,5,C29,,,,,,[Pull Down],,,,,,,,,
+4,45,5,C30,EC_CH27/PALMiCE_FPGA_CH2,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],FPGAデバッグ用端子,,,,,,,,
+4,46,5,B21,ADCS_B,,I,3.3V,ADチップ・セレクト制御入力信号,[Use Signal],ADCのチップ・セレクト制御入力,,,ADCS_B, define_attribute {ADCS_B}  xc_loc {B21};,,"NET ""ADCS_B""  IOSTANDARD = LVCMOS33 ;",,
+4,47,5,A21,,,,,,[Pull Down],,,,,,,,,
+4,48,5,E28,,,,,,[Pull Down],,,,,,,,,
+4,49,5,F28,EC_CH28/PALMiCE_FPGA_CH3,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],FPGAデバッグ用端子,,,,,,,,
+4,50,-,-,GND,,-,-,GND,[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,,,,,,
+4,51,-,-,GND,,-,GND,GND,[電源/GND],[電源/GND],,,,,,,,
+4,52,5,E22,ADINT_B,,O,5.5V(保護抵抗あり),AD割込み出力信号,[Use Signal],ADCの割込み出力,,,ADINT_B, define_attribute {ADINT_B}  xc_loc {E22};,,"NET ""ADINT_B""  IOSTANDARD = LVCMOS33 ;",,
+4,53,5,D22,,,,,,[Pull Down],,,,,,,,,
+4,54,5,A31,,,,,,[Pull Down],,,,,,,,,
+4,55,5,B31,,,,,,[Pull Down],,,,,,,,,
+4,56,5,F23,,,,,,[Pull Down],,,,,,,,,
+4,57,5,E23,,,,,,[Pull Down],,,,,,,,,
+4,58,5,D26,,,,,,[Pull Down],,,,,,,,,
+4,59,5,E26,,,,,,[Pull Down],,,,,,,,,
+4,60,5,F24,,,,,,[Pull Down],,,,,,,,,
+4,61,5,E24,,,,,,[Pull Down],,,,,,,,,
+4,62,5,D27,,,,,,[Pull Down],,,,,,,,,
+4,63,5,E27,,,,,,[Pull Down],,,,,,,,,
+4,64,5,G23,,,,,,[Pull Down],,,,,,,,,
+4,65,1,H15,AD_DB0,,O,5.5V(保護抵抗),ADデータバス信号CH0,[Use Signal],,,,AD_DB0, define_attribute {AD_DB0}  xc_loc {H15};,,"NET ""AD_DB0""  IOSTANDARD = LVCMOS33 ;",,
+4,66,1,J15,AD_DB1,,O,5.5V(保護抵抗),ADデータバス信号CH1,[Use Signal],,,,AD_DB1, define_attribute {AD_DB1}  xc_loc {J15};,,"NET ""AD_DB1""  IOSTANDARD = LVCMOS33 ;",,
+4,67,1,G21,AD_DB2,,O,5.5V(保護抵抗),ADデータバス信号CH2,[Use Signal],,,,AD_DB2, define_attribute {AD_DB2}  xc_loc {G21};,,"NET ""AD_DB2""  IOSTANDARD = LVCMOS33 ;",,
+4,68,1,H20,AD_DB3,,O,5.5V(保護抵抗),ADデータバス信号CH3,[Use Signal],,,,AD_DB3, define_attribute {AD_DB3}  xc_loc {H20};,,"NET ""AD_DB3""  IOSTANDARD = LVCMOS33 ;",,
+4,69,1,G15,AD_DB4,,O,5.5V(保護抵抗),ADデータバス信号CH4,[Use Signal],,,,AD_DB4, define_attribute {AD_DB4}  xc_loc {G15};,,"NET ""AD_DB4""  IOSTANDARD = LVCMOS33 ;",,
+4,70,1,F14,AD_DB5,,O,5.5V(保護抵抗),ADデータバス信号CH5,[Use Signal],,,,AD_DB5, define_attribute {AD_DB5}  xc_loc {F14};,,"NET ""AD_DB5""  IOSTANDARD = LVCMOS33 ;",,
+4,71,1,F21,AD_DB6,,O,5.5V(保護抵抗),ADデータバス信号CH6,[Use Signal],,,,AD_DB6, define_attribute {AD_DB6}  xc_loc {F21};,,"NET ""AD_DB6""  IOSTANDARD = LVCMOS33 ;",,
+4,72,1,F20,AD_DB7,,O,5.5V(保護抵抗),ADデータバス信号CH7,[Use Signal],,,,AD_DB7, define_attribute {AD_DB7}  xc_loc {F20};,,"NET ""AD_DB7""  IOSTANDARD = LVCMOS33 ;",,
+4,73,1,A15,AD_DB8,,O,5.5V(保護抵抗),ADデータバス信号CH8,[Use Signal],,,,AD_DB8, define_attribute {AD_DB8}  xc_loc {A15};,,"NET ""AD_DB8""  IOSTANDARD = LVCMOS33 ;",,
+4,74,1,B15,AD_DB9,,O,5.5V(保護抵抗),ADデータバス信号CH9,[Use Signal],,,,AD_DB9, define_attribute {AD_DB9}  xc_loc {B15};,,"NET ""AD_DB9""  IOSTANDARD = LVCMOS33 ;",,
+4,75,6,F8,,,,,,[Pull Down],,,,,,,,,
+4,76,6,G8,,,,,,[Pull Down],,,,,,,,,
+4,77,6,C14,,,,,,[Pull Down],,,,,,,,,
+4,78,6,C13,,,,,,[Pull Down],,,,,,,,,
+4,79,6,E6,EC_CH29/PALMiCE_FPGA_CH4,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],FPGAデバッグ用端子,,,,,,,,
+4,80,6,F6,EC_CH30/PALMiCE_FPGA_CH5,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],FPGAデバッグ用端子,,,,,,,,
+4,81,6,C5,EC_CH31/PALMiCE_FPGA_CH6,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],FPGAデバッグ用端子,,,,,,,,
+4,82,6,D5,EC_CH32/PALMiCE_FPGA_CH7,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],FPGAデバッグ用端子,,,,,,,,
+4,83,6,G7,EC_CH33/PALMiCE_FPGA_CH8,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],FPGAデバッグ用端子,,,,,,,,
+4,84,6,A14,P20,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P20, define_attribute {P20}  xc_loc {A14};, define_attribute {P20}   xc_pulldown {1};,"NET ""P20""  IOSTANDARD = LVCMOS33 ;",,
+4,85,6,A13,P21,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P21, define_attribute {P21}  xc_loc {A13};, define_attribute {P21}   xc_pulldown {1};,"NET ""P21""  IOSTANDARD = LVCMOS33 ;",,
+4,86,6,D7,P22,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P22, define_attribute {P22}  xc_loc {D7};, define_attribute {P22}   xc_pulldown {1};,"NET ""P22""  IOSTANDARD = LVCMOS33 ;",,
+4,87,6,D6,P23,,I/O,3.3V,Port,[Low固定],[Low固定],,,fixL_D6, define_attribute {fixL_D6}  xc_loc {D6};,,"NET ""fixL_D6""  IOSTANDARD = LVCMOS33 ;",assign fixL_D6 = 1'b0;  // P23 Low fix,fixL_D6 TYPE OUT  // P23 Low fix
+4,88,6,D9,P24,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P24, define_attribute {P24}  xc_loc {D9};, define_attribute {P24}   xc_pulldown {1};,"NET ""P24""  IOSTANDARD = LVCMOS33 ;",,
+4,89,6,E9,P25,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P25, define_attribute {P25}  xc_loc {E9};, define_attribute {P25}   xc_pulldown {1};,"NET ""P25""  IOSTANDARD = LVCMOS33 ;",,
+4,90,6,A4,P26,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P26, define_attribute {P26}  xc_loc {A4};, define_attribute {P26}   xc_pulldown {1};,"NET ""P26""  IOSTANDARD = LVCMOS33 ;",,
+4,91,6,A3,P27,,I/O,3.3V,Port,[PORT DATA],[PORT DATA],,,P27, define_attribute {P27}  xc_loc {A3};, define_attribute {P27}   xc_pulldown {1};,"NET ""P27""  IOSTANDARD = LVCMOS33 ;",,
+4,92,6,E13,PIO20,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO20, define_attribute {PIO20}  xc_loc {E13};,,"NET ""PIO20""  IOSTANDARD = LVCMOS33 ;",,
+4,93,6,E12,PIO21,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO21, define_attribute {PIO21}  xc_loc {E12};,,"NET ""PIO21""  IOSTANDARD = LVCMOS33 ;",,
+4,94,6,A5,PIO22,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO22, define_attribute {PIO22}  xc_loc {A5};,,"NET ""PIO22""  IOSTANDARD = LVCMOS33 ;",,
+4,95,6,B5,PIO23,,I,3.3V,Port,[High固定],[High固定],,,fixH_B5, define_attribute {fixH_B5}  xc_loc {B5};,,"NET ""fixH_B5""  IOSTANDARD = LVCMOS33 ;",assign fixH_B5 = 1'b1;  // PIO23 High fix,fixH_B5 TYPE OUT  // PIO23 High fix
+4,96,6,E8,PIO24,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO24, define_attribute {PIO24}  xc_loc {E8};,,"NET ""PIO24""  IOSTANDARD = LVCMOS33 ;",,
+4,97,6,E7,PIO25,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO25, define_attribute {PIO25}  xc_loc {E7};,,"NET ""PIO25""  IOSTANDARD = LVCMOS33 ;",,
+4,98,6,J9,PIO26,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO26, define_attribute {PIO26}  xc_loc {J9};,,"NET ""PIO26""  IOSTANDARD = LVCMOS33 ;",,
+4,99,6,K9,PIO27,,I,3.3V,Port,[PORT PIO],[PORT PIO],,,PIO27, define_attribute {PIO27}  xc_loc {K9};,,"NET ""PIO27""  IOSTANDARD = LVCMOS33 ;",,
+4,100,-,-,GND,,-,GND,GND,[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,,,,,,
+5,1,-,-,GND,,-,GND,GND,[電源/GND],[電源/GND],,,,,,,,
+5,2,12,AC9,PUPLE0,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PUPLE0, define_attribute {PUPLE0}  xc_loc {AC9};,,"NET ""PUPLE0""  IOSTANDARD = LVCMOS33 ;",,
+5,3,12,AC8,PUPLE1,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PUPLE1, define_attribute {PUPLE1}  xc_loc {AC8};,,"NET ""PUPLE1""  IOSTANDARD = LVCMOS33 ;",,
+5,4,12,AG3,PUPLE2,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PUPLE2, define_attribute {PUPLE2}  xc_loc {AG3};,,"NET ""PUPLE2""  IOSTANDARD = LVCMOS33 ;",,
+5,5,12,AF3,PUPLE3,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PUPLE3, define_attribute {PUPLE3}  xc_loc {AF3};,,"NET ""PUPLE3""  IOSTANDARD = LVCMOS33 ;",,
+5,6,12,AF6,PUPLE4,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PUPLE4, define_attribute {PUPLE4}  xc_loc {AF6};,,"NET ""PUPLE4""  IOSTANDARD = LVCMOS33 ;",,
+5,7,12,AE6,PUPLE5,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PUPLE5, define_attribute {PUPLE5}  xc_loc {AE6};,,"NET ""PUPLE5""  IOSTANDARD = LVCMOS33 ;",,
+5,8,12,AF5,APIO62,,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_AF5, define_attribute {fixH_AF5}  xc_loc {AF5};,,"NET ""fixH_AF5""  IOSTANDARD = LVCMOS33 ;",assign fixH_AF5 = 1'b1;  // APIO62 High fix,fixH_AF5 TYPE OUT  // APIO62 High fix
+5,9,12,AF4,PSSC0,,I,3.3V,Port,[Use Signal],"L/S部ポート関係の信号（モード切替）
+PSSC0＝1に固定",,,PSSC0, define_attribute {PSSC0}  xc_loc {AF4};,,"NET ""PSSC0""  IOSTANDARD = LVCMOS33 ;",,
+5,10,12,AL1,PSSC1,,I,3.3V,Port,[Use Signal],"L/S部ポート関係の信号（モード切替）
+PSSC1＝0に固定",,,PSSC1, define_attribute {PSSC1}  xc_loc {AL1};,,"NET ""PSSC1""  IOSTANDARD = LVCMOS33 ;",,
+5,11,12,AK1,PSSC2,,I,3.3V,Port,[Use Signal],"L/S部ポート関係の信号（モード切替）
+PSSC2＝Xに固定",,,PSSC2, define_attribute {PSSC2}  xc_loc {AK1};,,"NET ""PSSC2""  IOSTANDARD = LVCMOS33 ;",,
+5,12,12,AJ2,PSSC3,,I,3.3V,Port,[Use Signal],"L/S部ポート関係の信号（モード切替）
+PSSC3＝0に固定",,,PSSC3, define_attribute {PSSC3}  xc_loc {AJ2};,,"NET ""PSSC3""  IOSTANDARD = LVCMOS33 ;",,
+5,13,12,AJ1,PSSC4,,I,3.3V,Port,[Use Signal],"L/S部ポート関係の信号（モード切替）
+PSSC4＝0に固定",,,PSSC4, define_attribute {PSSC4}  xc_loc {AJ1};,,"NET ""PSSC4""  IOSTANDARD = LVCMOS33 ;",,
+5,14,12,AG6,PSSC5,,I,3.3V,Port,[Use Signal],"L/S部ポート関係の信号（モード切替）
+PSSC5＝1に固定",,,PSSC5, define_attribute {PSSC5}  xc_loc {AG6};,,"NET ""PSSC5""  IOSTANDARD = LVCMOS33 ;",,
+5,15,12,AG5,APIO63,,I,3.3V,Port,[High固定],[High固定],,,fixH_AG5, define_attribute {fixH_AG5}  xc_loc {AG5};,,"NET ""fixH_AG5""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG5 = 1'b1;  // APIO63 High fix,fixH_AG5 TYPE OUT  // APIO63 High fix
+5,16,12,AE7,PPUP0,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP0, define_attribute {PPUP0}  xc_loc {AE7};,,"NET ""PPUP0""  IOSTANDARD = LVCMOS33 ;",,
+5,17,12,AD7,PPUP1,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP1, define_attribute {PPUP1}  xc_loc {AD7};,,"NET ""PPUP1""  IOSTANDARD = LVCMOS33 ;",,
+5,18,12,AB6,PPUP2,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP2, define_attribute {PPUP2}  xc_loc {AB6};,,"NET ""PPUP2""  IOSTANDARD = LVCMOS33 ;",,
+5,19,12,AB5,PPUP3,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP3, define_attribute {PPUP3}  xc_loc {AB5};,,"NET ""PPUP3""  IOSTANDARD = LVCMOS33 ;",,
+5,20,12,AC3,PPUP4,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP4, define_attribute {PPUP4}  xc_loc {AC3};,,"NET ""PPUP4""  IOSTANDARD = LVCMOS33 ;",,
+5,21,12,AC2,PPUP5,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP5, define_attribute {PPUP5}  xc_loc {AC2};,,"NET ""PPUP5""  IOSTANDARD = LVCMOS33 ;",,
+5,22,12,Y11,PPUP6,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP6, define_attribute {PPUP6}  xc_loc {Y11};,,"NET ""PPUP6""  IOSTANDARD = LVCMOS33 ;",,
+5,23,12,AA11,PPUP7,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP7, define_attribute {PPUP7}  xc_loc {AA11};,,"NET ""PPUP7""  IOSTANDARD = LVCMOS33 ;",,
+5,24,12,AD2,PPUP8,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP8, define_attribute {PPUP8}  xc_loc {AD2};,,"NET ""PPUP8""  IOSTANDARD = LVCMOS33 ;",,
+5,25,12,AD1,PPUP9,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP9, define_attribute {PPUP9}  xc_loc {AD1};,,"NET ""PPUP9""  IOSTANDARD = LVCMOS33 ;",,
+5,26,12,Y14,PPUP10,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP10, define_attribute {PPUP10}  xc_loc {Y14};,,"NET ""PPUP10""  IOSTANDARD = LVCMOS33 ;",,
+5,27,12,AA13,PPUP11,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP11, define_attribute {PPUP11}  xc_loc {AA13};,,"NET ""PPUP11""  IOSTANDARD = LVCMOS33 ;",,
+5,28,12,AC5,PPUP12,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP12, define_attribute {PPUP12}  xc_loc {AC5};,,"NET ""PPUP12""  IOSTANDARD = LVCMOS33 ;",,
+5,29,12,AC4,PPUP13,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP13, define_attribute {PPUP13}  xc_loc {AC4};,,"NET ""PPUP13""  IOSTANDARD = LVCMOS33 ;",,
+5,30,12,AF1,PPUP14,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP14, define_attribute {PPUP14}  xc_loc {AF1};,,"NET ""PPUP14""  IOSTANDARD = LVCMOS33 ;",,
+5,31,12,AE1,PPUP15,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP15, define_attribute {PPUP15}  xc_loc {AE1};,,"NET ""PPUP15""  IOSTANDARD = LVCMOS33 ;",,
+5,32,12,AA9,PPUP16,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP16, define_attribute {PPUP16}  xc_loc {AA9};,,"NET ""PPUP16""  IOSTANDARD = LVCMOS33 ;",,
+5,33,12,AA8,PPUP17,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP17, define_attribute {PPUP17}  xc_loc {AA8};,,"NET ""PPUP17""  IOSTANDARD = LVCMOS33 ;",,
+5,34,12,Y13,PPUP18,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP18, define_attribute {PPUP18}  xc_loc {Y13};,,"NET ""PPUP18""  IOSTANDARD = LVCMOS33 ;",,
+5,35,12,Y12,PPUP19,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP19, define_attribute {PPUP19}  xc_loc {Y12};,,"NET ""PPUP19""  IOSTANDARD = LVCMOS33 ;",,
+5,36,12,AE3,PPUP20,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP20, define_attribute {PPUP20}  xc_loc {AE3};,,"NET ""PPUP20""  IOSTANDARD = LVCMOS33 ;",,
+5,37,12,AE2,PPUP21,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP21, define_attribute {PPUP21}  xc_loc {AE2};,,"NET ""PPUP21""  IOSTANDARD = LVCMOS33 ;",,
+5,38,12,AD6,EMVDD,,O,EMVDD（抵抗あり）,電源選択部,[Pull Down],,,,,,,,,
+5,39,12,AD5,EMAVDD,,O,EMAVDD（抵抗あり）,電源選択部,[Pull Down],,,,,,,,,
+5,40,12,AC7,PPUP24,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP24, define_attribute {PPUP24}  xc_loc {AC7};,,"NET ""PPUP24""  IOSTANDARD = LVCMOS33 ;",,
+5,41,12,AB8,PPUP25,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP25, define_attribute {PPUP25}  xc_loc {AB8};,,"NET ""PPUP25""  IOSTANDARD = LVCMOS33 ;",,
+5,42,12,Y16,PPUP26,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP26, define_attribute {PPUP26}  xc_loc {Y16};,,"NET ""PPUP26""  IOSTANDARD = LVCMOS33 ;",,
+5,43,12,AA15,PPUP27,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP27, define_attribute {PPUP27}  xc_loc {AA15};,,"NET ""PPUP27""  IOSTANDARD = LVCMOS33 ;",,
+5,44,12,AE4,PPUP28,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP28, define_attribute {PPUP28}  xc_loc {AE4};,,"NET ""PPUP28""  IOSTANDARD = LVCMOS33 ;",,
+5,45,12,AD4,PPUP29,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP29, define_attribute {PPUP29}  xc_loc {AD4};,,"NET ""PPUP29""  IOSTANDARD = LVCMOS33 ;",,
+5,46,12,AH3,PPUP30,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP30, define_attribute {PPUP30}  xc_loc {AH3};,,"NET ""PPUP30""  IOSTANDARD = LVCMOS33 ;",,
+5,47,12,AH2,PPUP31,,I,3.3V,Port,[PORT PPUP],[PORT PPUP],,,PPUP31, define_attribute {PPUP31}  xc_loc {AH2};,,"NET ""PPUP31""  IOSTANDARD = LVCMOS33 ;",,
+5,48,12,AG2,APIO64,,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_AG2, define_attribute {fixH_AG2}  xc_loc {AG2};,,"NET ""fixH_AG2""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG2 = 1'b1;  // APIO64 High fix,fixH_AG2 TYPE OUT  // APIO64 High fix
+5,49,12,AG1,APIO65,,I,3.3V,Port,[High固定],[High固定],,,fixH_AG1, define_attribute {fixH_AG1}  xc_loc {AG1};,,"NET ""fixH_AG1""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG1 = 1'b1;  // APIO65 High fix,fixH_AG1 TYPE OUT  // APIO65 High fix
+5,50,-,-,GND,,-,GND,GND,[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,
+CN,Pin,BANK,FPGAPin番号,IOボードの信号名,BBの割り当てる信号,IOボードから見た方向,動作電圧,IOボード上の接続ブロック,FPGAでの処理,備考,,Cange Name,,,,,,
+5,51,-,-,GND,,-,-,[電源/GND],[電源/GND],[電源/GND],,,,,,,,
+5,52,12,AC10,P30,,I/O,3.3V,Port,[PORT PPUP],[PORT PPUP],,,P30, define_attribute {P30}  xc_loc {AC10};,,"NET ""P30""  IOSTANDARD = LVCMOS33 ;",,
+5,53,12,AB10,P31,,I/O,3.3V,Port,[PORT PPUP],[PORT PPUP],,,P31, define_attribute {P31}  xc_loc {AB10};,,"NET ""P31""  IOSTANDARD = LVCMOS33 ;",,
+5,54,12,AK3,AP56(P32),C2VRS3,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2VRS3, define_attribute {C2VRS3}  xc_loc {AK3};,,"NET ""C2VRS3""  IOSTANDARD = LVCMOS33 ;",,
+5,55,12,AK2,AP57(P33),C2VRS4,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C2VRS4, define_attribute {C2VRS4}  xc_loc {AK2};,,"NET ""C2VRS4""  IOSTANDARD = LVCMOS33 ;",,
+5,56,12,AF8,AP58(P34),CVRE3,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CVRE3, define_attribute {CVRE3}  xc_loc {AF8};,,"NET ""CVRE3""  IOSTANDARD = LVCMOS33 ;",,
+5,57,12,AE8,AP59(P35),CVRVS0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CVRVS0, define_attribute {CVRVS0}  xc_loc {AE8};,,"NET ""CVRVS0""  IOSTANDARD = LVCMOS33 ;",,
+5,58,12,AH5,AP60(P36),CVRVS1,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CVRVS1, define_attribute {CVRVS1}  xc_loc {AH5};,,"NET ""CVRVS1""  IOSTANDARD = LVCMOS33 ;",,
+5,59,12,AH4,AP61(P37),C5MODESEL0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,C5MODESEL0, define_attribute {C5MODESEL0}  xc_loc {AH4};,,"NET ""C5MODESEL0""  IOSTANDARD = LVCMOS33 ;",,
+5,60,12,AB13,PIO30,,I,3.3V,Port,[Use Signal],L/S部ポート関係の信号（モード切替）,,,PIO30, define_attribute {PIO30}  xc_loc {AB13};,,"NET ""PIO30""  IOSTANDARD = LVCMOS33 ;",,
+5,61,12,AB12,PIO31,,I,3.3V,Port,[Use Signal],L/S部ポート関係の信号（モード切替）,,,PIO31, define_attribute {PIO31}  xc_loc {AB12};,,"NET ""PIO31""  IOSTANDARD = LVCMOS33 ;",,
+5,62,12,AM2,APIO56(PIO32),,I,3.3V,Port,[High固定],[High固定],,,fixH_AM2, define_attribute {fixH_AM2}  xc_loc {AM2};,,"NET ""fixH_AM2""  IOSTANDARD = LVCMOS33 ;",assign fixH_AM2 = 1'b1;  // APIO56(PIO32) High fix,fixH_AM2 TYPE OUT  // APIO56(PIO32) High fix
+5,63,12,AM1,APIO57(PIO33),,I,3.3V,Port,[High固定],[High固定],,,fixH_AM1, define_attribute {fixH_AM1}  xc_loc {AM1};,,"NET ""fixH_AM1""  IOSTANDARD = LVCMOS33 ;",assign fixH_AM1 = 1'b1;  // APIO57(PIO33) High fix,fixH_AM1 TYPE OUT  // APIO57(PIO33) High fix
+5,64,12,AG8,APIO58(PIO34),,I,3.3V,Port,[High固定],[High固定],,,fixH_AG8, define_attribute {fixH_AG8}  xc_loc {AG8};,,"NET ""fixH_AG8""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG8 = 1'b1;  // APIO58(PIO34) High fix,fixH_AG8 TYPE OUT  // APIO58(PIO34) High fix
+5,65,12,AG7,APIO59(PIO35),,I,3.3V,Port,[High固定],[High固定],,,fixH_AG7, define_attribute {fixH_AG7}  xc_loc {AG7};,,"NET ""fixH_AG7""  IOSTANDARD = LVCMOS33 ;",assign fixH_AG7 = 1'b1;  // APIO59(PIO35) High fix,fixH_AG7 TYPE OUT  // APIO59(PIO35) High fix
+5,66,12,AM3,APIO60(PIO36),,I,3.3V,Port,[High固定],[High固定],,,fixH_AM3, define_attribute {fixH_AM3}  xc_loc {AM3};,,"NET ""fixH_AM3""  IOSTANDARD = LVCMOS33 ;",assign fixH_AM3 = 1'b1;  // APIO60(PIO36) High fix,fixH_AM3 TYPE OUT  // APIO60(PIO36) High fix
+5,67,12,AL3,APIO61(PIO37),,I,3.3V,Port,[High固定],[High固定],,,fixH_AL3, define_attribute {fixH_AL3}  xc_loc {AL3};,,"NET ""fixH_AL3""  IOSTANDARD = LVCMOS33 ;",assign fixH_AL3 = 1'b1;  // APIO61(PIO37) High fix,fixH_AL3 TYPE OUT  // APIO61(PIO37) High fix
+5,68,14,R3,P_ANALOG0,,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+5,69,14,R2,P_ANALOG1,CMP3PSEL,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,CMP3PSEL, define_attribute {CMP3PSEL}  xc_loc {R2};,,"NET ""CMP3PSEL""  IOSTANDARD = LVCMOS33 ;",,
+5,70,14,R1,P_ANALOG2,,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+5,71,14,T1,P_ANALOG3,,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+5,72,14,T6,P_ANALOG4,,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+5,73,14,T5,P_ANALOG5,,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+5,74,14,T3,,,,,,[Pull Down],,,,,,,,,
+5,75,14,U3,,,,,,[Pull Down],,,,,,,,,
+5,76,14,U8,,,,,,[Pull Down],,,,,,,,,
+5,77,14,U7,AP62,,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+5,78,14,U2,AP63,WCSEL0,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,WCSEL0, define_attribute {WCSEL0}  xc_loc {U2};,,"NET ""WCSEL0""  IOSTANDARD = LVCMOS33 ;",,
+5,79,14,U1,AP64,,I/O,3.3V,Port,[Pull Down],[PORT DATA],,,,,,,,
+5,80,14,U12,AP65,OAEN,I,3.3V,Port,[Use Signal],CMP制御信号出力,,,OAEN, define_attribute {OAEN}  xc_loc {U12};,,"NET ""OAEN""  IOSTANDARD = LVCMOS33 ;",,
+5,81,14,U11,PIO_ANALOG0,,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_U11, define_attribute {fixH_U11}  xc_loc {U11};,,"NET ""fixH_U11""  IOSTANDARD = LVCMOS33 ;",assign fixH_U11 = 1'b1;  // PIO_ANALOG0 High fix,fixH_U11 TYPE OUT  // PIO_ANALOG0 High fix
+5,82,14,U10,PIO_ANALOG1,,I,3.3V,Port,[High固定],[High固定],,,fixH_U10, define_attribute {fixH_U10}  xc_loc {U10};,,"NET ""fixH_U10""  IOSTANDARD = LVCMOS33 ;",assign fixH_U10 = 1'b1;  // PIO_ANALOG1 High fix,fixH_U10 TYPE OUT  // PIO_ANALOG1 High fix
+5,83,14,V10,PIO_ANALOG2,,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_V10, define_attribute {fixH_V10}  xc_loc {V10};,,"NET ""fixH_V10""  IOSTANDARD = LVCMOS33 ;",assign fixH_V10 = 1'b1;  // PIO_ANALOG2 High fix,fixH_V10 TYPE OUT  // PIO_ANALOG2 High fix
+5,84,8,AJ9,PIO_ANALOG3,,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_AJ9, define_attribute {fixH_AJ9}  xc_loc {AJ9};,,"NET ""fixH_AJ9""  IOSTANDARD = LVCMOS33 ;",assign fixH_AJ9 = 1'b1;  // PIO_ANALOG3 High fix,fixH_AJ9 TYPE OUT  // PIO_ANALOG3 High fix
+5,85,8,AP5,PIO_ANALOG4,,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_AP5, define_attribute {fixH_AP5}  xc_loc {AP5};,,"NET ""fixH_AP5""  IOSTANDARD = LVCMOS33 ;",assign fixH_AP5 = 1'b1;  // PIO_ANALOG4 High fix,fixH_AP5 TYPE OUT  // PIO_ANALOG4 High fix
+5,86,8,AN5,PIO_ANALOG5,,I,3.3V,Port,[High固定],[PORT PIO],,,fixH_AN5, define_attribute {fixH_AN5}  xc_loc {AN5};,,"NET ""fixH_AN5""  IOSTANDARD = LVCMOS33 ;",assign fixH_AN5 = 1'b1;  // PIO_ANALOG5 High fix,fixH_AN5 TYPE OUT  // PIO_ANALOG5 High fix
+5,87,14,Y9,,,,,,[Pull Down],,,,,,,,,
+5,88,14,W9,,,,,,[Pull Down],,,,,,,,,
+5,89,14,W11,,,,,,[Pull Down],,,,,,,,,
+5,90,14,W10,,,,,,[Pull Down],,,,,,,,,
+5,91,6,G6,,,,,,[Pull Down],,,,,,,,,
+5,92,6,E14,,,,,,[Pull Down],,,,,,,,,
+5,93,6,D14,EC_CH34/PALMiCE_FPGA_CH9,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],拡張用/FAPGAデバッグ用,,,,,,,,
+5,94,6,B3,EC_CH35/PALMiCE_FPGA_CH10,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],拡張用/FAPGAデバッグ用,,,,,,,,
+5,95,6,B2,EC_CH36/PALMiCE_FPGA_CH11,,(I/O) / I,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],拡張用/FAPGAデバッグ用,,,,,,,,
+5,96,6,H8,"EC_CH37/ICEMKOP0/
+/PALMiCE_FPGA_CH12",,(I/O) / I/O,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],拡張用/FAPGAデバッグ用,,,,,,,,
+5,97,6,H7,"EC_CH38/ICEMKOP1/
+/PALMiCE_FPGA_CH13",,(I/O) / I/O,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],拡張用/FAPGAデバッグ用,,,,,,,,
+5,98,6,K8,"EC_CH39/EC_RESET_B/
+/PALMiCE_FPGA_CH14",,(I/O) / I/O,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],拡張用/FAPGAデバッグ用,,,,,,,,
+5,99,6,J7,"EC_CH40/EC_SVMOD/
+/PALMiCE_FPGA_CH15",,(I/O) / I/O,3.3V,"拡張コネクタ/
+PALMiCEコネクタ",[Pull Down],拡張用/FAPGAデバッグ用,,,,,,,,
+5,100,-,-,GND,,-,-,[電源/GND],[電源/GND],[電源/GND],,,,,,,,
+,,,,,,,,,,,,,,,,,,

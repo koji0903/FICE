@@ -1,0 +1,43 @@
+/////////////////////////////////////////////////////
+//
+//  LPC Macro remove List
+//
+/////////////////////////////////////////////////////
+all_clocks
+all_inputs
+all_outputs
+all_registers
+d78f1235nf // remove
+//regm // replace to chiptop.regm
+regd // remove
+//h_rosc // replace to chiptop.h_rosc
+//l_rosc // replace to chiptop.l_rosc
+//oscmain // replace to chiptop.oscmain
+//oscsub // replace to chiptop.oscsub
+//resetb // replace to chiptop.resetb
+ramif // replace to ice.emem.ememram
+flash_code // replace to ice.emem.ememrom
+flash_data // replace to ice.dflashemu
+flash_cp // Use !!
+ram0 // replace to ice.emem.ememram
+ram1 // replace to ice.emem.ememram
+ram // replace to ice.emem.ememram
+port_iobuf // ???
+port0_iobuf // replace to eva_top.port_iobuf
+port1_iobuf // replace to eva_top.port_iobuf
+port2_iobuf // replace to eva_top.port_iobuf
+port3_iobuf // replace to eva_top.port_iobuf
+port4_iobuf // replace to eva_top.port_iobuf
+port5_iobuf // replace to eva_top.port_iobuf
+port6_iobuf // replace to eva_top.port_iobuf
+port7_iobuf // replace to eva_top.port_iobuf
+port12_iobuf // replace to eva_top.port_iobuf
+port13_iobuf // replace to eva_top.port_iobuf
+port14_iobuf // replace to eva_top.port_iobuf
+adhard // remove ( replace to ad-chip)
+adcon // ?? adctl is used !!
+adsw811 // adsw* is removed ( replace to ad-chip)
+adsw1215 // adsw* is removed ( replace to ad-chip)
+power // removed
+cap* // Use !!
+

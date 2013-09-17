@@ -1,0 +1,295 @@
+//      File Name               /proj/78k0r_11/ss3rd/_macro/_soft/_kx4_port_v1.10/kx4_port7v1_mf3_v1.10/kx4_port7v1.hdl
+//	Module Name		KX4_PORT7V1
+//	Version			1.00
+//	Designer		S.Nakata (NMS)
+//      Version                 1.10
+//      Designer                H.Ono (RMS)
+//      Modify                  add signal      : SEL36P, SEL36PI
+
+module KX4_PORT7V1
+		   (	PCLKRW   , PRESETZ  , PSEL     , PWRITE   , PENABLE  , PADDR4   , PADDR5   , PADDR6   ,
+			PWDATA8  , PWDATA9  , PWDATA10 , PWDATA11 , PWDATA12 , PWDATA13 , PWDATA14 , PWDATA15 ,
+			NSRESB   ,
+			PSELKR   , INTKR    ,
+			SEL64P   , SEL52P   , SEL48P   , SEL44P   , SEL40P   ,
+			SEL38P   , SEL36P   , SEL32P   , SEL30P   , SEL24P   , SEL20P   ,
+			SEL08P   ,
+			SEL64PI  , SEL52PI  , SEL48PI  , SEL44PI  , SEL40PI  ,
+			SEL38PI  , SEL36PI  , SEL32PI  , SEL30PI  , SEL24PI  , SEL20PI  ,
+			SCANMODE , SCANCLK  , TESDBT   , OPTOPLRD ,
+			PRDATA8  , PRDATA9  , PRDATA10 , PRDATA11 , PRDATA12 , PRDATA13 , PRDATA14 , PRDATA15 ,
+			TESENI0B , TESENO0B , TDSEL0B  , TDOUT0   , TDIN0B   ,
+			TESENI1B , TESENO1B , TDSEL1B  , TDOUT1   , TDIN1B   ,
+			TESENI2B , TESENO2B , TDSEL2B  , TDOUT2   , TDIN2B   ,
+
+			EXINA0   , EXINA1   , EXINA2   , EXINA3   , EXINA4   , EXINA5   , EXINA6   , EXINA7   ,
+			EXOUTA0  , EXOUTA1  , EXOUTA2  , EXOUTA3  , EXOUTA4  , EXOUTA5  , EXOUTA6  , EXOUTA7  ,
+			EXOUTB0  , EXOUTB1  , EXOUTB2  , EXOUTB3  , EXOUTB4  , EXOUTB5  , EXOUTB6  , EXOUTB7  ,
+			EXOUTC0  , EXOUTC1  , EXOUTC2  , EXOUTC3  , EXOUTC4  , EXOUTC5  , EXOUTC6  , EXOUTC7  ,
+
+                        P70DIN   , P71DIN   , P72DIN   , P73DIN   , P74DIN   , P75DIN   , P76DIN   , P77DIN   ,
+                        P70ENO   , P71ENO   , P72ENO   , P73ENO   , P74ENO   , P75ENO   , P76ENO   , P77ENO   ,
+			P70PUON  , P71PUON  , P72PUON  , P73PUON  , P74PUON  , P75PUON  , P76PUON  , P77PUON  ,
+                        P70DOUT  , P71DOUT  , P72DOUT  , P73DOUT  , P74DOUT  , P75DOUT  , P76DOUT  , P77DOUT  ,
+                        P70ENI   , P71ENI   , P72ENI   , P73ENI   , P74ENI   , P75ENI   , P76ENI   , P77ENI   ,
+                        PIO70    , PIO71    , PIO72    , PIO73    , PIO74    , PIO75    , PIO76    , PIO77    ,
+
+			CLK60MHZ ,
+			EXOR
+			) ;
+
+	input		PCLKRW   , PRESETZ  , PSEL     , PWRITE   , PENABLE  , PADDR4   , PADDR5   , PADDR6   ;
+	input		PWDATA8  , PWDATA9  , PWDATA10 , PWDATA11 , PWDATA12 , PWDATA13 , PWDATA14 , PWDATA15 ;
+        input           NSRESB   ;
+	input		SEL64P   , SEL52P   , SEL48P   , SEL44P   , SEL40P   ;
+	input		SEL38P   , SEL36P   , SEL32P   , SEL30P   , SEL24P   , SEL20P   ;
+	input		SEL08P   ;
+	input		SEL64PI  , SEL52PI  , SEL48PI  , SEL44PI  , SEL40PI  ;
+	input		SEL38PI  , SEL36PI  , SEL32PI  , SEL30PI  , SEL24PI  , SEL20PI  ;
+	input		SCANMODE , SCANCLK  , TESDBT   , OPTOPLRD ;
+	input		P70DIN   , P71DIN   , P72DIN   , P73DIN   , P74DIN   , P75DIN   , P76DIN   , P77DIN   ;
+	input		EXOUTA0  , EXOUTA1  , EXOUTA2  , EXOUTA3  , EXOUTA4  , EXOUTA5  , EXOUTA6  , EXOUTA7  ;
+        input           EXOUTB0  , EXOUTB1  , EXOUTB2  , EXOUTB3  , EXOUTB4  , EXOUTB5  , EXOUTB6  , EXOUTB7  ;
+	input		EXOUTC0  , EXOUTC1  , EXOUTC2  , EXOUTC3  , EXOUTC4  , EXOUTC5  , EXOUTC6  , EXOUTC7  ;
+	input		TESENI0B , TESENO0B , TDSEL0B  , TDOUT0   ;
+	input		TESENI1B , TESENO1B , TDSEL1B  , TDOUT1   ;
+	input		TESENI2B , TESENO2B , TDSEL2B  , TDOUT2   ;
+	input		PSELKR   ;
+	input		CLK60MHZ ;
+
+	output		PRDATA8  , PRDATA9  , PRDATA10 , PRDATA11 , PRDATA12 , PRDATA13 , PRDATA14 , PRDATA15 ;
+	output		P70ENO   , P71ENO   , P72ENO   , P73ENO   , P74ENO   , P75ENO   , P76ENO   , P77ENO   ;
+        output          P70PUON  , P71PUON  , P72PUON  , P73PUON  , P74PUON  , P75PUON  , P76PUON  , P77PUON  ;
+	output		P70DOUT  , P71DOUT  , P72DOUT  , P73DOUT  , P74DOUT  , P75DOUT  , P76DOUT  , P77DOUT  ;
+	output		P70ENI   , P71ENI   , P72ENI   , P73ENI   , P74ENI   , P75ENI   , P76ENI   , P77ENI   ;
+	output		PIO70    , PIO71    , PIO72    , PIO73    , PIO74    , PIO75    , PIO76    , PIO77    ;
+	output		EXINA0   , EXINA1   , EXINA2   , EXINA3   , EXINA4   , EXINA5   , EXINA6   , EXINA7   ;
+	output		TDIN0B   , TDIN1B   , TDIN2B   ;
+	output		EXOR     ;
+	output		INTKR    ;
+
+	reg		EXOR	 ;
+
+	wire		RE_PORT  , OPEN_BUF0, OPEN_BUF1, OPEN_BUF2, OPEN_BUF3, OPEN_BUF4, OPEN_BUF5, OPEN_BUF6, OPEN_BUF7 ;
+	wire		SEL_PL   , SEL_PM   , SEL_PU   , SEL_POM  ; 
+	wire		WE_PL    , WE_PM    , WE_PU    , WE_POM   ;
+	wire		AD_PL    , AD_PM    , AD_PU    , AD_POM   ;
+	wire  [7:0]	ICEENI   ;
+	wire		P70EXOR  , P71EXOR  , P72EXOR  , P73EXOR  , P74EXOR  , P75EXOR  , P76EXOR  , P77EXOR  ;
+        wire            prdata8_b, prdata9_b,prdata10_b,prdata11_b,prdata12_b,prdata13_b,prdata14_b,prdata15_b;
+        wire            prdata8_k, prdata9_k,prdata10_k,prdata11_k,prdata12_k,prdata13_k,prdata14_k,prdata15_k; 
+        wire            INTKR    , intkr_pre, intkr_fil;
+
+
+//       --------------------------------------------------------------------------------------------------------------------
+
+         always@ ( posedge SCANCLK or negedge PRESETZ ) begin
+             if ( ! PRESETZ )
+                 EXOR <= 1'b0 ;
+             else
+                 EXOR <= P70EXOR ^ P71EXOR ^ P72EXOR ^ P73EXOR ^ P74EXOR ^ P75EXOR ^ P76EXOR ^ P77EXOR ;
+	 end
+
+//	ICE chip	-----------------------------------------------------------------------------------------------------
+
+        `ifndef FPGA_ICE
+        assign  PIO70 = 1'b0;
+        assign  PIO71 = 1'b0;
+        assign  PIO72 = 1'b0;
+        assign  PIO73 = 1'b0;
+        assign  PIO74 = 1'b0;
+        assign  PIO75 = 1'b0;
+        assign  PIO76 = 1'b0;
+        assign  PIO77 = 1'b0;
+
+        `else
+	assign	PIO70  =  P70ENO | ~ICEENI[0] ;
+	assign	PIO71  =  P71ENO | ~ICEENI[1] ;
+	assign	PIO72  =  P72ENO | ~ICEENI[2] ;
+	assign	PIO73  =  P73ENO | ~ICEENI[3] ;
+	assign	PIO74  =  P74ENO | ~ICEENI[4] ;
+	assign	PIO75  =  P75ENO | ~ICEENI[5] ;
+	assign	PIO76  =  P76ENO | ~ICEENI[6] ;
+	assign	PIO77  =  P77ENO | ~ICEENI[7] ;
+	`endif
+
+//      D-BUS   -------------------------------------------------------------------------------------------------------------
+   	assign  PRDATA8  = prdata8_b  | prdata8_k ;
+  	assign  PRDATA9  = prdata9_b  | prdata9_k ;
+    	assign  PRDATA10 = prdata10_b | prdata10_k ;
+    	assign  PRDATA11 = prdata11_b | prdata11_k ;
+    	assign  PRDATA12 = prdata12_b | prdata12_k ;
+    	assign  PRDATA13 = prdata13_b | prdata13_k ;
+    	assign  PRDATA14 = prdata14_b | prdata14_k ;
+    	assign  PRDATA15 = prdata15_b | prdata15_k ;
+
+
+//	BIT	-------------------------------------------------------------------------------------------------------------
+
+     QPK0RBCBB011V1		portbit0 (
+	.PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )	, .PWDATA ( PWDATA8 )	, .RE_PORT ( RE_PORT )	,
+	.WE_PL ( WE_PL )	, .WE_PM ( WE_PM )  	, .WE_PU ( WE_PU )      ,
+	.SEL_PL ( SEL_PL )	, .SEL_PM ( SEL_PM ) 	, .SEL_PU ( SEL_PU )    ,
+	.OPEN_BUF ( OPEN_BUF0 ) , .DIN ( P70DIN )   	,
+        .EXOUTA ( EXOUTA0 )     , .EXOUTB ( EXOUTB0 )   , .EXOUTC ( EXOUTC0 )   ,
+	.SCANMODE ( SCANMODE )	, .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+	.PRDATA ( prdata8_b )	, .PUON ( P70PUON )     , .ENO ( P70ENO )	, .ENI ( P70ENI )	, .DOUT ( P70DOUT )	,
+	.TESENI ( TESENI0B )    , .TESENO ( TESENO0B )  , .TDSEL ( TDSEL0B )    , .TDOUT ( TDOUT0 )     , .TDIN ( TDIN0B )      ,
+	.EXINA ( EXINA0 )	, .din_exor ( P70EXOR )
+	) ;
+
+     QPK0RBDBB014V1             portbit1 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA9 )   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      , .WE_PU ( WE_PU )      , .WE_POM ( WE_POM )    ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    , .SEL_PU ( SEL_PU )    , .SEL_POM ( SEL_POM )  ,
+        .OPEN_BUF ( OPEN_BUF1 ) , .DIN ( P71DIN )       ,
+        .EXOUTA ( EXOUTA1 )     , .EXOUTB ( EXOUTB1 )   , .EXOUTC ( EXOUTC1 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( prdata9_b )   , .PUON ( P71PUON )     , .ENO ( P71ENO )       , .ENI ( P71ENI )       , .DOUT ( P71DOUT )     ,
+	.TESENI ( TESENI1B )    , .TESENO ( TESENO1B )  , .TDSEL ( TDSEL1B )    , .TDOUT ( TDOUT1 )     , .TDIN ( TDIN1B )      ,
+        .EXINA ( EXINA1 )       , .din_exor ( P71EXOR )
+        ) ;
+
+     QPK0RBCBB011V1             portbit2 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA10)   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      , .WE_PU ( WE_PU )      ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    , .SEL_PU ( SEL_PU )    ,
+        .OPEN_BUF ( OPEN_BUF2 ) , .DIN ( P72DIN )       ,
+        .EXOUTA ( EXOUTA2 )     , .EXOUTB ( EXOUTB2 )   , .EXOUTC ( EXOUTC2 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( prdata10_b)   , .PUON ( P72PUON )     , .ENO ( P72ENO )       , .ENI ( P72ENI )       , .DOUT ( P72DOUT )     ,
+	.TESENI ( TESENI2B )    , .TESENO ( TESENO2B )  , .TDSEL ( TDSEL2B )    , .TDOUT ( TDOUT2 )     , .TDIN ( TDIN2B )      ,
+        .EXINA ( EXINA2 )       , .din_exor ( P72EXOR )
+        ) ;
+
+     QPK0RBCBB001V1             portbit3 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA11)   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      , .WE_PU ( WE_PU )      ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    , .SEL_PU ( SEL_PU )    ,
+        .OPEN_BUF ( OPEN_BUF3 ) , .DIN ( P73DIN )       ,
+        .EXOUTA ( EXOUTA3 )     , .EXOUTB ( EXOUTB3 )   , .EXOUTC ( EXOUTC3 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( prdata11_b)   , .PUON ( P73PUON )     , .ENO ( P73ENO )       , .ENI ( P73ENI )       , .DOUT ( P73DOUT )     ,
+        .EXINA ( EXINA3 )       , .din_exor ( P73EXOR )
+        ) ;
+
+     QPK0RBDBB003V1             portbit4 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA12)   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      , .WE_PU ( WE_PU )      , .WE_POM ( WE_POM )    ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    , .SEL_PU ( SEL_PU )    , .SEL_POM ( SEL_POM )  ,
+        .OPEN_BUF ( OPEN_BUF4 ) , .DIN ( P74DIN )       , 
+        .EXOUTA ( EXOUTA4 )     , .EXOUTB ( EXOUTB4 )   , .EXOUTC ( EXOUTC4 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( prdata12_b)   , .PUON ( P74PUON )     , .ENO ( P74ENO )       , .ENI ( P74ENI )       , .DOUT ( P74DOUT )     ,
+        .EXINA ( EXINA4 )       , .din_exor ( P74EXOR ) 
+        ) ;
+
+     QPK0RBCBB001V1             portbit5 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA13)   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      , .WE_PU ( WE_PU )      ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    , .SEL_PU ( SEL_PU )    ,
+        .OPEN_BUF ( OPEN_BUF5 ) , .DIN ( P75DIN )       ,
+        .EXOUTA ( EXOUTA5 )     , .EXOUTB ( EXOUTB5 )   , .EXOUTC ( EXOUTC5 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( prdata13_b)   , .PUON ( P75PUON )     , .ENO ( P75ENO )       , .ENI ( P75ENI )       , .DOUT ( P75DOUT )     ,
+        .EXINA ( EXINA5 )       , .din_exor ( P75EXOR )
+        ) ;
+
+     QPK0RBCBB001V1             portbit6 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA14)   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      , .WE_PU ( WE_PU )      ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    , .SEL_PU ( SEL_PU )    ,
+        .OPEN_BUF ( OPEN_BUF6 ) , .DIN ( P76DIN )       ,
+        .EXOUTA ( EXOUTA6 )     , .EXOUTB ( EXOUTB6 )   , .EXOUTC ( EXOUTC6 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( prdata14_b)   , .PUON ( P76PUON )     , .ENO ( P76ENO )       , .ENI ( P76ENI )       , .DOUT ( P76DOUT )     ,
+        .EXINA ( EXINA6 )       , .din_exor ( P76EXOR )
+        ) ;
+
+     QPK0RBCBB001V1             portbit7 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA15)   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      , .WE_PU ( WE_PU )      ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    , .SEL_PU ( SEL_PU )    ,
+        .OPEN_BUF ( OPEN_BUF7 ) , .DIN ( P77DIN )       ,
+        .EXOUTA ( EXOUTA7 )     , .EXOUTB ( EXOUTB7 )   , .EXOUTC ( EXOUTC7 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( prdata15_b)   , .PUON ( P77PUON )     , .ENO ( P77ENO )       , .ENI ( P77ENI )       , .DOUT ( P77DOUT )     ,
+        .EXINA ( EXINA7 )       , .din_exor ( P77EXOR )
+        ) ;
+
+//	CTL	-------------------------------------------------------------------------------------------------------------
+
+    QPK0RCGB07V1		portctl	(
+	.PSEL ( PSEL )		, .PWRITE ( PWRITE )	, .PENABLE ( PENABLE )	 , .NSRESB ( NSRESB )     ,
+	.AD_PL ( AD_PL )	, .AD_PM ( AD_PM )	, .AD_PU ( AD_PU )       , .AD_POM ( AD_POM )     ,
+	.SEL64P ( SEL64P )   	, .SEL52P ( SEL52P )   	, .SEL48P ( SEL48P )	 , .SEL44P ( SEL44P )     , .SEL40P ( SEL40P )   ,
+	.SEL38P ( SEL38P )   	, .SEL36P ( SEL36P )   	, .SEL32P ( SEL32P )   	 , .SEL30P ( SEL30P )     , .SEL24P ( SEL24P )   ,
+	.SEL20P ( SEL20P )      , .SEL08P ( SEL08P )   	,
+	.SEL64PI ( SEL64PI )  	, .SEL52PI ( SEL52PI )  , .SEL48PI ( SEL48PI )   , .SEL44PI ( SEL44PI )   , .SEL40PI ( SEL40PI ) ,
+	.SEL38PI ( SEL38PI )  	, .SEL36PI ( SEL36PI )  , .SEL32PI ( SEL32PI )   , .SEL30PI ( SEL30PI )   , .SEL24PI ( SEL24PI ) ,
+	.SEL20PI ( SEL20PI )    ,
+	.SEL_PL ( SEL_PL )	, .SEL_PM ( SEL_PM )	, .SEL_PU ( SEL_PU )     , .SEL_POM ( SEL_POM )   ,
+	.WE_PL ( WE_PL )	, .WE_PM ( WE_PM )	, .WE_PU ( WE_PU )       , .WE_POM ( WE_POM )     ,
+	.RE_PORT ( RE_PORT )	,
+	.OPEN_BUF0 (OPEN_BUF0)  , .OPEN_BUF1 (OPEN_BUF1), .OPEN_BUF2(OPEN_BUF2)  , .OPEN_BUF3(OPEN_BUF3)  , .OPEN_BUF4(OPEN_BUF4),
+	.OPEN_BUF5 (OPEN_BUF5)  , .OPEN_BUF6 (OPEN_BUF6), .OPEN_BUF7(OPEN_BUF7)  ,
+        .ICEENI ( ICEENI )
+	) ;
+
+
+//	DEC	-------------------------------------------------------------------------------------------------------------
+
+    QPK0RDG1V1			portdec	(
+	.PADDR6 ( PADDR6 )	, .PADDR5 ( PADDR5 )	, .PADDR4 ( PADDR4 )	,
+	.AD_PL ( AD_PL )	, .AD_PM ( AD_PM )      , .AD_PU ( AD_PU )      , .AD_POM ( AD_POM )
+	) ;
+
+//      KR08    -------------------------------------------------------------------------------------------------------------
+
+    QPK0RKR08V1                 kr08 (
+        .PSEL ( PSELKR )        ,
+        .PWDATA7 ( PWDATA15 )   , .PWDATA6 ( PWDATA14 ) , .PWDATA5 ( PWDATA13 ) , .PWDATA4 ( PWDATA12 ) ,
+        .PWDATA3 ( PWDATA11 )   , .PWDATA2 ( PWDATA10 ) , .PWDATA1 ( PWDATA9 )  , .PWDATA0 ( PWDATA8 )  ,
+        .PRDATA7 ( prdata15_k)  , .PRDATA6 ( prdata14_k), .PRDATA5 ( prdata13_k), .PRDATA4 ( prdata12_k),
+        .PRDATA3 ( prdata11_k)  , .PRDATA2 ( prdata10_k), .PRDATA1 ( prdata9_k) , .PRDATA0 ( prdata8_k) ,
+        .PENABLE ( PENABLE )    , .PWRITE ( PWRITE )    , .PRESETZ ( PRESETZ )  , .PCLKRW ( PCLKRW )    ,
+        .INTKR ( intkr_pre )    ,
+        .PKR0 ( EXINA0 )        , .PKR1 ( EXINA1 )      , .PKR2 ( EXINA2 )      , .PKR3 ( EXINA3 )      ,
+        .PKR4 ( EXINA4 )        , .PKR5 ( EXINA5 )      , .PKR6 ( EXINA6 )      , .PKR7 ( EXINA7 )
+        ) ;
+
+        PORT7ICEDLYMIN50N  filter ( .out ( intkr_fil ) , .in ( intkr_pre ) , .iceclk ( CLK60MHZ ) );
+        assign     INTKR = (SCANMODE)? intkr_pre: intkr_fil ;
+
+endmodule
+
+
+`ifndef FPGA_ICE
+module PORT7ICEDLYMIN50N ( out , in , iceclk ) ;
+        input           in  ;
+	input		iceclk  ;
+        output          out ;
+
+          TBFILTER1X2 delay1 ( .H01(in) , .N01(out) ) ;
+
+endmodule
+
+`else
+module PORT7ICEDLYMIN50N ( out , in , iceclk );
+	input	in , iceclk ;
+	output	out;
+	
+	wire	clk60mhz = iceclk;
+	
+	reg [2:0] dly;
+	reg out;
+	always @( posedge clk60mhz ) begin
+		dly <= {dly[1:0], in};
+		if ((dly[0]==in)&&(dly[1]==in)&&(dly[2]==in)) begin
+			out <= dly[2];
+		end
+	end
+
+endmodule
+`endif
+

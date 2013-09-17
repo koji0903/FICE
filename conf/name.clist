@@ -1,0 +1,10 @@
+///////////////////////////////////////////////////////
+//
+// Name Change list from  Device Constraint to FPGA
+//
+//   Author   : Koji HIJIKURO<koji.hijikuro@nms.necel.com>
+//   Date     : Dec 24, 2009
+//
+//////////////////////////////////////////////////////
+\S*_reg/H0\d$,NONE
+\S*_reg$,NONE

@@ -1,0 +1,18 @@
+#
+#
+#
+ICE_RESB		cspf.mp200.csc.ICE_RESB
+#STPST			cspf.mp200.cpu.STPST
+
+#CPUPID1			cspf.mp200.cpu.PID1
+#CPUPID0			cspf.mp200.cpu.PID0
+#PID1			cspf.mp200.csc.PID1
+#PID0			cspf.mp200.csc.PID0
+
+PA				cspf.mp200.cpu_pa
+PC1				PULLDOWN
+
+#dgen			pericore.portiotop.porttop.dgen
+dgen02			pericore.dgen02
+dgen01			pericore.dgen01
+dgen00			pericore.dgen00

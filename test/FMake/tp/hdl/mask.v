@@ -1,0 +1,154 @@
+
+//  $Id: mask.v,v 1.7 2007-10-03 04:02:31 tsuno3 Exp $
+
+module MASK (
+	SYSRSOUTB,
+	ICEIFA31, ICEIFA30, ICEIFA29, ICEIFA28,
+	ICEIFA27, ICEIFA26, ICEIFA25, ICEIFA24,
+	ICEIFA23, ICEIFA22, ICEIFA21, ICEIFA20,
+	ICEIFA19, ICEIFA18, ICEIFA17, ICEIFA16,
+	ICEIFA15, ICEIFA14, ICEIFA13, ICEIFA12,
+	ICEIFA11, ICEIFA10, ICEIFA9,  ICEIFA8,
+	ICEIFA7,  ICEIFA6,  ICEIFA5,  ICEIFA4,
+	ICEIFA3,  ICEIFA2,  ICEIFA1,  ICEIFA0,
+	ICEDI31, ICEDI30, ICEDI29, ICEDI28,
+	ICEDI27, ICEDI26, ICEDI25, ICEDI24,
+	ICEDI23, ICEDI22, ICEDI21, ICEDI20,
+	ICEDI19, ICEDI18, ICEDI17, ICEDI16,
+	ICEDI15, ICEDI14, ICEDI13, ICEDI12,
+	ICEDI11, ICEDI10, ICEDI9,  ICEDI8,
+	ICEDI7,  ICEDI6,  ICEDI5,  ICEDI4,
+	ICEDI3,  ICEDI2,  ICEDI1,  ICEDI0,
+	ICEDO31, ICEDO30, ICEDO29, ICEDO28,
+	ICEDO27, ICEDO26, ICEDO25, ICEDO24,
+	ICEDO23, ICEDO22, ICEDO21, ICEDO20,
+	ICEDO19, ICEDO18, ICEDO17, ICEDO16,
+	ICEDO15, ICEDO14, ICEDO13, ICEDO12,
+	ICEDO11, ICEDO10, ICEDO9,  ICEDO8,
+	ICEDO7,  ICEDO6,  ICEDO5,  ICEDO4,
+	ICEDO3,  ICEDO2,  ICEDO1,  ICEDO0,
+	ICEWR,
+	SVMODUSER,
+	ICEMSKRETRY, ICEMSKDBG,
+	ICEMSKWAIT, ICEMSKNMI, ICEMSKICE, ICEMSKTRAP,
+	ICEMSKWDT, ICEMSKLVI, ICEMSKPOC, ICEMSKTRST,
+	ICEMSKTRSTFLG
+);
+
+	input	SYSRSOUTB;
+	input	ICEIFA31, ICEIFA30, ICEIFA29, ICEIFA28,
+			ICEIFA27, ICEIFA26, ICEIFA25, ICEIFA24,
+			ICEIFA23, ICEIFA22, ICEIFA21, ICEIFA20,
+			ICEIFA19, ICEIFA18, ICEIFA17, ICEIFA16,
+			ICEIFA15, ICEIFA14, ICEIFA13, ICEIFA12,
+			ICEIFA11, ICEIFA10, ICEIFA9,  ICEIFA8,
+			ICEIFA7,  ICEIFA6,  ICEIFA5,  ICEIFA4,
+			ICEIFA3,  ICEIFA2,  ICEIFA1,  ICEIFA0;
+	input	ICEDI31, ICEDI30, ICEDI29, ICEDI28,
+			ICEDI27, ICEDI26, ICEDI25, ICEDI24,
+			ICEDI23, ICEDI22, ICEDI21, ICEDI20,
+			ICEDI19, ICEDI18, ICEDI17, ICEDI16,
+			ICEDI15, ICEDI14, ICEDI13, ICEDI12,
+			ICEDI11, ICEDI10, ICEDI9,  ICEDI8,
+			ICEDI7,  ICEDI6,  ICEDI5,  ICEDI4,
+			ICEDI3,  ICEDI2,  ICEDI1,  ICEDI0;
+	output	ICEDO31, ICEDO30, ICEDO29, ICEDO28,
+			ICEDO27, ICEDO26, ICEDO25, ICEDO24,
+			ICEDO23, ICEDO22, ICEDO21, ICEDO20,
+			ICEDO19, ICEDO18, ICEDO17, ICEDO16,
+			ICEDO15, ICEDO14, ICEDO13, ICEDO12,
+			ICEDO11, ICEDO10, ICEDO9,  ICEDO8,
+			ICEDO7,  ICEDO6,  ICEDO5,  ICEDO4,
+			ICEDO3,  ICEDO2,  ICEDO1,  ICEDO0;
+	input	ICEWR;
+	input	SVMODUSER;
+	output	ICEMSKRETRY, ICEMSKDBG,
+			ICEMSKWAIT, ICEMSKNMI, ICEMSKICE, ICEMSKTRAP,
+			ICEMSKWDT, ICEMSKLVI, ICEMSKPOC, ICEMSKTRST;
+	output	ICEMSKTRSTFLG;
+	
+	wire [31:0] ICEIFA, ICEDI, ICEDO;
+	wire sel_mask;
+	reg  icemskretryflg, icemskdbgflg, icemskwaitflg, icemsknmiflg;
+	reg  icemskiceflg, icemsktrapflg, icemskwdtflg, icemsklviflg, icemskpocflg, icemsktrstflg;
+	
+	// Host bus interface
+	
+		assign ICEIFA = {
+			ICEIFA31, ICEIFA30, ICEIFA29, ICEIFA28, ICEIFA27, ICEIFA26, ICEIFA25, ICEIFA24,
+			ICEIFA23, ICEIFA22, ICEIFA21, ICEIFA20, ICEIFA19, ICEIFA18, ICEIFA17, ICEIFA16,
+			ICEIFA15, ICEIFA14, ICEIFA13, ICEIFA12, ICEIFA11, ICEIFA10, ICEIFA9, ICEIFA8,
+			ICEIFA7, ICEIFA6, ICEIFA5, ICEIFA4, ICEIFA3, ICEIFA2, ICEIFA1, ICEIFA0
+		};
+		assign ICEDI = {
+			ICEDI31, ICEDI30, ICEDI29, ICEDI28, ICEDI27, ICEDI26, ICEDI25, ICEDI24,
+			ICEDI23, ICEDI22, ICEDI21, ICEDI20, ICEDI19, ICEDI18, ICEDI17, ICEDI16,
+			ICEDI15, ICEDI14, ICEDI13, ICEDI12, ICEDI11, ICEDI10, ICEDI9, ICEDI8,
+			ICEDI7, ICEDI6, ICEDI5, ICEDI4, ICEDI3, ICEDI2, ICEDI1, ICEDI0
+		};
+		assign {
+			ICEDO31, ICEDO30, ICEDO29, ICEDO28, ICEDO27, ICEDO26, ICEDO25, ICEDO24,
+			ICEDO23, ICEDO22, ICEDO21, ICEDO20, ICEDO19, ICEDO18, ICEDO17, ICEDO16,
+			ICEDO15, ICEDO14, ICEDO13, ICEDO12, ICEDO11, ICEDO10, ICEDO9, ICEDO8,
+			ICEDO7, ICEDO6, ICEDO5, ICEDO4, ICEDO3, ICEDO2, ICEDO1, ICEDO0
+		} = ICEDO;
+		
+		assign sel_mask = (
+			ICEIFA[27] & ICEIFA[23] & ICEIFA[14] &
+			(({ICEIFA[11:2], 2'b00} == 12'h000) ? 1'b1 : 1'b0)
+		); // 0880_4000H
+		
+		assign ICEDO = (sel_mask) ? {
+			16'b0,
+			4'b0,
+			2'b0, icemskretryflg, icemskdbgflg,
+			icemskwaitflg, icemsknmiflg, icemskiceflg, icemsktrapflg,
+			icemskwdtflg, icemsklviflg, icemskpocflg, icemsktrstflg
+		} : {
+			32'h0000_0000
+		};
+	
+	// [マスク設定]
+	
+		always @(negedge ICEWR or negedge SYSRSOUTB) begin
+			if (!SYSRSOUTB) begin
+				icemskretryflg <= 1'b1;
+				icemskdbgflg   <= 1'b1;
+				icemskwaitflg  <= 1'b1;
+				icemsknmiflg   <= 1'b1;
+				icemskiceflg   <= 1'b0;
+				icemsktrapflg  <= 1'b1;
+				icemskwdtflg   <= 1'b1;
+				icemsklviflg   <= 1'b1;
+				icemskpocflg   <= 1'b0;
+				icemsktrstflg  <= 1'b1;
+			end else begin
+				if (sel_mask) begin
+					icemskretryflg <= ICEDI[9];
+					icemskdbgflg   <= ICEDI[8];
+					icemskwaitflg  <= ICEDI[7];
+					icemsknmiflg   <= ICEDI[6];
+					icemskiceflg   <= ICEDI[5];
+					icemsktrapflg  <= ICEDI[4];
+					icemskwdtflg   <= ICEDI[3];
+					icemsklviflg   <= ICEDI[2];
+					icemskpocflg   <= ICEDI[1];
+					icemsktrstflg  <= ICEDI[0];
+				end
+			end
+		end
+		
+		assign ICEMSKRETRY   = icemskretryflg;
+		assign ICEMSKDBG     = icemskdbgflg;
+		assign ICEMSKWAIT    = icemskwaitflg;
+		assign ICEMSKNMI     = icemsknmiflg;
+		assign ICEMSKICE     = icemskiceflg;
+		assign ICEMSKTRAP    = (SVMODUSER) ? 1'b1 : icemsktrapflg;
+		assign ICEMSKWDT     = (SVMODUSER) ? 1'b1 : icemskwdtflg;
+		assign ICEMSKLVI     = (SVMODUSER) ? 1'b1 : icemsklviflg;
+		assign ICEMSKPOC     = icemskpocflg;
+		assign ICEMSKTRST    = (SVMODUSER) ? 1'b1 : icemsktrstflg;
+		assign ICEMSKTRSTFLG = icemsktrstflg;
+	
+endmodule
+

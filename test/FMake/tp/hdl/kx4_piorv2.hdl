@@ -1,0 +1,275 @@
+//	Module Name		KX4_PIORV1
+//	Version			1.00
+//	Designer		S.Nakata (NMS)
+//      Modify
+//      Module Name             KX4_PIORV2
+//      Version                 2.00
+//      Designer                H.Ono (RMS)
+//      Modify                  change PCLBUZ1
+//
+//	Date			2010.07.20
+//	Modify			change PCLBUZ0
+//
+//	Date			2010.07.20
+//	Modify			add pin swap for BB
+
+module KX4_PIORV2
+		   (	PIOR0     , PIOR1     , PIOR2     , PIOR3     , PIOR4     ,
+			TOUT00    , TOUT02    , TOUT03    , TOUT04    , TOUT05    , TOUT06    , TOUT07    ,
+			SOUT000   , SOUT002   , SOUT100   ,
+			SOUT003   ,
+			SOUT013   ,
+			SCKO00    ,
+			SCLO0     , SDAO0     ,
+			PCLBUZ0   , PCLBUZ1   ,
+			P00EXINA  , P01EXINA  , P02EXINA  , P03EXINA  , P05EXINA  , P06EXINA  ,
+			P10EXINA  , P11EXINA  , P12EXINA  , P13EXINA  , P14EXINA  , P15EXINA  , P16EXINA  , P17EXINA  ,
+			P31EXINA  ,
+			P41EXINA  , P42EXINA  ,
+			P50EXINA  , P52EXINA  , P53EXINA  , P55EXINA  ,
+			P60EXINA  , P61EXINA  ,
+			P76EXINA  , P77EXINA  ,
+			SEL64P    , SEL52P    , SEL48P    , SEL44P    , SEL40P    ,
+			SEL38P    , SEL36P    , SEL32P    , SEL30P    , SEL24P    , SEL20P    ,
+
+			TIN00     , TIN02     , TIN03     , TIN04     , TIN05     , TIN06     , TIN07     ,
+			SIN00     , SIN02     , SIN10     ,
+			SIN03     ,
+			SCKI00    ,
+			INTP5EG   , INTP10EG  , INTP11EG  ,
+			SCLI0     , SDAI0     ,
+			P00EXOUTA , P01EXOUTB , P02EXOUTA , P03EXOUTB , P05EXOUTB , P06EXOUTB ,
+			P10EXOUTA , P10EXOUTB , P11EXOUTB , TXSAU     , P12EXOUTB , P13EXOUTA , P13EXOUTB , P13EXOUTC , 
+			P14EXOUTB , P14EXOUTC , P15EXOUTB , P15EXOUTC , P16EXOUTA , P17EXOUTA , P17EXOUTB ,
+			P31EXOUTB , P31EXOUTC ,
+			P41EXOUTB , P42EXOUTB ,
+			P51EXOUTA , P55EXOUTA , P55EXOUTB ,
+			P60EXOUTB , P61EXOUTB ,
+			P77EXOUTA ,
+			P140EXOUTB, P141EXOUTB,
+			BBSWPICA  , P10EXINB  , P10EXOUTC , P11EXOUTC
+			) ;
+
+	input		PIOR0     , PIOR1     , PIOR2     , PIOR3     , PIOR4     ;
+	input		TOUT00    , TOUT02    , TOUT03    , TOUT04    , TOUT05    , TOUT06    , TOUT07    ;
+	input		SOUT000   , SOUT002   , SOUT100   ;
+	input		SOUT003   ;
+	input		SOUT013   ;
+	input		SCKO00    ;
+	input		SCLO0     , SDAO0     ;
+	input		PCLBUZ0   , PCLBUZ1   ;
+	input		P00EXINA  , P01EXINA  , P02EXINA  , P03EXINA  , P05EXINA  , P06EXINA  ;
+	input		P10EXINA  , P11EXINA  , P12EXINA  , P13EXINA  , P14EXINA  , P15EXINA  , P16EXINA  , P17EXINA  ;
+	input		P31EXINA  ;
+	input		P41EXINA  , P42EXINA  ;
+	input		P50EXINA  , P52EXINA  , P53EXINA  , P55EXINA  ;
+	input		P60EXINA  , P61EXINA  ;
+	input		P76EXINA  , P77EXINA  ;
+	input		SEL64P    , SEL52P    , SEL48P    , SEL44P    , SEL40P    ;
+	input		SEL38P    , SEL36P    , SEL32P    , SEL30P    , SEL24P    , SEL20P    ;
+
+	output		TIN00     , TIN02     , TIN03     , TIN04     , TIN05     , TIN06     , TIN07     ;
+	output		SIN00     , SIN02     , SIN10     ;
+	output		SIN03     ;
+	output		SCKI00    ;
+	output		INTP5EG   , INTP10EG  , INTP11EG  ;
+	output		SCLI0     , SDAI0     ;
+	output		P00EXOUTA , P01EXOUTB , P02EXOUTA , P03EXOUTB , P05EXOUTB , P06EXOUTB ;
+	output		P10EXOUTA , P10EXOUTB , P11EXOUTB , TXSAU     , P12EXOUTB , P13EXOUTA , P13EXOUTB , P13EXOUTC ;
+	output		P14EXOUTB , P14EXOUTC , P15EXOUTB , P15EXOUTC , P16EXOUTA , P17EXOUTA , P17EXOUTB ;
+	output		P31EXOUTB , P31EXOUTC ;
+	output		P41EXOUTB , P42EXOUTB ;
+	output		P51EXOUTA , P55EXOUTA , P55EXOUTB ;
+	output		P60EXOUTB , P61EXOUTB ;
+	output		P77EXOUTA ;
+	output		P140EXOUTB, P141EXOUTB;
+
+	input		BBSWPICA  ;			// add 2010.08.21
+	input		P10EXINB  ;			// add 2010.08.21
+	output		P10EXOUTC , P11EXOUTC  ;	// add 2010.08.21
+
+	reg		P02EXOUTA , P00EXOUTA , P01EXOUTB , P03EXOUTB , P51EXOUTA , P17EXO_pre2 , P16EXOUTA ;
+	reg		P15EXOUTC , P141EXO_pre ;
+	reg		SIN02     , TIN00     , SIN03     ;
+
+	wire		TI02_pre1 , TI03_pre1 , TI04_pre1 , TI05_pre1 , TI06_pre1 , TI07_pre1 ;
+	wire		TI02_pre2 , TI03_pre2 , TI04_pre2 , TI05_pre2 , TI06_pre2 , TI07_pre2 ;
+	wire		RXD0_pre1 , RXD0_pre2 ;
+	wire		RXD2_pre1 , RXD2_pre2 ;
+
+	wire		SCKI00_pre1 , SCKI00_pre2 ;
+	wire		INTP5_pre1  , INTP5_pre2  , INTP10_pre1 , INTP10_pre2 , INTP11_pre1 , INTP11_pre2 ;
+	wire		SCLI0_pre1  , SCLI0_pre2  , SDAI0_pre1  , SDAI0_pre2  ;
+	wire		P17EXO_pre1 , P17EXO_pre3 ;
+
+	wire		SCLO0_org   , SDAO0_org   ;	// add 2010.08.21
+	wire		SCLI0_pre3  , SDAI0_pre3  ;	// add 2010.08.21
+	wire		SCLI0_org   , SDAI0_org   ;	// add 2010.08.21
+	wire		SCLI0_bb    , SDAI0_bb    ;	// add 2010.08.21
+
+// --- EXOUTB, EXOUTC ------------------------------------------
+
+// add IICA Pin swap for BB 2010.08.21
+//
+        assign   SCLO0_org = SCLO0   & ~BBSWPICA ;
+        assign   P10EXOUTC = SCLO0   &  BBSWPICA ;
+        assign   SDAO0_org = SDAO0   & ~BBSWPICA ;
+        assign   P11EXOUTC = SDAO0   &  BBSWPICA ;
+
+// add end
+
+	assign	 P17EXOUTB = TOUT02  & ~PIOR0 ;
+	assign	 P15EXOUTB = TOUT02  &  PIOR0 ;
+	assign	 P31EXOUTB = TOUT03  & ~PIOR0 ;
+	assign	 P14EXOUTB = TOUT03  &  PIOR0 ;
+	assign	 P42EXOUTB = TOUT04  & ~PIOR0 ;
+	assign	 P13EXOUTB = TOUT04  &  PIOR0 ;
+	assign	 P05EXOUTB = TOUT05  & ~PIOR0 ;
+	assign	 P12EXOUTB = TOUT05  &  PIOR0 ;
+	assign	 P06EXOUTB = TOUT06  & ~PIOR0 ;
+	assign	 P11EXOUTB = TOUT06  &  PIOR0 ;
+	assign	 P41EXOUTB = TOUT07  & ~PIOR0 ;
+	assign	 P10EXOUTB = TOUT07  &  PIOR0 ;
+
+//	assign	 P60EXOUTB = SCLO0   & ~PIOR2 ;
+//	assign	 P14EXOUTC = SCLO0   &  PIOR2 ;
+//	assign	 P61EXOUTB = SDAO0   & ~PIOR2 ;
+//	assign	 P13EXOUTC = SDAO0   &  PIOR2 ;
+//
+	assign	 P60EXOUTB = SCLO0_org   & ~PIOR2 ;
+	assign	 P14EXOUTC = SCLO0_org   &  PIOR2 ;
+	assign	 P61EXOUTB = SDAO0_org   & ~PIOR2 ;
+	assign	 P13EXOUTC = SDAO0_org   &  PIOR2 ;
+
+	assign  P140EXOUTB = PCLBUZ0 &  ~PIOR3 &  ( SEL64P | SEL52P | SEL48P );
+	assign   P31EXOUTC = PCLBUZ0 & ( PIOR3 | ~( SEL64P | SEL52P | SEL48P ) );
+
+	assign	P141EXOUTB = P141EXO_pre & ~PIOR4 ;
+	assign	 P55EXOUTB = PCLBUZ1 &  PIOR4 ;
+
+// --- EXOUTA ---------------------------------------------------
+
+	assign	 TXSAU       = SOUT000 |  PIOR1 ;
+	assign	 P17EXO_pre1 = SOUT000 | ~PIOR1 ;
+	assign	 P13EXOUTA   = SOUT100 |  PIOR1 ;
+	assign	 P77EXOUTA   = SOUT100 | ~PIOR1 ;
+	assign	 P10EXOUTA   = SCKO00  |  PIOR1 ;
+	assign	 P55EXOUTA   = SCKO00  | ~PIOR1 ;
+
+// --- EXINA ----------------------------------------------------
+
+	assign	TI02_pre1   = P17EXINA & ~PIOR0 ;
+	assign	TI02_pre2   = P15EXINA &  PIOR0 ;
+	assign	TI03_pre1   = P31EXINA & ~PIOR0 ;
+	assign	TI03_pre2   = P14EXINA &  PIOR0 ;
+	assign	TI04_pre1   = P42EXINA & ~PIOR0 ;
+	assign	TI04_pre2   = P13EXINA &  PIOR0 ;
+	assign	TI05_pre1   = P05EXINA & ~PIOR0 ;
+	assign	TI05_pre2   = P12EXINA &  PIOR0 ;
+	assign	TI06_pre1   = P06EXINA & ~PIOR0 ;
+	assign	TI06_pre2   = P11EXINA &  PIOR0 ;
+	assign	TI07_pre1   = P41EXINA & ~PIOR0 ;
+	assign	TI07_pre2   = P10EXINA &  PIOR0 ;
+
+	assign	RXD0_pre1   = P11EXINA & ~PIOR1 ;
+	assign	RXD0_pre2   = P16EXINA &  PIOR1 ;
+	assign  RXD2_pre1   = P14EXINA & ~PIOR1 ;
+	assign  RXD2_pre2   = P76EXINA &  PIOR1 ;
+	assign	INTP10_pre1 = P76EXINA & ~PIOR1 ;
+	assign	INTP10_pre2 = P52EXINA &  PIOR1 ;
+	assign	INTP11_pre1 = P77EXINA & ~PIOR1 ;
+	assign	INTP11_pre2 = P53EXINA &  PIOR1 ;
+	assign  SCKI00_pre1 = P10EXINA & ~PIOR1 ;
+	assign  SCKI00_pre2 = P55EXINA &  PIOR1 ;
+
+	assign	SCLI0_pre1  = P60EXINA & ~PIOR2 ;
+	assign	SCLI0_pre2  = P14EXINA &  PIOR2 ;
+	assign	SDAI0_pre1  = P61EXINA & ~PIOR2 ;
+	assign	SDAI0_pre2  = P13EXINA &  PIOR2 ;
+
+	assign	INTP5_pre1  = P16EXINA & ~PIOR4 ;
+	assign	INTP5_pre2  = P12EXINA &  PIOR4 ;
+
+	assign	TIN02       = TI02_pre1   | TI02_pre2   ;
+	assign	TIN03       = TI03_pre1   | TI03_pre2   ;
+	assign	TIN04       = TI04_pre1   | TI04_pre2   ;
+	assign	TIN05       = TI05_pre1   | TI05_pre2   ;
+	assign	TIN06       = TI06_pre1   | TI06_pre2   ;
+	assign	TIN07       = TI07_pre1   | TI07_pre2   ;
+	assign	SIN00       = RXD0_pre1   | RXD0_pre2   ;
+	assign	SIN10       = RXD2_pre1   | RXD2_pre2   ;
+	assign	INTP10EG    = INTP10_pre1 | INTP10_pre2 ;
+	assign	INTP11EG    = INTP11_pre1 | INTP11_pre2 ;
+	assign	SCKI00	    = SCKI00_pre1 | SCKI00_pre2 ;
+//	assign	SCLI0       = SCLI0_pre1  | SCLI0_pre2  ;
+//	assign	SDAI0       = SDAI0_pre1  | SDAI0_pre2  ;
+	assign	SCLI0_pre3  = SCLI0_pre1  | SCLI0_pre2  ;
+	assign	SDAI0_pre3  = SDAI0_pre1  | SDAI0_pre2  ;
+	assign	INTP5EG	    = INTP5_pre1  | INTP5_pre2  ;
+	assign  P17EXO_pre3 = P17EXO_pre1 & P17EXO_pre2 ;
+
+	assign  P17EXOUTA   = P17EXO_pre3 & ( SOUT013 | ~SEL20P ) ; // for ECO
+
+// add IICA Pin swap for BB 2010.08.21
+//
+        assign  SCLI0_org   = SCLI0_pre3 & ~BBSWPICA ;
+        assign  SCLI0_bb    = P10EXINB   &  BBSWPICA ;
+        assign  SDAI0_org   = SDAI0_pre3 & ~BBSWPICA ;
+        assign  SDAI0_bb    = P11EXINA   &  BBSWPICA ;
+ 
+	assign	SCLI0	    = SCLI0_org  | SCLI0_bb  ;
+	assign	SDAI0       = SDAI0_org  | SDAI0_bb  ;
+
+// add end
+
+// ------------------------------------------------------------------------------------------------
+
+ always @(  SOUT002 or TOUT00 or SOUT003 or PCLBUZ1 or SEL64P or SEL52P or SEL48P or SEL44P or SEL40P or SEL38P or SEL36P or SEL32P or SEL30P or SEL24P or SEL20P ) begin
+  case ( { SEL64P, SEL52P, SEL48P, SEL44P, SEL40P, SEL38P, SEL36P, SEL32P, SEL30P, SEL24P, SEL20P } )
+   11'b00000000001 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC } 
+                   = { SOUT002  , 1'b1     , 1'b0     , TOUT00   , 1'b1     , 1'b1       , SOUT003  , 1'b0       , 1'b0      } ; //SEL20P
+   11'b00000000010 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { SOUT002  , 1'b1     , 1'b0     , TOUT00   , 1'b1     , SOUT003    , 1'b1     , 1'b0       , 1'b0      } ; //SEL24P
+   11'b00000000100 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { SOUT002  , 1'b1     , 1'b0     , TOUT00   , SOUT003  , 1'b1       , 1'b1     , 1'b0       , PCLBUZ1   } ; //SEL30P
+   11'b00000001000 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { SOUT002  , 1'b1     , 1'b0     , TOUT00   , SOUT003  , 1'b1       , 1'b1     , 1'b0       , PCLBUZ1   } ; //SEL32P
+   11'b00000010000 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { 1'b1     , SOUT002  , TOUT00   , 1'b0     , SOUT003  , 1'b1       , 1'b1     , 1'b0       , PCLBUZ1   } ; //SEL36P
+   11'b00000100000 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { 1'b1     , SOUT002  , TOUT00   , 1'b0     , SOUT003  , 1'b1       , 1'b1     , 1'b0       , PCLBUZ1   } ; //SEL38P
+   11'b00001000000 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { 1'b1     , SOUT002  , TOUT00   , 1'b0     , SOUT003  , 1'b1       , 1'b1     , 1'b0       , PCLBUZ1   } ; //SEL40P
+   11'b00010000000 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { 1'b1     , SOUT002  , TOUT00   , 1'b0     , SOUT003  , 1'b1       , 1'b1     , 1'b0       , PCLBUZ1   } ; //SEL44 
+   11'b00100000000 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { 1'b1     , SOUT002  , TOUT00   , 1'b0     , SOUT003  , 1'b1       , 1'b1     , 1'b0       , PCLBUZ1   } ; //SEL48P
+   11'b01000000000 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { SOUT002  , 1'b1     , TOUT00   , 1'b0     , SOUT003  , 1'b1       , 1'b1     , 1'b0       , PCLBUZ1   } ; //SEL52P
+   11'b10000000000 : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { SOUT002  , 1'b1     , TOUT00   , 1'b0     , SOUT003  , 1'b1       , 1'b1     , PCLBUZ1    , 1'b0      } ; //SEL64P
+   default         : { P02EXOUTA, P00EXOUTA, P01EXOUTB, P03EXOUTB, P51EXOUTA, P17EXO_pre2, P16EXOUTA, P141EXO_pre, P15EXOUTC }
+                   = { SOUT002  , 1'b1     , TOUT00   , 1'b0     , SOUT003  , 1'b1       , 1'b1     , PCLBUZ1    , 1'b0      } ; //SEL64P
+  endcase
+ end
+
+ always @( P00EXINA or P01EXINA or P02EXINA or P03EXINA or P50EXINA or P17EXINA or SEL64P or SEL52P or SEL48P or SEL44P or SEL40P or SEL38P or SEL36P or SEL32P or SEL30P or SEL24P or SEL20P ) begin
+  case ( { SEL64P, SEL52P, SEL48P, SEL44P, SEL40P, SEL38P, SEL36P, SEL32P, SEL30P, SEL24P, SEL20P } )
+   11'b00000000001 : { SIN02 , TIN00 , SIN03 } = { P03EXINA , P02EXINA , P17EXINA } ; //SEL20P
+   11'b00000000010 : { SIN02 , TIN00 , SIN03 } = { P03EXINA , P02EXINA , P50EXINA } ; //SEL24P
+   11'b00000000100 : { SIN02 , TIN00 , SIN03 } = { P03EXINA , P02EXINA , P50EXINA } ; //SEL30P
+   11'b00000001000 : { SIN02 , TIN00 , SIN03 } = { P03EXINA , P02EXINA , P50EXINA } ; //SEL32P
+   11'b00000010000 : { SIN02 , TIN00 , SIN03 } = { P01EXINA , P00EXINA , P50EXINA } ; //SEL36P
+   11'b00000100000 : { SIN02 , TIN00 , SIN03 } = { P01EXINA , P00EXINA , P50EXINA } ; //SEL38P
+   11'b00001000000 : { SIN02 , TIN00 , SIN03 } = { P01EXINA , P00EXINA , P50EXINA } ; //SEL40P
+   11'b00010000000 : { SIN02 , TIN00 , SIN03 } = { P01EXINA , P00EXINA , P50EXINA } ; //SEL44P
+   11'b00100000000 : { SIN02 , TIN00 , SIN03 } = { P01EXINA , P00EXINA , P50EXINA } ; //SEL48P
+   11'b01000000000 : { SIN02 , TIN00 , SIN03 } = { P03EXINA , P00EXINA , P50EXINA } ; //SEL52P
+   11'b10000000000 : { SIN02 , TIN00 , SIN03 } = { P03EXINA , P00EXINA , P50EXINA } ; //SEL64P
+   default         : { SIN02 , TIN00 , SIN03 } = { P03EXINA , P00EXINA , P50EXINA } ; //SEL64P
+  endcase
+ end
+
+
+endmodule
+

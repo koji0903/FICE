@@ -1,0 +1,53 @@
+//-----------------------------------------------------------
+//	Module Name		KX4_IICASCLDLY
+//	Version			1.10
+//-----------------------------------------------------------
+
+module KX4_IICASCLDLY ( SCL, SCLDLY, SCANMODE, CLK60M ) ;
+
+	input  SCL, SCANMODE, CLK60M ;
+	output SCLDLY ;
+
+	wire   scl_dly ;
+
+	assign SCLDLY = ( SCANMODE ) ? SCL : ~scl_dly ;
+
+	KX4_IICASCLDLY_DLY50N  dly_50n ( .out(scl_dly), .in(~SCL), .iceclk(CLK60M) ) ;
+
+endmodule
+
+//==============================================================
+// Sub module for ICE
+//==============================================================
+
+`ifndef FPGA_ICE
+
+   // for Device
+   module KX4_IICASCLDLY_DLY50N ( out , in , iceclk ) ;
+	input	in, iceclk ;
+	output	out ;
+
+	TBFILTER1X2 dly50n ( .N01(out), .H01(in) ) ;
+
+   endmodule
+
+`else
+
+   // for ICE
+   module KX4_IICASCLDLY_DLY50N ( out , in , iceclk ) ;
+	input	in, iceclk ;
+	output	out ;
+
+	reg [2:0] dly;
+	reg out;
+	always @( posedge iceclk ) begin
+		dly <= {dly[1:0], in};
+		if ((dly[0]==in)&&(dly[1]==in)&&(dly[2]==in)) begin
+			out <= dly[2];
+		end
+	end
+
+   endmodule
+
+`endif
+

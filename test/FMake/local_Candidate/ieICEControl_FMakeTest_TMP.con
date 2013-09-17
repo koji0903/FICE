@@ -1,0 +1,71 @@
+#-----------------------------------------------------------------------------------------
+# FMake Connect File (TypeB approach)
+#   Please divide connection informations which depend on the macro into each macro as
+#   much as possible. It may facilitate to distinguish product dependent information from
+#   macro common information.
+#   (1) Please list a connection information in a higher-priority module.
+#         -> It becomes the emulation specification like?
+#       +---------------------------------------------------------------------------+
+#       | Priority High<- - - - - - - - - - - - - - - - - - - - - - - - - - - ->Low |
+#       |               Fmake-Limit  ADD1  Replace  ADD2  KeepChange  ADD3  ICE     |
+#       +---------------------------------------------------------------------------+
+#       Replace -> It except Code-Flash, Data-Flash and RAM (They are included in ICE Macro).
+#       ADD1 -> primary function of ICE   : inspect, PUCTL, FixedPin, prtyerr
+#       ADD2 -> related to replace macro  : admux, iawif
+#       Add3 -> secondary function of ICE : svmodif, CLK240BASE, ieICEControl, iePortControl
+#   (2) Please divide it into three following categories.
+#         - common     : There are no parameters which should be changed.
+#         - local      : It may be necessary to modify the instance for each product.
+#         - Limitation : FMake Limitation.
+#   (3) Please separate the parameter to files below.
+#         - <Macro>_common.con : connection information that is not changed.
+#         - <Macro>_local.con  : connection information that may be changed for product.
+#         - <Macro>.con        : connection information for local macro.
+#- History -------------------------------------------------------------------------------
+# 2012.7.9
+# initial
+# T.Tsunoda
+#-----------------------------------------------------------------------------------------
+
+#=========================================================================================
+# There are no parameters below which should be changed.
+#=========================================================================================
+PSEUDOON31		ice.PSEUDOON31                # EMVDD Discharge
+DISEMVDD		DISEMVDD:terminal	      # EMVDD Discharge
+DISEMEVDD		DISEMEVDD:terminal	      # EMVDD Discharge
+SBANDOCD		ice.SOFTBRK		      # SBANDOCD for Break
+LVISEL			LVISEL:terminal               # fixed 0 for SG2
+SEL_TCCONNECT_B		SEL_TCCONNECT_B:terminal      # for FPGA_TCCONNECT_B
+FPGA_TCCONNECT_B	FPGA_TCCONNECT_B:terminal     # for FPGA_TCCONNECT_B
+IDVER0			ice.IDVER0		      # FPGA ID-VER
+IDVER1			ice.IDVER1		      #
+IDVER2			ice.IDVER2		      #
+IDVER3			ice.IDVER3		      #
+IDVER4			ice.IDVER4		      #
+IDVER5			ice.IDVER5		      #
+IDVER6			ice.IDVER6		      #
+IDVER7			ice.IDVER7		      #
+IDVER8			ice.IDVER8		      #
+IDVER9			ice.IDVER9		      #
+IDVER10			ice.IDVER10		      #
+IDVER11			ice.IDVER11		      #
+IDVER12			ice.IDVER12		      #
+IDVER13			ice.IDVER13		      #
+IDVER14			ice.IDVER14		      #
+IDVER15			ice.IDVER15		      #
+IDVER16			ice.IDVER16		      #
+IDVER17			ice.IDVER17		      #
+IDVER18			ice.IDVER18		      #
+IDVER19			ice.IDVER19		      #
+IDVER20			ice.IDVER20		      #
+IDVER21			ice.IDVER21		      #
+IDVER22			ice.IDVER22		      #
+IDVER23			ice.IDVER23		      #
+IDVER24			ice.IDVER24		      #
+IDVER25			ice.IDVER25		      #
+IDVER26			ice.IDVER26		      #
+IDVER27			ice.IDVER27		      #
+IDVER28			ice.IDVER28		      #
+IDVER29			ice.IDVER29		      #
+IDVER30			ice.IDVER30		      #
+IDVER31			ice.IDVER31		      #

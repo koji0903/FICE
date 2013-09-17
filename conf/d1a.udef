@@ -1,0 +1,46 @@
+##################################################
+#
+# UCF Modify Definition File for mkucf
+#
+#  Author : Koji HIJIKURO
+#  Date   : 18 Aug, 2010
+#
+#  Target : D1A
+#
+#  Adittional
+#    FREQ : change frequency using mkucf "-freq" option.
+#    DUTY : change Duty Cycle using mkucf "-duty-all" option.
+#
+##################################################
+CLK30MHZ_GB  EXCEPT  CLK60MHZ
+CLK60MHZ     EXCEPT  CANCLK0 CANCLK1 FPLL_CLM CLK160M CLK240M
+USBIFWR      EXCEPT  ICEWR
+ICEWR        EXCEPT  
+USBCLK       EXCEPT  
+CLK160M      EXCEPT  
+R32MCLK      EXCEPT  FIHP3 :FREQ,DUTY
+FIHP3        EXCEPT  FIHP1 :FREQ,DUTY
+FIHP1        EXCEPT  CANCLK0 CANCLK1 FMAIN_CLM FPLL_CLM :FREQ,DUTY
+FMAIN_PCLBUZ EXCEPT  :FREQ,DUTY
+FPLL_CLM     EXCEPT  FCLK :FREQ,DUTY # D1A's pll is max 32MHz same as FIH (duty4:6).
+FCLK         EXCEPT  :FREQ,DUTY
+FIHFL        EXCEPT  
+FIH4         EXCEPT  
+FMX4         EXCEPT  
+FMAIN_CLM    EXCEPT  
+OCDCLK       EXCEPT  
+X2DIN        EXCEPT  FSUB_PCLBUZ
+OSCOUTS      EXCEPT  FSUB_PCLBUZ
+FSUB_PCLBUZ  EXCEPT  FCLK
+FIL          EXCEPT  FIL15K2
+FIL15K2      EXCEPT  FIL15K
+FIL15K       EXCEPT  
+SGVPSTB      EXCEPT  
+MTRCVPSTB    EXCEPT  
+CAN0VPSTB    EXCEPT  
+CAN1VPSTB    EXCEPT  
+CAN0CLK      EXCEPT  
+CAN1CLK      EXCEPT  
+LCDCLK       EXCEPT  
+CLK120M      EXCEPT
+CLK240M      EXCEPT

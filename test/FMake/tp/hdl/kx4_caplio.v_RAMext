@@ -1,0 +1,566 @@
+
+// [NEC Electronics Group CONFIDENTIAL]
+// (C) Copyright NEC Electronics Corporation 2009
+// All Rights Reserved. Do not duplicate without prior written
+// consent of NEC Electronics Corporation.
+//
+// Macro Name      : KX4_CAPLIO
+// Version         : 1.00
+// Date            : 2010.06.23
+// Author          : Masaki.Ouchiyama
+// History         : 0.01      2010/07/09 DF2.1
+//                 :	copy from KX4_CAPBUFIO 0.03
+//                 :	delete CAPBUF
+//                 : 	delete Some signal for CAPT,CAPD
+//                 : 0.02      2010/07/21 DF3.0
+//                 :    copy from KX4_CAPRIO
+//                 : 0.03	2010/07/23 delete REGDRV
+//                 : 0.04	2010/08/02 SELIN1B5V added
+//                 :			   low_clamp delete
+//                 : 0.05	2010/08/07
+//                 :	change	LFSSCAIN -> TESDBT2
+//                 :		GDPORT   -> FMXST
+//                 :		GDINT	 -> SUBCKST
+//                 :		GDCSC	 -> BCKHSEN
+//                 :	add	BBMA15-11
+//                 : 0.06	2010/08/10
+//                 :	correct	BBMA15-11 cap pin
+//
+//                 : 0.07	2010/08/24
+//                 :	del BBSELSFR1,2, PSTN, TSTN, BBSFDIS0
+//                 :	add BBSTN
+//                 :	add BBEXIP10-12, BBEXAD10-12, BBEXOR10-12
+//                 :	    BBSWP, BBISC
+//                 :	
+//
+//                 : 0.09	2010/09/04
+//                 :	CAP MACRO changes
+//                 :	- cap's connection changed. It changes according to Spec
+//                 :	copy from ../../_library/100824/kx4_caplio.v
+//		   
+
+module KX4_CAPLIO (
+	 SELIN1B5V
+
+	,BBMOSC
+	,BBHIOSC
+	,BBFMAIN
+	,BBFSUB
+	,BBFCLK
+	,BBFIL
+
+	,BBCLKRIL
+	,BBCLKMIL
+
+	,SYSRESB
+	,RESETB
+	,RESB
+	,STPBCKBT
+	,RSTS
+	,RESSTP
+	,FMXST
+	,SUBCKST
+	,BCKHSEN
+	,BBCKSTR
+	,BBCKSTM
+
+	,BBPWRITE
+	,BBPENABLE
+	,BBMA10
+	,BBMA9
+	,BBMA8
+	,BBMA7
+	,BBMA6
+	,BBMA5
+	,BBMA4
+	,BBMA3
+	,BBMA2
+	,BBMA1
+	,BBMA0
+	,MDWFLRO15
+	,MDWFLRO14
+	,MDWFLRO13
+	,MDWFLRO12
+	,MDWFLRO11
+	,MDWFLRO10
+	,MDWFLRO9
+	,MDWFLRO8
+	,MDWFLRO7
+	,MDWFLRO6
+	,MDWFLRO5
+	,MDWFLRO4
+	,MDWFLRO3
+	,MDWFLRO2
+	,MDWFLRO1
+	,MDWFLRO0
+	,BBNVM1
+	,BBNVM2
+	,SVSTOP
+	,SVPERI0
+	,SVPERI1
+	,SCANMODE
+	,SCANEN
+	,SCANIN
+	,BBTESSCAN1
+	,BBTESINST
+	,OPTIDDQ
+	,OPTEXCCK
+	,TESDBT2
+	,TESDBT
+	,SEL08P
+
+	,SLMEM
+	,FCHRAM
+	,WDOP
+	,BBSTN
+	,MODE0
+	,MODE1
+	,GDRAMWR
+
+	,BBMA15 ,BBMA14 ,BBMA13 ,BBMA12 ,BBMA11
+
+	// Output
+	,BBRPERRIL
+	,BBREQPCLKIL
+	,BBCKSELRIL
+	,BBPRDATA15IL
+	,BBPRDATA14IL
+	,BBPRDATA13IL
+	,BBPRDATA12IL
+	,BBPRDATA11IL
+	,BBPRDATA10IL
+	,BBPRDATA9IL
+	,BBPRDATA8IL
+	,BBPRDATA7IL
+	,BBPRDATA6IL
+	,BBPRDATA5IL
+	,BBPRDATA4IL
+	,BBPRDATA3IL
+	,BBPRDATA2IL
+	,BBPRDATA1IL
+	,BBPRDATA0IL
+	,BBWAITMEMIL
+	,BBWAIT56IL
+	,BBINT0IL
+	,BBINT1IL
+	,BBINT2IL
+	,BBINT3IL
+	,BBINT4IL
+	,BBINT5IL
+	,BBINT6IL
+	,BBINT7IL
+	,BBINT8IL
+	,BBINT9IL
+	,BBINT10IL
+	,BBINT11IL
+	,BBINT12IL
+	,BBINT13IL
+	,BBMODEIL
+	,BBSCANOUTIL
+	,ADTRIG0IL
+	,ADTRIG1IL
+	,FRQ4ENIL
+	,INTRTDISIL
+	,BBCKSELMIL
+	,BBHIOONIL
+	,BBREGCTLIL
+);
+
+input	SELIN1B5V	;
+
+input	BBMOSC	;
+input	BBHIOSC	;
+input	BBFMAIN	;
+input	BBFSUB	;
+input	BBFCLK	;
+input	BBFIL	;
+
+output	BBCLKRIL	;
+output	BBCLKMIL	;
+
+input	SYSRESB	;
+input	RESETB	;
+input	RESB	;
+input	STPBCKBT	;
+input	RSTS	;
+input	RESSTP	;
+input	BBPWRITE	;
+input	BBPENABLE	;
+input	BBMA10	;
+input	BBMA9	;
+input	BBMA8	;
+input	BBMA7	;
+input	BBMA6	;
+input	BBMA5	;
+input	BBMA4	;
+input	BBMA3	;
+input	BBMA2	;
+input	BBMA1	;
+input	BBMA0	;
+input	MDWFLRO15	;
+input	MDWFLRO14	;
+input	MDWFLRO13	;
+input	MDWFLRO12	;
+input	MDWFLRO11	;
+input	MDWFLRO10	;
+input	MDWFLRO9	;
+input	MDWFLRO8	;
+input	MDWFLRO7	;
+input	MDWFLRO6	;
+input	MDWFLRO5	;
+input	MDWFLRO4	;
+input	MDWFLRO3	;
+input	MDWFLRO2	;
+input	MDWFLRO1	;
+input	MDWFLRO0	;
+input	BBNVM1	;
+input	BBNVM2	;
+input	SVSTOP	;
+input	SVPERI0	;
+input	SVPERI1	;
+input	SCANMODE	;
+input	SCANEN	;
+input	SCANIN	;
+input	BBTESSCAN1	;
+input	BBTESINST	;
+input	OPTIDDQ	;
+input	OPTEXCCK	;
+input	TESDBT2	;
+input	TESDBT	;
+input	SLMEM	;
+input	FCHRAM	;
+input	WDOP	;
+input	BBSTN	;
+input	MODE1	;
+input	MODE0	;
+input	GDRAMWR	;
+input	BBCKSTR	;
+input	FMXST	;
+input	SUBCKST	;
+input	BCKHSEN	;
+input	BBCKSTM	;
+input	SEL08P	;
+
+input	BBMA15 ,BBMA14 ,BBMA13 ,BBMA12 ,BBMA11	;
+
+output	BBRPERRIL	;
+output	BBREQPCLKIL	;
+output	BBCKSELRIL	;
+output	BBPRDATA15IL	;
+output	BBPRDATA14IL	;
+output	BBPRDATA13IL	;
+output	BBPRDATA12IL	;
+output	BBPRDATA11IL	;
+output	BBPRDATA10IL	;
+output	BBPRDATA9IL	;
+output	BBPRDATA8IL	;
+output	BBPRDATA7IL	;
+output	BBPRDATA6IL	;
+output	BBPRDATA5IL	;
+output	BBPRDATA4IL	;
+output	BBPRDATA3IL	;
+output	BBPRDATA2IL	;
+output	BBPRDATA1IL	;
+output	BBPRDATA0IL	;
+output	BBWAITMEMIL	;
+output	BBWAIT56IL	;
+output	BBINT0IL	;
+output	BBINT1IL	;
+output	BBINT2IL	;
+output	BBINT3IL	;
+output	BBINT4IL	;
+output	BBINT5IL	;
+output	BBINT6IL	;
+output	BBINT7IL	;
+output	BBINT8IL	;
+output	BBINT9IL	;
+output	BBINT10IL	;
+output	BBINT11IL	;
+output	BBINT12IL	;
+output	BBINT13IL	;
+output	BBMODEIL	;
+output	BBSCANOUTIL	;
+output	ADTRIG0IL	;
+output	ADTRIG1IL	;
+output	FRQ4ENIL	;
+output	INTRTDISIL	;
+output	BBCKSELMIL	;
+output	BBHIOONIL	;
+output	BBREGCTLIL	;
+
+
+
+	QICAP015H5H cap (
+		 .ANAI01( SELIN1B5V )
+
+		,.CLKI01( BBMOSCOL	)
+		,.CLKI02( BBHIOSCOL	)
+		,.CLKI03( BBFMAINOL	)
+		,.CLKI04( BBFSUBOL	)
+		,.CLKI05( BBFCLKOL	)
+		,.CLKI06( BBFILOL	)
+
+		,.CLKO01( BBCLKRIL	)
+		,.CLKO02( BBCLKMIL	)
+		,.CLKO03( 	)
+
+		// Outside Socket -> PLUG
+		,.SIGI01( SYSRESBOL	)
+		,.SIGI02( RESETBOL	)
+		,.SIGI03( RESBOL	)
+		
+		,.SIGI04( STPBCKBTOL	)
+		,.SIGI05( RSTSOL	)
+		,.SIGI06( RESSTPOL	)
+
+		,.SIGI07( BCKHSENOL	)
+		,.SIGI08( FMXSTOL	)
+		,.SIGI09( SUBCKSTOL	)
+		,.SIGI10( BBCKSTROL	)
+		,.SIGI11( BBCKSTMOL	)
+
+		,.SIGI12( BBPWRITEOL	)
+		,.SIGI13( BBPENABLEOL	)
+
+		,.SIGI14( BBMA10OL	)
+		,.SIGI15( BBMA9OL	)
+		,.SIGI16( BBMA8OL	)
+		,.SIGI17( BBMA7OL	)
+		,.SIGI18( BBMA6OL	)
+		,.SIGI19( BBMA5OL	)
+		,.SIGI20( BBMA4OL	)
+		,.SIGI21( BBMA3OL	)
+		,.SIGI22( BBMA2OL	)
+		,.SIGI23( BBMA1OL	)
+		,.SIGI24( BBMA0OL	)
+
+		,.SIGI25( MDWFLRO15OL	)
+		,.SIGI26( MDWFLRO14OL	)
+		,.SIGI27( MDWFLRO13OL	)
+		,.SIGI28( MDWFLRO12OL	)
+		,.SIGI29( MDWFLRO11OL	)
+		,.SIGI30( MDWFLRO10OL	)
+		,.SIGI31( MDWFLRO9OL	)
+		,.SIGI32( MDWFLRO8OL	)
+		,.SIGI33( MDWFLRO7OL	)
+		,.SIGI34( MDWFLRO6OL	)
+		,.SIGI35( MDWFLRO5OL	)
+		,.SIGI36( MDWFLRO4OL	)
+		,.SIGI37( MDWFLRO3OL	)
+		,.SIGI38( MDWFLRO2OL	)
+		,.SIGI39( MDWFLRO1OL	)
+		,.SIGI40( MDWFLRO0OL	)
+
+		,.SIGI41( BBNVM1OL	)
+		,.SIGI42( BBNVM2OL	)
+
+		,.SIGI43( SVSTOPOL	)
+		,.SIGI44( SVPERI0OL	)
+		,.SIGI45( SVPERI1OL	)
+
+		,.SIGI46( SCANMODEOL	)
+		,.SIGI47( SCANENOL	)
+		,.SIGI48( SCANINOL	)
+		,.SIGI49( BBTESSCAN1OL	)
+
+		,.SIGI50( BBTESINSTOL	)
+		,.SIGI51( OPTIDDQOL	)
+		,.SIGI52( OPTEXCCKOL	)
+		,.SIGI53( TESDBT2OL	)
+		,.SIGI54( TESDBTOL	)
+		,.SIGI55( SEL08POL	)
+
+		,.SIGI56( BBMA15OL )
+		,.SIGI57( BBMA14OL )
+		,.SIGI58( BBMA13OL )
+		,.SIGI59( BBMA12OL )
+		,.SIGI60( BBMA11OL )
+
+		,.SIGI61( SLMEMOL	)
+		,.SIGI62( FCHRAMOL	)
+		,.SIGI63( WDOPOL	)
+		,.SIGI64( BBSTNOL	)
+		,.SIGI65( MODE0OL	)
+		,.SIGI66( MODE1OL	)
+		,.SIGI67( GDRAMWROL	)
+
+		// Inside Socket <- PLUG
+		,.SIGO01( BBMODEIL	)
+
+		,.SIGO02( BBREQPCLKIL	)
+		,.SIGO03( BBCKSELRIL	)
+		,.SIGO04( BBCKSELMIL	)
+		,.SIGO05( BBHIOONIL	)
+		,.SIGO06( BBREGCTLIL	)
+
+		,.SIGO07( BBPRDATA15IL	)
+		,.SIGO08( BBPRDATA14IL	)
+		,.SIGO09( BBPRDATA13IL	)
+		,.SIGO10( BBPRDATA12IL	)
+		,.SIGO11( BBPRDATA11IL	)
+		,.SIGO12( BBPRDATA10IL	)
+		,.SIGO13( BBPRDATA9IL	)
+		,.SIGO14( BBPRDATA8IL	)
+		,.SIGO15( BBPRDATA7IL	)
+		,.SIGO16( BBPRDATA6IL	)
+		,.SIGO17( BBPRDATA5IL	)
+		,.SIGO18( BBPRDATA4IL	)
+		,.SIGO19( BBPRDATA3IL	)
+		,.SIGO20( BBPRDATA2IL	)
+		,.SIGO21( BBPRDATA1IL	)
+		,.SIGO22( BBPRDATA0IL	)
+
+		,.SIGO23( BBWAITMEMIL	)
+		,.SIGO24( BBWAIT56IL	)
+
+		,.SIGO25( BBINT0IL	)
+		,.SIGO26( BBINT1IL	)
+		,.SIGO27( BBINT2IL	)
+		,.SIGO28( BBINT3IL	)
+		,.SIGO29( BBINT4IL	)
+		,.SIGO30( BBINT5IL	)
+		,.SIGO31( BBINT6IL	)
+		,.SIGO32( BBINT7IL	)
+		,.SIGO33( BBINT8IL	)
+		,.SIGO34( BBINT9IL	)
+		,.SIGO35( BBINT10IL	)
+		,.SIGO36( BBINT11IL	)
+		,.SIGO37( BBINT12IL	)
+		,.SIGO38( BBINT13IL	)
+
+		,.SIGO39( BBSCANOUTIL	)
+
+		,.SIGO40( ADTRIG0IL	)
+		,.SIGO41( ADTRIG1IL	)
+		,.SIGO42( INTRTDISIL	)
+
+		,.SIGO43( FRQ4ENIL	)
+
+		,.SIGO44( BBRPERRIL	)
+
+		,.SIGO45( 	)
+		,.SIGO46( 	)
+		,.SIGO47( 	)
+		,.SIGO48( 	)
+		,.SIGO49( 	)
+		,.SIGO50( 	)
+		,.SIGO51( 	)
+		,.SIGO52( 	)
+		,.SIGO53( 	)
+
+		,.SIGO54( 	)
+		,.SIGO55( 	)
+		,.SIGO56( 	)
+		,.SIGO57( 	)
+
+	) ;
+
+		 	
+	// CAP BUFFER
+	KX4_CAPLIO_REP_CLK	rep_clki01	( .out1( BBMOSCOL	)	,.in1( BBMOSC	) );
+	KX4_CAPLIO_REP_CLK	rep_clki02	( .out1( BBHIOSCOL	)	,.in1( BBHIOSC	) );
+	KX4_CAPLIO_REP_CLK	rep_clki03	( .out1( BBFMAINOL	)	,.in1( BBFMAIN	) );
+	KX4_CAPLIO_REP_CLK	rep_clki04	( .out1( BBFSUBOL	)	,.in1( BBFSUB	) );
+	KX4_CAPLIO_REP_CLK	rep_clki05	( .out1( BBFCLKOL	)	,.in1( BBFCLK	) );
+	KX4_CAPLIO_REP_CLK	rep_clki06	( .out1( BBFILOL	)	,.in1( BBFIL	) );
+
+	// SIGI
+	KX4_CAPLIO_REP  	rep_sigi01	( .out1( SYSRESBOL	)	,.in1( SYSRESB	) );
+	KX4_CAPLIO_REP  	rep_sigi02	( .out1( RESETBOL	)	,.in1( RESETB	) );
+	KX4_CAPLIO_REP  	rep_sigi03	( .out1( RESBOL		)	,.in1( RESB	) );
+
+	KX4_CAPLIO_REP  	rep_sigi04	( .out1( BCKHSENOL	)	,.in1( BCKHSEN	) );
+
+	KX4_CAPLIO_REP  	rep_sigi05	( .out1( STPBCKBTOL	)	,.in1( STPBCKBT	) );
+	KX4_CAPLIO_REP  	rep_sigi06	( .out1( RSTSOL		)	,.in1( RSTS	) );
+	KX4_CAPLIO_REP  	rep_sigi07	( .out1( RESSTPOL	)	,.in1( RESSTP	) );
+
+	KX4_CAPLIO_REP  	rep_sigi08	( .out1( FMXSTOL	)	,.in1( FMXST	) );
+	KX4_CAPLIO_REP  	rep_sigi09	( .out1( SUBCKSTOL	)	,.in1( SUBCKST	) );
+
+	KX4_CAPLIO_REP  	rep_sigi10	( .out1( BBCKSTROL	)	,.in1( BBCKSTR	) );
+	KX4_CAPLIO_REP  	rep_sigi11	( .out1( BBCKSTMOL	)	,.in1( BBCKSTM	) );
+
+	KX4_CAPLIO_REP  	rep_sigi12	( .out1( BBPWRITEOL	)	,.in1( BBPWRITE	) );
+	KX4_CAPLIO_REP  	rep_sigi13	( .out1( BBPENABLEOL	)	,.in1( BBPENABLE	) );
+
+	KX4_CAPLIO_REP  	rep_sigi14	( .out1( BBMA10OL	)	,.in1( BBMA10	) );
+	KX4_CAPLIO_REP  	rep_sigi15	( .out1( BBMA9OL	)	,.in1( BBMA9	) );
+	KX4_CAPLIO_REP  	rep_sigi16	( .out1( BBMA8OL	)	,.in1( BBMA8	) );
+	KX4_CAPLIO_REP  	rep_sigi17	( .out1( BBMA7OL	)	,.in1( BBMA7	) );
+	KX4_CAPLIO_REP  	rep_sigi18	( .out1( BBMA6OL	)	,.in1( BBMA6	) );
+	KX4_CAPLIO_REP  	rep_sigi19	( .out1( BBMA5OL	)	,.in1( BBMA5	) );
+	KX4_CAPLIO_REP  	rep_sigi20	( .out1( BBMA4OL	)	,.in1( BBMA4	) );
+	KX4_CAPLIO_REP  	rep_sigi21	( .out1( BBMA3OL	)	,.in1( BBMA3	) );
+	KX4_CAPLIO_REP  	rep_sigi22	( .out1( BBMA2OL	)	,.in1( BBMA2	) );
+	KX4_CAPLIO_REP  	rep_sigi23	( .out1( BBMA1OL	)	,.in1( BBMA1	) );
+	KX4_CAPLIO_REP  	rep_sigi24	( .out1( BBMA0OL	)	,.in1( BBMA0	) );
+
+	KX4_CAPLIO_REP  	rep_sigi25	( .out1( MDWFLRO15OL	)	,.in1( MDWFLRO15	) );
+	KX4_CAPLIO_REP  	rep_sigi26	( .out1( MDWFLRO14OL	)	,.in1( MDWFLRO14	) );
+	KX4_CAPLIO_REP  	rep_sigi27	( .out1( MDWFLRO13OL	)	,.in1( MDWFLRO13	) );
+	KX4_CAPLIO_REP  	rep_sigi28	( .out1( MDWFLRO12OL	)	,.in1( MDWFLRO12	) );
+	KX4_CAPLIO_REP  	rep_sigi29	( .out1( MDWFLRO11OL	)	,.in1( MDWFLRO11	) );
+	KX4_CAPLIO_REP  	rep_sigi30	( .out1( MDWFLRO10OL	)	,.in1( MDWFLRO10	) );
+	KX4_CAPLIO_REP  	rep_sigi31	( .out1( MDWFLRO9OL	)	,.in1( MDWFLRO9	) );
+	KX4_CAPLIO_REP  	rep_sigi32	( .out1( MDWFLRO8OL	)	,.in1( MDWFLRO8	) );
+	KX4_CAPLIO_REP  	rep_sigi33	( .out1( MDWFLRO7OL	)	,.in1( MDWFLRO7	) );
+	KX4_CAPLIO_REP  	rep_sigi34	( .out1( MDWFLRO6OL	)	,.in1( MDWFLRO6	) );
+	KX4_CAPLIO_REP  	rep_sigi35	( .out1( MDWFLRO5OL	)	,.in1( MDWFLRO5	) );
+	KX4_CAPLIO_REP  	rep_sigi36	( .out1( MDWFLRO4OL	)	,.in1( MDWFLRO4	) );
+	KX4_CAPLIO_REP  	rep_sigi37	( .out1( MDWFLRO3OL	)	,.in1( MDWFLRO3	) );
+	KX4_CAPLIO_REP  	rep_sigi38	( .out1( MDWFLRO2OL	)	,.in1( MDWFLRO2	) );
+	KX4_CAPLIO_REP  	rep_sigi39	( .out1( MDWFLRO1OL	)	,.in1( MDWFLRO1	) );
+	KX4_CAPLIO_REP  	rep_sigi40	( .out1( MDWFLRO0OL	)	,.in1( MDWFLRO0	) );
+
+	KX4_CAPLIO_REP  	rep_sigi41	( .out1( BBNVM1OL	)	,.in1( BBNVM1	) );
+	KX4_CAPLIO_REP  	rep_sigi42	( .out1( BBNVM2OL	)	,.in1( BBNVM2	) );
+
+	KX4_CAPLIO_REP  	rep_sigi43	( .out1( SVSTOPOL	)	,.in1( SVSTOP	) );
+	KX4_CAPLIO_REP  	rep_sigi44	( .out1( SVPERI0OL	)	,.in1( SVPERI0	) );
+	KX4_CAPLIO_REP  	rep_sigi45	( .out1( SVPERI1OL	)	,.in1( SVPERI1	) );
+
+	KX4_CAPLIO_REP  	rep_sigi46	( .out1( SCANMODEOL	)	,.in1( SCANMODE	) );
+	KX4_CAPLIO_REP  	rep_sigi47	( .out1( SCANENOL	)	,.in1( SCANEN	) );
+	KX4_CAPLIO_REP  	rep_sigi48	( .out1( SCANINOL	)	,.in1( SCANIN	) );
+	KX4_CAPLIO_REP  	rep_sigi49	( .out1( BBTESSCAN1OL	)	,.in1( BBTESSCAN1	) );
+
+	KX4_CAPLIO_REP  	rep_sigi50	( .out1( BBTESINSTOL	)	,.in1( BBTESINST	) );
+	KX4_CAPLIO_REP  	rep_sigi51	( .out1( OPTIDDQOL	)	,.in1( OPTIDDQ	) );
+	KX4_CAPLIO_REP  	rep_sigi52	( .out1( OPTEXCCKOL	)	,.in1( OPTEXCCK	) );
+	KX4_CAPLIO_REP  	rep_sigi53	( .out1( TESDBT2OL	)	,.in1( TESDBT2	) );
+	KX4_CAPLIO_REP  	rep_sigi54	( .out1( TESDBTOL	)	,.in1( TESDBT	) );
+	KX4_CAPLIO_REP  	rep_sigi55	( .out1( SEL08POL	)	,.in1( SEL08P	) );
+
+	KX4_CAPLIO_REP  	rep_sigi56	( .out1( BBMA15OL	)	,.in1( BBMA15	) );
+	KX4_CAPLIO_REP  	rep_sigi57	( .out1( BBMA14OL	)	,.in1( BBMA14	) );
+	KX4_CAPLIO_REP  	rep_sigi58	( .out1( BBMA13OL	)	,.in1( BBMA13	) );
+	KX4_CAPLIO_REP  	rep_sigi59	( .out1( BBMA12OL	)	,.in1( BBMA12	) );
+	KX4_CAPLIO_REP  	rep_sigi60	( .out1( BBMA11OL	)	,.in1( BBMA11	) );
+
+	KX4_CAPLIO_REP  	rep_sigi61	( .out1( SLMEMOL	)	,.in1( SLMEM	) );
+	KX4_CAPLIO_REP  	rep_sigi62	( .out1( FCHRAMOL	)	,.in1( FCHRAM	) );
+	KX4_CAPLIO_REP  	rep_sigi63	( .out1( WDOPOL		)	,.in1( WDOP	) );
+
+	KX4_CAPLIO_REP  	rep_sigi64	( .out1( BBSTNOL	)	,.in1( BBSTN	) );
+
+	KX4_CAPLIO_REP  	rep_sigi65	( .out1( MODE0OL	)	,.in1( MODE0	) );
+	KX4_CAPLIO_REP  	rep_sigi66	( .out1( MODE1OL	)	,.in1( MODE1	) );
+	KX4_CAPLIO_REP  	rep_sigi67	( .out1( GDRAMWROL	)	,.in1( GDRAMWR	) );
+
+endmodule
+
+module KX4_CAPLIO_REP ( in1, out1 );
+input in1;
+output out1;
+
+	TBBUFX2 U1 ( .N01(out1), .H01(in1) );
+endmodule
+
+module KX4_CAPLIO_REP_CLK ( in1, out1 );
+input in1;
+output out1;
+
+	TBBUFCLX4 U1 ( .N01(out1),   .H01(in1) );
+endmodule
+

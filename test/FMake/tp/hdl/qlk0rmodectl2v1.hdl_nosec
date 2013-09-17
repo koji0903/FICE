@@ -1,0 +1,4094 @@
+/*======================================================================*/
+/*									*/
+/* 78K0R series MODECTL macro						*/
+/*									*/
+/*======================================================================*/
+
+/*======================================================================*/
+/*                                                                      */
+/*    Module   : QLK0RMODECTL2V1                                        */
+/*    Date     : 2011/03/29                                             */
+/*    Revision : 1.40                                                   */
+/*    Note     : gofirm_prea RESET condition change			*/
+/*		 RL78/G13-64KB Ver3.1 ECO feedback			*/
+/*		 ~tereset -> !TRAPINP					*/
+/*                                                                      */
+/*======================================================================*/
+
+/*======================================================================*/
+/*                                                                      */
+/*    Module   : QLK0RMODECTL2V1                                        */
+/*    Date     : 2010/07/29                                             */
+/*    Revision : 1.30                                                   */
+/*    Note     : BBÀ½ÉÊÍÑSCAN¥Æ¥¹¥ÈÂÐ±þ                                 */
+/*             : BBÀ½ÉÊÍÑOPTEXCCKÂÐ±þ & etc...                          */
+/*             : ¾®¥Ô¥óÀ½ÉÊÍÑADÊÑ´¹·ë²Ì½ÐÎÏÂÐ±þ                         */
+/*             : HOLD¥¨¥é¡¼ÂÐºö                                         */
+/*             : CRC±é»»ºÆ¼Â¹ÔÂÐ±þ                                      */
+/*             : SIPÉÊ¤ÎBTÂÐ±þ(BT¥â¡¼¥ÉÄÉ²Ã¡Ë                           */
+/*             : ¥Ó¥Ã¥È¥Þ¥Ã¥×ÂÐ±þ(EX¥À¥ó¥×¼êË¡ÊÑ¹¹¡Ë                    */
+/*                                                                      */
+/*======================================================================*/
+/*									*/
+/*    Module   : QLK0RMODECTL2V1					*/
+/*    Date     : 2010/06/15						*/
+/*    Revision : 1.20							*/
+/*    Designer : N.Fukuyama(RMS)                                        */
+/*    Note     : CLAMP_module¤òºï½ü					*/
+/*	       : CRCHLTEN(HALT²ò½ü¿®¹æ)¤ÎÀ¸À®¾ò·ï¤Ëcrc0en¤òÄÉ²Ã		*/
+/*	       : OPTFLMEM¤ÈOPTDFL¤¬Æ±»þ¤ËH¤È¤Ê¤ë¥Æ¥¹¥È¥ª¥×¥·¥ç¥ó¤òÄÉ²Ã  */
+/*		   --> ERASE/WDT ¤Î Code & Data Flash Æ±»þTEST¤Î¤¿¤á	*/
+/*	       : ECCER¤ÎMASK¿®¹æ¤ò½¤Àµ					*/
+/*									*/
+/*======================================================================*/
+/*									*/
+/*    Module   : QLK0RMODECTL2V1					*/
+/*    Date     : 2010/02/18						*/
+/*    Revision : 1.10							*/
+/*    Designer : N.Fukuyama(NMS)                                        */
+/*    Note     : TOP¤ÎCRC0EN¿®¹æ¤òºï½ü					*/
+/*		 1pin¤Ç¤ÎGOFIRM¥â¡¼¥É°ú¤­¹þ¤ß¥ß¥¹½¤Àµ			*/
+/*		 RAM¤ÎINCDEC¥Æ¥¹¥È ReadData¤òCRC¤Ø¼è¤ê¹þ¤à¥¿¥¤¥ß¥ó¥°½¤Àµ*/
+/*									*/
+/*======================================================================*/
+/*									*/
+/*    Module   : QLK0RMODECTL2V1					*/
+/*    Date     : 2010/02/03						*/
+/*    Revision : 1.00							*/
+/*    Designer : N.Fukuyama(NMS)                                        */
+/*    Note     : QLK0RMODECTL1V1(Rev 1.13)Î®ÍÑ½¤Àµ			*/
+/*									*/
+/*======================================================================*/
+/*¡¡  QLK0RMODECTL2V1							*/
+/*¡¡    +--- QLK0RMODECTL2V1_MASK					*/
+/*¡¡    +--- QLK0RMODECTL2V1_APBBI					*/
+/*¡¡    |								*/
+/*¡¡    |--- QLK0RMODECTL2V1_TOP					*/
+/*¡¡    |      |--- QLK0RMODECTL2V1_MAIN				*/
+/*¡¡    |      |      |--- QLK0RMODECTL2V1_REG1				*/
+/*¡¡    |      |      |--- QLK0RMODECTL2V1_REG2				*/
+/*¡¡    |      |      |--- QLK0RMODECTL2V1_CTL				*/
+/*¡¡    |      |      |--- QLK0RMODECTL2V1_MODE				*/
+/*¡¡    |      |      |      |--- QLK0RMODECTL2V1_TMODE			*/
+/*¡¡    |      |      +--- QLK0RMODECTL2V1_TRMSEL			*/
+/*¡¡    |								*/
+/*	|--- QLK0RMODECTL2V1_USERTOP					*/
+/*	|      |--- QLK0RMODECTL2V1_INCDEC				*/
+/*	|      |      |--- QLK0RMODECTL2V1_USRCRCCTL			*/
+/*      |      +--- QLK0RMODECTL2V1_PGCRC				*/
+/*¡¡    |             |--- QLK0RMODECTL2V1_PGRCBUF			*/
+/*¡¡    |             |      |--- QLK0RMODECTL2V1_PGRCDRIVE_LVX		*/
+/*¡¡    |             +--- QLK0RMODECTL2V1_PGCRCSFT			*/
+/*      |                    |--- QLK0RMODECTL2V1_PGCRCREG 		*/ 
+/*      |                    +--- QLK0RMODECTL2V1_LFSRDECCTL 		*/ 
+/*¡¡    |       							*/
+/*      +--- QLK0RMODECTL2V1_TPORT					*/
+/*¡¡    |      |--- QLK0RMODECTL2V1_GATECLK_LVN				*/
+/*¡¡	|      +--- QLK0RMODECTL2V1_SCANDRIVE_LVX			*/
+/*¡¡    |								*/
+/*¡¡    +--- QLK0RMODECTL2V1_SEC					*/
+/*  									*/
+/*======================================================================*/
+
+module QLK0RMODECTL2V1	(
+	// mode-input
+			POCRELNF , TRESET   , RESETB   , RESB     , NSRESB   , PERESETZ , 
+			RESETINBNF ,
+			BASECK   , PCLKTST  , TMDENCLK , BBMODE   , PRIMODIN ,
+			X2DIN    , C3HFF    , SBRFONLY , RXOCD    ,
+			UTI      , RNGIN6   , RNGIN5   , RNGIN4   , RNGIN3   ,
+			RNGIN2   , RNGIN1   , RNGIN0   ,
+			ROUTSRC15, ROUTSRC14, ROUTSRC13, ROUTSRC12, ROUTSRC11, ROUTSRC10,
+			ROUTSRC9 , ROUTSRC8 , ROUTSRC7 , ROUTSRC6 , ROUTSRC5 , ROUTSRC4 ,
+			ROUTSRC3 , ROUTSRC2 , ROUTSRC1 ,
+			PSEL1    , PSEL2    , PWRITE   , PENABLE  ,
+
+	// mode-output
+			GOFIRM   , TESTMOD  , FLMEMTES ,
+			SCANMODE , TESSCAN1 , TESSCAN2 , TESSCAN3 , TESSCAN4 , 
+			TESINST  , BBTESINST, TESUSR   , TESDBT   , TESTRMRD , PTESINST , 
+			OPTFLMEM , OPTRAM   , OPTIDDQ  , OPTEXCCK , OPTOPLRD , OPTBCT   , OPTDFL  ,
+			OPTMDUMP , RAMMULTI , FMULTIEN , MDLYCUT  , RAEDIS   , SLECCOFF,
+			SELTAR   , SELTAF   , SELTADF  , STAYTES  , TPIDSEL  ,
+			POSCOUTE , POSCNOST , OTI      ,
+			TESDBT2  , 		// v1.3 add
+			GOFIRMR  , 		// v1.3 add
+
+	// mode-bus
+			PADDR3   , PADDR2   , PADDR1   , PADDR0   ,
+			PWDATA15 , PWDATA14 , PWDATA13 , PWDATA12 , PWDATA11 , PWDATA10 , PWDATA9  , PWDATA8  ,
+			PWDATA7  , PWDATA6  , PWDATA5  , PWDATA4  , PWDATA3  , PWDATA2  , PWDATA1  , PWDATA0  ,
+			PRDATA15 , PRDATA14 , PRDATA13 , PRDATA12 , PRDATA11 , PRDATA10 , PRDATA9  , PRDATA8  ,
+			PRDATA7  , PRDATA6  , PRDATA5  , PRDATA4  , PRDATA3  , PRDATA2  , PRDATA1  , PRDATA0  ,
+
+	// mode-pgcrc-in
+			STBRELE  , HLTST    , ECCER    , DECCER   , VCEQ     , RAMECCER ,
+			MDR15    , MDR14    , MDR13    , MDR12    , MDR11    , MDR10    , MDR9     , MDR8     ,
+			MDR7     , MDR6     , MDR5     , MDR4     , MDR3     , MDR2     , MDR1     , MDR0     ,
+			EIRAMO7  , EIRAMO6  , EIRAMO5  , EIRAMO4  , EIRAMO3  , EIRAMO2  , EIRAMO1  , EIRAMO0  ,
+			RMULTIO23, RMULTIO22, RMULTIO21, RMULTIO20, RMULTIO19, RMULTIO18, RMULTIO17, RMULTIO16,
+			RMULTIO15, RMULTIO14, RMULTIO13, RMULTIO12, RMULTIO11, RMULTIO10, RMULTIO9 , RMULTIO8 ,
+			RMULTIO7 , RMULTIO6 , RMULTIO5 , RMULTIO4 , RMULTIO3 , RMULTIO2 , RMULTIO1 , RMULTIO0 ,
+			FLRO37   , FLRO36   , FLRO35   , FLRO34   , FLRO33   , FLRO32   ,
+			FLRO31   , FLRO30   , FLRO29   , FLRO28   , FLRO27   , FLRO26   , FLRO25   , FLRO24   ,
+			FLRO23   , FLRO22   , FLRO21   , FLRO20   , FLRO19   , FLRO18   , FLRO17   , FLRO16   ,
+			FLRO15   , FLRO14   , FLRO13   , FLRO12   , FLRO11   , FLRO10   , FLRO9    , FLRO8    ,
+			FLRO7    , FLRO6    , FLRO5    , FLRO4    , FLRO3    , FLRO2    , FLRO1    , FLRO0    ,
+			DFLRO11  , DFLRO10  , DFLRO9   , DFLRO8   ,
+			DFLRO7   , DFLRO6   , DFLRO5   , DFLRO4   , DFLRO3   , DFLRO2   , DFLRO1   , DFLRO0   ,
+
+	// mode-incdec-in
+			AF19     , AF18     , AF17     , AF16     , AF15     , AF14     , AF13     , AF12     , 
+			AF11     , AF10     , AF9      , AF8      , AF7      , AF6      , AF5      , AF4      ,
+			AF3      , AF2      ,
+
+	// mode-incdec-out
+			CRCHLTEN , INCDECMD , LFSSCAIN , 
+			MODERD   , MODEWR   , MODENOP  , MODEFNOP , INCDECWS1, INCDECWS0,
+			TA17     , TA16     ,
+			TA15     , TA14     , TA13     , TA12     , TA11     , TA10     , TA9      , TA8      ,
+			TA7      , TA6      , TA5      , TA4      , TA3      , TA2      , TA1      , TA0      ,
+
+	// mode-clamp-out
+	// delete in Macro Ver1.20
+//			MMCLAMPH0, MMCLAMPH1, MMCLAMPH2, MMCLAMPH3, MMCLAMPH4,
+//			MMCLAMPL0, MMCLAMPL1, MMCLAMPL2, MMCLAMPL3, MMCLAMPL4,
+
+	// tport-input
+			SLFLASH  , BTCLKIN  , RDSETUP  , RESSQSTA , RT0MON0  , RT0MON1  , WDTMON   , SCANOUT  ,
+			TDIN5    , TDIN4    , TDIN3    , 
+			TDIN2T   , TDIN2R   , TDIN2B   , TDIN2L   , 
+			TDIN1T   , TDIN1R   , TDIN1B   , TDIN1L   ,
+			TDIN0T   , TDIN0R   , TDIN0B   , TDIN0L   ,
+
+	// tport-output
+			WAITMOD  , EXCLK1   ,
+			TID31    , TID30    , TID29    , TID28    , TID27    , TID26    , TID25    , TID24    ,
+			TID23    , TID22    , TID21    , TID20    , TID19    , TID18    , TID17    , TID16    ,
+			TID15    , TID14    , TID13    , TID12    , TID11    , TID10    , TID9     , TID8     ,
+			TID7     , TID6     , TID5     , TID4     , TID3     , TID2     , TID1     , TID0     ,
+			TESENI4  , TESENI3  ,
+			TESENI2T , TESENI2R , TESENI2B , TESENI2L , 
+			TESENI1T , TESENI1R , TESENI1B , TESENI1L , 
+			TESENI0T , TESENI0R , TESENI0B , TESENI0L ,
+			TESENO3  , 
+			TESENO2T , TESENO2R , TESENO2B , TESENO2L , 
+			TESENO1T , TESENO1R , TESENO1B , TESENO1L , 
+			TESENO0T , TESENO0R , TESENO0B , TESENO0L ,
+			TDSEL3   ,
+			TDSEL2T  , TDSEL2R  , TDSEL2B  , TDSEL2L  , 
+			TDSEL1T  , TDSEL1R  , TDSEL1B  , TDSEL1L  ,
+			TDSEL0T  , TDSEL0R  , TDSEL0B  , TDSEL0L  , 
+			TDOUT3   , TDOUT2   , TDOUT1   , TDOUT0   ,
+			SCANIN   , SCANCLK  , SCANEN   , SCANRESZ , SCANENMD  ,TIIDER,
+	// v1.3 add for plug SCAN (BB)
+			BBSCANOUT
+
+	// v1.4 add for GOFIRM reset condition Changed
+			,TRAPINP
+	      ) ;
+
+	input		TRAPINP	;	// v1.40
+
+// --- modectl signals --------
+	input		POCRELNF , TRESET   , RESETB   , RESB     , NSRESB   , PERESETZ , 
+			RESETINBNF ;
+	input		BASECK   , PCLKTST  , TMDENCLK , BBMODE   , PRIMODIN ;
+
+	// v1.3 SBRKRESF ---> SBRFONLY
+	input		X2DIN    , C3HFF    , SBRFONLY , RXOCD    ;
+
+	input		UTI      , RNGIN6   , RNGIN5   , RNGIN4   , RNGIN3   ,
+			RNGIN2   , RNGIN1   , RNGIN0   ;
+	input		ROUTSRC15, ROUTSRC14, ROUTSRC13, ROUTSRC12, ROUTSRC11, ROUTSRC10,
+			ROUTSRC9 , ROUTSRC8 , ROUTSRC7 , ROUTSRC6 , ROUTSRC5 , ROUTSRC4 ,
+			ROUTSRC3 , ROUTSRC2 , ROUTSRC1 ;
+
+	output		GOFIRM   , TESTMOD  , FLMEMTES ;
+	output		SCANMODE , TESSCAN1 , TESSCAN2 , TESSCAN3 , TESSCAN4 , 
+			BBTESINST, TESUSR   , TESDBT   , TESTRMRD , PTESINST ;
+	output		OPTFLMEM , OPTRAM   , OPTIDDQ  , OPTEXCCK , OPTOPLRD , OPTBCT   , OPTDFL  ;
+	output		OPTMDUMP , RAMMULTI , FMULTIEN , MDLYCUT  , RAEDIS   , SLECCOFF;
+	output		SELTAR   , SELTAF   , SELTADF  , STAYTES  , TPIDSEL  ;
+	output		POSCOUTE , POSCNOST , OTI      ;
+	output		TESDBT2  ;				// v1.3 add
+	output		GOFIRMR  ;				// v1.3 add
+	// 	clamp signals
+//	output		MMCLAMPH0, MMCLAMPH1, MMCLAMPH2, MMCLAMPH3, MMCLAMPH4,
+//			MMCLAMPL0, MMCLAMPL1, MMCLAMPL2, MMCLAMPL3, MMCLAMPL4;
+
+// --- apbbi signals --------
+	input		PSEL1    , PSEL2    , PWRITE   , PENABLE  ;
+	input		PADDR3   , PADDR2   , PADDR1   , PADDR0   ;
+	input		PWDATA15 , PWDATA14 , PWDATA13 , PWDATA12 , PWDATA11 , PWDATA10 , PWDATA9  , PWDATA8  ,
+			PWDATA7  , PWDATA6  , PWDATA5  , PWDATA4  , PWDATA3  , PWDATA2  , PWDATA1  , PWDATA0  ;
+
+	output		PRDATA15 , PRDATA14 , PRDATA13 , PRDATA12 , PRDATA11 , PRDATA10 , PRDATA9  , PRDATA8  ,
+			PRDATA7  , PRDATA6  , PRDATA5  , PRDATA4  , PRDATA3  , PRDATA2  , PRDATA1  , PRDATA0  ;
+
+// --- user block (incdec+pgcrc) signals ---
+	input		STBRELE  , HLTST    ;
+	input		ECCER    , DECCER   , VCEQ     , RAMECCER ;
+	input		MDR15    , MDR14    , MDR13    , MDR12    , MDR11    , MDR10    , MDR9     , MDR8     ,
+			MDR7     , MDR6     , MDR5     , MDR4     , MDR3     , MDR2     , MDR1     , MDR0     ,
+			EIRAMO7  , EIRAMO6  , EIRAMO5  , EIRAMO4  , EIRAMO3  , EIRAMO2  , EIRAMO1  , EIRAMO0  ;
+	input		RMULTIO23, RMULTIO22, RMULTIO21, RMULTIO20, RMULTIO19, RMULTIO18, RMULTIO17, RMULTIO16,
+			RMULTIO15, RMULTIO14, RMULTIO13, RMULTIO12, RMULTIO11, RMULTIO10, RMULTIO9 , RMULTIO8 ,
+			RMULTIO7 , RMULTIO6 , RMULTIO5 , RMULTIO4 , RMULTIO3 , RMULTIO2 , RMULTIO1 , RMULTIO0 ;
+	input		FLRO37   , FLRO36   , FLRO35   , FLRO34   , FLRO33   , FLRO32   ,
+			FLRO31   , FLRO30   , FLRO29   , FLRO28   , FLRO27   , FLRO26   , FLRO25   , FLRO24   ,
+			FLRO23   , FLRO22   , FLRO21   , FLRO20   , FLRO19   , FLRO18   , FLRO17   , FLRO16   ,
+			FLRO15   , FLRO14   , FLRO13   , FLRO12   , FLRO11   , FLRO10   , FLRO9    , FLRO8    ,
+			FLRO7    , FLRO6    , FLRO5    , FLRO4    , FLRO3    , FLRO2    , FLRO1    , FLRO0    ;
+	input		DFLRO11  , DFLRO10  , DFLRO9   , DFLRO8   ,
+			DFLRO7   , DFLRO6   , DFLRO5   , DFLRO4   , DFLRO3   , DFLRO2   , DFLRO1   , DFLRO0   ;
+
+	//  incdec-in
+	input		AF19     , AF18     , AF17     , AF16     , AF15     , AF14     , AF13     , AF12     , 
+			AF11     , AF10     , AF9      , AF8      , AF7      , AF6      , AF5      , AF4      ,
+			AF3      , AF2      ;
+
+	//  incdec-out
+	output		CRCHLTEN , INCDECMD ;
+	output		MODERD   , MODEWR   , INCDECWS1, INCDECWS0, MODENOP  , MODEFNOP ;
+	//output	MODEFRD  ; 		// delete
+	output		TA17     , TA16     ,
+			TA15     , TA14     , TA13     , TA12     , TA11     , TA10     , TA9      , TA8      ,
+			TA7      , TA6      , TA5      , TA4      , TA3      , TA2      , TA1      , TA0      ;
+	//  pgcrc-out
+	output		LFSSCAIN ;
+
+
+// --- testport signals ---
+	input		SLFLASH  , RDSETUP  , RESSQSTA ;
+	input		TDIN5    , TDIN4    , TDIN3    , 
+			TDIN2T   , TDIN2R   , TDIN2B   , TDIN2L   , 
+			TDIN1T   , TDIN1R   , TDIN1B   , TDIN1L   ,
+			TDIN0T   , TDIN0R   , TDIN0B   , TDIN0L   ;
+	input		RT0MON0  , RT0MON1  , WDTMON   ;
+	input		SCANOUT  ;
+	input		BBSCANOUT ;	// v1.3 add
+	input		BTCLKIN  ;
+
+	output		WAITMOD  , EXCLK1   ;
+	output		TID31    , TID30    , TID29    , TID28    , TID27    , TID26    , TID25    , TID24    ,
+			TID23    , TID22    , TID21    , TID20    , TID19    , TID18    , TID17    , TID16    ,
+			TID15    , TID14    , TID13    , TID12    , TID11    , TID10    , TID9     , TID8     ,
+			TID7     , TID6     , TID5     , TID4     , TID3     , TID2     , TID1     , TID0     ;
+	output		TESENI4  , TESENI3  ,
+			TESENI2T , TESENI2R , TESENI2B , TESENI2L , 
+			TESENI1T , TESENI1R , TESENI1B , TESENI1L , 
+			TESENI0T , TESENI0R , TESENI0B , TESENI0L ;
+	output		TESENO3  , 
+			TESENO2T , TESENO2R , TESENO2B , TESENO2L , 
+			TESENO1T , TESENO1R , TESENO1B , TESENO1L , 
+			TESENO0T , TESENO0R , TESENO0B , TESENO0L ;
+	output		TDSEL3   ,
+			TDSEL2T  , TDSEL2R  , TDSEL2B  , TDSEL2L  , 
+			TDSEL1T  , TDSEL1R  , TDSEL1B  , TDSEL1L  ,
+			TDSEL0T  , TDSEL0R  , TDSEL0B  , TDSEL0L  ; 
+	output		TDOUT3   , TDOUT2   , TDOUT1   , TDOUT0   ;
+
+	output		SCANIN   , SCANCLK  , SCANEN   , SCANRESZ , SCANENMD ; 
+
+// --- sec signals  -----------------------
+	output		TESINST  , TIIDER   ;
+	
+
+	wire		dump0    , dump1    , dump2    , dump3    , dump4    , dump5    , dump6    , dump7    , 
+			dumpe0   , dumpe1   ; 
+
+	wire		rmd      , routen   , vceqoen  , crcouten , selcfecc , optlfsr  , optbct_p ;
+	wire		incdecen , incdec2  , incdec1  , incdec0  ; 
+	wire		lfsscaen , lfssresz ;
+	wire		seltaf_u , crc0en   ;
+	wire		rout0_p  , rout0    , rout1    ;
+	wire	[3:0]	exrout   ;
+//	wire	[9:0]	tout     ;
+	wire	[15:0]	din      ;
+
+	wire		vpphvmod , gofirm_p , gofirmr_p ;
+	wire		exdumpmd ;
+	wire		seltp_t  , seltp_r  , seltp_b  , seltp_l  ;
+	wire		tdin2    , tdin1    , tdin0    ;
+
+	wire		we_tctl0 , we_tctl1 , we_tout  , we_staytes5 , we_staytesa ,
+			we_pgch  , we_pgcl  , we_lfsd  , we_cctl     ;
+	wire	[15:0]	dout_tsc0, dout_tsc1, dout_tout, dout_staytes5, dout_staytesa,
+			dout_pgcl, dout_pgch, dout_lfsd, dout_cctl   ;  
+
+	wire		MDRM15     , MDRM14     , MDRM13     , MDRM12     ,
+			MDRM11     , MDRM10     , MDRM9      , MDRM8      ,
+			MDRM7      , MDRM6      , MDRM5      , MDRM4      ,
+			MDRM3      , MDRM2      , MDRM1      , MDRM0      ,
+			EIRAMOM7   , EIRAMOM6   , EIRAMOM5   , EIRAMOM4   ,
+			EIRAMOM3   , EIRAMOM2   , EIRAMOM1   , EIRAMOM0   ,
+			FLROM37    , FLROM36    , FLROM35    , FLROM34    ,
+			FLROM33    , FLROM32    ,
+			FLROM31    , FLROM30    , FLROM29    , FLROM28    ,
+			FLROM27    , FLROM26    , FLROM25    , FLROM24    ,
+			FLROM23    , FLROM22    , FLROM21    , FLROM20    ,
+			FLROM19    , FLROM18    , FLROM17    , FLROM16    ,
+			FLROM15    , FLROM14    , FLROM13    , FLROM12    ,
+			FLROM11    , FLROM10    , FLROM9     , FLROM8     ,
+			FLROM7     , FLROM6     , FLROM5     , FLROM4     ,
+			FLROM3     , FLROM2     , FLROM1     , FLROM0     ,
+			DFLROM11   , DFLROM10   , DFLROM9    , DFLROM8    ,
+			DFLROM7    , DFLROM6    , DFLROM5    , DFLROM4    ,
+			DFLROM3    , DFLROM2    , DFLROM1    , DFLROM0    ,
+			RNGINM6    , RNGINM5    , RNGINM4    , RNGINM3    ,
+			RNGINM2    , RNGINM1    , RNGINM0    ,
+			ROUTSRCM15 , ROUTSRCM14 , ROUTSRCM13 , ROUTSRCM12 ,
+			ROUTSRCM11 , ROUTSRCM10 , ROUTSRCM9  , ROUTSRCM8  ,
+			ROUTSRCM7  , ROUTSRCM6  , ROUTSRCM5  , ROUTSRCM4  ,
+			ROUTSRCM3  , ROUTSRCM2  , ROUTSRCM1  ;
+
+	wire		optmdump_p ;
+
+	wire    [3:0]   tout_4bit ;			// v1.3 add
+	wire		tout_1bit ;			// v1.3 add
+	wire		optad1bit, optad4bit ;		// v1.3 add
+	wire		bbtesscan_or ;			// v1.3 add
+
+//---------------------------------- 
+// SCAN¥â¡¼¥É»þ¤Î¿®¹æ³èÀ­²½»Üºö
+//---------------------------------- 
+
+	assign 	GOFIRM = ( SCANMODE ) ?  dout_pgcl[7] : gofirm_p ;
+// v1.3 add
+	assign 	GOFIRMR = ( SCANMODE ) ?  dout_pgcl[7] : gofirmr_p ;
+
+//--------------------------------------------------------- 
+// TESDBT¥â¡¼¥É»þ¤Ï¡¢PGCRCL/H¤Ï ShiftÆ°ºî¤·¤Ê¤¤¤è¤¦¤Ë
+//   ( 1Chip SCAN·ëÀþ¸å¤Ë¤Ä¤Ê¤®¤Ê¤ª¤¹)
+//--------------------------------------------------------- 
+
+	assign	SCANENMD = !TESDBT & SCANEN ;
+
+//------------------------------------------------------------------
+// SS3rd delete!!  Gating ¤Ï CSC¤Ç¡£
+//-- primd_pre1¤Ç¤Ï¡¢STAYTES¥Ó¥Ã¥È¥»¥Ã¥È»þ¤Ë¹âÅÅ°µ°õ²Ã¤ò»ß¤á¤¿»þÅÀ¤Ç primd_pre1=0¤È¤Ê¤ê¡¢BASECK¤¬Æ°ºî¤·¤Ê¤¤¤¿¤á
+//-- TEST¥â¡¼¥É¼«ÂÎ¤òÈ´¤±¤Ê¤¤¤è¤¦¤Ë¤¹¤ì¤ÐÎÉ¤¤¤¬¡¢TESINST»þ¤Î¤ß¤Ê¤Î¤Ç¡£
+//	TBGTSMLALADPCLX2 baseck_latch1 ( .N01(BASECKIN1), .N02(), .H01(TESTMOD), .H02(BASECK), .H03(1'b0) );
+//	TBGTSMLALADPCLX2 baseck_latch2 ( .N01(BASECKIN2), .N02(), .H01(TESTMOD), .H02(BASECK), .H03(1'b0) );
+//	TBGTSMLALADPCLX2 baseck_latch3 ( .N01(BASECKIN3), .N02(), .H01(TESTMOD), .H02(BASECK), .H03(1'b0) );
+//	TBGTSMLALADPCLX2 baseck_latch4 ( .N01(BASECKIN4), .N02(), .H01(TESTMOD), .H02(BASECK), .H03(1'b0) );
+//	TBGTSMLALADPCLX2 baseck_latch5 ( .N01(BASECKIN5), .N02(), .H01(TESTMOD), .H02(BASECK), .H03(1'b0) );
+//	TBGTSMLALADPCLX2 baseck_latch6 ( .N01(BASECKIN6), .N02(), .H01(TESTMOD), .H02(BASECK), .H03(1'b0) );
+
+
+QLK0RMODECTL2V1_MASK modectl_mask (
+		.testmod_p(TESTMOD), .crc0en(crc0en),
+		.MDR({MDR15 , MDR14 , MDR13 , MDR12 , MDR11 , MDR10 , MDR9  , MDR8  ,
+		      MDR7  , MDR6  , MDR5  , MDR4  , MDR3  , MDR2  , MDR1  , MDR0  }),
+		.EIRAMO({EIRAMO7 , EIRAMO6 , EIRAMO5 , EIRAMO4 , EIRAMO3 , EIRAMO2 , EIRAMO1 , EIRAMO0 }),
+		.FLROE({FLRO37 , FLRO36 , FLRO35 , FLRO34 , FLRO33 , FLRO32 }),
+		.FLRO ({FLRO31 , FLRO30 , FLRO29 , FLRO28 , FLRO27 , FLRO26 , FLRO25 , FLRO24 ,
+			FLRO23 , FLRO22 , FLRO21 , FLRO20 , FLRO19 , FLRO18 , FLRO17 , FLRO16 ,
+			FLRO15 , FLRO14 , FLRO13 , FLRO12 , FLRO11 , FLRO10 , FLRO9  , FLRO8  ,
+			FLRO7  , FLRO6  , FLRO5  , FLRO4  , FLRO3  , FLRO2  , FLRO1  , FLRO0  }),
+		.DFLRO({DFLRO11, DFLRO10, DFLRO9 , DFLRO8 ,
+			DFLRO7 , DFLRO6 , DFLRO5 , DFLRO4 , DFLRO3 , DFLRO2 , DFLRO1 , DFLRO0 }),
+		.RNGIN({RNGIN6 , RNGIN5 , RNGIN4 , RNGIN3 , RNGIN2 , RNGIN1 , RNGIN0 }),
+		.ROUTSRC({ROUTSRC15 , ROUTSRC14 , ROUTSRC13 , ROUTSRC12 , ROUTSRC11 , ROUTSRC10 , ROUTSRC9 , ROUTSRC8 ,
+			  ROUTSRC7  , ROUTSRC6  , ROUTSRC5  , ROUTSRC4  , ROUTSRC3  , ROUTSRC2  , ROUTSRC1 }),
+		.MDRM15(MDRM15)        , .MDRM14(MDRM14)        , .MDRM13(MDRM13)        , .MDRM12(MDRM12)        ,
+		.MDRM11(MDRM11)        , .MDRM10(MDRM10)        , .MDRM9(MDRM9)          , .MDRM8(MDRM8)          ,
+		.MDRM7(MDRM7)          , .MDRM6(MDRM6)          , .MDRM5(MDRM5)          , .MDRM4(MDRM4)          ,
+		.MDRM3(MDRM3)          , .MDRM2(MDRM2)          , .MDRM1(MDRM1)          , .MDRM0(MDRM0)          ,
+		.EIRAMOM7(EIRAMOM7)    , .EIRAMOM6(EIRAMOM6)    , .EIRAMOM5(EIRAMOM5)    , .EIRAMOM4(EIRAMOM4)    ,
+		.EIRAMOM3(EIRAMOM3)    , .EIRAMOM2(EIRAMOM2)    , .EIRAMOM1(EIRAMOM1)    , .EIRAMOM0(EIRAMOM0)    ,
+		.FLROM37(FLROM37)      , .FLROM36(FLROM36)      , .FLROM35(FLROM35)      , .FLROM34(FLROM34)      ,
+		.FLROM33(FLROM33)      , .FLROM32(FLROM32)      ,
+		.FLROM31(FLROM31)      , .FLROM30(FLROM30)      , .FLROM29(FLROM29)      , .FLROM28(FLROM28)      ,
+		.FLROM27(FLROM27)      , .FLROM26(FLROM26)      , .FLROM25(FLROM25)      , .FLROM24(FLROM24)      ,
+		.FLROM23(FLROM23)      , .FLROM22(FLROM22)      , .FLROM21(FLROM21)      , .FLROM20(FLROM20)      ,
+		.FLROM19(FLROM19)      , .FLROM18(FLROM18)      , .FLROM17(FLROM17)      , .FLROM16(FLROM16)      ,
+		.FLROM15(FLROM15)      , .FLROM14(FLROM14)      , .FLROM13(FLROM13)      , .FLROM12(FLROM12)      ,
+		.FLROM11(FLROM11)      , .FLROM10(FLROM10)      , .FLROM9(FLROM9)        , .FLROM8(FLROM8)        ,
+		.FLROM7(FLROM7)        , .FLROM6(FLROM6)        , .FLROM5(FLROM5)        , .FLROM4(FLROM4)        ,
+		.FLROM3(FLROM3)        , .FLROM2(FLROM2)        , .FLROM1(FLROM1)        , .FLROM0(FLROM0)        ,
+		.DFLROM11(DFLROM11)    , .DFLROM10(DFLROM10)    , .DFLROM9(DFLROM9)      , .DFLROM8(DFLROM8)      ,
+		.DFLROM7(DFLROM7)      , .DFLROM6(DFLROM6)      , .DFLROM5(DFLROM5)      , .DFLROM4(DFLROM4)      ,
+		.DFLROM3(DFLROM3)      , .DFLROM2(DFLROM2)      , .DFLROM1(DFLROM1)      , .DFLROM0(DFLROM0)      ,
+		.RNGINM6(RNGINM6)      , .RNGINM5(RNGINM5)      , .RNGINM4(RNGINM4)      , .RNGINM3(RNGINM3)      ,
+		.RNGINM2(RNGINM2)      , .RNGINM1(RNGINM1)      , .RNGINM0(RNGINM0)      ,
+		.ROUTSRCM15(ROUTSRCM15), .ROUTSRCM14(ROUTSRCM14), .ROUTSRCM13(ROUTSRCM13), .ROUTSRCM12(ROUTSRCM12),
+		.ROUTSRCM11(ROUTSRCM11), .ROUTSRCM10(ROUTSRCM10), .ROUTSRCM9(ROUTSRCM9)  , .ROUTSRCM8(ROUTSRCM8)  ,
+		.ROUTSRCM7(ROUTSRCM7)  , .ROUTSRCM6(ROUTSRCM6)  , .ROUTSRCM5(ROUTSRCM5)  , .ROUTSRCM4(ROUTSRCM4)  ,
+		.ROUTSRCM3(ROUTSRCM3)  , .ROUTSRCM2(ROUTSRCM2)  , .ROUTSRCM1(ROUTSRCM1)
+		);
+
+
+QLK0RMODECTL2V1_APBBI	modectl_apbbi (
+		.addr({PADDR3, PADDR2, PADDR1, PADDR0}),
+		.wdata({PWDATA15, PWDATA14, PWDATA13, PWDATA12, PWDATA11, PWDATA10, PWDATA9 , PWDATA8  ,
+			PWDATA7 , PWDATA6 , PWDATA5 , PWDATA4 , PWDATA3 , PWDATA2 , PWDATA1 , PWDATA0}),
+		.rdata({PRDATA15, PRDATA14, PRDATA13, PRDATA12, PRDATA11, PRDATA10, PRDATA9 , PRDATA8  ,
+			PRDATA7 , PRDATA6 , PRDATA5 , PRDATA4 , PRDATA3 , PRDATA2 , PRDATA1 , PRDATA0}),
+		.PWRITE(PWRITE)      , .PSEL1(PSEL1)        , .PSEL2(PSEL2)        , .PENABLE(PENABLE) ,
+		.testmod(TESTMOD)    , .scanmode(SCANMODE)  ,
+		.we_tctl0(we_tctl0)  , .we_tctl1(we_tctl1)  , .we_tout(we_tout)    ,
+		.we_staytes5(we_staytes5), .we_staytesa(we_staytesa)               , .din(din)         ,
+		.we_pgch(we_pgch)    , .we_pgcl(we_pgcl)    , .we_lfsd(we_lfsd)    , .we_cctl(we_cctl) ,
+		.dout_tsc0(dout_tsc0), .dout_tsc1(dout_tsc1), .dout_tout(dout_tout),
+		.dout_staytes5(dout_staytes5), .dout_staytesa(dout_staytesa),
+		.dout_pgch(dout_pgch), .dout_pgcl(dout_pgcl), .dout_cctl(dout_cctl), .dout_lfsd(dout_lfsd)
+		);
+
+
+QLK0RMODECTL2V1_TOP modectl_top (
+		.POCREL(POCRELNF)    , .TRESET(TRESET)      , .POCREL2(POCRELNF)   , .RESETINBNF(RESETINBNF) , 
+		.RESETB(RESETB)      , .RESB(RESB)          , .PERESETZ(PERESETZ)  , .NSRESB(NSRESB)      ,
+		.BASECK(PCLKTST)     , .TMDENCLK(TMDENCLK)  , 
+		.TESINSTID(TESINST)  , .BBMODE(BBMODE)      , .PRIMODIN(PRIMODIN)  , .UTI(UTI)            , 
+		.crc0en(crc0en)      , .seltaf_u(seltaf_u)  ,
+		.RNGIN6(RNGINM6)     , .RNGIN5(RNGINM5)     , .RNGIN4(RNGINM4)     ,
+		.RNGIN3(RNGINM3)     , .RNGIN2(RNGINM2)     , .RNGIN1(RNGINM1)     , .RNGIN0(RNGINM0)     ,
+		.ROUTSRC15(ROUTSRCM15), .ROUTSRC14(ROUTSRCM14), .ROUTSRC13(ROUTSRCM13), .ROUTSRC12(ROUTSRCM12),
+		.ROUTSRC11(ROUTSRCM11), .ROUTSRC10(ROUTSRCM10), .ROUTSRC9(ROUTSRCM9)  , .ROUTSRC8(ROUTSRCM8)  ,
+		.ROUTSRC7(ROUTSRCM7) , .ROUTSRC6(ROUTSRCM6) , .ROUTSRC5(ROUTSRCM5) , .ROUTSRC4(ROUTSRCM4) ,
+		.ROUTSRC3(ROUTSRCM3) , .ROUTSRC2(ROUTSRCM2) , .ROUTSRC1(ROUTSRCM1) , .rout0_p(rout0_p)    ,
+		.X2DIN(X2DIN)        , .C3HFF(C3HFF)        , .SBRFONLY(SBRFONLY)  , .RXOCD(RXOCD)        ,
+		.din(din)            , .we_tctl0(we_tctl0)  , .we_tctl1(we_tctl1)  , .we_tout(we_tout)    , 
+		.we_staytes5(we_staytes5)                   , .we_staytesa(we_staytesa)                   ,
+		.vpphvmod(vpphvmod)  , .TESTMOD(TESTMOD)    , .gofirm_p(gofirm_p)  , .gofirmr_p(gofirmr_p),
+		.SCANMODE(SCANMODE)  , .TESSCAN1(TESSCAN1)  , .TESSCAN2(TESSCAN2)  , .TESSCAN3(TESSCAN3)  ,
+		.TESSCAN4(TESSCAN4)  , .BBTESINST(BBTESINST), .TESINST(PTESINST)   , .TESUSR(TESUSR)      , 
+		.TESDBT(TESDBT)      , .TESTRMRD(TESTRMRD)  ,
+		.OPTFLMEM(OPTFLMEM)  , .OPTRAM(OPTRAM)      , .OPTIDDQ(OPTIDDQ)    , .OPTEXCCK(OPTEXCCK)  , 
+		.OPTOPLRD(OPTOPLRD)  , .OPTBCT(OPTBCT)      , .OPTDFL(OPTDFL)      , .FLMEMTES(FLMEMTES)  ,
+		.OPTMDUMP(OPTMDUMP)  , .selcfecc(selcfecc)  , .incdecen(incdecen)  , .optbct_p(optbct_p)  ,
+		.RAMMULTI(RAMMULTI)  , .FMULTIEN(FMULTIEN)  , .VCEQOEN(vceqoen)    , .optlfsr(optlfsr)    ,
+		.MDLYCUT(MDLYCUT)    , .RAEDIS(RAEDIS)      , .SLECCOFF(SLECCOFF)  , .optmdump_p(optmdump_p),
+		.SELTAR(SELTAR)      , .SELTAF(SELTAF)      , .SELTADF(SELTADF)    , .STAYTES(STAYTES)    ,
+		.dump0(dump0)        , .dump1(dump1)        , .dump2(dump2)        , .dump3(dump3)        ,
+		.dump4(dump4)        , .dump5(dump5)        , .dump6(dump6)        , .dump7(dump7)        ,
+		.dumpe0(dumpe0)      , .dumpe1(dumpe1)      , .exdumpmd(exdumpmd)  , .TPIDSEL(TPIDSEL)    , 
+		.POSCOUTE(POSCOUTE)  , .POSCNOST(POSCNOST)  , .OTI(OTI)            ,
+		.rmd(rmd)            , .routen(routen)      , .rout0(rout0)        , 
+		.seltp_t(seltp_t)    , .seltp_r(seltp_r)    , .seltp_b(seltp_b)    , .seltp_l(seltp_l)    ,
+//		.MMCLAMPH0(MMCLAMPH0), .MMCLAMPH1(MMCLAMPH1), .MMCLAMPH2(MMCLAMPH2), .MMCLAMPH3(MMCLAMPH3),
+//		.MMCLAMPH4(MMCLAMPH4),
+//		.MMCLAMPL0(MMCLAMPL0), .MMCLAMPL1(MMCLAMPL1), .MMCLAMPL2(MMCLAMPL2), .MMCLAMPL3(MMCLAMPL3),
+//		.MMCLAMPL4(MMCLAMPL4),
+		.dout_tsc0(dout_tsc0), .dout_tsc1(dout_tsc1), .dout_tout(dout_tout), 
+		.dout_staytes5(dout_staytes5)               , .dout_staytesa(dout_staytesa),
+		.tout_4bit(tout_4bit), .tout_1bit(tout_1bit), .optad1bit(optad1bit), .optad4bit(optad4bit),
+		.tesdbt2(TESDBT2)    , .bbtesscan_or(bbtesscan_or)
+		,.TRAPINP(TRAPINP)
+		);
+
+QLK0RMODECTL2V1_USERTOP modectl_usertop (
+		.pocrel2(POCRELNF)   , .resetinb(RESETINBNF), .resb(RESB)          , .baseck(BASECK)      ,
+		.tesdbt(TESDBT)      , .tesinst(TESINST)    , .testmod(TESTMOD)    , 
+		.optmdump(OPTMDUMP)  , .optram(OPTRAM)      , .optflmem(OPTFLMEM)  , .optdfl(OPTDFL)      , 
+		.optlfsr(optlfsr)    , .tpidsel(TPIDSEL)    ,
+		.raedis(RAEDIS)      , .rammulti(RAMMULTI)  , .selcfecc(selcfecc)  , .incdecen(incdecen)  , 
+		.routen(routen)      , .vceqoen(vceqoen)    , .stbrele(STBRELE)    , .hltst(HLTST)        ,
+		.we_pgch(we_pgch)    , .we_pgcl(we_pgcl)    , .we_lfsd(we_lfsd)    , .we_cctl(we_cctl)    ,
+		.incdec2(incdec2)    , .incdec1(incdec1)    , .incdec0(incdec0)    , .crcouten(crcouten)  ,
+		.eccer(ECCER)        , .deccer(DECCER)      , .vceq(VCEQ)          , .rameccer(RAMECCER)  ,
+		.mdr15(MDRM15)       , .mdr14(MDRM14)       , .mdr13(MDRM13)       , .mdr12(MDRM12)       ,
+		.mdr11(MDRM11)       , .mdr10(MDRM10)       , .mdr9(MDRM9)         , .mdr8(MDRM8)         ,
+		.mdr7(MDRM7)         , .mdr6(MDRM6)         , .mdr5(MDRM5)         , .mdr4(MDRM4)         ,
+		.mdr3(MDRM3)         , .mdr2(MDRM2)         , .mdr1(MDRM1)         , .mdr0(MDRM0)         ,
+		.eiramo7(EIRAMOM7)   , .eiramo6(EIRAMOM6)   , .eiramo5(EIRAMOM5)   , .eiramo4(EIRAMOM4)   ,
+		.eiramo3(EIRAMOM3)   , .eiramo2(EIRAMOM2)   , .eiramo1(EIRAMOM1)   , .eiramo0(EIRAMOM0)   ,
+		.rmultio23(RMULTIO23), .rmultio22(RMULTIO22), .rmultio21(RMULTIO21), .rmultio20(RMULTIO20),
+		.rmultio19(RMULTIO19), .rmultio18(RMULTIO18), .rmultio17(RMULTIO17), .rmultio16(RMULTIO16),
+		.rmultio15(RMULTIO15), .rmultio14(RMULTIO14), .rmultio13(RMULTIO13), .rmultio12(RMULTIO12),
+		.rmultio11(RMULTIO11), .rmultio10(RMULTIO10), .rmultio9(RMULTIO9)  , .rmultio8(RMULTIO8)  ,
+		.rmultio7(RMULTIO7)  , .rmultio6(RMULTIO6)  , .rmultio5(RMULTIO5)  , .rmultio4(RMULTIO4)  ,
+		.rmultio3(RMULTIO3)  , .rmultio2(RMULTIO2)  , .rmultio1(RMULTIO1)  , .rmultio0(RMULTIO0)  ,
+		.flro37(FLROM37)     , .flro36(FLROM36)     , .flro35(FLROM35)     , .flro34(FLROM34)     ,
+		.flro33(FLROM33)     , .flro32(FLROM32)     ,
+		.flro31(FLROM31)     , .flro30(FLROM30)     , .flro29(FLROM29)     , .flro28(FLROM28)     ,
+		.flro27(FLROM27)     , .flro26(FLROM26)     , .flro25(FLROM25)     , .flro24(FLROM24)     ,
+		.flro23(FLROM23)     , .flro22(FLROM22)     , .flro21(FLROM21)     , .flro20(FLROM20)     ,
+		.flro19(FLROM19)     , .flro18(FLROM18)     , .flro17(FLROM17)     , .flro16(FLROM16)     ,
+		.flro15(FLROM15)     , .flro14(FLROM14)     , .flro13(FLROM13)     , .flro12(FLROM12)     ,
+		.flro11(FLROM11)     , .flro10(FLROM10)     , .flro9(FLROM9)       , .flro8(FLROM8)       ,
+		.flro7(FLROM7)       , .flro6(FLROM6)       , .flro5(FLROM5)       , .flro4(FLROM4)       ,
+		.flro3(FLROM3)       , .flro2(FLROM2)       , .flro1(FLROM1)       , .flro0(FLROM0)       ,
+		.dflro11(DFLROM11)   , .dflro10(DFLROM10)   , .dflro9(DFLROM9)     , .dflro8(DFLROM8)     ,
+		.dflro7(DFLROM7)     , .dflro6(DFLROM6)     , .dflro5(DFLROM5)     , .dflro4(DFLROM4)     ,
+		.dflro3(DFLROM3)     , .dflro2(DFLROM2)     , .dflro1(DFLROM1)     , .dflro0(DFLROM0)     ,
+		.dump0(dump0)        , .dump1(dump1)        , .dump2(dump2)        , .dump3(dump3)        , 
+		.dump4(dump4)        , .dump5(dump5)        , .dump6(dump6)        , .dump7(dump7)        , 
+		.dumpe0(dumpe0)      , .dumpe1(dumpe1)      ,
+		.addrin( { AF19   , AF18   , AF17   , AF16   , AF15   , AF14   , AF13   , AF12   , AF11   ,
+			   AF10   , AF9    , AF8    , AF7    , AF6    , AF5    , AF4    , AF3    , AF2  }),
+		.din(din)            ,	
+		.ta17(TA17)	     , .ta16(TA16)          ,
+		.ta15(TA15)          , .ta14(TA14)          , .ta13(TA13)          , .ta12(TA12)          ,
+		.ta11(TA11)          , .ta10(TA10)          , .ta9(TA9)            , .ta8(TA8)            ,
+		.ta7(TA7)            , .ta6(TA6)            , .ta5(TA5)            , .ta4(TA4)            ,
+		.ta3(TA3)            , .ta2(TA2)            , .ta1(TA1)            , .ta0(TA0)		  ,
+		.moderd(MODERD)      , .modewr(MODEWR)      , .incdecws1(INCDECWS1), .incdecws0(INCDECWS0),
+		.modenop(MODENOP)    , .modefnop(MODEFNOP)  ,
+		.crc0en(crc0en)      , .crchlten(CRCHLTEN)  , .incdecmd(INCDECMD)  , .seltaf_u(seltaf_u)  ,
+		.lfsscain(LFSSCAIN)  , .lfsscaen(lfsscaen)  , .lfssresz(lfssresz)  ,
+		.rout0_p(rout0_p)    , .rout1_p(rout1)      , .exrout(exrout)      ,
+		.dout_pgcl(dout_pgcl), .dout_pgch(dout_pgch), .dout_lfsd(dout_lfsd), .dout_cctl(dout_cctl),
+		.SCANMODE(SCANMODE)
+		);
+
+
+QLK0RMODECTL2V1_TPORT modectl_tport (
+		.baseck(PCLKTST)     , .resb(RESB)          , .slflash(SLFLASH)    , 
+		.vpphvmod(vpphvmod)  , .testmod(TESTMOD)    ,
+		.tesscan1(TESSCAN1)  , .tesscan2(TESSCAN2)  , .tesscan3(TESSCAN3)  , .tesscan4(TESSCAN4)  , 
+		.tesinst(PTESINST)   , .tesdbt(TESDBT)      , .tesusr(TESUSR)      , 
+		.lfsscain(LFSSCAIN)  , .lfsscaen(lfsscaen)  , .lfssresz(lfssresz)  ,
+		.optram(OPTRAM)      , .optflmem(OPTFLMEM)  , .optdfl(OPTDFL)      ,
+		.optmdump(optmdump_p), .optiddq(OPTIDDQ)    , .optexcck(OPTEXCCK)  , .optoplrd(OPTOPLRD)  , 
+		.optbct(optbct_p)    , .incdecen(incdecen)  , .btclkin(BTCLKIN)    , .rmd(rmd)            ,
+		.exdumpmd(exdumpmd)  , .routen(routen)      , .rdsetup(RDSETUP)    , .ressqsta(RESSQSTA)  ,
+		.tdin5(TDIN5)        , .tdin4(TDIN4)        , .tdin3(TDIN3)        ,
+		.tdin2_t(TDIN2T)     , .tdin2_r(TDIN2R)     , .tdin2_b(TDIN2B)     , .tdin2_l(TDIN2L)     ,
+		.tdin1_t(TDIN1T)     , .tdin1_r(TDIN1R)     , .tdin1_b(TDIN1B)     , .tdin1_l(TDIN1L)     ,
+		.tdin0_t(TDIN0T)     , .tdin0_r(TDIN0R)     , .tdin0_b(TDIN0B)     , .tdin0_l(TDIN0L)     ,
+		.seltp_t(seltp_t)    , .seltp_r(seltp_r)    , .seltp_b(seltp_b)    , .seltp_l(seltp_l)    ,
+		.rt0mon0(RT0MON0)    , .rt0mon1(RT0MON1)    , .wdtmon(WDTMON)      , 
+		.rout1(rout1)        , .rout0(rout0)        , .scanout(SCANOUT)    , .exrout(exrout)      ,
+		.waitfl(WAITMOD)     , .exclk1(EXCLK1)      ,
+		.tid31(TID31)        , .tid30(TID30)        , .tid29(TID29)        , .tid28(TID28)        ,
+		.tid27(TID27)        , .tid26(TID26)        , .tid25(TID25)        , .tid24(TID24)        ,
+		.tid23(TID23)        , .tid22(TID22)        , .tid21(TID21)        , .tid20(TID20)        ,
+		.tid19(TID19)        , .tid18(TID18)        , .tid17(TID17)        , .tid16(TID16)        ,
+		.tid15(TID15)        , .tid14(TID14)        , .tid13(TID13)        , .tid12(TID12)        ,
+		.tid11(TID11)        , .tid10(TID10)        , .tid9(TID9)          , .tid8(TID8)          ,
+		.tid7(TID7)          , .tid6(TID6)          , .tid5(TID5)          , .tid4(TID4)          ,
+		.tid3(TID3)          , .tid2(TID2)          , .tid1(TID1)          , .tid0(TID0)          ,
+		.incdec2(incdec2)    , .incdec1(incdec1)    , .incdec0(incdec0)    , .crcouten(crcouten)  ,
+		.teseni4(TESENI4)    , .teseni3(TESENI3)     ,
+		.teseni2_t(TESENI2T) , .teseni2_r(TESENI2R) , .teseni2_b(TESENI2B) , .teseni2_l(TESENI2L) ,
+		.teseni1_t(TESENI1T) , .teseni1_r(TESENI1R) , .teseni1_b(TESENI1B) , .teseni1_l(TESENI1L) ,
+		.teseni0_t(TESENI0T) , .teseni0_r(TESENI0R) , .teseni0_b(TESENI0B) , .teseni0_l(TESENI0L) ,
+		.teseno3(TESENO3)    ,
+		.teseno2_t(TESENO2T) , .teseno2_r(TESENO2R) , .teseno2_b(TESENO2B) , .teseno2_l(TESENO2L) ,
+		.teseno1_t(TESENO1T) , .teseno1_r(TESENO1R) , .teseno1_b(TESENO1B) , .teseno1_l(TESENO1L) ,
+		.teseno0_t(TESENO0T) , .teseno0_r(TESENO0R) , .teseno0_b(TESENO0B) , .teseno0_l(TESENO0L) ,
+		.tdsel3(TDSEL3)      ,
+		.tdsel2_t(TDSEL2T)   , .tdsel2_r(TDSEL2R)   , .tdsel2_b(TDSEL2B)   , .tdsel2_l(TDSEL2L)   ,
+		.tdsel1_t(TDSEL1T)   , .tdsel1_r(TDSEL1R)   , .tdsel1_b(TDSEL1B)   , .tdsel1_l(TDSEL1L)   ,
+		.tdsel0_t(TDSEL0T)   , .tdsel0_r(TDSEL0R)   , .tdsel0_b(TDSEL0B)   , .tdsel0_l(TDSEL0L)   ,
+		.tdout3(TDOUT3)      , .tdout2(TDOUT2)      , .tdout1(TDOUT1)      , .tdout0(TDOUT0)      ,
+		.tdin2(tdin2)        , .tdin1(tdin1)        , .tdin0(tdin0)        ,
+		.scanin(SCANIN)      , .scanclk(SCANCLK)    , .scanen(SCANEN)      , .scanresz(SCANRESZ)  ,
+		.tout_4bit(tout_4bit), .tout_1bit(tout_1bit), .optad1bit(optad1bit), .optad4bit(optad4bit),
+		.bbtesscan_or(bbtesscan_or),
+		.bbscanout(BBSCANOUT)
+		);
+
+
+QLK0RMODECTL2V1_SEC modectl_sec (
+		.ptesinst(PTESINST)  , .tesinst(TESINST)    , .tiider(TIIDER)
+		);
+
+endmodule			// Modectl Macro  endmodule
+
+
+// =====================================================================================
+//  MASK MODULE START 
+//  ÆþÎÏ¥Ç¡¼¥¿¥Þ¥¹¥¯Éô
+// =====================================================================================
+module QLK0RMODECTL2V1_MASK (
+			testmod_p  , crc0en     ,
+			MDR        , EIRAMO     , FLROE      , FLRO       , 
+			DFLRO      , RNGIN      , ROUTSRC    ,
+
+			MDRM15     , MDRM14     , MDRM13     , MDRM12     ,
+			MDRM11     , MDRM10     , MDRM9      , MDRM8      ,
+			MDRM7      , MDRM6      , MDRM5      , MDRM4      ,
+			MDRM3      , MDRM2      , MDRM1      , MDRM0      ,
+			EIRAMOM7   , EIRAMOM6   , EIRAMOM5   , EIRAMOM4   ,
+			EIRAMOM3   , EIRAMOM2   , EIRAMOM1   , EIRAMOM0   ,
+			FLROM37    , FLROM36    , FLROM35    , FLROM34    ,
+			FLROM33    , FLROM32    ,
+			FLROM31    , FLROM30    , FLROM29    , FLROM28    , 
+			FLROM27    , FLROM26    , FLROM25    , FLROM24    ,
+		  	FLROM23    , FLROM22    , FLROM21    , FLROM20    , 
+			FLROM19    , FLROM18    , FLROM17    , FLROM16    ,
+	  	  	FLROM15    , FLROM14    , FLROM13    , FLROM12    , 
+			FLROM11    , FLROM10    , FLROM9     , FLROM8     ,
+		  	FLROM7     , FLROM6     , FLROM5     , FLROM4     , 
+			FLROM3     , FLROM2     , FLROM1     , FLROM0     ,
+			DFLROM11   , DFLROM10   , DFLROM9    , DFLROM8    ,
+		  	DFLROM7    , DFLROM6    , DFLROM5    , DFLROM4    , 
+			DFLROM3    , DFLROM2    , DFLROM1    , DFLROM0    ,
+			RNGINM6    , RNGINM5    , RNGINM4    , RNGINM3    ,
+			RNGINM2    , RNGINM1    , RNGINM0    ,
+			ROUTSRCM15 , ROUTSRCM14 , ROUTSRCM13 , ROUTSRCM12 ,
+			ROUTSRCM11 , ROUTSRCM10 , ROUTSRCM9  , ROUTSRCM8  ,
+			ROUTSRCM7  , ROUTSRCM6  , ROUTSRCM5  , ROUTSRCM4  ,
+			ROUTSRCM3  , ROUTSRCM2  , ROUTSRCM1
+			) ;
+
+	input		testmod_p  , crc0en ;
+	input	[15:0]	MDR        ;
+	input	[7:0]	EIRAMO     ;
+	input	[5:0]	FLROE      ;
+	input	[31:0]	FLRO       ;
+	input	[11:0]	DFLRO      ;
+	input	[6:0]	RNGIN      ;
+	input	[14:0]	ROUTSRC    ;
+
+	output		MDRM15     , MDRM14     , MDRM13     , MDRM12     ,
+			MDRM11     , MDRM10     , MDRM9      , MDRM8      ,
+			MDRM7      , MDRM6      , MDRM5      , MDRM4      ,
+			MDRM3      , MDRM2      , MDRM1      , MDRM0      ,
+			EIRAMOM7   , EIRAMOM6   , EIRAMOM5   , EIRAMOM4   ,
+			EIRAMOM3   , EIRAMOM2   , EIRAMOM1   , EIRAMOM0   ,
+			FLROM37    , FLROM36    , FLROM35    , FLROM34    ,
+			FLROM33    , FLROM32    ,
+			FLROM31    , FLROM30    , FLROM29    , FLROM28    , 
+			FLROM27    , FLROM26    , FLROM25    , FLROM24    ,
+		  	FLROM23    , FLROM22    , FLROM21    , FLROM20    , 
+			FLROM19    , FLROM18    , FLROM17    , FLROM16    ,
+	  	  	FLROM15    , FLROM14    , FLROM13    , FLROM12    , 
+			FLROM11    , FLROM10    , FLROM9     , FLROM8     ,
+		  	FLROM7     , FLROM6     , FLROM5     , FLROM4     , 
+			FLROM3     , FLROM2     , FLROM1     , FLROM0     ,
+			DFLROM11   , DFLROM10   , DFLROM9    , DFLROM8    ,
+		  	DFLROM7    , DFLROM6    , DFLROM5    , DFLROM4    , 
+			DFLROM3    , DFLROM2    , DFLROM1    , DFLROM0    ,
+			RNGINM6    , RNGINM5    , RNGINM4    , RNGINM3    ,
+			RNGINM2    , RNGINM1    , RNGINM0    ,
+			ROUTSRCM15 , ROUTSRCM14 , ROUTSRCM13 , ROUTSRCM12 ,
+			ROUTSRCM11 , ROUTSRCM10 , ROUTSRCM9  , ROUTSRCM8  ,
+			ROUTSRCM7  , ROUTSRCM6  , ROUTSRCM5  , ROUTSRCM4  ,
+			ROUTSRCM3  , ROUTSRCM2  , ROUTSRCM1  ;
+
+	wire	[15:0]	MDRM       ;
+	wire	[7:0]	EIRAMOM    ;
+	wire	[5:0]	FLROEM     ;
+	wire	[31:0]	FLROM      ;
+	wire	[11:0]	DFLROM     ;
+	wire	[6:0]	RNGINM     ;
+	wire	[14:0]	ROUTSRCM   ;
+
+	assign	MDRM     = testmod_p ? MDR     : 16'b0  ;
+	assign	EIRAMOM  = testmod_p ? EIRAMO  :  8'b0  ;
+	assign	FLROEM   = testmod_p ? FLROE   :  6'b0  ;
+	assign	FLROM    = ( testmod_p | crc0en ) ? FLRO    : 32'b0  ;
+	assign	DFLROM   = testmod_p ? DFLRO   : 12'b0  ;
+	assign	RNGINM   = testmod_p ? RNGIN   :  7'b0  ;
+	assign	ROUTSRCM = testmod_p ? ROUTSRC : 15'b0  ;
+
+	assign	{ MDRM15 , MDRM14 , MDRM13 , MDRM12 , MDRM11 , MDRM10 , MDRM9  , MDRM8  ,
+		  MDRM7  , MDRM6  , MDRM5  , MDRM4  , MDRM3  , MDRM2  , MDRM1  , MDRM0  }
+		= MDRM   ;
+
+	assign	{ EIRAMOM7 , EIRAMOM6 , EIRAMOM5 , EIRAMOM4 ,
+		  EIRAMOM3 , EIRAMOM2 , EIRAMOM1 , EIRAMOM0 }
+		= EIRAMOM  ;
+
+	assign	{ FLROM37  , FLROM36  , FLROM35  , FLROM34  , FLROM33  , FLROM32 }
+		= FLROEM  ;
+
+	assign  { FLROM31  , FLROM30  , FLROM29  , FLROM28  , FLROM27  , FLROM26  , FLROM25  , FLROM24  ,
+		  FLROM23  , FLROM22  , FLROM21  , FLROM20  , FLROM19  , FLROM18  , FLROM17  , FLROM16  ,
+	  	  FLROM15  , FLROM14  , FLROM13  , FLROM12  , FLROM11  , FLROM10  , FLROM9   , FLROM8   ,
+		  FLROM7   , FLROM6   , FLROM5   , FLROM4   , FLROM3   , FLROM2   , FLROM1   , FLROM0   }
+		= FLROM   ;
+			
+	assign	{ DFLROM11 , DFLROM10 , DFLROM9  , DFLROM8  ,
+		  DFLROM7  , DFLROM6  , DFLROM5  , DFLROM4  , DFLROM3  , DFLROM2  , DFLROM1  , DFLROM0  }
+		= DFLROM  ;
+
+	assign	{ RNGINM6  , RNGINM5  , RNGINM4  , RNGINM3  , RNGINM2  , RNGINM1  , RNGINM0  }
+		= RNGINM   ;
+
+	assign	{ ROUTSRCM15 , ROUTSRCM14 , ROUTSRCM13 , ROUTSRCM12 , ROUTSRCM11 , ROUTSRCM10 ,
+		  ROUTSRCM9  , ROUTSRCM8  , ROUTSRCM7  , ROUTSRCM6  , ROUTSRCM5  , ROUTSRCM4  ,
+		  ROUTSRCM3  , ROUTSRCM2  , ROUTSRCM1  }
+		= ROUTSRCM   ;
+
+endmodule				// MASK MODULE END
+
+
+// =====================================================================================
+// APB¥¢¥¯¥»¥¹À©¸æÉô
+// =====================================================================================
+module QLK0RMODECTL2V1_APBBI (
+	//	input
+			PWRITE   , PSEL1    , PSEL2    , PENABLE  , testmod  , scanmode ,
+	//	output
+			we_tctl0 , we_tctl1 , we_tout  , we_staytes5 , we_staytesa ,
+			we_pgch  , we_pgcl  , we_lfsd  , we_cctl     ,
+	//	bus
+			addr     , wdata    , rdata    ,
+			din      ,
+			dout_tsc0, dout_tsc1, dout_tout, dout_staytes5, dout_staytesa,
+			dout_pgcl, dout_pgch, dout_lfsd, dout_cctl     
+	      ) ;
+
+	input		PWRITE   , PSEL1    , PSEL2    , PENABLE  ;
+	input		testmod  , scanmode ;
+	input	[3:0]	addr     ;
+	input	[15:0]	wdata    ;
+	input	[15:0]	dout_tsc0, dout_tsc1, dout_tout, dout_staytes5, dout_staytesa ,
+			dout_pgcl, dout_pgch, dout_lfsd, dout_cctl    ;
+
+	output		we_tctl0 , we_tctl1 , we_tout  , we_staytes5 , we_staytesa ;
+	output		we_pgch  , we_pgcl  , we_lfsd  , we_cctl     ;
+
+	output	[15:0]	din      ;
+	output	[15:0]	rdata    ;
+
+	wire		re_tctl0 , re_tctl1 , re_tout  , re_staytes5 , re_staytesa ,
+			re_pgch  , re_pgcl  , re_lfsd  , re_cctl     ;
+	wire		sel_tctl0, sel_tctl1, sel_tout , sel_staytes5, sel_staytesa,
+			sel_pgch , sel_pgcl , sel_lfsd , sel_cctl    ;
+
+
+//Address Decode
+	assign	sel_tctl0	= (testmod & !scanmode ) & PSEL2 & (addr == 4'b0000);	// F0700H
+	assign	sel_tctl1	= (testmod & !scanmode ) & PSEL2 & (addr == 4'b0010);	// F0702H
+	assign	sel_tout 	= (testmod & !scanmode ) & PSEL2 & (addr == 4'b0100);	// F0704H
+	assign	sel_staytes5 	= (testmod & !scanmode ) & PSEL2 & (addr == 4'b0110);	// F0706H
+	assign	sel_staytesa 	= (testmod & !scanmode ) & PSEL2 & (addr == 4'b1000);	// F0708H
+
+	assign	sel_cctl 	=  PSEL1 & (addr == 4'b0000);	// F02F0H 
+	assign	sel_pgcl 	=  PSEL1 & (addr == 4'b0010);	// F02F2H
+	assign	sel_pgch 	=  PSEL1 & (addr == 4'b0100);	// F02F4H
+	assign	sel_lfsd 	=  PSEL1 & (addr == 4'b0110);	// F02F6H
+
+//Write Enable
+	assign	we_tctl0	= (sel_tctl0    && PENABLE && PWRITE);
+	assign	we_tctl1	= (sel_tctl1    && PENABLE && PWRITE);
+	assign	we_tout		= (sel_tout     && PENABLE && PWRITE);
+	assign	we_staytes5	= (sel_staytes5 && PENABLE && PWRITE);
+	assign	we_staytesa	= (sel_staytesa && PENABLE && PWRITE);
+
+	assign	we_cctl 	= (sel_cctl && PENABLE && PWRITE);
+	assign	we_pgcl 	= (sel_pgcl && PENABLE && PWRITE);
+	assign	we_pgch 	= (sel_pgch && PENABLE && PWRITE);
+	assign	we_lfsd 	= (sel_lfsd && PENABLE && PWRITE);
+
+//Read Enable
+	assign	re_tctl0	= (sel_tctl0    && PENABLE && !PWRITE);
+	assign	re_tctl1	= (sel_tctl1    && PENABLE && !PWRITE);
+	assign	re_tout		= (sel_tout     && PENABLE && !PWRITE);
+	assign	re_staytes5	= (sel_staytes5 && PENABLE && !PWRITE);
+	assign	re_staytesa	= (sel_staytesa && PENABLE && !PWRITE);
+
+	assign	re_cctl 	= (sel_cctl && PENABLE && !PWRITE);
+	assign	re_pgcl 	= (sel_pgcl && PENABLE && !PWRITE);
+	assign	re_pgch 	= (sel_pgch && PENABLE && !PWRITE);
+	assign	re_lfsd 	= (sel_lfsd && PENABLE && !PWRITE);
+
+//Output
+	assign	din		= wdata;
+
+// =============================================================
+// APB¥Ð¥¹½ÐÎÏ¥Ç¡¼¥¿¤ÎÁªÂò
+// =============================================================
+
+	assign	rdata =	( re_tctl0    ) ? dout_tsc0     :
+			( re_tctl1    ) ? dout_tsc1     :
+			( re_tout     ) ? dout_tout     :
+			( re_staytes5 ) ? dout_staytes5 :
+			( re_staytesa ) ? dout_staytesa : 
+			( re_cctl     ) ? dout_cctl     :
+			( re_pgcl     ) ? dout_pgcl     :
+			( re_pgch     ) ? dout_pgch     :
+			( re_lfsd     ) ? dout_lfsd     : 16'h0000 ;
+
+endmodule			// APBBI MODULE END
+
+
+// =====================================================================================
+//  TEST_TOP MODULE START 
+// =====================================================================================
+module QLK0RMODECTL2V1_TOP	(
+	//	input
+			POCREL   , TRESET   , POCREL2  , RESETINBNF, RESETB  , RESB     ,
+			NSRESB   , PERESETZ , TMDENCLK , BASECK   ,
+			TESINSTID, BBMODE   , PRIMODIN , UTI      , crc0en   , seltaf_u ,
+			RNGIN6   , RNGIN5   , RNGIN4   , RNGIN3   ,
+			RNGIN2   , RNGIN1   , RNGIN0   ,
+			ROUTSRC15, ROUTSRC14, ROUTSRC13, ROUTSRC12, ROUTSRC11,
+			ROUTSRC10, ROUTSRC9 , ROUTSRC8 , ROUTSRC7 , ROUTSRC6 ,
+			ROUTSRC5 , ROUTSRC4 , ROUTSRC3 , ROUTSRC2 , ROUTSRC1 ,
+			X2DIN    , C3HFF    , SBRFONLY , RXOCD    , rout0_p  , din      ,
+			we_tctl0 , we_tctl1 , we_tout  , we_staytes5 , we_staytesa,
+
+	//	output
+			vpphvmod , TESTMOD  , gofirm_p , gofirmr_p,
+			SCANMODE , TESSCAN1 , TESSCAN2 , TESSCAN3 , TESSCAN4 , BBTESINST,
+			TESINST  , TESUSR   , TESDBT   , TESTRMRD , FLMEMTES , optbct_p , optmdump_p,
+			OPTFLMEM , OPTRAM   , OPTIDDQ  , OPTEXCCK , OPTOPLRD , OPTBCT   , OPTDFL   ,
+			OPTMDUMP , selcfecc , incdecen , RAMMULTI , FMULTIEN , VCEQOEN  , optlfsr  ,
+			MDLYCUT  , RAEDIS   , SLECCOFF , SELTAR   , SELTAF   , SELTADF  , STAYTES  ,
+			POSCOUTE , POSCNOST , OTI      , rmd      , routen   , rout0    ,
+			dump0    , dump1    , dump2    , dump3    , dump4    , dump5    ,
+			dump6    , dump7    , dumpe0   , dumpe1   , exdumpmd , TPIDSEL  ,
+			seltp_t  , seltp_r  , seltp_b  , seltp_l  ,
+			dout_tsc0, dout_tsc1, dout_tout, dout_staytes5, dout_staytesa ,
+			tout_4bit, tout_1bit, optad1bit, optad4bit,
+			tesdbt2  , bbtesscan_or
+
+	// 	clamp signals
+	// delete in Macro Ver1.20
+//			MMCLAMPH0, MMCLAMPH1, MMCLAMPH2, MMCLAMPH3, MMCLAMPH4,
+//			MMCLAMPL0, MMCLAMPL1, MMCLAMPL2, MMCLAMPL3, MMCLAMPL4
+
+	// v1.40 added
+			,TRAPINP
+	      ) ;
+
+	input		TRAPINP ;	// v1.40
+
+	input		POCREL   , TRESET   ;
+	input		POCREL2  , RESETINBNF , RESETB , RESB     , NSRESB  ;
+	input		PERESETZ , TMDENCLK , BASECK   ;
+	input		TESINSTID, BBMODE   ;
+	input		PRIMODIN , UTI      , crc0en   , seltaf_u ;
+	input		RNGIN6   , RNGIN5   , RNGIN4   , RNGIN3   ,
+			RNGIN2   , RNGIN1   , RNGIN0   ;
+	input		ROUTSRC15, ROUTSRC14, ROUTSRC13, ROUTSRC12, ROUTSRC11,
+			ROUTSRC10, ROUTSRC9 , ROUTSRC8 , ROUTSRC7 , ROUTSRC6 ,
+			ROUTSRC5 , ROUTSRC4 , ROUTSRC3 , ROUTSRC2 , ROUTSRC1 ;
+	input		X2DIN    , C3HFF    , SBRFONLY , RXOCD    ;
+	input		we_tctl0 , we_tctl1 , we_tout  , we_staytes5 , we_staytesa;
+	input		rout0_p  ;
+	input	[15:0]	din      ;
+
+	output		vpphvmod , TESTMOD  , gofirm_p , gofirmr_p ;
+	output		SCANMODE , TESSCAN1 , TESSCAN2 , TESSCAN3 , TESSCAN4 , BBTESINST,
+			TESINST  , TESUSR   , TESDBT   , TESTRMRD , FLMEMTES ;
+	output		OPTFLMEM , OPTRAM   , OPTIDDQ  , OPTEXCCK , OPTOPLRD , OPTBCT   , OPTDFL   ;
+	output		optbct_p , optmdump_p ;
+	output		OPTMDUMP , selcfecc , incdecen , RAMMULTI , FMULTIEN , VCEQOEN  , optlfsr  ,
+			MDLYCUT  , RAEDIS   , SLECCOFF , SELTAR   , SELTAF   , SELTADF  , STAYTES  ,
+			POSCOUTE , POSCNOST , OTI      , rmd      , routen   , rout0    ;
+	output		dump0    , dump1    , dump2    , dump3    , dump4    , dump5    ,
+			dump6    , dump7    , dumpe0   , dumpe1   , exdumpmd , TPIDSEL  ;
+	output		seltp_t  , seltp_r  , seltp_b  , seltp_l  ;
+//	output	[9:0]	tout     ;
+	output	[15:0]	dout_tsc0, dout_tsc1, dout_tout, dout_staytes5, dout_staytesa;
+
+	// --- clamp signals
+//	output		MMCLAMPH0, MMCLAMPH1, MMCLAMPH2, MMCLAMPH3, MMCLAMPH4,
+//			MMCLAMPL0, MMCLAMPL1, MMCLAMPL2, MMCLAMPL3, MMCLAMPL4;
+
+        output  [3:0]   tout_4bit ;             // v1.3 add
+        output          tout_1bit ;             // v1.3 add
+        output          optad1bit, optad4bit ;  // v1.3 add
+	output		bbtesscan_or ;		// v1.3 add
+	output		tesdbt2 ;		// v1.3 add
+
+QLK0RMODECTL2V1_MAIN	modectl_main (
+		.pocrel(POCREL)     , .treset(TRESET)     , .resetinb(RESETINBNF), .resetb(RESETB)    ,
+		.resb(RESB)         , .nsresb(NSRESB)     , .pocrel2(POCREL2)   , .peresetz(PERESETZ) ,
+		.we_tctl0(we_tctl0) , .we_tctl1(we_tctl1) , .we_tout(we_tout)   ,
+		.we_staytes5(we_staytes5), .we_staytesa(we_staytesa),
+		.peclk(BASECK)      , .baseck(BASECK)     , .tmdenclk(TMDENCLK) , .tesinstid(TESINSTID),
+		.bbmode(BBMODE)     , .primod(PRIMODIN)   , .uti(UTI)           , 
+		.crc0en(crc0en)     , .seltaf_u(seltaf_u) ,
+		.rngin6(RNGIN6)     , .rngin5(RNGIN5)     , .rngin4(RNGIN4)     , .rngin3(RNGIN3)    , 
+		.rngin2(RNGIN2)     , .rngin1(RNGIN1)     , .rngin0(RNGIN0)     ,
+		.routsrc( { ROUTSRC15 , ROUTSRC14 , ROUTSRC13 , ROUTSRC12 , ROUTSRC11 , ROUTSRC10 ,
+			    ROUTSRC9  , ROUTSRC8  , ROUTSRC7  , ROUTSRC6  , ROUTSRC5  , ROUTSRC4  ,
+			    ROUTSRC3  , ROUTSRC2  , ROUTSRC1  , rout0_p } ),
+		.x2din(X2DIN)       , .c3hff(C3HFF)       , .sbrk_resf_only(SBRFONLY), .tool0(RXOCD)       ,
+		.vpphvmod(vpphvmod) , .testmod(TESTMOD)   , .gofirm_p(gofirm_p) , .scanmode(SCANMODE) , 
+		.tesscan1(TESSCAN1) , .tesscan2(TESSCAN2) , .tesscan3(TESSCAN3) , .tesscan4(TESSCAN4) ,
+		.bbtesinst(BBTESINST), .flmemtes(FLMEMTES), .optbct_p(optbct_p) , .optmdump_p(optmdump_p),
+		.tesinst(TESINST)   , .tesusr(TESUSR)     , .tesdbt(TESDBT)     , .testrmrd(TESTRMRD) ,
+		.optflmem(OPTFLMEM) , .optram(OPTRAM)     , .optiddq(OPTIDDQ)   , .optexcck(OPTEXCCK) , 
+		.optoplrd(OPTOPLRD) , .optbct(OPTBCT)     , .optdfl(OPTDFL)     , .optmdump(OPTMDUMP) , 
+		.selcfecc(selcfecc) , .incdecen(incdecen) , .rammulti(RAMMULTI) , .fmultien(FMULTIEN) ,
+		.vceqoen(VCEQOEN)   , .optlfsr(optlfsr)   , .mdlycut(MDLYCUT)   , .raedis(RAEDIS)     ,
+		.sleccoff(SLECCOFF) , .seltar(SELTAR)     , .seltaf(SELTAF)     , .seltadf(SELTADF)   ,
+		.staytes(STAYTES)   , .rout0(rout0)       , .tpidsel(TPIDSEL)   , 
+		.dump0(dump0)       , .dump1(dump1)       , .dump2(dump2)       , .dump3(dump3)       , 
+		.dump4(dump4)       , .dump5(dump5)       , .dump6(dump6)       , .dump7(dump7)       , 
+		.dumpe0(dumpe0)     , .dumpe1(dumpe1)     , .exdumpmd(exdumpmd) , .routen(routen)     ,
+		.poscoute(POSCOUTE) , .poscnost(POSCNOST) , .oti(OTI)           , .rmd(rmd)           ,
+		.seltp_t(seltp_t)   , .seltp_r(seltp_r)   , .seltp_b(seltp_b)   , .seltp_l(seltp_l)   ,
+                .din(din)           , .dout_tsc0(dout_tsc0), .dout_tsc1(dout_tsc1), .dout_tout(dout_tout),
+		.dout_staytes5(dout_staytes5), .dout_staytesa(dout_staytesa),
+		.tout_4bit(tout_4bit), .tout_1bit(tout_1bit), .optad1bit(optad1bit), .optad4bit(optad4bit),
+		.tesdbt2(tesdbt2)   , .bbtesscan_or(bbtesscan_or),
+		.gofirmr_p(gofirmr_p)
+		,.TRAPINP(TRAPINP)
+		);
+
+// delete in Macro Ver1.20
+//QLK0RMODECTL2V1_CLAMP	modectl_clamp (
+//		.baseck(BASECK)      , .resb(RESB)          , .scanmode(SCANMODE)  ,
+//		.mmclamph0(MMCLAMPH0), .mmclamph1(MMCLAMPH1), .mmclamph2(MMCLAMPH2), .mmclamph3(MMCLAMPH3),
+//		.mmclamph4(MMCLAMPH4),
+//		.mmclampl0(MMCLAMPL0), .mmclampl1(MMCLAMPL1), .mmclampl2(MMCLAMPL2), .mmclampl3(MMCLAMPL3),
+//		.mmclampl4(MMCLAMPL4) 
+//		);
+
+endmodule				// TEST_TOP MODULE END
+
+// =====================================================================================
+//  USER_TOP MODULE START  
+// =====================================================================================
+module QLK0RMODECTL2V1_USERTOP (
+			pocrel2  , resetinb , resb     , baseck   , tesdbt   , tesinst  , testmod  ,
+			optmdump , optram   , optflmem , optdfl   , optlfsr  , tpidsel  ,
+			raedis   , rammulti , selcfecc , incdecen , routen   , vceqoen  ,
+			we_pgch  , we_pgcl  , we_lfsd  , we_cctl  , stbrele  , hltst    ,
+			incdec2  , incdec1  , incdec0  , crcouten , rameccer , eccer    , deccer   , vceq     ,
+			mdr15    , mdr14    , mdr13    , mdr12    , mdr11    , mdr10    , mdr9     , mdr8     ,
+			mdr7     , mdr6     , mdr5     , mdr4     , mdr3     , mdr2     , mdr1     , mdr0     ,
+			eiramo7  , eiramo6  , eiramo5  , eiramo4  , eiramo3  , eiramo2  , eiramo1  , eiramo0  ,
+			rmultio23, rmultio22, rmultio21, rmultio20, rmultio19, rmultio18, rmultio17, rmultio16,
+			rmultio15, rmultio14, rmultio13, rmultio12, rmultio11, rmultio10, rmultio9 , rmultio8 ,
+			rmultio7 , rmultio6 , rmultio5 , rmultio4 , rmultio3 , rmultio2 , rmultio1 , rmultio0 ,
+			flro37   , flro36   , flro35   , flro34   , flro33   , flro32   ,
+			flro31   , flro30   , flro29   , flro28   , flro27   , flro26   , flro25   , flro24   ,
+			flro23   , flro22   , flro21   , flro20   , flro19   , flro18   , flro17   , flro16   ,
+			flro15   , flro14   , flro13   , flro12   , flro11   , flro10   , flro9    , flro8    ,
+			flro7    , flro6    , flro5    , flro4    , flro3    , flro2    , flro1    , flro0    ,
+			dflro11  , dflro10  , dflro9   , dflro8   ,
+			dflro7   , dflro6   , dflro5   , dflro4   , dflro3   , dflro2   , dflro1   , dflro0   ,
+			dump0    , dump1    , dump2    , dump3    , dump4    , dump5    , dump6    , dump7    , 
+			dumpe0   , dumpe1   , din      , addrin   ,
+
+			ta17     , ta16     , 
+			ta15     , ta14     , ta13     , ta12     , ta11     , ta10     , ta9      , ta8      , 
+			ta7      , ta6      , ta5      , ta4      , ta3      , ta2      , ta1      , ta0      ,
+			moderd   , modewr   , incdecws1, incdecws0, modenop  , modefnop ,
+			crc0en   , crchlten , incdecmd , lfsscain , lfsscaen , lfssresz , seltaf_u ,
+			rout0_p  , rout1_p  , exrout   , dout_pgcl, dout_pgch, dout_lfsd, dout_cctl, SCANMODE
+
+		) ;
+
+	input		pocrel2  , resetinb , resb     , baseck   , tesdbt   , tesinst  , testmod ;
+	input		optmdump , optram   , optflmem , optdfl   , optlfsr  , tpidsel  ,
+			raedis   , rammulti , selcfecc , incdecen , routen   , vceqoen  ;
+	input		we_pgch  , we_pgcl  , we_lfsd  , we_cctl  ;
+	input		stbrele  , hltst    ;
+
+	input		incdec2  , incdec1  , incdec0  , crcouten ;		// Control from TestPort
+	input		rameccer , eccer    , deccer   , vceq     ;		// from CIB/FCB 
+
+	// Flash/RAM Read data 
+	input		mdr15    , mdr14    , mdr13    , mdr12    , mdr11    , mdr10    , mdr9     , mdr8     ,
+			mdr7     , mdr6     , mdr5     , mdr4     , mdr3     , mdr2     , mdr1     , mdr0     ,
+			eiramo7  , eiramo6  , eiramo5  , eiramo4  , eiramo3  , eiramo2  , eiramo1  , eiramo0  ;
+	input		rmultio23, rmultio22, rmultio21, rmultio20, rmultio19, rmultio18, rmultio17, rmultio16,
+			rmultio15, rmultio14, rmultio13, rmultio12, rmultio11, rmultio10, rmultio9 , rmultio8 ,
+			rmultio7 , rmultio6 , rmultio5 , rmultio4 , rmultio3 , rmultio2 , rmultio1 , rmultio0 ;
+	input		flro37   , flro36   , flro35   , flro34   , flro33   , flro32   ;
+	input		flro31   , flro30   , flro29   , flro28   , flro27   , flro26   , flro25   , flro24   ,
+			flro23   , flro22   , flro21   , flro20   , flro19   , flro18   , flro17   , flro16   ,
+			flro15   , flro14   , flro13   , flro12   , flro11   , flro10   , flro9    , flro8    ,
+			flro7    , flro6    , flro5    , flro4    , flro3    , flro2    , flro1    , flro0    ;
+	input		dflro11  , dflro10  , dflro9   , dflro8   ,
+			dflro7   , dflro6   , dflro5   , dflro4   , dflro3   , dflro2   , dflro1   , dflro0   ;
+	input		dump0    , dump1    , dump2    , dump3    , dump4    , dump5    , dump6    , dump7    , 
+			dumpe0   , dumpe1   ; 
+
+	input	[17:0]	addrin   ;
+	input	[15:0]	din      ;
+
+	input		SCANMODE ;	// v1.3 add
+
+	output		ta17     , ta16     , 
+			ta15     , ta14     , ta13     , ta12     , ta11     , ta10     , ta9      , ta8      , 
+			ta7      , ta6      , ta5      , ta4      , ta3      , ta2      , ta1      , ta0      ;
+	output		moderd   , modewr   , incdecws1, incdecws0, modenop  , modefnop ;
+	output		crc0en   , crchlten , incdecmd ;
+	output		lfsscain , lfsscaen , lfssresz ;
+	output		seltaf_u ;
+	output		rout0_p  , rout1_p  ;
+	output	[3:0]	exrout   ;
+	output	[15:0]	dout_pgcl , dout_pgch , dout_lfsd  ,dout_cctl ;
+
+	wire		modefrd  ;
+	wire		crcusrst , baseckcrc ;
+	wire	[16:0]	lfsra    ;
+
+
+QLK0RMODECTL2V1_INCDEC	modectl_incdec (
+		.baseck(baseck)    , .resb(resb)         , .tesdbt(tesdbt)      , .tesinst(tesinst)    ,
+		.incdec2(incdec2)  , .incdec1(incdec1)   , .incdec0(incdec0)    , .incdecen(incdecen)  ,
+		.optram(optram)    , .optflmem(optflmem) , .optdfl(optdfl)      , .testmod(testmod)    ,
+		.we_cctl(we_cctl)  , .stbrele(stbrele)   , .hltst(hltst)        ,
+		.addrin(addrin)    , .lfsra(lfsra)       , .din(din)            ,
+		.moderd(moderd)    , .modewr(modewr)     , .incdecws1(incdecws1), .incdecws0(incdecws0),
+		.modenop(modenop)  , .modefrd(modefrd)   , .modefnop(modefnop)  ,
+		.ta17(ta17)	   , .ta16(ta16)         ,
+		.ta15(ta15)        , .ta14(ta14)         , .ta13(ta13)          , .ta12(ta12)          ,
+		.ta11(ta11)        , .ta10(ta10)         , .ta9(ta9)            , .ta8(ta8)            ,
+		.ta7(ta7)          , .ta6(ta6)           , .ta5(ta5)            , .ta4(ta4)            ,
+		.ta3(ta3)          , .ta2(ta2)           , .ta1(ta1)            , .ta0(ta0)            ,
+		.crc0en(crc0en)    , .crcusrst(crcusrst) , .crchlten(crchlten)  , .seltaf_u(seltaf_u)  , 
+		.incdecmd(incdecmd), .dout_cctl(dout_cctl), .baseckcrc(baseckcrc)
+		);
+
+
+QLK0RMODECTL2V1_PGCRC	modectl_pgcrc (
+		.pocrel2(pocrel2)    , .resetinb(resetinb)  , .baseck(baseckcrc)   , .resb(resb)          ,
+		.tesdbt(tesdbt)      , .tesinst(tesinst)    , .optmdump(optmdump)  , .optram(optram)      , 
+		.optflmem(optflmem)  , .optdfl(optdfl)      , .optlfsr(optlfsr)    ,
+		.raedis(raedis)      , .rammulti(rammulti)  , .selcfecc(selcfecc)  , .tpidsel(tpidsel)    ,
+		.modenop(modenop)    , .moderd(moderd)      , .modefrd(modefrd)    , 
+		.rameccer(rameccer)  , .eccer(eccer)        , .deccer(deccer)      , .vceq(vceq)          ,  
+		.routen(routen)      , .incdecen(incdecen)  , .crcouten(crcouten)  , .vceqoen(vceqoen)    , 
+		.crc0en(crc0en)      , .crcusrst(crcusrst)  ,
+		.we_pgch(we_pgch)    , .we_pgcl(we_pgcl)    , .we_lfsd(we_lfsd)    ,
+		.mdr15(mdr15)        , .mdr14(mdr14)        , .mdr13(mdr13)        , .mdr12(mdr12)        ,
+		.mdr11(mdr11)        , .mdr10(mdr10)        , .mdr9(mdr9)          , .mdr8(mdr8)          ,
+		.mdr7(mdr7)          , .mdr6(mdr6)          , .mdr5(mdr5)          , .mdr4(mdr4)          ,
+		.mdr3(mdr3)          , .mdr2(mdr2)          , .mdr1(mdr1)          , .mdr0(mdr0)          ,
+		.eiramo7(eiramo7)    , .eiramo6(eiramo6)    , .eiramo5(eiramo5)    , .eiramo4(eiramo4)    ,
+		.eiramo3(eiramo3)    , .eiramo2(eiramo2)    , .eiramo1(eiramo1)    , .eiramo0(eiramo0)    ,
+		.rmultio23(rmultio23), .rmultio22(rmultio22), .rmultio21(rmultio21), .rmultio20(rmultio20),
+		.rmultio19(rmultio19), .rmultio18(rmultio18), .rmultio17(rmultio17), .rmultio16(rmultio16),
+		.rmultio15(rmultio15), .rmultio14(rmultio14), .rmultio13(rmultio13), .rmultio12(rmultio12),
+		.rmultio11(rmultio11), .rmultio10(rmultio10), .rmultio9(rmultio9)  , .rmultio8(rmultio8)  ,
+		.rmultio7(rmultio7)  , .rmultio6(rmultio6)  , .rmultio5(rmultio5)  , .rmultio4(rmultio4)  ,
+		.rmultio3(rmultio3)  , .rmultio2(rmultio2)  , .rmultio1(rmultio1)  , .rmultio0(rmultio0)  ,
+		.flro37(flro37)      , .flro36(flro36)      , .flro35(flro35)      , .flro34(flro34)      ,
+		.flro33(flro33)      , .flro32(flro32)      ,
+		.flro31(flro31)      , .flro30(flro30)      , .flro29(flro29)      , .flro28(flro28)      ,
+		.flro27(flro27)      , .flro26(flro26)      , .flro25(flro25)      , .flro24(flro24)      ,
+		.flro23(flro23)      , .flro22(flro22)      , .flro21(flro21)      , .flro20(flro20)      ,
+		.flro19(flro19)      , .flro18(flro18)      , .flro17(flro17)      , .flro16(flro16)      ,
+		.flro15(flro15)      , .flro14(flro14)      , .flro13(flro13)      , .flro12(flro12)      ,
+		.flro11(flro11)      , .flro10(flro10)      , .flro9(flro9)        , .flro8(flro8)        ,
+		.flro7(flro7)        , .flro6(flro6)        , .flro5(flro5)        , .flro4(flro4)        ,
+		.flro3(flro3)        , .flro2(flro2)        , .flro1(flro1)        , .flro0(flro0)        ,
+		.dflro11(dflro11)    , .dflro10(dflro10)    , .dflro9(dflro9)      , .dflro8(dflro8)      ,
+		.dflro7(dflro7)      , .dflro6(dflro6)      , .dflro5(dflro5)      , .dflro4(dflro4)      ,
+		.dflro3(dflro3)      , .dflro2(dflro2)      , .dflro1(dflro1)      , .dflro0(dflro0)      ,
+		.dump0(dump0)        , .dump1(dump1)        , .dump2(dump2)        , .dump3(dump3)        , 
+		.dump4(dump4)        , .dump5(dump5)        , .dump6(dump6)        , .dump7(dump7)        , 
+		.dumpe0(dumpe0)      , .dumpe1(dumpe1)      ,
+		.din(din)	     ,
+		.lfsscain(lfsscain)  , .lfsscaen(lfsscaen)  , .lfssresz(lfssresz)  , .lfsra(lfsra)        ,
+		.rout0_p(rout0_p)    , .rout1_p(rout1_p)    , .exrout(exrout)      ,
+		.dout_pgcl(dout_pgcl), .dout_pgch(dout_pgch), .dout_lfsd(dout_lfsd), .scanmode(SCANMODE) 
+		);
+
+endmodule			// USER_TOP MODULE END    
+
+
+// =====================================================================================
+//
+// ³Æ¼ï¥â¡¼¥É¿®¹æ¡¢À©¸æ¿®¹æÀ¸À®Éô
+//
+// =====================================================================================
+module QLK0RMODECTL2V1_MAIN (
+	//	input
+			pocrel   , pocrel2  , treset   , resetinb , resetb   , resb     , nsresb  ,
+			we_tctl0 , we_tctl1 , we_tout  , we_staytes5, we_staytesa,
+			peclk    , peresetz , baseck   , tmdenclk , tesinstid,
+			bbmode   , primod   , uti      , crc0en   , seltaf_u ,
+			rngin6   , rngin5   , rngin4   , rngin3   , rngin2   , rngin1   , 
+			rngin0   , routsrc  , x2din    , c3hff    , sbrk_resf_only, tool0    ,
+	//	output
+			vpphvmod , testmod  , gofirm_p , gofirmr_p,
+			scanmode , tesscan1 , tesscan2 , tesscan3 , tesscan4 , bbtesinst,
+			tesinst  , tesusr   , tesdbt   , testrmrd , flmemtes , optbct_p , optmdump_p,
+			optflmem , optram   , optiddq  , optexcck , optoplrd , optbct   , optdfl   ,
+			optmdump , selcfecc , incdecen , rammulti , fmultien , vceqoen  , optlfsr  , 
+			mdlycut  , raedis   , sleccoff , seltar   , seltaf   , seltadf  , staytes  ,
+			dump0    , dump1    , dump2    , dump3    , dump4    , dump5    , dump6    , 
+			dump7    , dumpe0   , dumpe1   , exdumpmd , tpidsel  ,
+			poscoute , poscnost , oti      , rmd      , routen   , rout0    ,
+			seltp_t  , seltp_r  , seltp_b  , seltp_l  ,
+			tout_4bit, tout_1bit, optad1bit, optad4bit,
+			tesdbt2  , bbtesscan_or ,
+	//	bus
+			din      , dout_tsc0, dout_tsc1, dout_tout,
+			dout_staytes5, dout_staytesa
+
+	// v1.40 added
+			,TRAPINP
+	      ) ;
+
+	input		TRAPINP ;	// v1.40
+
+	input		pocrel   , pocrel2  , treset   , resetinb , resetb   , resb     , 
+			nsresb   ;
+	input		we_tctl0 , we_tctl1 , we_tout  , we_staytes5, we_staytesa ;
+	input		peclk    , peresetz , baseck   , tmdenclk ;
+	input		tesinstid, bbmode   , primod   , tool0    ; 
+	input		uti      , rngin6   , rngin5   , rngin4   , rngin3   ,
+			rngin2   , rngin1   , rngin0   ;
+	input		crc0en   , seltaf_u ;
+	input		x2din    , c3hff    , sbrk_resf_only ;
+	input	[15:0]	routsrc  ;
+
+	output		vpphvmod , testmod  , gofirm_p ;
+	output		gofirmr_p ;					// v1.3 add
+	output		scanmode , tesscan1 , tesscan2 , tesscan3 , tesscan4 , bbtesinst;
+	output		tesinst  , tesusr   , tesdbt   , testrmrd ;
+	output		optflmem , optram   , optiddq  , optexcck , optoplrd , 
+			optbct   , optdfl   , flmemtes , optbct_p , optmdump_p;
+	output		optmdump , selcfecc , incdecen , rammulti , fmultien ,
+			vceqoen  , optlfsr  , mdlycut  , raedis   , sleccoff ;
+	output		seltar   , seltaf   , seltadf  , staytes  ;
+	output		dump0    , dump1    , dump2    , dump3    , dump4    , 
+			dump5    , dump6    , dump7    , dumpe0   , dumpe1   , 
+			exdumpmd , tpidsel  ;
+	output		poscoute , poscnost ;
+	output		rmd      , routen   , oti      , rout0    ;
+	output		seltp_t  , seltp_r  , seltp_b  , seltp_l  ;
+//	output	[9:0]	tout     ;
+
+	input 	[15:0]	din      ;
+	output	[15:0]	dout_tsc0, dout_tsc1, dout_tout, dout_staytes5, dout_staytesa;
+
+	wire		trmsel2  , trmsel1  , trmsel0  ;
+	wire		staytes  , rnghalf1 , rnghalf0 , primd_pre2;
+	wire		oscouten_p1 ;
+	wire		staytesbb ;		// v1.3 add
+ 
+	output	[3:0]	tout_4bit ;		// v1.3 add
+	output		tout_1bit ;		// v1.3 add
+	output		optad1bit, optad4bit ;	// v1.3 add
+
+	output		tesdbt2 ;		// v1.3 add
+	output		bbtesscan_or ;		// v1.3 add
+
+QLK0RMODECTL2V1_REG1 test_reg1 ( 
+		.resetb(resetb)        , .peresetz(peresetz)   , .peclk(peclk)        ,
+		.we_tctl0(we_tctl0)    , .we_staytes5(we_staytes5), .we_staytesa(we_staytesa), 
+		.tesinst(tesinst)      , .tesinstid(tesinstid) , .bbtesinst(bbtesinst), .flmemtes(flmemtes)  ,
+		.scanmode(scanmode)    , .tesusr(tesusr)       , .tesdbt(tesdbt)      , .testmod(testmod)    ,
+		.tesscan1(tesscan1)    , .tesscan2(tesscan2)   , .tesscan3(tesscan3)  , .tesscan4(tesscan4)  ,
+		.primd_pre2(primd_pre2), .crc0en(crc0en)       , .seltaf_u(seltaf_u)  , .din(din)            ,
+		.optflmem(optflmem)    , .optram(optram)       , .optiddq(optiddq)    , .optexcck(optexcck)  , 
+		.optoplrd(optoplrd)    , .optbct(optbct)       , .optdfl(optdfl)      , .optmdump(optmdump)  ,
+		.selcfecc(selcfecc)    , .incdecen(incdecen)   , .rammulti(rammulti)  , .fmultien(fmultien)  ,
+		.vceqoen(vceqoen)      , .optlfsr(optlfsr)     , .mdlycut(mdlycut)    , .poscnost(poscnost)  ,
+ 		.raedis(raedis)        , .sleccoff(sleccoff)   , .seltar(seltar)      , .seltaf(seltaf)      ,
+		.seltadf(seltadf)      , .staytes(staytes)     , .dout_tsc0(dout_tsc0), .optbct_p(optbct_p)  ,
+		.dout_staytes5(dout_staytes5), .dout_staytesa(dout_staytesa)          , .optmdump_p(optmdump_p),
+		.optad1bit(optad1bit)  , .optad4bit(optad4bit) ,
+		.staytesbb(staytesbb)  , .bbmode(bbmode)
+		) ;
+
+QLK0RMODECTL2V1_REG2 test_reg2 ( 
+		.peresetz(peresetz)  , .peclk(peclk)        , .we_tctl1(we_tctl1) , .we_tout(we_tout)   ,
+		.routsrc(routsrc)    , .tesinstid(tesinstid),
+		.dump0(dump0)        , .dump1(dump1)        , .dump2(dump2)       , .dump3(dump3)     , 
+		.dump4(dump4)        , .dump5(dump5)        , .dump6(dump6)       , .dump7(dump7)     , 
+		.dumpe0(dumpe0)      , .dumpe1(dumpe1)      , .exdumpmd(exdumpmd) ,
+		.rnghalf1(rnghalf1)  , .rnghalf0(rnghalf0)  ,
+		.trmsel2(trmsel2)    , .trmsel1(trmsel1)    , .trmsel0(trmsel0)   , .tpidsel(tpidsel)   ,
+		.rout0(rout0)        , .rmd(rmd)           , .routen(routen)     ,
+		.din(din)            , .dout_tsc1(dout_tsc1), .dout_tout(dout_tout) ,
+		.poscoute(poscoute)  , .oscouten_p1(oscouten_p1),
+		.tout_4bit(tout_4bit), .tout_1bit(tout_1bit), .optad1bit(optad1bit), .optad4bit(optad4bit),
+		.bbtesinst(bbtesinst)
+		) ;
+
+QLK0RMODECTL2V1_MODE test_mode (
+		.treset(treset)    , .resetinb(resetinb), .resetb(resetb)    , .pocrel(pocrel)      , .pocrel2(pocrel2) ,
+		.resb(resb)        , .nsresb(nsresb)    ,
+		.tmdenclk(tmdenclk), .primod(primod)    , 
+		.staytes(staytes)  , .bbmode(bbmode)    , .x2din(x2din)      , .c3hff(c3hff)        , .sbrk_resf_only(sbrk_resf_only), 
+		.tool0(tool0)      , .vpphvmod(vpphvmod), .testmod(testmod)  , .primd_pre2(primd_pre2) ,
+		.scanmode(scanmode), .tesscan1(tesscan1), .tesscan2(tesscan2), .tesscan3(tesscan3)  , .tesscan4(tesscan4),
+ 		.bbtesinst(bbtesinst) ,
+		.tesinst(tesinst)  , .tesusr(tesusr)    , .tesdbt(tesdbt)    , .testrmrd(testrmrd)  , .gofirm_p(gofirm_p), 
+		.gofirmr_p(gofirmr_p),
+		.seltp_t(seltp_t)  , .seltp_r(seltp_r)  , .seltp_b(seltp_b)  , .seltp_l(seltp_l)    ,
+		.tesdbt2(tesdbt2)  , .bbtesscan_or(bbtesscan_or),
+		.staytesbb(staytesbb)
+		,.TRAPINP(TRAPINP)
+		) ;
+
+QLK0RMODECTL2V1_TRMSEL test_trm ( 
+		.resb(resb)        , .tesinst(tesinst)  , .rnghalf1(rnghalf1), .rnghalf0(rnghalf0),
+		.uti(uti)	   , .rngin6(rngin6)    , .rngin5(rngin5)    , .rngin4(rngin4)    ,
+		.rngin3(rngin3)	   , .rngin2(rngin2)    , .rngin1(rngin1)    , .rngin0(rngin0)    ,
+		.trmsel2(trmsel2)  , .trmsel1(trmsel1)  , .trmsel0(trmsel0)  ,
+		.oti(oti)	   , .oscouten_p1(oscouten_p1)
+		) ;
+
+endmodule				// MAIN_module END
+
+
+module QLK0RMODECTL2V1_REG1 (
+			resetb      , peresetz    , peclk     , we_tctl0  ,
+			we_staytes5 , we_staytesa ,
+			tesinst     , tesinstid   , bbtesinst , tesusr    , tesdbt    , testmod ,
+			tesscan1    , tesscan2    , tesscan3  , tesscan4  , scanmode  , optmdump_p,
+			primd_pre2  , crc0en      , seltaf_u  , din       , flmemtes  , optbct_p ,
+			optflmem    , optram      , optiddq   , optexcck  , optoplrd  , optbct   , optdfl  ,  
+			optmdump    , selcfecc    , incdecen  , rammulti  , fmultien  , vceqoen  , optlfsr ,
+			mdlycut     , poscnost    , raedis    , sleccoff  , seltar    , seltaf   , seltadf , 
+			staytes     , dout_tsc0   , dout_staytes5, dout_staytesa,
+			optad1bit   , optad4bit   ,
+			bbmode      , staytesbb
+			) ;
+
+	input		resetb     , peresetz  ;
+
+	input		we_tctl0   , we_staytes5, we_staytesa;
+	input		peclk      ;
+	input		tesinst    , tesinstid , bbtesinst , tesusr   , tesdbt    , testmod  ;
+	input		tesscan1   , tesscan2  , tesscan3  , tesscan4 , scanmode  ;
+	input		primd_pre2 ;
+	input		crc0en     , seltaf_u  ;
+	input	[15:0]	din        ;
+	input		bbmode     ;		// v1.3 add
+
+	output		optflmem   , optram    , optiddq   , optexcck  , optoplrd , 
+			optbct     , optdfl    , flmemtes  , optbct_p  , optmdump_p ;
+	output		optmdump   , selcfecc  , incdecen  , rammulti  , fmultien ,
+			vceqoen    , optlfsr   , mdlycut   , poscnost  , raedis   , sleccoff ;
+	output		seltar     , seltaf    , seltadf   , staytes   ;
+	output		staytesbb ;		// v1.3 add
+
+	output	[15:0]	dout_tsc0  , dout_staytes5 , dout_staytesa ;
+
+	output		optad1bit, optad4bit ;	// v1.3 add
+
+	reg	[7:0]	tsf0       ;		// v1.3 mod
+	reg	[3:0]	tsf0_insopt;		// v1.3 mod
+	reg		optflmem   , optram    , optiddq_pp , optexcck  , optoplrd , optbct_p  , 
+			optdfl     , bboptiddq ;
+	reg	[7:0]	staytes5_reg, staytesa_reg;
+
+	reg		optad1bit, optad4bit ;	// v1.3 add
+
+	wire		instprez   , bbresb   ;
+	wire		insopt3    , insopt2    , insopt1  , insopt0   , staytes_res ;
+	wire		optiddq_p  , mdlyon   , mmulti_p  , memedis_p    ;
+	wire	[7:0]	din_msk    ;
+
+// ¥Æ¥¹¥È¥³¥ó¥È¥í¡¼¥ë¡¦¥ì¥¸¥¹¥¿£°(TSCTL0)
+//
+// ¥¢¥É¥ì¥¹¤ÏF0700H¸ÇÄê¤Ç¤¢¤ë¡£
+//
+// +======+=============================================+===============+
+// | Bit  |		  Contents			|   Name	|
+// +======+=============================================+===============+
+// +------+---------------------------------------------+---------------+
+// +======+=============================================+===============+
+
+	assign  instprez = tesinstid & peresetz ;   // tesinstid¥â¡¼¥É¤Î¤ßÍ­¸ú
+//	assign  instresetb = tesinstid & resetb ;     // tesinstid¥â¡¼¥É¤Î¤ßÍ­¸ú
+	assign  bbresb   = bbtesinst & peresetz ;   // bbtesinst¥â¡¼¥É¤Î¤ßÍ­¸ú
+
+//
+// v1.3 add reset
+//
+	wire	binstprez, binstresetb ;
+
+	assign  binstprez   = ( tesinstid | bbtesinst ) & peresetz ;	// tesinst or bbtesinst 
+	assign  binstresetb = ( tesinstid | bbtesinst ) & resetb ;	// tesinst or bbtesinst
+
+//
+// v1.3 add HOLD BUFF
+//
+        wire    optlfsr_p ;
+
+        QLK0RMODECTL2V1_HOLDDLY2  optlfsr_holdbuf   ( .in1(optlfsr_p), .out1(optlfsr) );
+
+//
+// v1.3 mod tsf0 register, use optexcck, optad1bit, optad4bit at bbtesinst
+//
+	//synopsys async_set_reset "instprez"
+	always @(posedge peclk or negedge instprez) begin
+		if      ( !instprez ) tsf0 <= 8'b0 ;
+		else if (  we_tctl0 ) tsf0 <= { din[15:11], din[6:4] } ;
+	end
+
+        //synopsys async_set_reset "binstprez"
+        always @(posedge peclk or negedge binstprez) begin
+                if      ( !binstprez) tsf0_insopt <= 4'b0 ;
+                else if (  we_tctl0 ) tsf0_insopt <= din[3:0] ;
+        end
+
+	assign optmdump_p =  tsf0[7] 			; // TSF0 15
+	assign selcfecc   =  tsf0[6] 			; // TSF0 14
+	assign incdecen   =  tsf0[5] 			; // TSF0 13
+	assign mmulti_p   =  tsf0[4] 			; // TSF0 12
+	assign vceqoen	  =  tsf0[3]			; // TSF0 11
+	assign optlfsr_p  =  tsf0[2] 			; // TSF0 6
+	assign mdlyon     =  tsf0[1] 			; // TSF0 5
+	assign memedis_p  =  tsf0[0] 			; // TSF0 4
+
+	assign insopt3    =  tsf0_insopt[3] 		; // TSF0 3
+	assign insopt2    =  tsf0_insopt[2] 		; // TSF0 2
+	assign insopt1    =  tsf0_insopt[1] 		; // TSF0 1
+	assign insopt0    =  tsf0_insopt[0]  		; // TSF0 0
+
+
+	//synopsys async_set_reset "bbresb"
+	always @(posedge peclk or negedge bbresb) begin
+		if      ( !bbresb   ) bboptiddq <= 1'b0   ;
+		else if (  we_tctl0 ) bboptiddq <= din[7] ;
+	end
+
+	assign dout_tsc0 = { optmdump_p , selcfecc  , incdecen   , mmulti_p   , vceqoen  , 3'b000    ,
+			     bboptiddq  , optlfsr_p , mdlyon     , memedis_p  ,
+			     insopt3    , insopt2   , insopt1    , insopt0    };
+
+// STAYTES¥ì¥¸¥¹¥¿½ñ¤­¹þ¤ß¥Ç¡¼¥¿¥Þ¥¹¥¯
+//
+	assign din_msk = primd_pre2 ?  din[7:0] : 8'b0 ;
+
+//
+// v1.3 mod staytes register reset
+//
+//      instresetb --> binstresetb, for bbtesinst
+//
+
+// STAYTES5¡¦¥ì¥¸¥¹¥¿(STAYTES5)
+//
+	//synopsys async_set_reset "binstresetb"
+	always @(posedge peclk or negedge binstresetb) begin
+		if      ( !binstresetb ) staytes5_reg <= 8'h0a ;
+		else if (  we_staytes5 ) staytes5_reg <= din_msk[7:0] ;
+	end
+
+	assign dout_staytes5 = { 8'b0 , staytes5_reg } ;
+
+// STAYTESA¡¦¥ì¥¸¥¹¥¿(STAYTESA)
+//
+	//synopsys async_set_reset "binstresetb"
+	always @(posedge peclk or negedge binstresetb) begin
+		if      ( !binstresetb ) staytesa_reg <= 8'h05 ;
+		else if (  we_staytesa ) staytesa_reg <= din_msk[7:0] ;
+	end
+
+	assign dout_staytesa = { 8'b0 , staytesa_reg } ;
+
+// STAYTES¿®¹æ¤ÎÄÉ²Ã
+//
+//	assign staytes   = ( staytes5_reg == 8'h05 ) & ( staytesa_reg == 8'h0a ) & ~( scanmode | tesusr | tesdbt ) ;
+//
+// v1.3 add staytesbb
+//
+	wire   staytes_org, staytesbb ;
+
+	assign staytes_org  = ( staytes5_reg == 8'h05 ) & ( staytesa_reg == 8'h0a ) & ~( scanmode | tesusr | tesdbt ) ;
+	assign staytesbb    = ( staytes5_reg == 8'h06 ) & ( staytesa_reg == 8'h09 ) & ~( scanmode | tesusr | tesdbt ) & bbmode ;
+
+	assign staytes = staytes_org | staytesbb ;
+
+// ----------------------------------------------------------------
+//  ¥Î¥¤¥º¥Õ¥£¥ë¥¿À©¸æ¿®¹æ"MDLYCUT"À¸À®
+//  OPTFLMEM=0
+//  mdlyon=1 : MAIN-OSC ¥Î¥¤¥º¥Õ¥£¥ë¥¿ = ON
+//  mdlyon=0 : MAIN-OSC ¥Î¥¤¥º¥Õ¥£¥ë¥¿ = OFF
+// ----------------------------------------------------------------
+
+	assign	mdlycut = ~( ~optflmem & mdlyon ) & testmod ;
+
+// ----------------------------------------------------------------
+//  FLOSCÀ©¸æ Pre¿®¹æ"POSCNOST"À¸À®
+//  OPTFLMEM=1
+//   mdlyon=1 : Pre-OSCNOSTP = H ( FLOSC Monitor Mode)
+//   mdlyon=0 : Pre-OSCNOSTP = L
+// ----------------------------------------------------------------
+
+	assign	poscnost = optflmem & mdlyon & testmod ;
+
+// ----------------------------------------------------------------
+// OPTIDDQ¿®¹æ¤ÎÀ¸À®
+//   SCAN¥â¡¼¥É»þ¤ÏIDDQ¿®¹æ¤ò¥¢¥¯¥Æ¥£¥Ö¤Ë¤¹¤ë
+// ----------------------------------------------------------------
+
+	assign	optiddq =  testmod &
+			 ( optiddq_p | ( tesscan1 & !tesdbt ) | tesscan2 | tesscan3 | tesscan4 ) ;
+
+// ----------------------------------------------------------------
+// ¥á¥â¥ê¥À¥ó¥×³«»Ï¿®¹æ ---> CIB : RDCLKP1 -> C1
+// ----------------------------------------------------------------
+
+	assign	optmdump = ( crc0en & testmod ) | testmod & optmdump_p & ( optram | optflmem | optdfl ) ;
+
+// ----------------------------------------------------------------
+// FLASHE¥â¡¼¥É¤ÎÀßÄêEnable ¿®¹æ¤ÎÀ¸À® --> FCB
+// ----------------------------------------------------------------
+
+	assign	flmemtes = optflmem | optdfl ;
+
+// ----------------------------------------------------------------
+// TAÍÑ¥¢¥É¥ì¥¹ÁªÂò¿®¹æ¤ÎÀ¸À®
+//   INC/DEC»ÈÍÑ»þ¤Ë¥¢¥É¥ì¥¹¤À¤±TA¤òÁªÂò¤¹¤ë¡£
+// ----------------------------------------------------------------
+
+	assign	seltar = incdecen & optram   ;
+
+	assign	seltaf = ( incdecen & optflmem & ~crc0en ) | seltaf_u ;		
+
+		// seltaf_u : seltaf for USER-CRC
+		//	seltaf_u = crc0en & hltst & ~crcstbrele ;
+
+	assign	seltadf = incdecen & optdfl & ~crc0en ;
+
+// ----------------------------------------------------------------
+// RAM¥Þ¥ë¥Á¥Æ¥¹¥ÈÍÑ¿®¹æ¤ÎÀ¸À®
+//   RAM¥Æ¥¹¥È»þ(seltar=1)¤Î¤ßÍ­¸ú¤Ë¤¹¤ë¡£
+// ----------------------------------------------------------------
+
+	assign	rammulti = mmulti_p & seltar   ;
+	assign	fmultien = mmulti_p & ( optflmem | optdfl ) ;
+
+// ----------------------------------------------------------------
+// ECC-DisableÍÑ¿®¹æ¤ÎÀ¸À®
+//   OPTRAM=1
+//     RAM   : memedis = 0 --> raedis = 0   : ECC-Enable
+//             memedis = 1 --> raedis = 1   : ECC-Disable
+//   OPTFLMEM=1
+//     FLASH : memedis = 0 --> sleccoff = 0 : FLAP <--  after  ECC-collect
+//             memedis = 1 --> sleccoff = 1 : FLAP <--  before ECC-collect 
+// ----------------------------------------------------------------
+
+	assign	raedis	 = memedis_p & optram ;
+	assign	sleccoff = memedis_p & ( optflmem | optdfl ) ;
+
+// ----------------------------------------------------------------
+// TESINST¤Î¥ª¥×¥·¥ç¥ó»ØÄê
+//   ¥ì¥¸¥¹¥¿ÃÍ(insopt3-0)¤ò¥Ç¥³¡¼¥É¤·¡¢TESINST¤Î¥ª¥×¥·¥ç¥ó¤òÁªÂò¤¹¤ë¡£
+// ----------------------------------------------------------------
+//   insopt3-0 
+//    4'b0000   : normal_inst 
+//    4'b0001   : optflmem
+//    4'b0010   : optram
+//    4'b0011   : optiddq_p
+//    4'b0100   : optexcck		<- v1.3 mod use bbteinst
+//    4'b0101   : optoplrd
+//    4'b0110   : optbct_p	<- ss3rd add
+//    4'b0111	: optdfl	<- ss3rd add
+//    4'b1000	: optflmem & optdfl	<- add in Macro Ver1.20 
+//    4'b1001	: optad1bit 		<- v1.3 add
+//    4'b1010	: optad4bit 		<- v1.3 add
+// ----------------------------------------------------------------
+// ================================================================
+//
+// v1.3 add bbtesinst
+//
+
+	always @ ( tesinst or bbtesinst or insopt3 or insopt2 or insopt1 or insopt0 ) begin
+	  casex ( { tesinst, bbtesinst, insopt3, insopt2, insopt1, insopt0 } )		// synopsys parallel_case
+	    6'b10_0001 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+			  = 9'b1000000_00 ; // FLASH TEST MODE
+	    6'b10_0010 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+			  = 9'b0100000_00 ; // RAM TEST OPTION MODE
+	    6'b10_0011 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+			  = 9'b0010000_00 ; // IDDQ MODE
+	    6'b1x_0100 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+			  = 9'b0001000_00 ; // TESTER-CLOCK(Input Clock Port) CHANGE MODE
+	    6'b10_0101 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+			  = 9'b0000100_00 ; // OPTOPLRD MODE
+	    6'b10_0110 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+			  = 9'b0000010_00 ; // BINARY-COUNTER TEST MODE for WWDT/RTC
+	    6'b10_0111 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+			  = 9'b0000001_00 ; // DATA FLASH TEST MODE
+	    6'b10_1000 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+			  = 9'b1000001_00 ; // CODE & DATA FLASH TEST MODE  for ERASE/WDT TEST at once
+            6'b1x_1001 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+                          = 9'b0000000_10 ; // for ad test (1bit shift)
+            6'b1x_1010 : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+                          = 9'b0000000_01 ; // for ad test (4bit out)
+	    default    : { optflmem, optram, optiddq_pp, optexcck, optoplrd, optbct_p, optdfl, optad1bit, optad4bit }
+			  = 9'b0000000_00 ; // NORMAL TESINST MODE
+	  endcase
+	end
+
+	assign optiddq_p = optiddq_pp | bboptiddq ;
+
+	assign optbct = optbct_p | scanmode ;
+
+endmodule
+
+
+module QLK0RMODECTL2V1_REG2 (
+			peresetz , peclk    , we_tctl1 , we_tout  , routsrc  , tesinstid   ,
+			dump0    , dump1    , dump2    , dump3    , dump4    ,
+			dump5    , dump6    , dump7    , dumpe0   , dumpe1   , exdumpmd    ,
+			rnghalf1 , rnghalf0 , trmsel2  , trmsel1  , trmsel0  , tpidsel     ,
+			rout0    , rmd      , routen   , din      ,
+			dout_tsc1, dout_tout, poscoute , oscouten_p1,
+			optad1bit, optad4bit, tout_4bit, tout_1bit, bbtesinst
+			) ;
+
+	input		peresetz , peclk    ;
+	input		we_tctl1 , we_tout  , tesinstid ;
+	input		oscouten_p1 ;
+	input	[15:0]	routsrc  ;
+
+	input		optad1bit, optad4bit ;	// v1.3 add
+	input		bbtesinst ;		// v1.3 add
+
+	output		dump0    , dump1    , dump2    , dump3    , dump4    , 
+			dump5    , dump6    , dump7    , dumpe0   , dumpe1   , exdumpmd;
+	output		rnghalf1 , rnghalf0 , trmsel2  , trmsel1  , trmsel0  , tpidsel ;
+//	output	[9:0]	tout     ;
+	output		rout0    , rmd      , routen   ;
+	output		poscoute ;
+
+	output	[3:0]	tout_4bit ;		// v1.3 added
+	output		tout_1bit ;		// v1.3 added
+
+	input	[15:0]	din      ;
+	output	[15:0]	dout_tsc1, dout_tout;
+
+	reg	[10:0]	tsf1     ;		// v1.3 mod
+	reg	[3:0]	tsf1_exrmd ;		// v1.3 mod
+//	reg	[9:0]	tout     ;
+
+	reg		dump0    , dump1    , dump2    , dump3    , dump4    , 
+			dump5    , dump6    , dump7    , dumpe0   , dumpe1   ,
+			rout0    , tpidsel  ;
+	reg		oscouten_p2 ;
+
+	wire		exrmd3   ,exrmd2   , exrmd1   , exrmd0   , visb3    , visb2    , visb1    , visb0  ;
+	wire            instprez ;
+
+// ¥Æ¥¹¥È¥³¥ó¥È¥í¡¼¥ë¡¦¥ì¥¸¥¹¥¿£±(TSCTL1)
+//
+// ¥¢¥É¥ì¥¹¤ÏF0702H¸ÇÄê¤Ç¤¢¤ë¡£
+//
+// +======+=============================================+===============+
+// | Bit  |		  Contents			|   Name	|
+// +======+=============================================+===============+
+// +------+---------------------------------------------+---------------+
+// +======+=============================================+===============+
+
+	assign  instprez = tesinstid & peresetz ;   // tesinstid¥â¡¼¥É¤Î¤ßÍ­¸ú
+
+//
+// v1.3 add reset for bbtesinst
+//
+
+	wire	binstprez ;
+	assign  binstprez = ( tesinstid | bbtesinst ) & peresetz ;	// tesinstid or bbtesinst ¥â¡¼¥ÉÍ­¸ú
+
+//      //synopsys async_set_reset "instprez"
+//      always @(posedge peclk or negedge instprez) begin
+//              if      ( !instprez ) tsf1 <= 15'b0 ;
+//              else if (  we_tctl1 ) tsf1 <= { din[15:3], din[1:0] } ;
+//      end
+
+	//synopsys async_set_reset "instprez"
+	always @(posedge peclk or negedge instprez) begin
+		if      ( !instprez ) tsf1_exrmd <= 4'b0 ;
+		else if (  we_tctl1 ) tsf1_exrmd <= din[14:11] ;
+	end
+
+	//synopsys async_set_reset "binstprez"
+	always @(posedge peclk or negedge binstprez) begin
+		if	( !binstprez) tsf1 <= 11'b0 ;
+		else if (  we_tctl1 ) tsf1 <= { din[15], din[10:3], din[1:0]  } ;
+	end
+
+	assign rmd        =  tsf1[10] 			; // TSF1 15
+	assign exrmd3     =  tsf1_exrmd[3] 		; // TSF1 14
+	assign exrmd2     =  tsf1_exrmd[2] 		; // TSF1 13
+	assign exrmd1     =  tsf1_exrmd[1] 		; // TSF1 12
+	assign exrmd0     =  tsf1_exrmd[0] 		; // TSF1 11
+	assign trmsel2    =  tsf1[9] 			; // TSF1 10
+	assign trmsel1    =  tsf1[8]  			; // TSF1 9
+	assign trmsel0    =  tsf1[7]  			; // TSF1 8
+	assign routen	  =  tsf1[6]			; // TSF1 7
+	assign visb3      =  tsf1[5] 			; // TSF1 6 
+	assign visb2      =  tsf1[4] 			; // TSF1 5 
+	assign visb1      =  tsf1[3]  			; // TSF1 4
+	assign visb0      =  tsf1[2]  			; // TSF1 3
+	assign rnghalf1   =  tsf1[1] 			; // TSF1 1
+	assign rnghalf0   =  tsf1[0] 			; // TSF1 0
+
+	assign	dout_tsc1 = { rmd      , exrmd3   , exrmd2   , exrmd1   , 
+			      exrmd0   , trmsel2  , trmsel1  , trmsel0  ,
+			      routen   , visb3    , visb2    , visb1    , 
+			      visb0    , 1'b0     , rnghalf1 , rnghalf0 };
+
+// ================================================================
+// ¥Æ¥¹¥È·ë²Ì³ÊÇ¼¥ì¥¸¥¹¥¿
+//   ¼ç¤Ë ADÊÑ´¹·ë²Ì³ÊÇ¼¤Î¤¿¤á¤Ë»ÈÍÑ
+// ================================================================
+//
+//	//synopsys async_set_reset "instprez"
+//	always @(posedge peclk or negedge instprez) begin
+//		if      ( !instprez ) tout <= 10'b0 ;
+//		else if (  we_tout  ) tout <= din[15:6] ;
+//	end
+//
+//	assign	dout_tout = { tout , 6'b0 };
+
+//
+// v1.3 mod
+//
+
+  reg   [11:0]  shift_tout ;
+  reg   [3:0]   tout_4bit ;
+  reg   [2:0]   state ;
+  reg           tout_1bit ;
+
+// state for tout
+
+  //synopsys async_set_reset "binstprez"
+  always @(posedge peclk or negedge binstprez) begin
+        if (!binstprez)      state <= 3'b000;           //
+        else begin
+           casex ({optad1bit, optad4bit, we_tout, state})
+                6'b??0_000 : state <= 3'b000;           // state = 0
+                6'b011_000 : state <= 3'b001;           // state++ when we_tout=H
+                6'b010_001 : state <= state + 3'b001;   // output
+                6'b010_010 : state <= state + 3'b001;   // output
+                6'b010_011 : state <= state + 3'b001;   // output
+                6'b010_100 : state <= 3'b000;           // state = 0 
+                default    : state <= state;            // state keeps
+           endcase
+        end
+  end
+
+// shift register
+
+  //synopsys async_set_reset "binstprez"
+  always @(posedge peclk or negedge binstprez) begin
+        if (!binstprez)                        {tout_1bit, shift_tout} <= {13'h0000};
+        else if (optad1bit | optad4bit) begin
+          if (we_tout)                         {tout_1bit, shift_tout} <= {1'b0, din[15:4]};   // din[15:0] -->  shift_tout
+          else if ( optad1bit )                {tout_1bit, shift_tout} <= {shift_tout, 1'b0};  // MSB shifts to rout
+        end
+        else                                   {tout_1bit, shift_tout} <= {13'h0000};
+  end
+
+// for tout
+
+  always @ ( state or shift_tout ) begin
+     casex ( state ) // synopsys parallel_case
+       3'b001 : tout_4bit = shift_tout[11:8]  ;
+       3'b010 : tout_4bit = shift_tout[7:4]  ;
+       3'b011 : tout_4bit = shift_tout[3:0]  ;
+       default: tout_4bit = 4'h0  ;
+     endcase
+  end
+
+  assign  dout_tout = { shift_tout , 4'b0 };
+
+// ================================================================
+// EXRMD¥ª¥×¥·¥ç¥ó»ØÄê
+// ³ÈÄ¥·ë²Ì½ÐÎÏ EXROUT3-0 ¤Îµ¡Ç½¤òÁªÂò¤¹¤ë¡£
+// ----------------------------------------------------------------
+//   dump0_p    : DumpRom»þ¤Ë»ÈÍÑ¤¹¤ë¡£0H_L,4H_L,8H_L...ÈÖÃÏ¤ò½ÐÎÏ
+//   dump1_p    : DumpRom»þ¤Ë»ÈÍÑ¤¹¤ë¡£0H_H,4H_H,8H_H...ÈÖÃÏ¤ò½ÐÎÏ
+//   dump2_p    : DumpRom»þ¤Ë»ÈÍÑ¤¹¤ë¡£1H_L,5H_L,9H_L...ÈÖÃÏ¤ò½ÐÎÏ
+//   dump3_p    : DumpRom»þ¤Ë»ÈÍÑ¤¹¤ë¡£1H_H,5H_H,9H_H...ÈÖÃÏ¤ò½ÐÎÏ
+//			:
+//			:
+//   tpidsel    : TESINST¥Ý¡¼¥È¡¢FLASH¶õ´ÖÀÚ´¹À©¸æ¿®¹æ
+// ----------------------------------------------------------------
+// ================================================================
+
+	always @ ( exrmd3 or exrmd2 or exrmd1 or exrmd0  ) begin
+	  casex ( { exrmd3, exrmd2, exrmd1, exrmd0  } )		// synopsys parallel_case
+	    4'b0001   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b10000000000  ; // DUMP_0H
+	    4'b0010   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b01000000000  ; // DUMP_1H
+	    4'b0011   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00100000000  ; // DUMP_0H
+	    4'b0100   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00010000000  ; // DUMP_0H
+	    4'b0101   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00001000000  ; // DUMP_0H
+	    4'b0110   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00000100000  ; // DUMP_0H
+	    4'b0111   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00000010000  ; // DUMP_0H
+	    4'b1000   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00000001000  ; // DUMP_0H
+	    4'b1001   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00000000100  ; // DUMP_0H
+	    4'b1010   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00000000010  ; // DUMP_0H
+	    4'b1011   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00000000001  ; // TPIDSEL
+	    default   : { dump0, dump1, dump2, dump3, dump4, dump5, dump6, dump7, dumpe0, dumpe1, tpidsel }
+			= 11'b00000000000  ; // NONE
+	  endcase
+	end
+
+	assign	exdumpmd = ( dump0 | dump1 | dump2 | dump3 | dump4 | dump5 | dump6 | dump7 | dumpe0 | dumpe1 ) ;
+
+// ================================================================
+// VISIVE¥ª¥×¥·¥ç¥ó»ØÄê
+//   NORMAL TESINST MODE»þ¤Ë¡¢¥ì¥¸¥¹¥¿ÃÍ(visb3-0)¤ò¥Ç¥³¡¼¥É¤·
+//   ROUT¤Ë½ÐÎÏ¤¹¤ë¿®¹æ¤òÁªÂò¤¹¤ë¡£
+// ----------------------------------------------------------------
+//  K0R/Kx4 Connect
+//   rousrc0	: rout0_p
+//   rousrc1	: TR32MOUT 
+//   rousrc2	: R32MSTP(csc) 
+//   rousrc3	: TR15KOUT 
+//   rousrc4	: R15KSTPZ(csc) 
+//   rousrc5	: OSCOUT(cp) 
+//   rousrc6	: TLVIF 
+//   rousrc7	: TFIHFL
+//   rousrc8	: TFIHOCD 
+//   rousrc9	: 50ns Filter IN 
+//   rousrc10	: 50ns Filter OUT 
+//   rousrc11	: 300ns Filter IN
+//   rousrc12	: 300ns Filter OUT
+// ----------------------------------------------------------------
+// ================================================================
+
+	always @ ( rmd or visb3 or visb2 or visb1 or visb0 or routsrc ) begin
+	  casex ( { rmd , visb3, visb2, visb1, visb0   } )		// synopsys parallel_case
+	    5'b00000 : rout0 = routsrc[0]  ; // MISR
+	    5'b00001 : rout0 = routsrc[1]  ;
+	    5'b00010 : rout0 = routsrc[2]  ;
+	    5'b00011 : rout0 = routsrc[3]  ;
+	    5'b00100 : rout0 = routsrc[4]  ;
+	    5'b00101 : rout0 = routsrc[5]  ;
+	    5'b00110 : rout0 = routsrc[6]  ;
+	    5'b00111 : rout0 = routsrc[7]  ;
+	    5'b01000 : rout0 = routsrc[8]  ;
+	    5'b01001 : rout0 = routsrc[9]  ;
+	    5'b01010 : rout0 = routsrc[10] ;
+	    5'b01011 : rout0 = routsrc[11] ;
+	    5'b01100 : rout0 = routsrc[12] ;
+	    5'b01101 : rout0 = routsrc[13] ;
+	    5'b01110 : rout0 = routsrc[14] ;
+	    5'b01111 : rout0 = routsrc[15] ;
+	    default  : rout0 = 1'b0  ; // NONE
+	  endcase
+	end
+
+
+// SS3rd add  for Pre-OSCOUTEN
+
+	always @ ( visb3 or visb2 or visb1 or visb0 ) begin
+	  case ( { visb3, visb2, visb1, visb0 } )		// synopsys parallel_case
+	    5'b0111 : oscouten_p2 = 1'b1  ;
+	    5'b1000 : oscouten_p2 = 1'b1  ;
+	    default : oscouten_p2 = 1'b0  ;
+	  endcase
+	end
+
+	assign	poscoute = oscouten_p1 | oscouten_p2 ;
+
+endmodule
+
+
+module QLK0RMODECTL2V1_TRMSEL (
+			resb     , tesinst  ,
+			uti      , rngin6   , rngin5   , rngin4   , rngin3   ,
+			rngin2   , rngin1   , rngin0   ,
+			rnghalf1 , rnghalf0 , trmsel2  , trmsel1  , trmsel0  ,
+			oti	 , oscouten_p1
+		) ;
+
+	input		resb     , tesinst  ;
+	input		uti      , rngin6   , rngin5   , rngin4   , rngin3   ,
+			rngin2   , rngin1   , rngin0   ;
+	input		rnghalf1 , rnghalf0 , trmsel2  , trmsel1  , trmsel0  ;
+
+	output		oti      ;
+	output		oscouten_p1 ;
+
+	wire		sel_ti   ;
+	wire		trmres   ;
+	reg		oti_p0   , oti_p1   , oti_p2   , oti_p3   ;
+	reg		oscouten_p1 ;
+
+// ================================================================
+// TRMSEL¥ª¥×¥·¥ç¥ó»ØÄê
+// ¥¿¥¤¥ÞÆþÎÏ¤È¤Ê¤ë¥È¥ê¥ß¥ó¥°¥¿¡¼¥²¥Ã¥È¥¯¥í¥Ã¥¯¤òÁªÂò¤¹¤ë¡£
+// ----------------------------------------------------------------
+//   uti        : ¥æ¡¼¥¶¡¼¥â¡¼¥É»þ¤ÎTIÆþÎÏ(¥Ç¥Õ¥©¥ë¥È)
+//   rngin6     : ½ÐÎÏ6
+//   rngin5     : ½ÐÎÏ5
+//   rngin4     : ½ÐÎÏ4
+//   rngin3     : ½ÐÎÏ3
+//   rngin2     : ½ÐÎÏ2
+//   rngin1     : ½ÐÎÏ1
+//   rngin0     : ½ÐÎÏ0
+// ----------------------------------------------------------------
+// ================================================================
+
+	assign	sel_ti = ~( trmsel2 | trmsel1 | trmsel0 ) ;
+
+	always @ ( tesinst or trmsel2 or trmsel1 or trmsel0 or
+		   rngin6  or rngin5  or rngin4  or rngin3  or
+		   rngin2  or rngin1  or rngin0  or uti ) begin
+	  casex ( { tesinst , trmsel2 , trmsel1 , trmsel0 } )		// synopsys parallel_case
+	    4'b1001  : oti_p0 = rngin0 ;
+	    4'b1010  : oti_p0 = rngin1 ;
+	    4'b1011  : oti_p0 = rngin2 ;
+	    4'b1100  : oti_p0 = rngin3 ;
+	    4'b1101  : oti_p0 = rngin4 ;
+	    4'b1110  : oti_p0 = rngin5 ;
+	    4'b1111  : oti_p0 = rngin6 ;
+	    default  : oti_p0 = 1'b0   ;
+	  endcase
+	end
+
+	assign	trmres = resb & ( rnghalf1 | rnghalf0 ) ;
+
+	// synopsys async_set_reset "trmres"
+	always @( posedge oti_p0 or negedge trmres ) begin
+	  if ( !trmres ) oti_p1 <= 1'b0 ;
+	  else           oti_p1 <= !oti_p1 ;
+	end
+
+	// synopsys async_set_reset "trmres"
+	always @( posedge oti_p1 or negedge trmres ) begin
+	  if ( !trmres ) oti_p2 <= 1'b0 ;
+	  else           oti_p2 <= !oti_p2 ;
+	end
+
+	// synopsys async_set_reset "trmres"
+	always @( posedge oti_p2 or negedge trmres ) begin
+	  if ( !trmres ) oti_p3 <= 1'b0 ;
+	  else           oti_p3 <= !oti_p3 ;
+	end
+
+//	assign  oti = ( sel_ti ) ? uti : ( ( trmres ) ? oti_p1 : oti_p0 ) ;
+
+	assign	oti = ( sel_ti  )               ? uti		// ¥¿¥¤¥Þ¤¬¤½¤Î¤Þ¤ÞÀÜÂ³¤µ¤ì¤Æ½ÐÎÏ
+		    : ( !rnghalf1 &  rnghalf0 ) ? oti_p1	// ÆþÎÏ¥¯¥í¥Ã¥¯¤ò£²Ê¬¼þ¤·¤ÆOTI¤Ë½ÐÎÏ
+		    : (  rnghalf1 & !rnghalf0 ) ? oti_p2	// ÆþÎÏ¥¯¥í¥Ã¥¯¤ò£´Ê¬¼þ¤·¤ÆOTI¤Ë½ÐÎÏ
+		    : (  rnghalf1 &  rnghalf0 ) ? oti_p3	// ÆþÎÏ¥¯¥í¥Ã¥¯¤ò£¸Ê¬¼þ¤·¤ÆOTI¤Ë½ÐÎÏ
+		    :                             oti_p0 ;	// ÆþÎÏ¥¯¥í¥Ã¥¯¤ò¤½¤Î¤Þ¤ÞOTI¤Ë½ÐÎÏ
+
+// SS3rd add  for  Pre-OSCOUTEN
+
+	always @ ( trmsel2 or trmsel1 or trmsel0 ) begin
+	  case ( {  trmsel2 , trmsel1 , trmsel0 } )		// synopsys parallel_case
+	    3'b100  : oscouten_p1 = 1'b1 ;
+	    3'b101  : oscouten_p1 = 1'b1 ;
+	    default : oscouten_p1 = 1'b0 ;
+	  endcase
+	end
+
+endmodule
+
+
+//
+// v1.3 mod
+//	1. change sbrk_resf --> sbrk_resf_only
+//	2. add output gofirmr
+//	3. del input  sysresb
+//
+module QLK0RMODECTL2V1_MODE (
+			treset   , resetinb , resetb    , pocrel   , pocrel2  ,
+			resb     , nsresb   , tmdenclk , primod   , staytes  , bbmode   ,
+			x2din    , c3hff    , sbrk_resf_only , tool0    ,
+			vpphvmod , testmod  , primd_pre2,
+			scanmode , tesscan1 , tesscan2  , tesscan3 , tesscan4 , bbtesinst,
+			tesinst  , tesusr   , tesdbt    , testrmrd , gofirm_p , gofirmr_p,
+			seltp_t  , seltp_r  , seltp_b   , seltp_l  ,
+			tesdbt2  , bbtesscan_or ,
+			staytesbb
+			,TRAPINP
+			) ;
+
+	input		TRAPINP ;	// v1.40
+
+	input		treset   , resetinb , resetb   , pocrel   , pocrel2  ;
+	input		resb     , nsresb   , tmdenclk ;
+	input		primod   , tool0    ;
+	input		staytes  , bbmode   ;
+	input		staytesbb ;
+
+	input		x2din    , c3hff    , sbrk_resf_only ;
+
+	output		vpphvmod , testmod  , primd_pre2 ;
+	output		scanmode , tesscan1 , tesscan2 , tesscan3 , tesscan4 , bbtesinst ;
+	output		tesinst  , tesusr   , tesdbt   , testrmrd ;
+	output		gofirm_p ;			
+	output		gofirmr_p ;					// v1.3 add			
+	output		seltp_t  , seltp_r  , seltp_b  , seltp_l  ;
+	output		tesdbt2 ;					// v1.3 add
+	output		bbtesscan_or ;					// v1.3 add
+
+	wire		primd_res, secmd_res, primd_stay ;
+	wire		tmdcnt5 ;					// v1.3 add
+	wire		tmdcnt4  , tmdcnt3  , tmdcnt2  , tmdcnt1  , tmdcnt0 ;
+
+	reg  		primd_pre1 , pre_en ;
+	reg		tscan1_p , tesscan2 , tesscan3  , tesscan4 ;
+	reg	 	bbinst   , tinst_p  , testrmrd  , tesusr   , tesdbt ;
+	reg		tesdbt2 ;					// v1.3 add
+
+	reg		seltp_t  , seltp_r  , seltp_b   , seltp_l  ;
+	reg		softbrk  ,  gofirm_preA , gofirm_preB ;
+	reg	[5:0]	x2cnt    ;					// v1.3 mod
+	reg		bbtesscan1, bbtesscan2, bbtesscan4 ;		// v1.3 add
+
+// ¥Æ¥¹¥È¥â¡¼¥É¡¦¥é¥Ã¥Á
+//
+//		 120ns    120ns (RESINB N/F)
+//		 <--->    <---> 50ns (CPU N/F)
+//		 __________    <->
+//  TRESET     __|	  |____________________________________________________
+//	       _______        _________________________________________________
+//  RESETINBNF	     |________|
+//	       _________	_______________________________________________
+//  RESETBNF	       |________|
+//	       _________						 ______
+//  RESB	       |________________________________________________|
+//
+//
+//			           _   _   _   _   _      
+//  X2         ___________________| |_| |_| |_| |_| |__________________________ 
+//	       ___________________  __  __  __  __  ___________________________
+//  x2_count   ___________________><__><__><__><__><___________________________
+//	                                                 ______________________
+//  tesXXX     __________________________________________|                     
+//
+//			     TMDENCLK¤ÎÎ©¤Á¾å¤¬¤ê¤ÇX2_count¤ò¥Ç¥³¡¼¥É
+//
+//	       __ 	      _________________________________________________
+//  primd_pre1   |____________|
+//
+//			     RSTINBNF¤ÎÎ©¤Á¾å¤¬¤ê¤ÇVPPHV¤ò¥é¥Ã¥Á
+//							 ______
+//  TMDENCLK   __________________________________________|    |________________
+//	       __					 ______________________
+//  primd_pre2   |_______________________________________|
+//  TMODE
+//			     TMDENCLK¤ÎÎ©¤Á¾å¤¬¤ê¤Çprimd_pre1¤ò¥é¥Ã¥Á
+//	       __					 ______________________
+//  TESxxx	 |_______________________________________|
+//  PRExxx
+//			     primd_pre2=H¤ÇTESxxx=H
+//
+
+// ====================================================
+// ¥×¥é¥¤¥Þ¥ê¡¦¥â¡¼¥ÉÃ¼»Ò¤Î¥é¥Ã¥Á
+//
+// RESETINBNF²ò½ü¤Ç¥é¥Ã¥Á¤¹¤ë¡£
+// ====================================================
+
+	// ¥×¥é¥¤¥Þ¥ê¥â¡¼¥É³ÎÄêÍÑF/F¤Î¥ê¥»¥Ã¥È¿®¹æÀ¸À®
+	// pocrel2¤ÎÏÀÍý¤¬Æþ¤Ã¤Æ¤¤¤ë¤Î¤Ï¡¢POC¸¡½ÐÅÅ°µ°Ê²¼¤Ç¤â¥Æ¥¹¥È¤·¤¿¤¤¤¿¤á¡£
+
+	assign	vpphvmod  = primod ;
+
+	wire	primd_res1 = pocrel2 & primod ;
+	assign	primd_res  = !treset & primd_res1 ;
+
+	// 1.¥Î¥¤¥º¥Õ¥£¥ë¥¿¡¼ÄÌ²á¸å¤Î³°Éô¥ê¥»¥Ã¥È(RESETINBNF)¤ÎÎ©¤Á¾å¤¬¤ê¥¨¥Ã¥¸¤Ç
+	//   ¹âÅÅ°µ¸¡½Ð¿®¹æ(PRIMODIN (VPPHVIN))¤ò¥é¥Ã¥Á¤¹¤ë¡£
+
+	//synopsys async_set_reset "primd_res"
+	always @ ( posedge resetinb or negedge primd_res ) begin
+		if ( !primd_res ) primd_pre1 <= 1'b0 ;
+		else		  primd_pre1 <= primod ;
+	end
+
+	// 2.¼¡¤Ë240KHzRING¤Î¥«¥¦¥ó¥¿¤«¤é¤Î½ÐÎÏ¿®¹æ(TMODENCLK)¤ÎÎ©¤Á¾å¤¬¤ê¥¨¥Ã¥¸¤Ç
+	//   ¡Ö1.¡× ¤Î½ÐÎÏ¤ò¥é¥Ã¥Á¤¹¤ë¡£(¥é¥Ã¥Á¤Ï2½Å²½)
+
+	QLK0RMODECTL2V1_TMODE	tmode_gen ( .dataout(primd_pre2), .datain1(primd_pre1), .datain2(primd_pre1),
+					    .resetin(primd_res),  .enclk(tmdenclk)    ) ;
+
+
+	// 4.VPPHV=¤º¤Ã¤ÈH ¤Þ¤¿¤Ï ¥â¥Ë¥¿¡¼¤Î¥Æ¥¹¥È¥â¡¼¥É(staytes)=H ¤Î»þ TMODE=H ¤Ë¤¹¤ë¡£
+
+	assign  testmod  = ( primd_pre2 | staytes )  &
+			   ( tscan1_p   | tesscan2 | tesscan3 | tesscan4 |
+			     bbtesinst  | tesinst  | tesusr   | tesdbt   | testrmrd );
+
+// ====================================================
+// ¥×¥é¥¤¥Þ¥ê¡¿¥»¥«¥ó¥À¥ê¡¦¥â¡¼¥É¤ÎÀßÄê
+// ====================================================
+// ----------------------------------------------------------------------
+//   GOFIRM¥â¡¼¥É¤ÎÀßÄê (¥·¥ê¥¢¥ë¡¦¥×¥í¥°¥é¥ß¥ó¥°/OCD¥â¡¼¥É¤ÎPre-¥â¡¼¥É)
+//   GOFIRM¿®¹æ¤Ï¡¢RESB²ò½ü»þ¤Ë¥¢¥¯¥Æ¥£¥Ö¤È¤¹¤ë¡£
+// ----------------------------------------------------------------------
+
+// ----------------------------------------------------------------------
+//   v1.40 changed)
+//   TRAP¥ê¥»¥Ã¥È¤Ç¤Ï¡¢2²óÌÜ¤Î¥ê¥»¥Ã¥È¥·¡¼¥±¥ó¥¹Ãægofirm_prea¤ò¥ê¥»¥Ã¥È¤·
+//   GËGOFIRM¤òNon-ACTIVE¤È¤¹¤ë¡£
+// ----------------------------------------------------------------------
+
+	wire	tool0in    = primod | tool0 ;		
+	wire	tool0chk   = !tool0in | resb ;		// for tool0 check (RESB²ò½ü¤Þ¤Ç¤º¤Ã¤ÈL)
+
+//	wire	gofrma_res = pocrel & !treset & tool0chk ;
+	wire	gofrma_res = pocrel & !TRAPINP & tool0chk ;	// v1.40
+	wire	gofrmb_res = resetb & tool0chk ;
+	
+	//synopsys async_set_reset "gofrma_res"
+	always @ ( posedge resetinb or negedge gofrma_res ) begin
+		if ( !gofrma_res ) gofirm_preA <= 1'b0 ;
+		else		   gofirm_preA <= !tool0in ;
+	end
+
+	// for 1pin-Mode
+	//synopsys async_set_reset "gofrmb_res"
+	always @ ( posedge tmdenclk or negedge gofrmb_res ) begin
+		if ( !gofrmb_res ) gofirm_preB <= 1'b0 ;
+		else		   gofirm_preB <= !tool0in ;
+	end
+
+// v1.3 del
+//
+//	// TRAP Reset Latch
+//	//synopsys async_set_reset "sysresb"
+//	always @ ( posedge sbrk_resf or negedge sysresb ) begin
+//		if ( !sysresb ) softbrk <= 1'b0 ;
+//		else	        softbrk <= 1'b1 ;
+//	end
+//
+// v1.3 softbrk --> sbrk_resf_only
+//	assign	gofirm_p = nsresb & ( gofirm_preA | ( gofirm_preB & c3hff & softbrk )) ;
+	assign	gofirm_p = nsresb & ( gofirm_preA | ( gofirm_preB & c3hff & sbrk_resf_only )) ;
+
+// v1.3 add gofirm_r
+	assign	gofirmr_p = ( gofirm_preA | ( gofirm_preB & c3hff & sbrk_resf_only )) ;
+
+// ----------------------------------------------------
+// ¥»¥«¥ó¥À¥ê¡¦¥â¡¼¥É¤ÎÀßÄê
+// ----------------------------------------------------
+
+// ¥»¥«¥ó¥À¥ê¡¦¥â¡¼¥ÉÀßÄêÍÑ¤ÎX2¥«¥¦¥ó¥¿
+
+	wire 	tmdcnten = primd_pre1 & ~primd_pre2 ;
+	wire	x2tmdin  = tmdcnten & x2din ;
+	assign  secmd_res = treset | ~( primod | staytes ) ;
+
+// v1.3 add x2cnt[5]
+
+	//synopsys async_set_reset "secmd_res"
+	always @ ( posedge x2tmdin or posedge secmd_res ) begin
+	        if ( secmd_res )  x2cnt <= 6'b0 ;
+	        else              x2cnt <= x2cnt + 6'b000001 ;
+	end
+
+// ¥»¥«¥ó¥À¥ê¡¦¥Æ¥¹¥È¥â¡¼¥É¡¦¥Ç¥³¡¼¥É
+
+	assign	tmdcnt5 = x2cnt[5] ;	// v1.3 add
+	assign	tmdcnt4 = x2cnt[4] ;
+	assign	tmdcnt3 = x2cnt[3] ;
+	assign	tmdcnt2 = x2cnt[2] ;
+	assign	tmdcnt1 = x2cnt[1] ;
+	assign	tmdcnt0 = x2cnt[0] ;
+
+//
+// v1.3 add BBTESSCAN mode decode
+//
+	always @ ( primd_pre2 or tmdcnt5 or tmdcnt4 or tmdcnt3 or tmdcnt2 or tmdcnt1 or x2din ) begin
+	  casex ( { primd_pre2, tmdcnt5, tmdcnt4, tmdcnt3, tmdcnt2, tmdcnt1, x2din } )		// synopsys parallel_case
+            7'b1_1000x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+                             = 13'b10000000_00_100 ; // BBTESCAN1
+            7'b1_1001x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+                             = 13'b01000000_00_010 ; // BBTESCAN2
+            7'b1_1010x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+                             = 13'b00010000_00_001 ; // BBTESCAN4
+	    7'b1_0001x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b10000000_00_000 ; // TESCAN1
+	    7'b1_0010x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b01000000_00_000 ; // TESCAN2
+	    7'b1_0011x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b00100000_00_000 ; // TESCAN3
+	    7'b1_0100x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b00010000_00_000 ; // TESCAN4
+	    7'b1_0101x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b00001000_00_000 ; // BBTESINST
+	    7'b1_0111x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b00000100_00_000 ; // TESINST
+	    7'b1_0110x_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b00000010_00_000 ; // TESTRMRD
+	    7'b1_00001_x : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b00000001_00_000 ; // TESUSR
+	    7'b1_00000_1 : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b00000000_11_000 ; // TESDBT
+            7'b1_00000_0 : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+                             tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+                             = 13'b00000000_10_000 ; // TESDBT( for SIP)
+	    default      : { tscan1_p, tesscan2, tesscan3, tesscan4, bbinst, tinst_p, testrmrd, tesusr, tesdbt,
+			     tesdbt2, bbtesscan1, bbtesscan2, bbtesscan4 }
+			     = 13'b00000000_00_000 ; // NOTEST
+	  endcase
+	end
+
+
+// 	TPORT-Select DECODE
+
+	assign	primd_stay = primd_pre2 | staytes ;
+	
+	always @ ( primd_stay or tmdcnt1 or tmdcnt0 ) begin
+	  case ( { primd_stay, tmdcnt1, tmdcnt0 } )		// synopsys parallel_case
+	    3'b100  :  { seltp_t, seltp_r, seltp_b, seltp_l }
+			 = 4'b1000 ; 				// default-TestPort select (Chip Top)
+	    3'b101  :  { seltp_t, seltp_r, seltp_b, seltp_l }
+			 = 4'b0100 ; 				// TestPort Change 1 (Chip Right)
+	    3'b110  :  { seltp_t, seltp_r, seltp_b, seltp_l }
+			 = 4'b0010 ; 				// TestPort Change 2 (Chip Bottom)
+	    3'b111  :  { seltp_t, seltp_r, seltp_b, seltp_l }
+			 = 4'b0001 ; 				// TestPort Change 3 (Chip Left)
+	    default :  { seltp_t, seltp_r, seltp_b, seltp_l }
+			 = 4'b0000 ; 		
+	  endcase
+	end
+
+// ss3rd_delete!
+//	QLK0RMODECTL2V1_GATECLK_LVN gate_tesscan1 ( .clk_out ( tscan1_p2 ) , .clk_in ( tscan1_p ) , .en( primd_pre3 ) ) ;
+//	QLK0RMODECTL2V1_GATECLK_LVN gate_tesscan2 ( .clk_out ( tesscan2  ) , .clk_in ( tscan2_p ) , .en( primd_pre3 ) ) ;
+//	QLK0RMODECTL2V1_GATECLK_LVN gate_tesscan3 ( .clk_out ( tesscan3  ) , .clk_in ( tscan3_p ) , .en( primd_pre3 ) ) ;
+//	QLK0RMODECTL2V1_GATECLK_LVN gate_tesscan4 ( .clk_out ( tesscan4  ) , .clk_in ( tscan4_p ) , .en( primd_pre3 ) ) ;
+//	QLK0RMODECTL2V1_GATECLK_LVN gate_bbinst   ( .clk_out ( bbinst    ) , .clk_in ( bbinst_p ) , .en( primd_pre3 ) ) ;
+//	QLK0RMODECTL2V1_GATECLK_LVN gate_tesinst  ( .clk_out ( tinst_p2  ) , .clk_in ( tinst_p1 ) , .en( primd_pre3 ) ) ; 
+//	QLK0RMODECTL2V1_GATECLK_LVN gate_tesusr   ( .clk_out ( tesusr    ) , .clk_in ( tusr_p   ) , .en( primd_pre3 ) ) ;
+//	QLK0RMODECTL2V1_GATECLK_LVN gate_tesdbt   ( .clk_out ( tesdbt    ) , .clk_in ( tdbt_p   ) , .en( primd_pre3 ) ) ;
+
+// ====================================================
+//	BBTESINST¤Ï¡¢BBMODE=H¤Î»þ¤Î¤ßÍ­¸ú¤È¤¹¤ë¡£
+// ====================================================
+
+// v1.3 add staytesbb
+//	assign bbtesinst =   bbinst & bbmode ;
+	assign bbtesinst = ( bbinst | staytesbb )& bbmode ;
+
+// ====================================================
+// STAYTES =H ¤Î»þ TMODE=H ¤Ë¤¹¤ë¡£
+// ====================================================
+
+	assign tesinst = tinst_p | staytes | bbtesinst | testrmrd ;
+
+// ====================================================
+// POCREL¤ÎMASK¿®¹æÀ¸À®(resctl¥Þ¥¯¥í¤Ç¤Îpocrel2À¸À®ÍÑ)
+// POCREL¿®¹æ¤ÎOUTPUT
+// ====================================================
+// SS3rd delete
+//	assign pocmsk = primod & pocdis ;
+
+// ====================================================
+// SCANMODE¿®¹æ¤ÎÀ¸À®
+// ====================================================
+
+	assign tesscan1 = tscan1_p | tesdbt ;
+	assign scanmode = tesscan1  | tesscan2 | tesscan3 | tesscan4 | tesdbt ;
+
+// ====================================================
+// v1.3 make bbtesscan_or
+// ====================================================
+
+	assign bbtesscan_or = bbtesscan1 | bbtesscan2 | bbtesscan4 ;
+
+endmodule
+
+
+module	QLK0RMODECTL2V1_TMODE ( dataout, datain1, datain2, resetin, enclk ) ;
+
+// =====================================================================================
+// VPPHV(TESTMODE)¤Î¥é¥Ã¥Á¤òÆó½Å²½¤¹¤ë
+//
+// ¥×¥í¥Æ¥¯¥È¶¯²½¤Î¤¿¤áÆó½Å²½¡£
+// Ãí¡§¤³¤Î¥é¥Ã¥Á¤Ï¡¢¡Ö TRESET=H ¡× or ¡Ö POCREL=L and VPPHVIN=L ¡×¤Ç¥ê¥»¥Ã¥È¤µ¤ì¤ë¡£
+//     ¤è¤Ã¤ÆPOC¸¡½ÐÅÅ°µ°Ê²¼¤ÇVPPTS1¤Î¥â¥Ë¥¿¡¼¤ò¹Ô¤¦¥Æ¥¹¥È¤ÏËÜ¥Æ¥¹¥È²óÏ©¤Ç¤Ï½ÐÍè¤Ê¤¤¡£
+// =====================================================================================
+
+	input		datain1, datain2, resetin, enclk ;
+	output		dataout ;
+
+	reg		tmode1, tmode2 ;
+
+	//synopsys async_set_reset "resetin"
+	always @ ( posedge enclk or negedge resetin ) begin
+		if ( !resetin )	tmode1	<= 1'b0 ;
+		else		tmode1	<= datain1 ;
+	end
+
+	//synopsys async_set_reset "resetin"
+	always @ ( posedge enclk or negedge resetin ) begin
+		if ( !resetin )	tmode2	<= 1'b0 ;
+		else		tmode2	<= datain2 ;
+	end
+
+	assign	dataout = tmode1 & tmode2 ;
+
+endmodule
+
+// =====================================================================================
+//
+// SCAN¥â¡¼¥É»þ¤ÎCLAMP¿®¹æ³èÀ­²½»Üºö
+//
+// =====================================================================================
+module QLK0RMODECTL2V1_CLAMP (
+	//	input
+			baseck   , resb     , scanmode ,
+	//	output
+			mmclamph0, mmclamph1, mmclamph2, mmclamph3, mmclamph4,
+			mmclampl0, mmclampl1, mmclampl2, mmclampl3, mmclampl4
+	      ) ;
+
+	input		baseck   , resb     , scanmode ;
+	output		mmclamph0, mmclamph1, mmclamph2, mmclamph3, mmclamph4,
+			mmclampl0, mmclampl1, mmclampl2, mmclampl3, mmclampl4;
+
+	reg		cl_hireg ;
+
+	//synopsys async_set_reset "resb"
+	always @(posedge baseck or negedge resb) begin
+	  if   ( !resb ) cl_hireg <= 1'b0 ;
+	  else           cl_hireg <= 1'b1 ;
+	end
+
+	assign 	mmclamph0 = scanmode ?  cl_hireg : 1'b1 ;
+	assign 	mmclamph1 = scanmode ?  cl_hireg : 1'b1 ;
+	assign 	mmclamph2 = scanmode ?  cl_hireg : 1'b1 ;
+	assign 	mmclamph3 = scanmode ?  cl_hireg : 1'b1 ;
+	assign 	mmclamph4 = scanmode ?  cl_hireg : 1'b1 ;
+	assign 	mmclampl0 = scanmode ? !cl_hireg : 1'b0 ;
+	assign 	mmclampl1 = scanmode ? !cl_hireg : 1'b0 ;
+	assign 	mmclampl2 = scanmode ? !cl_hireg : 1'b0 ;
+	assign 	mmclampl3 = scanmode ? !cl_hireg : 1'b0 ;
+	assign 	mmclampl4 = scanmode ? !cl_hireg : 1'b0 ;
+
+
+endmodule
+
+
+// =====================================================================================
+// USER BLOCK  module  start
+// =====================================================================================
+module QLK0RMODECTL2V1_INCDEC (
+			baseck   , resb     , tesdbt   , tesinst  , testmod  ,
+			incdec2  , incdec1  , incdec0  , incdecen , optram   , optflmem , optdfl   ,
+			we_cctl	 , stbrele  , hltst    , addrin   , lfsra    , din      ,
+			moderd   , modewr   , incdecws1, incdecws0, modenop  , modefrd  , modefnop ,
+			ta17     , ta16     , ta15     , ta14     , ta13     , ta12     , ta11     , ta10     ,
+			ta9      , ta8      , ta7      , ta6      , ta5      , ta4      , ta3      , ta2      ,
+			ta1      , ta0      ,
+			crc0en   , crcusrst , crchlten , seltaf_u , incdecmd , dout_cctl, baseckcrc
+			 ) ;
+
+	input		baseck   , resb     , tesdbt   , tesinst  , testmod  ,
+			incdec2  , incdec1  , incdec0  , incdecen , optram   , optflmem , optdfl   ;
+	input		we_cctl	 , stbrele  , hltst    ;
+
+	input	[17:0]	addrin   ;
+	input	[16:0]	lfsra    ;
+	input	[15:0]	din      ;
+
+	output		ta17     , ta16     , ta15     , ta14     , ta13     , ta12     , ta11     , ta10     ,
+			ta9      , ta8      , ta7      , ta6      , ta5      , ta4      , ta3      , ta2      ,
+			ta1      , ta0      ;
+	output		moderd   , modewr   , incdecws1, incdecws0, modenop  , modefrd  , modefnop ;
+	output		crc0en   , crcusrst , crchlten , seltaf_u , incdecmd ;
+	output		baseckcrc ;
+
+	output	[15:0]	dout_cctl ;
+
+	reg	[17:0]	incdecad , incdecad_p ;
+	reg		moderd   , modewr   , incdecws1, incdecws0, modenop  , modefrd  , modefnop ;
+
+
+//
+// add v1.3
+//
+	wire	crc0en_p, crcusrst_p ;
+
+	QLK0RMODECTL2V1_HOLDDLY1  crc0en_holdbuf   ( .in1(crc0en_p), .out1(crc0en) );
+	QLK0RMODECTL2V1_HOLDDLY1  crcusrst_holdbuf ( .in1(crcusrst_p), .out1(crcusrst) );
+
+
+// ------------------------
+//  Clock Gating for IDD
+// ------------------------
+
+	TBGTSMLALADCLX2 crc0_gate ( .H01(crc0en), .H03(testmod), .H02(baseck), .N01(baseckcrc) );
+
+// -------------------
+//  USER_CRC Control
+// -------------------
+	QLK0RMODECTL2V1_USRCRCCTL usrcrcctl (
+			.baseck(baseck)   , .resb(resb)         , .tesinst(tesinst)   , .we_cctl(we_cctl)  , 
+			.stbrele(stbrele) , .hltst(hltst)       , .incdecad(incdecad) , .din(din)          ,
+			.crc0en(crc0en_p)   , .crcusrst(crcusrst_p) , .crchlten(crchlten) , .seltaf_u(seltaf_u),
+			.dout_cctl(dout_cctl)
+			);
+
+// -------------------------------------------------
+//  BASECK no stop in HALT-mode  ( --> CSC Macro )
+// -------------------------------------------------
+	assign	incdecmd = crc0en | incdecen ;
+
+// ------------------------------------------
+// FLASH,RAM¥Æ¥¹¥È&USER-CRCÍÑ¥¢¥É¥ì¥¹À¸À®Éô
+// ------------------------------------------
+
+	wire	optflt   = optflmem | optdfl ;
+	wire	crcstbre = crchlten | stbrele ;
+
+	always @ ( incdecen or optram or optflt or incdec2 or incdec1 or incdec0 or 
+			crc0en or crcusrst or crcstbre or  addrin or incdecad ) begin
+	  casex ( { incdecen, optram, optflt, incdec2, incdec1, incdec0, 
+			crc0en, crcusrst, crcstbre } )	// synopsys parallel_case
+	    9'b00x000100 : incdecad_p = incdecad        ;	// Stay Addres  (FLASH CRC0CTL)
+	    9'b00x000x1x : incdecad_p = incdecad + 1'b1 ;	// Inc  Addres  (FLASH CRC0CTL)
+	    9'b110000000 : incdecad_p = incdecad        ;	// Stay Addres  (RAM Nop)
+	    9'b110001000 : incdecad_p = incdecad + 1'b1 ;	// Inc  Addres  (RAM Read)
+	    9'b110010000 : incdecad_p = incdecad - 1'b1 ;	// Dec  Addres  (RAM Read)
+	    9'b110011000 : incdecad_p = incdecad        ;	// Stay Addres  (RAM A Write)
+	    9'b110100000 : incdecad_p = incdecad        ;	// Stay Addres  (RAM B Write)
+	    9'b110101000 : incdecad_p = incdecad        ;	// Stay Addres  (RAM Read)
+	    9'b110110000 : incdecad_p = incdecad + 1'b1 ;	// Inc  Addres  (RAM A Write)
+	    9'b110111000 : incdecad_p = incdecad + 1'b1 ;	// Inc  Addres  (RAM B Write)
+	    9'b101000000 : incdecad_p = incdecad        ;	// Stay Addres  (FLASH Nop)
+	    9'b101001000 : incdecad_p = incdecad + 1'b1 ;	// Inc  Addres  (FLASH Read)
+	    9'b101010000 : incdecad_p = incdecad - 1'b1 ;	// Dec  Addres  (FLASH Read)
+	    9'b101011000 : incdecad_p = incdecad        ;	// Stay Addres  (FLASH Nop)
+	    9'b101100000 : incdecad_p = incdecad        ;	// Stay Addres  (FLASH Nop)
+	    9'b101101000 : incdecad_p = incdecad        ;	// Stay Addres  (FLASH Read)
+	    9'b101110000 : incdecad_p = incdecad + 1'b1 ;	// Inc  Addres  (FLASH Nop)
+	    9'b101111000 : incdecad_p = incdecad - 1'b1 ;	// Dec  Addres  (FLASH Nop)
+	    9'b100000x00 : incdecad_p = addrin          ;	// FLAP Addres
+	    default     : incdecad_p = 18'b0 ;
+	  endcase
+	end
+
+	//synopsys async_set_reset "resb"
+	always @ ( posedge baseckcrc or negedge resb ) begin
+		if   ( !resb ) incdecad <= 18'h00000  ;
+		else           incdecad <= incdecad_p ;
+	end
+
+	always @ ( incdecen or incdec2 or incdec1 or incdec0 or optram ) begin
+	  casex ( { incdecen, incdec2, incdec1, incdec0, optram } )			// synopsys parallel_case
+	    5'b10001 : { modenop, moderd, modewr, incdecws1, incdecws0 } = 5'b10000 ;	// RAM Nop     State
+	    5'b10011 : { modenop, moderd, modewr, incdecws1, incdecws0 } = 5'b01000 ;	// RAM Read    State
+	    5'b10101 : { modenop, moderd, modewr, incdecws1, incdecws0 } = 5'b01000 ;	// RAM Read    State
+	    5'b10111 : { modenop, moderd, modewr, incdecws1, incdecws0 } = 5'b00101 ;	// RAM A Write State
+	    5'b11001 : { modenop, moderd, modewr, incdecws1, incdecws0 } = 5'b00110 ;	// RAM B Write State
+	    5'b11011 : { modenop, moderd, modewr, incdecws1, incdecws0 } = 5'b01000 ;	// RAM Read    State
+	    5'b11101 : { modenop, moderd, modewr, incdecws1, incdecws0 } = 5'b00101 ;	// RAM A Write State
+	    5'b11111 : { modenop, moderd, modewr, incdecws1, incdecws0 } = 5'b00110 ;	// RAM B Write State
+	    default  : { modenop, moderd, modewr, incdecws1, incdecws0 } = 5'b00000 ;
+	  endcase
+	end
+
+
+	always @ ( incdecen or incdec2 or incdec1 or incdec0 or optflt ) begin
+	  casex ( { incdecen, incdec2, incdec1, incdec0, optflt } )	// synopsys parallel_case
+	    5'b10001 : { modefnop, modefrd } = 2'b10 ;			// FLASH Nop  State
+	    5'b10011 : { modefnop, modefrd } = 2'b01 ;			// FLASH Read State
+	    5'b10101 : { modefnop, modefrd } = 2'b01 ;			// FLASH Read State
+	    5'b10111 : { modefnop, modefrd } = 2'b10 ;			// FLASH Nop  State
+	    5'b11001 : { modefnop, modefrd } = 2'b10 ;			// FLASH Nop  State
+	    5'b11011 : { modefnop, modefrd } = 2'b01 ;			// FLASH Read State
+	    5'b11101 : { modefnop, modefrd } = 2'b10 ;			// FLASH Nop  State
+	    5'b11111 : { modefnop, modefrd } = 2'b10 ;			// FLASH Nop  State
+	    default  : { modefnop, modefrd } = 2'b00 ;
+	  endcase
+	end
+
+	assign	ta17 = tesdbt ? 1'b0      : incdecad[17] ;
+	assign	ta16 = tesdbt ? lfsra[16] : incdecad[16] ;
+	assign	ta15 = tesdbt ? lfsra[15] : incdecad[15] ;
+	assign	ta14 = tesdbt ? lfsra[14] : incdecad[14] ;
+	assign	ta13 = tesdbt ? lfsra[13] : incdecad[13] ;
+	assign	ta12 = tesdbt ? lfsra[12] : incdecad[12] ;
+	assign	ta11 = tesdbt ? lfsra[11] : incdecad[11] ;
+	assign	ta10 = tesdbt ? lfsra[10] : incdecad[10] ;
+	assign	ta9  = tesdbt ? lfsra[9]  : incdecad[9]  ;
+	assign	ta8  = tesdbt ? lfsra[8]  : incdecad[8]  ;
+	assign	ta7  = tesdbt ? lfsra[7]  : incdecad[7]  ;
+	assign	ta6  = tesdbt ? lfsra[6]  : incdecad[6]  ;
+	assign	ta5  = tesdbt ? lfsra[5]  : incdecad[5]  ;
+	assign	ta4  = tesdbt ? lfsra[4]  : incdecad[4]  ;
+	assign	ta3  = tesdbt ? lfsra[3]  : incdecad[3]  ;
+	assign	ta2  = tesdbt ? lfsra[2]  : incdecad[2]  ;
+	assign	ta1  = tesdbt ? lfsra[1]  : incdecad[1]  ;
+	assign	ta0  = tesdbt ? lfsra[0]  : incdecad[0]  ;
+
+endmodule
+
+
+module QLK0RMODECTL2V1_USRCRCCTL (
+			baseck   , resb     , tesinst   ,we_cctl   , stbrele  , hltst     , incdecad , din      ,
+			crc0en   , crcusrst , crchlten  , seltaf_u , dout_cctl 
+			);
+
+	input		baseck    , resb     , tesinst    ,we_cctl ; 
+	input		stbrele   , hltst ;
+	input	[15:0]	din	  ;
+	input	[17:0]	incdecad  ;
+
+	output		crc0en    , crcusrst , crchlten   , seltaf_u ;
+	output	[15:0]	dout_cctl ;
+
+	reg		crchlten  , crcusrst , crcstbrele ;
+	reg	[6:0]	crcctl    ;
+
+	wire		addr2_all1, addr1_all1, addr0_all1 , addr_mach  ;
+	wire		crcusrst_en ;
+	wire 	[5:0]	fea_mach  , fea ;
+
+
+// USER_CRC¥³¥ó¥È¥í¡¼¥ë¡¦¥ì¥¸¥¹¥¿£°(CRC0CTL)
+//
+// ¥¢¥É¥ì¥¹¤Ï*****H¸ÇÄê¤Ç¤¢¤ë¡£
+//
+// +======+=============================================+===============+
+// | Bit  |		  Contents			|   Name	|
+// +======+=============================================+===============+
+// |  7   | CRC Enable                                  | CRC0EN        |
+// +------+---------------------------------------------+---------------+
+// | 5-0  | FLASH READ end address set                  | FEA5-0        | 
+// +======+=============================================+===============+
+
+	//synopsys async_set_reset "resb"
+	always @(posedge baseck or negedge resb) begin
+		if	( !resb )   crcctl <= 7'b0 ;
+		else if ( we_cctl ) crcctl <= { din[7], din[5:0] } ;  
+	end
+
+	assign	crc0en = crcctl[6] ;		// CRCCTL7
+	assign	fea    = crcctl[5:0] ;		// CRCCTL5-0
+
+	assign	dout_cctl = { 8'b0 , crc0en , 1'b0 , fea } ;
+
+// ----------------------------------
+//  Address match Detection Circuit
+// ----------------------------------
+
+	wire [5:0]	incdecad_2 = incdecad[17:12] ;
+	wire [2:0]	incdecad_1 = incdecad[11:9] ;
+	wire [7:0]	incdecad_0 = incdecad[ 8:1] ;
+
+	assign		fea_mach  = incdecad_2 ~^ fea ;
+	assign		addr2_all1 = & fea_mach ;
+	assign		addr1_all1 = & incdecad_1 ;
+	assign		addr0_all1 = & incdecad_0 ;
+	assign		addr_mach = addr2_all1 & addr1_all1 & addr0_all1 & ( incdecad[0] ~^ tesinst ) & hltst ;
+
+// -------------------
+//  USER_CRC Control
+// -------------------
+
+    // --- for HALT Release -----------
+
+	//synopsys async_set_reset "resb"
+	always @ ( posedge baseck or negedge resb ) begin
+		if ( !resb )		    	crchlten  <= 1'b0 ;
+		else if ( crc0en & addr_mach )  crchlten  <= 1'b1 ;
+		else if ( crc0en & !hltst ) 	crchlten  <= 1'b0 ;
+	end
+
+    // --- for incdec control -----------
+
+	assign	crcusrst_en = crc0en & hltst & ~( crchlten | stbrele ) ;
+
+	//synopsys async_set_reset "resb"
+	always @ ( posedge baseck or negedge resb ) begin
+		if ( !resb )		        crcusrst  <= 1'b0 ;
+		else if ( addr_mach | stbrele ) crcusrst  <= 1'b0 ;
+		else if ( crcusrst_en )         crcusrst  <= 1'b1 ;
+	end
+
+    // --- for seltaf -------------------
+
+	//synopsys async_set_reset "resb"
+	always @ ( posedge baseck or negedge resb ) begin
+		if ( !resb )		       crcstbrele  <= 1'b0 ;
+		else if ( crchlten | stbrele ) crcstbrele  <= 1'b1 ;
+		else if ( !(crc0en & hltst)  ) crcstbrele  <= 1'b0 ;		// v1.3 add
+	end
+
+	assign	seltaf_u = crc0en & hltst & ~crcstbrele ;
+
+endmodule
+
+// ------------------------------------------
+// CRC/LANDAM ADDR(for BT)/HEXDEC
+//-------------------------------------------
+module QLK0RMODECTL2V1_PGCRC  (
+			pocrel2  , resetinb , baseck   , resb     ,
+			tesdbt   , tesinst  , optmdump , optram   , optflmem , optdfl   , optlfsr  ,
+			raedis   , rammulti , selcfecc , modenop  , moderd   , modefrd  ,
+			rameccer , eccer    , deccer   , vceq     , tpidsel  ,
+			routen   , crc0en   , incdecen , crcouten , vceqoen  , crcusrst , 
+			we_pgch  , we_pgcl  , we_lfsd  ,
+			mdr15    , mdr14    , mdr13    , mdr12    , mdr11    , mdr10    , mdr9     , mdr8     ,
+			mdr7     , mdr6     , mdr5     , mdr4     , mdr3     , mdr2     , mdr1     , mdr0     ,
+			eiramo7  , eiramo6  , eiramo5  , eiramo4  , eiramo3  , eiramo2  , eiramo1  , eiramo0  ,
+			rmultio23, rmultio22, rmultio21, rmultio20, rmultio19, rmultio18, rmultio17, rmultio16,
+			rmultio15, rmultio14, rmultio13, rmultio12, rmultio11, rmultio10, rmultio9 , rmultio8 ,
+			rmultio7 , rmultio6 , rmultio5 , rmultio4 , rmultio3 , rmultio2 , rmultio1 , rmultio0 ,
+			flro37   , flro36   , flro35   , flro34   , flro33   , flro32   ,
+			flro31   , flro30   , flro29   , flro28   , flro27   , flro26   , flro25   , flro24   ,
+			flro23   , flro22   , flro21   , flro20   , flro19   , flro18   , flro17   , flro16   ,
+			flro15   , flro14   , flro13   , flro12   , flro11   , flro10   , flro9    , flro8    ,
+			flro7    , flro6    , flro5    , flro4    , flro3    , flro2    , flro1    , flro0    ,
+			dflro11  , dflro10  , dflro9   , dflro8   ,
+			dflro7   , dflro6   , dflro5   , dflro4   , dflro3   , dflro2   , dflro1   , dflro0   ,
+			dump0    , dump1    , dump2    , dump3    , dump4    , dump5    , dump6    , dump7    , 
+			dumpe0   , dumpe1   , din      ,
+
+			rout0_p  , rout1_p  , exrout   , lfsscain , lfsscaen , lfssresz ,
+			lfsra    , dout_pgcl, dout_pgch, dout_lfsd, scanmode 
+	      ) ;
+
+	input		pocrel2  , resetinb , baseck   , resb     ;
+	input		tesdbt   , tesinst  , optmdump , optram   , optflmem , optdfl   , optlfsr  ,
+			raedis   , rammulti , selcfecc ; 
+	input		modenop  , moderd   , modefrd  ;
+	input		rameccer , eccer    , deccer   , vceq     , tpidsel  ;
+	input		routen   , crc0en   , incdecen , crcouten , vceqoen  , crcusrst  ;
+	input		we_pgch  , we_pgcl  , we_lfsd  ;
+
+	input		mdr15    , mdr14    , mdr13    , mdr12    , mdr11    , mdr10    , mdr9     , mdr8     ,
+			mdr7     , mdr6     , mdr5     , mdr4     , mdr3     , mdr2     , mdr1     , mdr0     ,
+			eiramo7  , eiramo6  , eiramo5  , eiramo4  , eiramo3  , eiramo2  , eiramo1  , eiramo0  ;
+	input		rmultio23, rmultio22, rmultio21, rmultio20, rmultio19, rmultio18, rmultio17, rmultio16,
+			rmultio15, rmultio14, rmultio13, rmultio12, rmultio11, rmultio10, rmultio9 , rmultio8 ,
+			rmultio7 , rmultio6 , rmultio5 , rmultio4 , rmultio3 , rmultio2 , rmultio1 , rmultio0 ;
+	input		flro37   , flro36   , flro35   , flro34   , flro33   , flro32   ;
+	input		flro31   , flro30   , flro29   , flro28   , flro27   , flro26   , flro25   , flro24   ,
+			flro23   , flro22   , flro21   , flro20   , flro19   , flro18   , flro17   , flro16   ,
+			flro15   , flro14   , flro13   , flro12   , flro11   , flro10   , flro9    , flro8    ,
+			flro7    , flro6    , flro5    , flro4    , flro3    , flro2    , flro1    , flro0    ;
+	input		dflro11  , dflro10  , dflro9   , dflro8   ,
+			dflro7   , dflro6   , dflro5   , dflro4   , dflro3   , dflro2   , dflro1   , dflro0   ;
+	input		dump0    , dump1    , dump2    , dump3    , dump4    , dump5    , dump6    , dump7    , 
+			dumpe0   , dumpe1   ;
+	input	[15:0]	din      ;
+
+	input		scanmode ;					// v1.3 add
+
+	output		lfsscain , lfsscaen , lfssresz ;
+	output		rout0_p  , rout1_p  ;
+	output	[3:0]	exrout   ;
+	output	[16:0]	lfsra    ; 					// tesdbt-mode randam addres
+	output	[15:0]	dout_pgcl , dout_pgch , dout_lfsd ;
+
+	wire		doz31    , doz30    , doz29    , doz28    , doz27    , doz26    , doz25    , doz24    ,
+			doz23    , doz22    , doz21    , doz20    , doz19    , doz18    , doz17    , doz16    ,
+			doz15    , doz14    , doz13    , doz12    , doz11    , doz10    , doz9     , doz8     ,
+			doz7     , doz6     , doz5     , doz4     , doz3     , doz2     , doz1     , doz0     ;
+
+QLK0RMODECTL2V1_PGCRCBUF modectl_pgcrcbuf (
+		.tesinst(tesinst)    , .crc0en(crc0en)      ,
+		.optflmem(optflmem)  , .optmdump(optmdump)  , .optram(optram)      , .optdfl(optdfl)      ,
+		.raedis(raedis)      , .rammulti(rammulti)  , .selcfecc(selcfecc)  ,
+		.mdr15(mdr15)        , .mdr14(mdr14)        , .mdr13(mdr13)        , .mdr12(mdr12)        ,
+		.mdr11(mdr11)        , .mdr10(mdr10)        , .mdr9(mdr9)          , .mdr8(mdr8)          ,
+		.mdr7(mdr7)          , .mdr6(mdr6)          , .mdr5(mdr5)          , .mdr4(mdr4)          ,
+		.mdr3(mdr3)          , .mdr2(mdr2)          , .mdr1(mdr1)          , .mdr0(mdr0)          ,
+		.eiramo7(eiramo7)    , .eiramo6(eiramo6)    , .eiramo5(eiramo5)    , .eiramo4(eiramo4)    ,
+		.eiramo3(eiramo3)    , .eiramo2(eiramo2)    , .eiramo1(eiramo1)    , .eiramo0(eiramo0)    ,
+		.rmultio23(rmultio23), .rmultio22(rmultio22), .rmultio21(rmultio21), .rmultio20(rmultio20),
+		.rmultio19(rmultio19), .rmultio18(rmultio18), .rmultio17(rmultio17), .rmultio16(rmultio16),
+		.rmultio15(rmultio15), .rmultio14(rmultio14), .rmultio13(rmultio13), .rmultio12(rmultio12),
+		.rmultio11(rmultio11), .rmultio10(rmultio10), .rmultio9(rmultio9)  , .rmultio8(rmultio8)  ,
+		.rmultio7(rmultio7)  , .rmultio6(rmultio6)  , .rmultio5(rmultio5)  , .rmultio4(rmultio4)  ,
+		.rmultio3(rmultio3)  , .rmultio2(rmultio2)  , .rmultio1(rmultio1)  , .rmultio0(rmultio0)  ,
+		.flro37(flro37)      , .flro36(flro36)      , .flro35(flro35)      , .flro34(flro34)      ,
+		.flro33(flro33)      , .flro32(flro32)      ,
+		.flro31(flro31)      , .flro30(flro30)      , .flro29(flro29)      , .flro28(flro28)      ,
+		.flro27(flro27)      , .flro26(flro26)      , .flro25(flro25)      , .flro24(flro24)      ,
+		.flro23(flro23)      , .flro22(flro22)      , .flro21(flro21)      , .flro20(flro20)      ,
+		.flro19(flro19)      , .flro18(flro18)      , .flro17(flro17)      , .flro16(flro16)      ,
+		.flro15(flro15)      , .flro14(flro14)      , .flro13(flro13)      , .flro12(flro12)      ,
+		.flro11(flro11)      , .flro10(flro10)      , .flro9(flro9)        , .flro8(flro8)        ,
+		.flro7(flro7)        , .flro6(flro6)        , .flro5(flro5)        , .flro4(flro4)        ,
+		.flro3(flro3)        , .flro2(flro2)        , .flro1(flro1)        , .flro0(flro0)        ,
+		.dflro11(dflro11)    , .dflro10(dflro10)    , .dflro9(dflro9)      , .dflro8(dflro8)      ,
+		.dflro7(dflro7)      , .dflro6(dflro6)      , .dflro5(dflro5)      , .dflro4(dflro4)      ,
+		.dflro3(dflro3)      , .dflro2(dflro2)      , .dflro1(dflro1)      , .dflro0(dflro0)      ,
+		.dump0(dump0)        , .dump1(dump1)        , .dump2(dump2)        , .dump3(dump3)        , 
+		.dump4(dump4)        , .dump5(dump5)        , .dump6(dump6)        , .dump7(dump7)        , 
+		.dumpe0(dumpe0)      , .dumpe1(dumpe1)      ,
+		.doz31(doz31)        , .doz30(doz30)        , .doz29(doz29)        , .doz28(doz28)        ,
+		.doz27(doz27)        , .doz26(doz26)        , .doz25(doz25)        , .doz24(doz24)        ,
+		.doz23(doz23)        , .doz22(doz22)        , .doz21(doz21)        , .doz20(doz20)        ,
+		.doz19(doz19)        , .doz18(doz18)        , .doz17(doz17)        , .doz16(doz16)        ,
+		.doz15(doz15)        , .doz14(doz14)        , .doz13(doz13)        , .doz12(doz12)        ,
+		.doz11(doz11)        , .doz10(doz10)        , .doz9(doz9)          , .doz8(doz8)          ,
+		.doz7(doz7)          , .doz6(doz6)          , .doz5(doz5)          , .doz4(doz4)          ,
+		.doz3(doz3)          , .doz2(doz2)          , .doz1(doz1)          , .doz0(doz0)          ,
+		.exrout(exrout)
+		);
+
+QLK0RMODECTL2V1_PGCRCSFT modectl_pgcrcsft (
+		.pocrel2(pocrel2)    , .resetinb(resetinb)  , .baseck(baseck)      , .resb(resb)          ,
+		.tesdbt(tesdbt)      , .tesinst(tesinst)    , .optmdump(optmdump)  , .optflmem(optflmem)  , 
+		.optdfl(optdfl)      , .optlfsr(optlfsr)    , .modenop(modenop)    , .moderd(moderd)      , 
+		.modefrd(modefrd)    , .optram(optram)      ,
+		.doz31(doz31)        , .doz30(doz30)        , .doz29(doz29)        , .doz28(doz28)        ,
+		.doz27(doz27)        , .doz26(doz26)        , .doz25(doz25)        , .doz24(doz24)        ,
+		.doz23(doz23)        , .doz22(doz22)        , .doz21(doz21)        , .doz20(doz20)        ,
+		.doz19(doz19)        , .doz18(doz18)        , .doz17(doz17)        , .doz16(doz16)        ,
+		.doz15(doz15)        , .doz14(doz14)        , .doz13(doz13)        , .doz12(doz12)        ,
+		.doz11(doz11)        , .doz10(doz10)        , .doz9(doz9)          , .doz8(doz8)          ,
+		.doz7(doz7)          , .doz6(doz6)          , .doz5(doz5)          , .doz4(doz4)          ,
+		.doz3(doz3)          , .doz2(doz2)          , .doz1(doz1)          , .doz0(doz0)          ,
+		.rameccer(rameccer)  , .eccer(eccer)        , .deccer(deccer)      , .vceq(vceq)          , 
+		.routen(routen)      , .crc0en(crc0en)      , .incdecen(incdecen)  , .crcouten(crcouten)  , 
+		.vceqoen(vceqoen)    , .crcusrst(crcusrst)  , .din(din)            , .tpidsel(tpidsel)    , 
+		.we_pgch(we_pgch)    , .we_pgcl(we_pgcl)    , .we_lfsd(we_lfsd)    , 
+		.dout_pgcl(dout_pgcl), .dout_pgch(dout_pgch), .dout_lfsd(dout_lfsd),
+		.lfsscain(lfsscain)  , .lfsscaen(lfsscaen)  , .lfssresz(lfssresz)  , .scanmode(scanmode)  ,
+		.lfsra(lfsra)        , .rout0_p(rout0_p)    , .rout1_p(rout1_p) 
+		);
+
+endmodule
+
+
+module QLK0RMODECTL2V1_PGCRCBUF (
+			crc0en   ,tesinst   , optmdump , optflmem , optdfl   , optram   , raedis   , rammulti ,
+			selcfecc ,
+			mdr15    , mdr14    , mdr13    , mdr12    , mdr11    , mdr10    , mdr9     , mdr8     ,
+			mdr7     , mdr6     , mdr5     , mdr4     , mdr3     , mdr2     , mdr1     , mdr0     ,
+			eiramo7  , eiramo6  , eiramo5  , eiramo4  , eiramo3  , eiramo2  , eiramo1  , eiramo0  ,
+			rmultio23, rmultio22, rmultio21, rmultio20, rmultio19, rmultio18, rmultio17, rmultio16,
+			rmultio15, rmultio14, rmultio13, rmultio12, rmultio11, rmultio10, rmultio9 , rmultio8 ,
+			rmultio7 , rmultio6 , rmultio5 , rmultio4 , rmultio3 , rmultio2 , rmultio1 , rmultio0 ,
+			flro37   , flro36   , flro35   , flro34   , flro33   , flro32   ,
+			flro31   , flro30   , flro29   , flro28   , flro27   , flro26   , flro25   , flro24   ,
+			flro23   , flro22   , flro21   , flro20   , flro19   , flro18   , flro17   , flro16   ,
+			flro15   , flro14   , flro13   , flro12   , flro11   , flro10   , flro9    , flro8    ,
+			flro7    , flro6    , flro5    , flro4    , flro3    , flro2    , flro1    , flro0    ,
+			dflro11  , dflro10  , dflro9   , dflro8   ,
+			dflro7   , dflro6   , dflro5   , dflro4   , dflro3   , dflro2   , dflro1   , dflro0   ,
+			dump0    , dump1    , dump2    , dump3    , dump4    , dump5    , dump6    , dump7    , 
+			dumpe0   , dumpe1   ,
+
+			doz31    , doz30    , doz29    , doz28    , doz27    , doz26    , doz25    , doz24    ,
+			doz23    , doz22    , doz21    , doz20    , doz19    , doz18    , doz17    , doz16    ,
+			doz15    , doz14    , doz13    , doz12    , doz11    , doz10    , doz9     , doz8     ,
+			doz7     , doz6     , doz5     , doz4     , doz3     , doz2     , doz1     , doz0     ,
+			exrout 
+		);
+
+
+	input		crc0en   , tesinst  , optmdump , optflmem , optdfl   , optram   , raedis   , rammulti ,
+			selcfecc ;
+	input		mdr15    , mdr14    , mdr13    , mdr12    , mdr11    , mdr10    , mdr9     , mdr8     ,
+			mdr7     , mdr6     , mdr5     , mdr4     , mdr3     , mdr2     , mdr1     , mdr0     ,
+			eiramo7  , eiramo6  , eiramo5  , eiramo4  , eiramo3  , eiramo2  , eiramo1  , eiramo0  ;
+	input		rmultio23, rmultio22, rmultio21, rmultio20, rmultio19, rmultio18, rmultio17, rmultio16,
+			rmultio15, rmultio14, rmultio13, rmultio12, rmultio11, rmultio10, rmultio9 , rmultio8 ,
+			rmultio7 , rmultio6 , rmultio5 , rmultio4 , rmultio3 , rmultio2 , rmultio1 , rmultio0 ;
+	input		flro37   , flro36   , flro35   , flro34   , flro33   , flro32   ;
+	input		flro31   , flro30   , flro29   , flro28   , flro27   , flro26   , flro25   , flro24   ,
+			flro23   , flro22   , flro21   , flro20   , flro19   , flro18   , flro17   , flro16   ,
+			flro15   , flro14   , flro13   , flro12   , flro11   , flro10   , flro9    , flro8    ,
+			flro7    , flro6    , flro5    , flro4    , flro3    , flro2    , flro1    , flro0    ;
+	input		dflro11  , dflro10  , dflro9   , dflro8   ,
+			dflro7   , dflro6   , dflro5   , dflro4   , dflro3   , dflro2   , dflro1   , dflro0   ;
+
+	input		dump0    , dump1    , dump2    , dump3    , dump4    , dump5    , dump6    , dump7    , 
+			dumpe0   , dumpe1   ;
+
+	output		doz31    , doz30    , doz29    , doz28    , doz27    , doz26    , doz25    , doz24    ,
+			doz23    , doz22    , doz21    , doz20    , doz19    , doz18    , doz17    , doz16    ,
+			doz15    , doz14    , doz13    , doz12    , doz11    , doz10    , doz9     , doz8     ,
+			doz7     , doz6     , doz5     , doz4     , doz3     , doz2     , doz1     , doz0     ;
+	output	[3:0]	exrout   ;
+
+	reg		doz31_p  , doz30_p  , doz29_p  , doz28_p  , doz27_p  , doz26_p  , doz25_p  , doz24_p  ,
+			doz23_p  , doz22_p  , doz21_p  , doz20_p  , doz19_p  , doz18_p  , doz17_p  , doz16_p  ,
+			doz15_p  , doz14_p  , doz13_p  , doz12_p  , doz11_p  , doz10_p  , doz9_p   , doz8_p   ,
+			doz7_p   , doz6_p   , doz5_p   , doz4_p   , doz3_p   , doz2_p   , doz1_p   , doz0_p   ;
+
+	reg	[3:0]	exrout   ;
+
+	wire	[31:0]	flro     ;
+	wire	[5:0]	flroe    ;
+	wire	[11:0]	dflro    ;
+	wire	[7:0]	eiramo   ;
+	wire	[15:0]	mdr      ;
+	wire	[23:0]	rmultio  ;
+
+	wire	[3:0]	flro_0   , flro_1   , flro_2   , flro_3   , flro_4   , 
+			flro_5   , flro_6   , flro_7   ; 
+	wire	[3:0]	flro_e0  , flro_e1  ;
+	wire	[3:0]	dflro_0  , dflro_1  , dflro_e  ;
+	wire	[3:0]	mdr_0    , mdr_1    , mdr_2    , mdr_3    ;
+	wire	[3:0]	ram_e0   , ram_e1   ;
+
+// --- ¥á¥â¥ê¥À¥ó¥×·ë²Ì¤ÎÏ¢·ë
+
+	assign	flro 	= { flro31  , flro30  , flro29  , flro28 , flro27  , flro26  , flro25  , flro24 , 
+			    flro23  , flro22  , flro21  , flro20 , flro19  , flro18  , flro17  , flro16 , 
+			    flro15  , flro14  , flro13  , flro12 , flro11  , flro10  , flro9   , flro8  , 
+			    flro7   , flro6   , flro5   , flro4  , flro3   , flro2   , flro1   , flro0  }; 
+	assign	flroe	= { flro37  , flro36  , flro35  , flro34 , flro33  , flro32  };
+	assign	dflro	= { dflro11 , dflro10 , dflro9  , dflro8 , dflro7  , dflro6  , dflro5  , dflro4  ,
+			    dflro3  , dflro2  , dflro1  , dflro0  };
+
+	assign	eiramo	= { eiramo7 , eiramo6 , eiramo5 , eiramo4 , eiramo3 , eiramo2 , eiramo1 , eiramo0 };
+	assign	mdr	= { mdr15   , mdr14   , mdr13   , mdr12   , mdr11   , mdr10   , mdr9    , mdr8    , 
+			    mdr7    , mdr6    , mdr5    , mdr4    , mdr3    , mdr2    , mdr1    , mdr0    };
+	assign	rmultio = { rmultio23, rmultio22, rmultio21, rmultio20, rmultio19, rmultio18, rmultio17, rmultio16,
+			    rmultio15, rmultio14, rmultio13, rmultio12, rmultio11, rmultio10, rmultio9 , rmultio8 ,
+			    rmultio7 , rmultio6 , rmultio5 , rmultio4 , rmultio3 , rmultio2 , rmultio1 , rmultio0 };
+
+	// -- for exdump output --
+	assign	flro_e1	= { 2'b00   , flro37  , flro36  } ;
+	assign	flro_e0 = { flro35  , flro34  , flro33  , flro32  };
+	assign	flro_7 	= { flro31  , flro30  , flro29  , flro28  };
+	assign	flro_6 	= { flro27  , flro26  , flro25  , flro24  };
+	assign	flro_5 	= { flro23  , flro22  , flro21  , flro20  };
+	assign	flro_4 	= { flro19  , flro18  , flro17  , flro16  };
+	assign	flro_3 	= { flro15  , flro14  , flro13  , flro12  };
+	assign	flro_2 	= { flro11  , flro10  , flro9   , flro8   };
+	assign	flro_1 	= { flro7   , flro6   , flro5   , flro4   };
+	assign	flro_0 	= { flro3   , flro2   , flro1   , flro0   };
+
+	assign	dflro_e	= { dflro11 , dflro10 , dflro9  , dflro8  };
+	assign	dflro_1	= { dflro7  , dflro6  , dflro5  , dflro4  };
+	assign	dflro_0	= { dflro3  , dflro2  , dflro1  , dflro0  };
+
+	assign	ram_e1	= { eiramo7 , eiramo6 , eiramo5 , eiramo4 };	// for RAM-ECC
+	assign	ram_e0	= { eiramo3 , eiramo2 , eiramo1 , eiramo0 };	// for RAM-ECC/RAM-Parity(2'b00,parity1-0)
+	assign	mdr_3	= { mdr15   , mdr14   , mdr13   , mdr12   };
+	assign	mdr_2	= { mdr11   , mdr10   , mdr9    , mdr8    };
+	assign	mdr_1	= { mdr7    , mdr6    , mdr5    , mdr4    };
+	assign	mdr_0	= { mdr3    , mdr2    , mdr1    , mdr0    };
+
+
+// =====================================================================================
+// CRCÆþÎÏ¥Ç¡¼¥¿¤ÎÁªÂò
+//   ROM or RAM( ECCÄûÀµ¤¢¤ê¡¿¤Ê¤·,¥Þ¥ë¥Á¥À¥ó¥×)
+// =====================================================================================
+
+	always @ ( crc0en or tesinst or optmdump or optflmem or optdfl or selcfecc or optram  or raedis   or
+		   raedis or rammulti or flro or flroe or dflro or mdr or eiramo or rmultio   ) begin
+	  casex ( { crc0en , tesinst , optmdump , optflmem , optdfl , selcfecc , optram , raedis , rammulti } )	// synopsys parallel_case
+	    9'b1xx000000 :{ doz31_p  , doz30_p  , doz29_p  , doz28_p  , doz27_p  , doz26_p  , doz25_p  , doz24_p  ,
+			    doz23_p  , doz22_p  , doz21_p  , doz20_p  , doz19_p  , doz18_p  , doz17_p  , doz16_p  ,
+			    doz15_p  , doz14_p  , doz13_p  , doz12_p  , doz11_p  , doz10_p  , doz9_p   , doz8_p   ,
+			    doz7_p   , doz6_p   , doz5_p   , doz4_p   , doz3_p   , doz2_p   , doz1_p   , doz0_p   }
+                       =  { flro  } ;	 		 	// USR_CRC MODE
+	    9'b011100000 :{ doz31_p  , doz30_p  , doz29_p  , doz28_p  , doz27_p  , doz26_p  , doz25_p  , doz24_p  ,
+			    doz23_p  , doz22_p  , doz21_p  , doz20_p  , doz19_p  , doz18_p  , doz17_p  , doz16_p  ,
+			    doz15_p  , doz14_p  , doz13_p  , doz12_p  , doz11_p  , doz10_p  , doz9_p   , doz8_p   ,
+			    doz7_p   , doz6_p   , doz5_p   , doz4_p   , doz3_p   , doz2_p   , doz1_p   , doz0_p   }
+                       =  { flro  } ;	  			// CODE FLASH DUMP MODE
+	    9'b011101000 :{ doz31_p  , doz30_p  , doz29_p  , doz28_p  , doz27_p  , doz26_p  , doz25_p  , doz24_p  ,
+			    doz23_p  , doz22_p  , doz21_p  , doz20_p  , doz19_p  , doz18_p  , doz17_p  , doz16_p  ,
+			    doz15_p  , doz14_p  , doz13_p  , doz12_p  , doz11_p  , doz10_p  , doz9_p   , doz8_p   ,
+			    doz7_p   , doz6_p   , doz5_p   , doz4_p   , doz3_p   , doz2_p   , doz1_p   , doz0_p   }
+                       = { 26'b0    , flroe   };		// CODE FLASH ECC-BIT MODE
+	    9'b011010000 :{ doz31_p  , doz30_p  , doz29_p  , doz28_p  , doz27_p  , doz26_p  , doz25_p  , doz24_p  ,
+			    doz23_p  , doz22_p  , doz21_p  , doz20_p  , doz19_p  , doz18_p  , doz17_p  , doz16_p  ,
+			    doz15_p  , doz14_p  , doz13_p  , doz12_p  , doz11_p  , doz10_p  , doz9_p   , doz8_p   ,
+			    doz7_p   , doz6_p   , doz5_p   , doz4_p   , doz3_p   , doz2_p   , doz1_p   , doz0_p   }
+                       = { 20'b0    , dflro   };		// DATA FLASH DUMP MODE
+	    9'b011000100 :{ doz31_p  , doz30_p  , doz29_p  , doz28_p  , doz27_p  , doz26_p  , doz25_p  , doz24_p  ,
+			    doz23_p  , doz22_p  , doz21_p  , doz20_p  , doz19_p  , doz18_p  , doz17_p  , doz16_p  ,
+			    doz15_p  , doz14_p  , doz13_p  , doz12_p  , doz11_p  , doz10_p  , doz9_p   , doz8_p   ,
+			    doz7_p   , doz6_p   , doz5_p   , doz4_p   , doz3_p   , doz2_p   , doz1_p   , doz0_p   }
+                       = { 16'b0    , mdr     };		// RAM DUMP(ECC) MODE
+	    9'b011000110 :{ doz31_p  , doz30_p  , doz29_p  , doz28_p  , doz27_p  , doz26_p  , doz25_p  , doz24_p  ,
+			    doz23_p  , doz22_p  , doz21_p  , doz20_p  , doz19_p  , doz18_p  , doz17_p  , doz16_p  ,
+			    doz15_p  , doz14_p  , doz13_p  , doz12_p  , doz11_p  , doz10_p  , doz9_p   , doz8_p   ,
+			    doz7_p   , doz6_p   , doz5_p   , doz4_p   , doz3_p   , doz2_p   , doz1_p   , doz0_p   }
+                       = { 8'b0     , eiramo   ,  mdr };	// RAM DUMP(ECCDIS) MODE
+	    9'b01x0001x1 :{ doz31_p  , doz30_p  , doz29_p  , doz28_p  , doz27_p  , doz26_p  , doz25_p  , doz24_p  ,
+			    doz23_p  , doz22_p  , doz21_p  , doz20_p  , doz19_p  , doz18_p  , doz17_p  , doz16_p  ,
+			    doz15_p  , doz14_p  , doz13_p  , doz12_p  , doz11_p  , doz10_p  , doz9_p   , doz8_p   ,
+			    doz7_p   , doz6_p   , doz5_p   , doz4_p   , doz3_p   , doz2_p   , doz1_p   , doz0_p   }
+                       = { 8'b0     , rmultio };		// RAM MULTI DUMP MODE
+	    default	 :{ doz31_p  , doz30_p  , doz29_p  , doz28_p  , doz27_p  , doz26_p  , doz25_p  , doz24_p  ,
+			    doz23_p  , doz22_p  , doz21_p  , doz20_p  , doz19_p  , doz18_p  , doz17_p  , doz16_p  ,
+			    doz15_p  , doz14_p  , doz13_p  , doz12_p  , doz11_p  , doz10_p  , doz9_p   , doz8_p   ,
+			    doz7_p   , doz6_p   , doz5_p   , doz4_p   , doz3_p   , doz2_p   , doz1_p   , doz0_p   }
+                       =   32'b0    ;				// MISR NO USE or TESDBT
+	  endcase
+	end
+
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf31	( .sig_out(doz31), .sig_in(doz31_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf30	( .sig_out(doz30), .sig_in(doz30_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf29	( .sig_out(doz29), .sig_in(doz29_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf28	( .sig_out(doz28), .sig_in(doz28_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf27	( .sig_out(doz27), .sig_in(doz27_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf26	( .sig_out(doz26), .sig_in(doz26_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf25	( .sig_out(doz25), .sig_in(doz25_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf24	( .sig_out(doz24), .sig_in(doz24_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf23	( .sig_out(doz23), .sig_in(doz23_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf22	( .sig_out(doz22), .sig_in(doz22_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf21	( .sig_out(doz21), .sig_in(doz21_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf20	( .sig_out(doz20), .sig_in(doz20_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf19	( .sig_out(doz19), .sig_in(doz19_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf18	( .sig_out(doz18), .sig_in(doz18_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf17	( .sig_out(doz17), .sig_in(doz17_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf16	( .sig_out(doz16), .sig_in(doz16_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf15	( .sig_out(doz15), .sig_in(doz15_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf14	( .sig_out(doz14), .sig_in(doz14_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf13	( .sig_out(doz13), .sig_in(doz13_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf12	( .sig_out(doz12), .sig_in(doz12_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf11	( .sig_out(doz11), .sig_in(doz11_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf10	( .sig_out(doz10), .sig_in(doz10_p) );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf9	( .sig_out(doz9) , .sig_in(doz9_p)  );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf8	( .sig_out(doz8) , .sig_in(doz8_p)  );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf7	( .sig_out(doz7) , .sig_in(doz7_p)  );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf6	( .sig_out(doz6) , .sig_in(doz6_p)  );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf5	( .sig_out(doz5) , .sig_in(doz5_p)  );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf4	( .sig_out(doz4) , .sig_in(doz4_p)  );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf3	( .sig_out(doz3) , .sig_in(doz3_p)  );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf2	( .sig_out(doz2) , .sig_in(doz2_p)  );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf1	( .sig_out(doz1) , .sig_in(doz1_p)  );
+	QLK0RMODECTL2V1_PGRCDRIVE_LVX dbuf0	( .sig_out(doz0) , .sig_in(doz0_p)  );
+
+// =====================================================================================
+// ¥á¥â¥ê¥À¥ó¥×·ë²Ì ½ÐÎÏ¤ÎÁªÂò
+// =====================================================================================
+
+	always @ ( optmdump   or optflmem or optdfl or optram 
+		    or dump0   or dump1   or dump2   or dump3   or dump4  
+		    or dump5   or dump6   or dump7   or dumpe0  or dumpe1
+		    or flro_0  or flro_1  or flro_2  or flro_3  or flro_4 or flro_5 or flro_6 or flro_7
+		    or flro_e0 or flro_e1 or dflro_0 or dflro_1 or dflro_e 
+		    or mdr_0   or mdr_1   or mdr_2   or mdr_3   or ram_e0 or ram_e1  ) begin
+	  casex ({ optmdump , optflmem , optdfl , optram , dump0 , dump1  , dump2  ,
+		   dump3    , dump4    , dump5  , dump6  , dump7 , dumpe0 , dumpe1   } ) // synopsys parallel_case
+	    14'b11001000000000 : exrout = flro_0  ;
+	    14'b11000100000000 : exrout = flro_1  ;
+	    14'b11000010000000 : exrout = flro_2  ;
+	    14'b11000001000000 : exrout = flro_3  ;
+	    14'b11000000100000 : exrout = flro_4  ;
+	    14'b11000000010000 : exrout = flro_5  ;
+	    14'b11000000001000 : exrout = flro_6  ;
+	    14'b11000000000100 : exrout = flro_7  ;
+	    14'b11000000000010 : exrout = flro_e0 ;
+	    14'b11000000000001 : exrout = flro_e1 ;
+	    14'b10101000000000 : exrout = dflro_0 ;
+	    14'b10100100000000 : exrout = dflro_1 ;
+	    14'b10100010000000 : exrout = dflro_0 ;
+	    14'b10100001000000 : exrout = dflro_1 ;
+	    14'b10100000100000 : exrout = dflro_0 ;
+	    14'b10100000010000 : exrout = dflro_1 ;
+	    14'b10100000001000 : exrout = dflro_0 ;
+	    14'b10100000000100 : exrout = dflro_1 ;
+	    14'b10100000000010 : exrout = dflro_e ;
+	    14'b10100000000001 : exrout = dflro_e ;
+	    14'b10011000000000 : exrout = mdr_0   ;
+	    14'b10010100000000 : exrout = mdr_1   ;
+	    14'b10010010000000 : exrout = mdr_2   ;
+	    14'b10010001000000 : exrout = mdr_3   ;
+	    14'b10010000100000 : exrout = mdr_0   ;
+	    14'b10010000010000 : exrout = mdr_1   ;
+	    14'b10010000001000 : exrout = mdr_2   ;
+	    14'b10010000000100 : exrout = mdr_3   ;
+	    14'b10010000000010 : exrout = ram_e0  ;
+	    14'b10010000000001 : exrout = ram_e1  ;
+	    default            : exrout = 4'b0 ;
+	  endcase
+	end
+
+endmodule
+
+
+module QLK0RMODECTL2V1_PGRCDRIVE_LVX ( sig_out, sig_in );
+
+	input		sig_in  ;
+	output		sig_out ;
+
+	TBBUFX1  pgrcdrive  ( .N01(sig_out), .H01(sig_in) );
+
+endmodule
+
+
+module QLK0RMODECTL2V1_PGCRCSFT (
+			pocrel2  , resetinb , baseck   , resb      , scanmode  ,
+			tesdbt   , tesinst  , optmdump , optflmem  , optdfl    , optlfsr   , optram   ,
+			modenop  , moderd   , modefrd  ,
+			doz31    , doz30    , doz29    , doz28     , doz27     , doz26     , doz25    , doz24    ,
+			doz23    , doz22    , doz21    , doz20     , doz19     , doz18     , doz17    , doz16    ,
+			doz15    , doz14    , doz13    , doz12     , doz11     , doz10     , doz9     , doz8     ,
+			doz7     , doz6     , doz5     , doz4      , doz3      , doz2      , doz1     , doz0     ,
+			rameccer , eccer    , deccer   , vceq     , tpidsel   ,
+			routen   , crc0en   , incdecen , crcouten  , vceqoen   , crcusrst  ,
+			we_pgch  , we_pgcl  , we_lfsd  , dout_pgcl , dout_pgch , dout_lfsd ,
+			din      ,
+	//	pgcrc-out
+			rout0_p  , rout1_p  ,
+	//	lfsr-out
+			lfsscain , lfsscaen , lfssresz ,
+			lfsra  
+			);
+
+	input		pocrel2  , resetinb  , baseck    , resb      ,
+			tesdbt   , tesinst   , optmdump  , optflmem  , optdfl   , optlfsr  , optram   ,
+			modenop  , moderd    , modefrd   ;
+	input		doz31    , doz30     , doz29     , doz28     , doz27    , doz26    , doz25    , doz24    ,
+			doz23    , doz22     , doz21     , doz20     , doz19    , doz18    , doz17    , doz16    ,
+			doz15    , doz14     , doz13     , doz12     , doz11    , doz10    , doz9     , doz8     ,
+			doz7     , doz6      , doz5      , doz4      , doz3     , doz2     , doz1     , doz0     ;
+	input		rameccer , eccer    , deccer    , vceq      , tpidsel   ;
+	input		routen   , crc0en    , incdecen  , crcouten  , vceqoen  ;
+	input		crcusrst ;
+	input		we_pgch  , we_pgcl  , we_lfsd    ; 
+	input	[15:0]	din      ;
+
+	input		scanmode ;	// v1.3 add
+
+	output		rout0_p  , rout1_p   ;
+	output		lfsscain , lfsscaen  , lfssresz ;
+
+	output	[15:0]	dout_pgcl , dout_pgch , dout_lfsd ;
+	output	[16:0]	lfsra    ; 				// tesdbt randam addres
+
+	wire		lfsrresb , pgcrcresb, crccalen ;
+	
+	wire		pgcrc22  , pgcrc21  , pgcrc20  , pgcrc19  , pgcrc18  , pgcrc17  , pgcrc16  ,
+			pgcrc15  , pgcrc14  , pgcrc13  , pgcrc12  , pgcrc11  , pgcrc10  , pgcrc9   , pgcrc8  ,
+			pgcrc7   , pgcrc6   , pgcrc5   , pgcrc4   , pgcrc3   , pgcrc2   , pgcrc1   , pgcrc0  ;
+
+	reg		lfssresz_p1, lfssresz_p2 ;
+
+	reg		rout0_p  , rout1_p  ;
+	reg		clken_p2 , eccer_accum ;
+	reg		rddata_msk ;
+	reg	[22:0]	pgcrc_p  ;
+
+	wire		vceq_o   , eccer_o   , deccer_o    , reccer_o    ;
+	wire		crcmod   , lfsrbtmod , lfsrdecmod  , crcoutmod   , lfsrdecen ;
+	wire		pgcrcclk , clken_p   , clken_ram   , clken       ;
+
+	wire	[31:0]	mem_read ;
+	wire	[15:0]	crco     , crcsfto ;
+	wire	[16:0]	lfsrbto  ;
+	wire	[22:0]	pgcrc    , lfsrdeco ;
+
+// ==============================================
+//     CRC+LFSR ¥Õ¥£¡¼¥É¥Ð¥Ã¥¯¿®¹æ¤ÎÀ¸À® 
+// ==============================================
+
+	assign	mem_read = { doz31    , doz30    , doz29    , doz28    , doz27    , doz26    , doz25    , doz24    ,
+			     doz23    , doz22    , doz21    , doz20    , doz19    , doz18    , doz17    , doz16    ,
+		 	     doz15    , doz14    , doz13    , doz12    , doz11    , doz10    , doz9     , doz8     ,
+			     doz7     , doz6     , doz5     , doz4     , doz3     , doz2     , doz1     , doz0    };
+
+	assign  pgcrc = { pgcrc22  , pgcrc21  , pgcrc20  , pgcrc19  , pgcrc18  , pgcrc17  , pgcrc16  ,
+			  pgcrc15  , pgcrc14  , pgcrc13  , pgcrc12  , pgcrc11  , pgcrc10  , pgcrc9   , pgcrc8   , 
+			  pgcrc7   , pgcrc6   , pgcrc5   , pgcrc4   , pgcrc3   , pgcrc2   , pgcrc1   , pgcrc0  };
+
+
+	QLK0RMODECTL2V1_PGCRCCAL pgcrc_cal ( 
+				.cin(mem_read), .pgout(pgcrc) , 
+			     	.crco(crco)   , .lfsrbto(lfsrbto) , .lfsrdeco(lfsrdeco) , .crcsfto(crcsfto)  
+			    	) ;
+
+// ==============================================
+// PGCRCµ¡Ç½¤ÎÆ°ºî¥¤¥Í¡¼¥Ö¥ë¿®¹æÀ¸À®
+// ==============================================
+
+	assign	crcmod	   = crc0en | ( tesinst & incdecen & ~crcoutmod ) ;
+	assign	lfsrbtmod  = tesdbt | ( optlfsr & ~crcmod ) ;
+	assign	lfsrdecmod = lfsrdecen  & ~crcmod ;
+	assign	crcoutmod  = crcouten ;
+
+	QLK0RMODECTL2V1_LFSRDECCTL lfsrdec_ctl( 
+			.baseck(baseck) , .resb(resb)  , .tesinst(tesinst),  .we_lfsd(we_lfsd) , .din(din)  ,
+			.scanmode(scanmode) ,
+			.lfsrdecen(lfsrdecen) , .dout_lfsd(dout_lfsd)
+			 ) ; 
+
+// ==========================================
+//      SELECT Input Data for PGCRC           
+// ==========================================
+
+	always @ ( crcmod or lfsrbtmod or lfsrdecmod or crcoutmod or 
+		   crco   or lfsrbto   or lfsrdeco   or crcsfto ) begin
+	  casex ( { crcmod, lfsrbtmod, lfsrdecmod, crcoutmod } )	// synopsys parallel_case
+	    4'b1000 : pgcrc_p = { 7'b0 , crco    } ;
+	    4'b0100 : pgcrc_p = { 6'b0 , lfsrbto } ;
+	    4'b0010 : pgcrc_p = lfsrdeco ;
+	    4'b0001 : pgcrc_p = { 7'b0 , crcsfto } ;
+	    default : pgcrc_p = 23'b0 ;
+	  endcase
+	end
+
+// =====================================================================================
+// PGCRC FF¤Î¥¯¥í¥Ã¥¯¤òREAD¿®¹æ¤Ç¥Þ¥¹¥¯
+// =====================================================================================
+
+	assign	crccalen = crcusrst | ( moderd | modefrd ) ;
+	assign	clken_p  = crccalen | lfsrbtmod | lfsrdecen | crcoutmod ;
+
+
+	//synopsys async_set_reset "resb"
+	always @( posedge baseck or negedge resb ) begin
+	  if 	  ( !resb ) clken_p2 <= 1'b0 ;
+	  else		    clken_p2 <= clken_p ;
+	end
+
+    // -- Add for RAM Marching Test ( Ver1.10 ) --
+
+	assign	clken_ram = moderd | crcoutmod ;
+
+	assign	clken = ( optram ) ? clken_ram : clken_p2 ;
+
+
+// SS3rd delete!
+//        TBGTSMLALADPCLX2 pgcrcclk_latch ( .N01(pgcrcclk), .N02(), .H01(clken), .H02(baseck), .H03(1'b0) );
+
+// =====================================================================================
+// PGRCËÜÂÎ
+//   ¥À¥ó¥×¥â¡¼¥É»þ   : MISRÆ°ºî
+//   ¥À¥¤¥Ê¥ß¥Ã¥¯BT»þ : LFSRÆ°ºî
+// =====================================================================================
+
+	assign  lfsrresb = pocrel2  & resetinb  ;	// TESDBT(SCAN)»þ¤Ë¥¢¥É¥ì¥¹¤¬½é´ü²½¤µ¤ì¤Æ¤ÏÂÌÌÜ¡ª
+	assign	pgcrcresb = ( tesdbt ) ? lfsrresb : resb ;
+
+QLK0RMODECTL2V1_PGCRCREG pgcrc_reg( 
+		.peclk(baseck)        , .pgcrcresb(pgcrcresb) , .we_pgch(we_pgch)   , .we_pgcl(we_pgcl)   ,
+		.clken(clken)         , .pgcrc_p(pgcrc_p)     , .din(din)           ,
+		.pgcrc22(pgcrc22)     , .pgcrc21(pgcrc21)     , .pgcrc20(pgcrc20)   , .pgcrc19(pgcrc19)   , 
+		.pgcrc18(pgcrc18)     , .pgcrc17(pgcrc17)     , .pgcrc16(pgcrc16)   , 
+		.pgcrc15(pgcrc15)     , .pgcrc14(pgcrc14)     , .pgcrc13(pgcrc13)   , .pgcrc12(pgcrc12)   , 
+		.pgcrc11(pgcrc11)     , .pgcrc10(pgcrc10)     , .pgcrc9(pgcrc9)     , .pgcrc8(pgcrc8)     ,
+		.pgcrc7(pgcrc7)       , .pgcrc6(pgcrc6)       , .pgcrc5(pgcrc5)     , .pgcrc4(pgcrc4)     , 
+		.pgcrc3(pgcrc3)       , .pgcrc2(pgcrc2)       , .pgcrc1(pgcrc1)     , .pgcrc0(pgcrc0)     ,
+		.dout_pgch(dout_pgch) , .dout_pgcl(dout_pgcl)
+		) ;
+
+// =====================================================================================
+// PGCRC·ë²Ì½ÐÎÏ¥¿¥¤¥ß¥ó¥°¤ÎÀ¸À®
+//   optram¤Ç¤Ï¤Ê¤¯moderd¤ò»ÈÍÑ¤·¤Æ¤¤¤ëÍýÍ³¤Ï¡¢sim.¾å¤ÇÉÔÄê¤¬ÅÁÈÂ¤¹¤ë¤¿¤á¤ÎÂÐºö
+// =====================================================================================
+
+    // add in Macro Ver1.20  for ECCER FAIL
+
+	//synopsys async_set_reset "resb"
+	always @( posedge baseck or negedge resb ) begin
+	  if 	  ( !resb ) rddata_msk <= 1'b0 ;
+	  else		    rddata_msk <= crccalen ;
+	end
+
+//	assign	eccer_o  = crccalen & eccer ;
+//	assign	deccer_o = crccalen & deccer ;
+//	assign  vceq_o   = crccalen & vceq  ;
+	assign	eccer_o  = rddata_msk & eccer ;		// modify in Macro Ver1.20
+	assign	deccer_o = rddata_msk & deccer ;	// modify in Macro Ver1.20
+	assign  vceq_o   = rddata_msk & vceq  ;		// modify in Macro Ver1.20
+
+	assign	reccer_o = crccalen & rameccer ;
+
+	//synopsys async_set_reset "resb"
+	always @( posedge baseck or negedge resb ) begin
+	  if 	  ( !resb )    eccer_accum <= 1'b0 ;
+	  else if ( eccer_o )  eccer_accum <= 1'b1 ;
+	end
+	
+	always @ ( modenop  or moderd or optflmem or optdfl  or modefrd or 
+		   crcouten or routen or vceqoen  or optlfsr or pgcrc15 or 
+		   reccer_o or eccer_accum or vceq_o or eccer_o or deccer_o or pgcrc16) begin
+	  casex ( { modenop, moderd, optflmem, optdfl, modefrd, 
+			crcouten, routen, vceqoen, optlfsr } )	// synopsys parallel_case
+	    9'b100001x0x : { rout0_p , rout1_p } = { pgcrc15 , 1'b0        } ;
+	    9'b010000100 : { rout0_p , rout1_p } = { reccer_o, 1'b0        } ;
+	    9'b001001x00 : { rout0_p , rout1_p } = { pgcrc15 , eccer_accum } ;
+	    9'b001010110 : { rout0_p , rout1_p } = { vceq_o  , eccer_o     } ;
+	    9'b001010100 : { rout0_p , rout1_p } = { 1'b0    , eccer_o     } ;	// v1.3 add
+	    9'b001010010 : { rout0_p , rout1_p } = { vceq_o  , 1'b0        } ;	// v1.3 add
+	    9'b000101x00 : { rout0_p , rout1_p } = { pgcrc15 , 1'b0        } ;
+	    9'b000110100 : { rout0_p , rout1_p } = { 1'b0    , deccer_o    } ;
+	    9'b000000101 : { rout0_p , rout1_p } = { pgcrc16 , 1'b0        } ;
+	    default 	:  { rout0_p , rout1_p } = 2'b00 ;
+	  endcase
+	end
+
+// =====================================================================================
+// tesdbt»þ¤ÎSCANIN,SCANEN¿®¹æ¤ÎÀ¸À®
+// =====================================================================================
+
+	assign	lfsscain = pgcrc7  & tesdbt ;
+	assign	lfsscaen = pgcrc16 & tesdbt ;
+
+// =====================================================================================
+// tesdbt»þ¤ÎSCANRESZ¿®¹æ¤ÎÀ¸À®
+//   tesdbt¥â¡¼¥É¤ËÆþ¤Ã¤¿¤È¤­¤Î½é´ü²½ÍÑ¿®¹æ¡Ê³Î¼Â¤Ë1¥¯¥í¥Ã¥¯°Ê¾å¤Î¥ê¥»¥Ã¥ÈÉý¤ò³ÎÊÝ¤¹¤ë¡Ë
+//  ¡Ê SCANRESZ ¤ò³°Éô¤«¤éÆþÎÏ¤Ç¤­¤Ê¤¤¤¿¤á¤Ç¤¢¤ê¡¢¥¯¥í¥Ã¥¯¤¬Æþ¤é¤Ê¤¤¤È
+//     ½é´ü²½¤µ¤ì¤Ê¤¤²Õ½ê¤¬¤¢¤Ã¤¿¤é¤·¤¤¡£10K¤Î¤È¤­¡£¡Ë
+// =====================================================================================
+
+	always @ ( posedge baseck or negedge lfsrresb ) begin
+	  if ( !lfsrresb ) lfssresz_p1 <= 1'b0   ;
+	  else             lfssresz_p1 <= tesdbt ;
+	end
+	always @ ( posedge baseck or negedge lfsrresb ) begin
+	  if ( !lfsrresb ) lfssresz_p2 <= 1'b0   ;
+	  else             lfssresz_p2 <= lfssresz_p1 ;
+	end
+
+	assign	lfssresz = ~( tesdbt & !lfssresz_p2 );
+
+// =====================================================================================
+// tesdbt»þ¤Î¥é¥ó¥À¥à¥¢¥É¥ì¥¹¤ÎÀ¸À®
+// =====================================================================================
+
+	assign	lfsra = { pgcrc16 ,
+		          pgcrc15 , pgcrc14 , pgcrc13 , pgcrc12 , pgcrc11 , pgcrc10 , pgcrc9  , pgcrc8   ,
+		          pgcrc7  , pgcrc6  , pgcrc5  , pgcrc4  , pgcrc3  , pgcrc2  , pgcrc1  , pgcrc0  };
+
+endmodule
+
+
+module QLK0RMODECTL2V1_PGCRCREG ( 
+			peclk     , pgcrcresb , we_pgch   , we_pgcl   , clken     , pgcrc_p   , din       ,
+			pgcrc22   , pgcrc21   , pgcrc20   , pgcrc19   , pgcrc18   , pgcrc17   , pgcrc16   ,
+			pgcrc15   , pgcrc14   , pgcrc13   , pgcrc12   , pgcrc11   , pgcrc10   , pgcrc9    , pgcrc8  ,
+			pgcrc7    , pgcrc6    , pgcrc5    , pgcrc4    , pgcrc3    , pgcrc2    , pgcrc1    , pgcrc0  ,
+			dout_pgcl , dout_pgch 
+				) ;
+
+	input		peclk     , pgcrcresb ;
+	input		we_pgch   , we_pgcl   ;
+	input		clken     ;
+	input	[22:0]	pgcrc_p   ;
+	input	[15:0]	din	  ; 
+
+	output		pgcrc22   , pgcrc21   , pgcrc20   , pgcrc19   , pgcrc18   , pgcrc17   , pgcrc16   ,
+			pgcrc15   , pgcrc14   , pgcrc13   , pgcrc12   , pgcrc11   , pgcrc10   , pgcrc9    , pgcrc8  ,
+			pgcrc7    , pgcrc6    , pgcrc5    , pgcrc4    , pgcrc3    , pgcrc2    , pgcrc1    , pgcrc0  ;
+
+	output	[15:0]	dout_pgcl , dout_pgch ;
+
+	reg	[6:0]	pgch ;
+	reg	[15:0]	pgcl ;
+
+
+// CRC·ë²Ì³ÊÇ¼ & LFSR¥ì¥¸¥¹¥¿ (PGCRCH/L)
+//
+// ¥¢¥É¥ì¥¹¤Ï*****H¸ÇÄê¤Ç¤¢¤ë¡£
+
+	//synopsys async_set_reset "pgcrcresb"
+	always @(posedge peclk or negedge pgcrcresb) begin
+		if	( !pgcrcresb ) pgch <= 7'h00 ;
+		else if ( we_pgch )    pgch <= { din[6:0] } ;  
+		else if ( clken  )     pgch <= { pgcrc_p[22:16] } ;
+		else		       pgch <= pgch ;
+	end
+
+	//synopsys async_set_reset "pgcrcresb"
+	always @(posedge peclk or negedge pgcrcresb) begin
+		if	( !pgcrcresb ) pgcl <= 16'h0000 ;
+		else if ( we_pgcl )    pgcl <= { din[15:0] } ;  	
+		else if ( clken  )     pgcl <= { pgcrc_p[15:0] } ;
+		else		       pgcl <= pgcl ;
+	end
+
+	assign	pgcrc22 = pgch[6]  ;
+	assign	pgcrc21 = pgch[5]  ;
+	assign	pgcrc20 = pgch[4]  ;
+	assign	pgcrc19 = pgch[3]  ;
+	assign	pgcrc18 = pgch[2]  ;
+	assign	pgcrc17 = pgch[1]  ;
+	assign	pgcrc16 = pgch[0]  ;
+	assign	pgcrc15 = pgcl[15] ;
+	assign	pgcrc14 = pgcl[14] ;
+	assign	pgcrc13 = pgcl[13] ;
+	assign	pgcrc12 = pgcl[12] ;
+	assign	pgcrc11 = pgcl[11] ;
+	assign	pgcrc10 = pgcl[10] ;
+	assign	pgcrc9  = pgcl[9]  ;
+	assign	pgcrc8  = pgcl[8]  ;
+	assign	pgcrc7  = pgcl[7]  ;
+	assign	pgcrc6  = pgcl[6]  ;
+	assign	pgcrc5  = pgcl[5]  ;
+	assign	pgcrc4  = pgcl[4]  ;
+	assign	pgcrc3  = pgcl[3]  ;
+	assign	pgcrc2  = pgcl[2]  ;
+	assign	pgcrc1  = pgcl[1]  ;
+	assign	pgcrc0  = pgcl[0]  ;
+
+	assign	dout_pgcl = pgcl ;
+	assign	dout_pgch = { 9'b0 , pgch } ;
+
+endmodule
+
+module QLK0RMODECTL2V1_LFSRDECCTL ( 
+			baseck    , resb      , tesinst   , we_lfsd  , din   ,
+			scanmode  ,
+			lfsrdecen , dout_lfsd 
+			) ; 
+
+	input		baseck    , resb      , tesinst    , we_lfsd   ;
+	input		scanmode ;
+	input	[15:0]	din	  ; 
+
+	output		lfsrdecen ;
+	output	[15:0]	dout_lfsd ;
+
+	reg		lfsrdecen ,  cnt15  ;
+	reg	[3:0]	deccnt    ;
+
+	wire		instresb  , cnt14_p   ;
+
+//  LFSRDECCTL-REG
+//  Address : F02F6H
+
+// v1.3 mod
+//	assign	instresb =  tesinst & resb ;	 // tesinstid¥â¡¼¥É¤Î¤ßÍ­¸ú
+	assign	instresb = (tesinst | scanmode ) & resb ;	 // tesinstid¥â¡¼¥É & scanmode Í­¸ú
+
+	//synopsys async_set_reset "instresb"
+	always @(posedge baseck or negedge instresb) begin
+		if	( !instresb ) lfsrdecen <= 1'b0 ;
+		else if ( cnt15 )     lfsrdecen <= 1'b0 ;
+		else if ( we_lfsd  )  lfsrdecen <= din[0] ;
+	end
+
+	assign	dout_lfsd = { 15'b0, lfsrdecen } ;
+
+// Counter
+
+	//synopsys async_set_reset "resb"
+	always @(posedge baseck or negedge resb) begin
+		if	( !resb )      deccnt <= 4'b0 ;
+		else if ( cnt15 )      deccnt <= 4'b0 ;
+		else if ( lfsrdecen )  deccnt <= deccnt + 1'b1 ;
+	end
+
+	assign	cnt14_p = deccnt[3] & deccnt[2] & deccnt[1] & ~deccnt[0] ;
+
+	//synopsys async_set_reset "resb"
+	always @(posedge baseck or negedge resb) begin
+		if	( !resb )   	cnt15 <= 1'b0 ;
+		else if ( cnt14_p ) 	cnt15 <= 1'b1 ;
+		else 			cnt15 <= 1'b0 ;
+	end
+
+endmodule
+
+
+module QLK0RMODECTL2V1_PGCRCCAL ( 
+			cin,    pgout,
+			crco,   lfsrbto  , lfsrdeco , crcsfto
+			);
+
+	input	[31:0]	cin;
+	input	[22:0]	pgout;
+	output	[15:0]	crco;
+	output	[16:0]	lfsrbto;
+	output	[22:0]	lfsrdeco;
+	output	[15:0]	crcsfto ;
+
+	wire	lfsnor ;
+
+// --- LFSR for HEXDCODE  --------------
+
+	assign  lfsrdeco[22] = pgout[0] ^ pgout[18] ;
+	assign	lfsrdeco[21] = pgout[22] ;
+	assign	lfsrdeco[20] = pgout[21] ;
+	assign	lfsrdeco[19] = pgout[20] ;
+	assign	lfsrdeco[18] = pgout[19] ;
+	assign	lfsrdeco[17] = pgout[18] ;
+	assign	lfsrdeco[16] = pgout[17] ;
+	assign	lfsrdeco[15] = pgout[16] ;
+	assign	lfsrdeco[14] = pgout[15] ;
+	assign	lfsrdeco[13] = pgout[14] ;
+	assign	lfsrdeco[12] = pgout[13] ;
+	assign	lfsrdeco[11] = pgout[12] ;
+	assign	lfsrdeco[10] = pgout[11] ;
+	assign	lfsrdeco[9] = pgout[10] ;
+	assign	lfsrdeco[8] = pgout[9] ;
+	assign	lfsrdeco[7] = pgout[8] ;
+	assign	lfsrdeco[6] = pgout[7] ;
+	assign	lfsrdeco[5] = pgout[6] ;
+	assign	lfsrdeco[4] = pgout[5] ;
+	assign	lfsrdeco[3] = pgout[4] ;
+	assign	lfsrdeco[2] = pgout[3] ;
+	assign	lfsrdeco[1] = pgout[2] ;
+	assign	lfsrdeco[0] = pgout[1] ;
+
+
+
+// ---- LFSR for BTMODE --------
+
+//   ¥é¥ó¥À¥à¥¢¥É¥ì¥¹¤Ë"all0"¤ò½ÐÎÏ¤¹¤ë¤¿¤á¤Ë¥Õ¥£¡¼¥É¥Ð¥Ã¥¯¤¹¤ë¿®¹æ¤òÀ¸À®
+
+	assign	lfsnor = ~( pgout[15] | pgout[14] | pgout[13] | pgout[12] | pgout[11] | pgout[10] | pgout[9] | pgout[8] | 
+			    pgout[7] | pgout[6] | pgout[5] | pgout[4] | pgout[3] | pgout[2] | pgout[1] | pgout[0] );
+
+	assign	lfsrbto[16] =  pgout[15] ;
+	assign	lfsrbto[15] =  pgout[14] ;
+	assign	lfsrbto[14] =  pgout[13] ;
+	assign	lfsrbto[13] =  pgout[12] ;
+	assign	lfsrbto[12] =  pgout[11] ;
+	assign	lfsrbto[11] =  pgout[10] ;
+	assign	lfsrbto[10] =  pgout[9] ;
+	assign	lfsrbto[9]  =  pgout[8] ;
+	assign	lfsrbto[8]  =  pgout[7] ;
+	assign	lfsrbto[7]  =  pgout[6] ;
+	assign	lfsrbto[6]  =  pgout[5] ;
+	assign	lfsrbto[5]  =  pgout[4] ;
+	assign	lfsrbto[4]  =  pgout[3] ;
+	assign	lfsrbto[3]  =  pgout[2] ;
+	assign	lfsrbto[2]  =  pgout[1] ;
+	assign	lfsrbto[1]  =  pgout[0] ;
+	assign	lfsrbto[0]  =  lfsnor ^ pgout[2] ^ pgout[16] ;
+
+
+// ---------- CRC ( CCIT ) ------
+
+	assign	crco[15] =  pgout[2]^ pgout[3]^ pgout[5]^ pgout[9]^ pgout[10]^ pgout[11]^ pgout[15]
+        	              ^cin[3]^cin[7]^cin[10]^cin[11]^cin[18]^cin[19]^cin[21]^cin[25]^cin[26]^cin[27]^cin[31];
+
+	assign	crco[14] =  pgout[1]^ pgout[2]^ pgout[4]^ pgout[8]^ pgout[9]^ pgout[10]^ pgout[14]^ pgout[15]
+                   	      ^cin[2]^cin[6]^cin[9]^cin[10]^cin[17]^cin[18] ^cin[20]^cin[24]^cin[25]^cin[26]
+			      ^cin[30]^cin[31];
+
+	assign	crco[13] =  pgout[0]^ pgout[1]^ pgout[3]^ pgout[7]^ pgout[8]^ pgout[9]^ pgout[13]^ pgout[14]
+                   	      ^cin[1]^cin[5]^cin[8]^cin[9]^cin[16]^cin[17] ^cin[19]^cin[23]^cin[24]^cin[25]
+			      ^cin[29]^cin[30];
+
+	assign	crco[12] =  pgout[0]^ pgout[2]^ pgout[6]^ pgout[7]^ pgout[8]^ pgout[12]^ pgout[13]^ pgout[15]
+                   	      ^cin[0]^cin[4]^cin[7]^cin[8]^cin[15]^cin[16]^cin[18]^cin[22]^cin[23]^cin[24]^cin[28]
+			      ^cin[29] ^cin[31];
+
+	assign	crco[11] =  pgout[1]^ pgout[2]^ pgout[3]^ pgout[6]^ pgout[7]^ pgout[9]^ pgout[10]
+			      ^ pgout[12]^ pgout[14]^ pgout[15]
+                   	      ^cin[6]^cin[10]^cin[11]^cin[14]^cin[15]^cin[17]^cin[18]^cin[19]^cin[22]^cin[23]
+			      ^cin[25]^cin[26] ^cin[28]^cin[30]^cin[31];
+
+	assign	crco[10] =  pgout[0]^ pgout[1]^ pgout[2]^ pgout[5]^ pgout[6]^ pgout[8]^ pgout[9]
+			      ^ pgout[11] ^ pgout[13]^ pgout[14]^ pgout[15]
+                   	      ^cin[5]^cin[9]^cin[10]^cin[13]^cin[14]^cin[16]^cin[17]^cin[18]^cin[21]^cin[22]^cin[24]
+			      ^cin[25] ^cin[27]^cin[29]^cin[30]^cin[31];
+
+	assign	crco[9]  =  pgout[0]^ pgout[1]^ pgout[4]^ pgout[5]^ pgout[7]^ pgout[8]^ pgout[10]
+			      ^ pgout[12]^ pgout[13]^ pgout[14]
+                   	      ^cin[4]^cin[8]^cin[9]^cin[12]^cin[13]^cin[15]^cin[16]^cin[17]^cin[20]^cin[21]^cin[23]
+			      ^cin[24] ^cin[26]^cin[28]^cin[29]^cin[30];
+
+	assign	crco[8]  =  pgout[0]^ pgout[3]^ pgout[4]^ pgout[6]^ pgout[7]^ pgout[9]^ pgout[11]
+			      ^ pgout[12]^ pgout[13]^ pgout[15]
+                   	      ^cin[3]^cin[7]^cin[8]^cin[11]^cin[12]^cin[14]^cin[15]^cin[16]^cin[19]^cin[20]^cin[22]
+			      ^cin[23] ^cin[25]^cin[27]^cin[28]^cin[29]^cin[31];
+
+	assign	crco[7]  =  pgout[2]^ pgout[3]^ pgout[5]^ pgout[6]^ pgout[8]^ pgout[10]^ pgout[11] ^ pgout[12]^ pgout[14]
+                   	      ^cin[2]^cin[6]^cin[7]^cin[10]^cin[11]^cin[13]^cin[14]^cin[15]^cin[18]^cin[19]^cin[21]
+			      ^cin[22] ^cin[24]^cin[26]^cin[27]^cin[28]^cin[30];
+
+	assign	crco[6]  =  pgout[1]^ pgout[2]^ pgout[4]^ pgout[5]^ pgout[7]^ pgout[9]^ pgout[10] ^ pgout[11]^ pgout[13]
+                   	      ^cin[1]^cin[5]^cin[6]^cin[9]^cin[10]^cin[12]^cin[13]^cin[14]^cin[17]^cin[18]^cin[20]
+			      ^cin[21] ^cin[23]^cin[25]^cin[26]^cin[27]^cin[29];
+
+	assign	crco[5]  =  pgout[0]^ pgout[1]^ pgout[3]^ pgout[4]^ pgout[6]^ pgout[8]^ pgout[9]
+			      ^pgout[10]^ pgout[12]^ pgout[15]
+                   	      ^cin[0]^cin[4]^cin[5]^cin[8]^cin[9]^cin[11]^cin[12]^cin[13]^cin[16]^cin[17]^cin[19]
+			      ^cin[20] ^cin[22]^cin[24]^cin[25]^cin[26]^cin[28]^cin[31];
+
+	assign	crco[4]  =  pgout[0]^ pgout[7]^ pgout[8]^ pgout[10]^ pgout[14]^ pgout[15]
+                   	      ^cin[4]^cin[8]^cin[12]^cin[15]^cin[16]^cin[23]^cin[24]^cin[26]^cin[30]^cin[31];
+
+	assign	crco[3]  =  pgout[6]^ pgout[7]^ pgout[9]^ pgout[13]^ pgout[14]^ pgout[15]
+                   	      ^cin[3]^cin[7]^cin[11]^cin[14]^cin[15]^cin[22]^cin[23]^cin[25]^cin[29]^cin[30]^cin[31];
+
+	assign	crco[2]  =  pgout[5]^ pgout[6]^ pgout[8]^ pgout[12]^ pgout[13]^ pgout[14]
+                   	      ^cin[2]^cin[6]^cin[10]^cin[13]^cin[14]^cin[21]^cin[22]^cin[24]^cin[28]^cin[29]^cin[30];
+
+	assign	crco[1]  =  pgout[4]^ pgout[5]^ pgout[7]^ pgout[11]^ pgout[12]^ pgout[13]
+                   	      ^cin[1]^cin[5]^cin[9]^cin[12]^cin[13]^cin[20]^cin[21]^cin[23]^cin[27]^cin[28]^cin[29];
+
+	assign	crco[0]  =  pgout[3]^ pgout[4]^ pgout[6]^ pgout[10]^ pgout[11]^ pgout[12]
+                   	      ^cin[0]^cin[4]^cin[8]^cin[11]^cin[12]^cin[19]^cin[20]^cin[22]^cin[26]^cin[27]^cin[28];
+
+
+// -----  CRC Result  Shift Out -----------
+
+	assign	crcsfto[15] =  pgout[14] ;
+	assign	crcsfto[14] =  pgout[13] ;
+	assign	crcsfto[13] =  pgout[12] ;
+	assign	crcsfto[12] =  pgout[11] ;
+	assign	crcsfto[11] =  pgout[10] ;
+	assign	crcsfto[10] =  pgout[9] ;
+	assign	crcsfto[9]  =  pgout[8] ;
+	assign	crcsfto[8]  =  pgout[7] ;
+	assign	crcsfto[7]  =  pgout[6] ;
+	assign	crcsfto[6]  =  pgout[5] ;
+	assign	crcsfto[5]  =  pgout[4] ;
+	assign	crcsfto[4]  =  pgout[3] ;
+	assign	crcsfto[3]  =  pgout[2] ;
+	assign	crcsfto[2]  =  pgout[1] ;
+	assign	crcsfto[1]  =  pgout[0] ;
+	assign	crcsfto[0]  =  1'b0 ;
+
+endmodule		
+
+
+// =====================================================================================
+//  TESTPORT MODULE START  
+// =====================================================================================
+module QLK0RMODECTL2V1_TPORT (
+	//	input
+			baseck     , resb       , slflash    , vpphvmod   , testmod    ,
+			tesscan1   , tesscan2   , tesscan3   , tesscan4   ,
+			tesinst    , tesdbt     , tesusr     , 
+			lfsscain   , lfsscaen   , lfssresz   , optram     , optflmem   , optdfl    ,
+			optmdump   , optiddq    , optexcck   , optoplrd   , optbct     , routen    ,
+			incdecen   , btclkin    , rmd        , exdumpmd   , rdsetup    , ressqsta  ,
+			tdin5      , tdin4      , tdin3      , 
+			tdin2_t    , tdin2_r    , tdin2_b    , tdin2_l    ,
+			tdin1_t    , tdin1_r    , tdin1_b    , tdin1_l    ,
+			tdin0_t    , tdin0_r    , tdin0_b    , tdin0_l    ,
+			seltp_t    , seltp_r    , seltp_b    , seltp_l    ,
+			rt0mon0    , rt0mon1    , wdtmon     , 
+			rout1      , rout0      , scanout    , exrout     ,
+			tout_4bit  , tout_1bit  , optad1bit  , optad4bit  ,
+			bbtesscan_or ,
+			bbscanout  ,
+
+			waitfl     , exclk1     ,
+			tid31      , tid30      , tid29      , tid28      ,
+			tid27      , tid26      , tid25      , tid24      ,
+			tid23      , tid22      , tid21      , tid20      ,
+			tid19      , tid18      , tid17      , tid16      ,
+			tid15      , tid14      , tid13      , tid12      ,
+			tid11      , tid10      , tid9       , tid8       ,
+			tid7       , tid6       , tid5       , tid4       ,
+			tid3       , tid2       , tid1       , tid0       ,
+			incdec2    , incdec1    , incdec0    , crcouten   ,
+			teseni4    , teseni3    , 
+			teseni2_t  , teseni2_r  , teseni2_b  , teseni2_l  ,
+			teseni1_t  , teseni1_r  , teseni1_b  , teseni1_l  ,
+			teseni0_t  , teseni0_r  , teseni0_b  , teseni0_l  ,
+			teseno3    ,
+			teseno2_t  , teseno2_r  , teseno2_b  , teseno2_l  ,
+			teseno1_t  , teseno1_r  , teseno1_b  , teseno1_l  ,
+			teseno0_t  , teseno0_r  , teseno0_b  , teseno0_l  ,
+			tdsel3     ,
+			tdsel2_t   , tdsel2_r   , tdsel2_b   , tdsel2_l   ,
+			tdsel1_t   , tdsel1_r   , tdsel1_b   , tdsel1_l   ,
+			tdsel0_t   , tdsel0_r   , tdsel0_b   , tdsel0_l   ,
+			tdout3     , tdout2     , tdout1     , tdout0     ,
+			tdin2      , tdin1      , tdin0      , 
+			scanin     , scanclk    , scanen     , scanresz
+			);
+
+	input		baseck     , resb       , slflash    ;
+	input		vpphvmod   , testmod    ;
+	input		tesscan1   , tesscan2   , tesscan3   , tesscan4   ,
+			tesinst    , tesdbt     , tesusr     ;
+	input		lfsscain   , lfsscaen   , lfssresz   ;
+	input		optram     , optflmem   , optdfl     , optmdump   ,
+			optiddq    , optexcck   , optoplrd   , optbct     ;
+	input		incdecen   , btclkin    , rmd        , exdumpmd   , routen ;
+	input		rdsetup	   , ressqsta   ;					// Flash Read setup
+
+	input		tdin5      , tdin4      , tdin3      , 
+			tdin2_t    , tdin2_r    , tdin2_b    , tdin2_l    ,
+			tdin1_t    , tdin1_r    , tdin1_b    , tdin1_l    ,
+			tdin0_t    , tdin0_r    , tdin0_b    , tdin0_l    ;
+	input		seltp_t    , seltp_r    , seltp_b    , seltp_l    ;
+	input		rt0mon0    , rt0mon1    , wdtmon     ;			// WWDT/RTC Binaty-Counter Monitor
+	input		rout1      , rout0      , scanout    ;
+	input	[3:0]	exrout     ;
+//	input	[9:0]	tout       ;
+
+	input	[3:0]	tout_4bit  ;				// v1.3 add
+	input		tout_1bit  ;				// v1.3 add
+	input		optad1bit  , optad4bit  ;		// v1.3 add
+	input		bbtesscan_or ;				// v1.3 add
+	input		bbscanout  ;				// v1.3 add
+
+	output		waitfl     ;
+	output		tid31      , tid30      , tid29      , tid28      ,
+			tid27      , tid26      , tid25      , tid24      ,
+			tid23      , tid22      , tid21      , tid20      ,
+			tid19      , tid18      , tid17      , tid16      ,
+			tid15      , tid14      , tid13      , tid12      ,
+			tid11      , tid10      , tid9       , tid8       ,
+			tid7       , tid6       , tid5       , tid4       ,
+			tid3       , tid2       , tid1       , tid0       ;
+
+	output		incdec2    , incdec1    , incdec0    , crcouten   ;
+	output		exclk1     ;
+
+	output		teseni4    , teseni3    , 
+			teseni2_t  , teseni2_r  , teseni2_b  , teseni2_l  ,
+			teseni1_t  , teseni1_r  , teseni1_b  , teseni1_l  ,
+			teseni0_t  , teseni0_r  , teseni0_b  , teseni0_l  ;
+
+	output		teseno3    ,
+			teseno2_t  , teseno2_r  , teseno2_b  , teseno2_l  ,
+			teseno1_t  , teseno1_r  , teseno1_b  , teseno1_l  ,
+			teseno0_t  , teseno0_r  , teseno0_b  , teseno0_l  ;
+
+	output		tdsel3     ,
+			tdsel2_t   , tdsel2_r   , tdsel2_b   , tdsel2_l   ,
+			tdsel1_t   , tdsel1_r   , tdsel1_b   , tdsel1_l   ,
+			tdsel0_t   , tdsel0_r   , tdsel0_b   , tdsel0_l   ;
+
+	output		tdout3     , tdout2     , tdout1     , tdout0     ;
+	output		tdin2      , tdin1      , tdin0      ; 
+	output		scanin     , scanclk    , scanen     , scanresz   ;
+
+	reg		teseni4    ,
+			teseni3    , teseni2    , teseni1    , teseni0    ;
+	reg		teseno3    , teseno2    , teseno1    , teseno0    ;
+	reg		tdsel3     , tdsel2     , tdsel1     , tdsel0     ;
+	reg		tdout3     , tdout2     , tdout1     , tdout0     ;
+	reg		tid3_p     , tid2_p     , tid1_p     , tid0_p     ;
+
+	reg		tinstp_inst_p , tinstp_def  , tinstp_bct  , tinstp_eck    , 
+			tinstp_oprd , tinstp_incr , tinstp_incf , tinstp_exdmpr , tinstp_exdmpf ;
+
+	reg		tinstp_optad1bit, tinstp_optad4bit ;	// v1.3 add
+
+	reg		tid31      , tid30      , tid29      , tid28      ,
+			tid27      , tid26      , tid25      , tid24      ,
+			tid23      , tid22      , tid21      , tid20      ,
+			tid19      , tid18      , tid17      , tid16      ,
+			tid15      , tid14      , tid13      , tid12      ,
+			tid11      , tid10      , tid9       , tid8       ,
+			tid7       , tid6       , tid5       , tid4       ,
+			tid3       , tid2       , tid1       , tid0       ;
+
+	reg		waitfl     ;
+	reg	[1:0]	st_count   ;
+
+	wire		scanclk_p  , scanen_p   , scanin     , tesscan     ;
+	wire		testresb   , instresb   ;
+	wire		tesin3     , tesin2     , tesin1     , tesin0      ;
+	wire		tinstsig   , flrdok     , slflashin  , tinstp_exdmp;
+	wire		tinstp_inst;
+
+
+// =====================================================================================
+// ¥ê¥»¥Ã¥È¿®¹æ¤ÎÀ¸À®
+// =====================================================================================
+
+	assign	testresb = testmod & resb ;
+	assign	instresb = testmod & resb & tesinst ;	// tesinst¥â¡¼¥É¤Î¤ßÍ­¸ú¤Ê²óÏ©ÍÑ
+
+// =====================================================================================
+//  Port Function Change
+// =====================================================================================
+
+	wire	incdec_r = incdecen & optram ;
+	wire	incdec_f = incdecen & ( optflmem | optdfl ) ;
+
+	always @ ( tesinst or exdumpmd or routen or optbct or optexcck or optoplrd or optmdump or
+		   incdec_r or incdec_f or optad1bit or optad4bit) begin
+	  casex ({ tesinst , exdumpmd , routen , optbct , optexcck , optoplrd , optmdump,
+		   incdec_r , incdec_f , optad1bit, optad4bit } ) 			// synopsys parallel_case
+//	    9'b1x0xxx000 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+//			     tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf }
+//			   = 9'b100000000  ;						// INST
+	    11'b101000000_00 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+			         tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+			       = 11'b010000000_00  ;					// Default Rout
+	    11'b101100000_00 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+			         tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+			       = 11'b001000000_00  ;					// OPTBCT
+	    11'b101010000_00 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+			         tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+			       = 11'b000100000_00  ;					// OPTEXCCK
+	    11'b101001000_00 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+			         tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+			       = 11'b000010000_00  ;					// OPTOPLRD
+	    11'b10x000x10_00 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+			         tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+			       = 11'b000001000_00  ;					// INCDEC-MODE(RAM)
+	    11'b10x000101_00 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+			         tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+			       = 11'b000000100_00  ;					// INCDEC-MODE(FLASH)
+	    11'b110000110_00 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+			         tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+			       = 11'b000000010_00  ;					// EXDUMP(RAM)
+	    11'b110000101_00 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+			         tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+			       = 11'b000000001_00  ;					// EXDUMP(FLASH)
+            11'b101000000_10 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+                                 tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+                               = 11'b000000000_10  ;                                        // ADOUT (1bit)
+            11'b101000000_01 : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+                                 tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+                               = 11'b000000000_01  ;                                        // ADOUT (4bit)
+	    default          : { tinstp_inst_p, tinstp_def , tinstp_bct   , tinstp_eck , tinstp_oprd,
+			         tinstp_incr, tinstp_incf, tinstp_exdmpr, tinstp_exdmpf, tinstp_optad1bit, tinstp_optad4bit }
+			       = 11'b100000000_00  ;					// INST
+	  endcase
+	end
+
+	assign	tinstp_inst = tesinst & tinstp_inst_p ;
+
+// =====================================================================================
+// ¥Ý¡¼¥ÈÆþÎÏ¡¿½ÐÎÏ¥¤¥Í¡¼¥Ö¥ë¿®¹æ¤ÎÀ¸À®
+// =====================================================================================
+// +=========+===================================================================+===================+
+// | PortBit | SCANMODE/TESINST(Default) Status                                  | EnableSignalName  |
+// +=========+===================================================================+===================+
+// | PORT20  | SCANEN  /Ì¿ÎáÁÞÆþ¥³¡¼¥É  					 | teseni0/teseno0   |
+// +---------+-------------------------------------------------------------------+-------------------+
+// | PORT21  | SCANRESZ/Ì¿ÎáÁÞÆþ¥³¡¼¥É            				 | teseni1/teseno1   |
+// +---------+-------------------------------------------------------------------+-------------------+
+// | PORT22  | SCANIN  /Ì¿ÎáÁÞÆþ¥³¡¼¥É						 | teseni2/teseno2   |
+// +---------+-------------------------------------------------------------------+-------------------+
+// | PORT40  | SCANOUT /Ì¿ÎáÁÞÆþ¥³¡¼¥É/ÄÌ¾ï·ë²Ì½ÐÎÏ                		 | teseni3/teseno3   |
+// +---------+-------------------------------------------------------------------+-------------------+
+// | PORT122 | SCANCLK/CLKÆþÎÏ                                   		 | teseni4           |
+// +---------+-------------------------------------------------------------------+-------------------+
+// | PORT137 | VPPTS1								 | teseni5           | // delete 2010.01.20
+// +=========+===================================================================+===================+
+// -------------------------------------------------------------------------------------
+// ¥Ý¡¼¥ÈÆþÎÏ¥¤¥Í¡¼¥Ö¥ë¿®¹æ¤ÎÀ¸À®
+// -------------------------------------------------------------------------------------
+// Tport2-0 is flexible selected  
+//   Tport5  : PR137(VPPTS1)
+//   Tport4  : P122(X2)
+//   Tport3  : P40
+//   Tport2  : P22/P12/P72/Pxx (Kx4 Test Port)
+//   Tport1  : P21/P11/P71/Pxx (Kx4 Test Port)
+//   Tport0  : P20/P10/P70/Pxx (Kx4 Test Port)
+//
+//   Default_Port	Change_Port1	Change_Port2	Change_Port3
+//   (Chip TOP)         (Chip Right)    (Chip Bottom)  (Chip Left)
+//   teseni2_t		teseni2_r	teseni2_b	teseni2_l 
+//   teseni1_t		teseni1_r	teseni1_b	teseni1_l 
+//   teseni0_t		teseni0_r	teseni0_b	teseni0_l 
+// -------------------------------------------------------------------------------------
+
+	assign	tesscan = tesscan1 | tesscan2 | tesscan3 | tesscan4 ;
+	assign	flrdok  = rdsetup | ressqsta ;
+	assign	tinstp_exdmp = tinstp_exdmpr | tinstp_exdmpf ;
+
+
+	always @ ( vpphvmod or optiddq or tesscan or tesdbt or flrdok or
+		    tinstp_inst or tinstp_def or tinstp_bct or tinstp_eck or tinstp_oprd or 
+		    tinstp_incr or tinstp_incf or tinstp_exdmp or tesusr or
+		    tinstp_optad1bit or tinstp_optad4bit) begin
+	  casex ( { vpphvmod    , optiddq    , tesscan    , tesdbt     , flrdok, 
+		    tinstp_inst , tinstp_def , tinstp_bct , tinstp_eck , tinstp_oprd , tinstp_incr ,
+		    tinstp_incf , tinstp_exdmp , tesusr ,
+		    tinstp_optad1bit, tinstp_optad4bit } )	// synopsys parallel_case
+
+	    16'b10000000000000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+			  	   = 5'b10000 ;		// TESTMODE
+	    16'bx110x000000000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b10111 ;		// TESSCAN
+	    16'bx011x000000000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+//				   = 5'b00000 ;		// TESDBT
+				   = 5'b10000 ;		// TESDBT	// v1.3 eni enable
+	    16'bxx000100000000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b10111 ;		// TESINST ( Mode Check : tinstsig output )
+	    16'bxx001100000000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b11111 ;		// TESINST ( Test Code input )
+	    16'bxx001010000000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b10000 ;		// TESINST ( Default output mode )
+	    16'bxx001001000000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b10001 ;		// TESINST ( Binary Counter testmode )
+	    16'bxx001000100000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b00001 ;		// TESINST ( EXCCK )
+	    16'bxx001000010000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b00000 ;		// TESINST ( PTOPRLD )
+	    16'bxx001000001000_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b10111 ;		// TESINST ( RAM INCDEC mode )
+	    16'bxx001000000100_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b10011 ;		// TESINST ( FLASH INCDEC mode )
+	    16'bxx001000000010_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b10000 ;		// TESINST ( RAM/FLASH Exdump mode )
+	    16'bx000x000000001_00: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b10000 ;		// TESUSR 
+            16'bxx001000000000_10: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 }
+                                   = 5'b10000 ;         // TESINST ( adout 1bit shift mode )
+            16'bxx001000000000_01: { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 }
+                                   = 5'b10000 ;         // TESINST ( adout 4bit output mode )
+	    default              : { teseni4 , teseni3 , teseni2 , teseni1 , teseni0 } 
+				   = 5'b00000 ;	
+	  endcase
+	end
+
+// --- for Flexible Port --
+
+	assign	teseni2_t = teseni2 & seltp_t ;
+	assign	teseni2_r = teseni2 & seltp_r ;
+	assign	teseni2_b = teseni2 & seltp_b ;
+	assign	teseni2_l = teseni2 & seltp_l ;
+
+	assign	teseni1_t = teseni1 & seltp_t ;
+	assign	teseni1_r = teseni1 & seltp_r ;
+	assign	teseni1_b = teseni1 & seltp_b ;
+	assign	teseni1_l = teseni1 & seltp_l ;
+
+	assign	teseni0_t = teseni0 & seltp_t ;
+	assign	teseni0_r = teseni0 & seltp_r ;
+	assign	teseni0_b = teseni0 & seltp_b ;
+	assign	teseni0_l = teseni0 & seltp_l ;
+
+// -------------------------------------------------------------------------------------
+// ¥Ý¡¼¥È½ÐÎÏ¥¤¥Í¡¼¥Ö¥ë¿®¹æ¤ÎÀ¸À®
+// -------------------------------------------------------------------------------------
+
+	//-- TESINST¤ÇRMD¥Ó¥Ã¥È¤¬¥»¥Ã¥È¤µ¤ì¤Æ¤¤¤Ê¤¤»þ¤Î¤ßROUT¤ò½ÐÎÏ¤¹¤ë
+//	assign	insten  = tesinst & !rmd ;
+
+	always @ ( tesscan or optiddq or tesdbt or rmd or flrdok or
+		    tinstp_inst or tinstp_def or tinstp_bct or tinstp_eck or 
+		    tinstp_oprd or tinstp_incr or tinstp_incf or tinstp_exdmp or
+		    tinstp_optad1bit or tinstp_optad4bit ) begin
+	  casex ( { tesscan , optiddq , tesdbt , rmd  , flrdok , 
+		    tinstp_inst , tinstp_def , tinstp_bct , tinstp_eck , tinstp_oprd , 
+		    tinstp_incr , tinstp_incf ,tinstp_exdmp ,
+		    tinstp_optad1bit, tinstp_optad4bit } )		// synopsys parallel_case
+
+	    15'b1100x00000000_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1000 ;	 // TESSCAN
+	    15'b1010x00000000_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1000 ;	 // TESDBT
+	    15'b0x0x010000000_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1000 ;	 // TESINST(Mode Check)
+	    15'b0x0x110000000_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b0000 ;	 // TESINST(Code Inst)
+	    15'b0x00101000000_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1000 ;	 // TESINST(Default Output)
+	    15'b000x100100000_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1110 ;	 // TESINST(Binary Counter)
+	    15'b0000100010000_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1000 ;	 // TESINST(EXCCK)
+	    15'b0000100001000_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b0000 ;	 // TESINST(OPRLD)
+	    15'b000x100000100_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1000 ;	 // TESINST(RAM INCDEC)
+	    15'b000x100000010_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1100 ;	 // TESINST(FLASH INCDEC)
+	    15'b000x100000001_00: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1111 ;	 // TESINST(RAM/FLASH EXDUMP)
+	    15'b000x100000000_10: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1000 ;	 // TESINST(ADOUT 1BIT)
+	    15'b000x100000000_01: { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b1111 ;	 // TESINST(ADOUT 4BIT)
+	    default             : { teseno3 , teseno2 , teseno1 , teseno0 } = 4'b0000 ;
+
+	  endcase
+	end
+
+// --- for Flexible Port --
+
+	assign	teseno2_t = teseno2 & seltp_t ;
+	assign	teseno2_r = teseno2 & seltp_r ;
+	assign	teseno2_b = teseno2 & seltp_b ;
+	assign	teseno2_l = teseno2 & seltp_l ;
+
+	assign	teseno1_t = teseno1 & seltp_t ;
+	assign	teseno1_r = teseno1 & seltp_r ;
+	assign	teseno1_b = teseno1 & seltp_b ;
+	assign	teseno1_l = teseno1 & seltp_l ;
+
+	assign	teseno0_t = teseno0 & seltp_t ;
+	assign	teseno0_r = teseno0 & seltp_r ;
+	assign	teseno0_b = teseno0 & seltp_b ;
+	assign	teseno0_l = teseno0 & seltp_l ;
+
+// =====================================================================================
+// ½ÐÎÏ¥Ç¡¼¥¿ÁªÂò¿®¹æ¤ÎÀ¸À®
+// -------------------------------------------------------------------------------------
+
+	always @ ( tesscan or optiddq or tesdbt or rmd or flrdok or
+		    tinstp_inst or tinstp_def or tinstp_bct or tinstp_eck or 
+		    tinstp_oprd or tinstp_incr or tinstp_incf or tinstp_exdmp or
+		    tinstp_optad1bit or tinstp_optad4bit ) begin
+	  casex ( { tesscan , optiddq , tesdbt , rmd  , flrdok , 
+		    tinstp_inst , tinstp_def , tinstp_bct , tinstp_eck , 
+		    tinstp_oprd , tinstp_incr , tinstp_incf , tinstp_exdmp ,
+		    tinstp_optad1bit, tinstp_optad4bit } )	// synopsys parallel_case
+
+	    15'b1100x00000000_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1000 ;	 // TESSCAN
+	    15'b1010x00000000_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1000 ;	 // TESDBT
+	    15'b0x0x010000000_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1000 ;	 // TESINST(Mode Check)
+	    15'b0x0x110000000_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b0000 ;	 // TESINST(Code Inst)
+	    15'b0x00101000000_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1000 ;	 // TESINST(Default Output)
+	    15'b000x100100000_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1110 ;	 // TESINST(Binary Counter)
+	    15'b0000100010000_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1000 ;	 // TESINST(EXCCK)
+	    15'b0000100001000_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b0000 ;	 // TESINST(OPRLD)
+	    15'b000x100000100_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1000 ;	 // TESINST(RAM INCDEC)
+	    15'b000x100000010_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1100 ;	 // TESINST(FLASH INCDEC)
+	    15'b000x100000001_00: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1111 ;	 // TESINST(RAM/FLASH EXDUMP)
+	    15'b000x100000000_10: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1000 ;	 // TESINST(ADOUT 1BIT)
+	    15'b000x100000000_01: { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b1111 ;	 // TESINST(ADOUT 4BIT)
+	    default             : { tdsel3 , tdsel2 , tdsel1 , tdsel0 } = 4'b0000 ;
+
+	  endcase
+	end
+
+// --- for Flexible Port --
+
+	assign	tdsel2_t  = tdsel2  & seltp_t ;
+	assign	tdsel2_r  = tdsel2  & seltp_r ;
+	assign	tdsel2_b  = tdsel2  & seltp_b ;
+	assign	tdsel2_l  = tdsel2  & seltp_l ;
+
+	assign	tdsel1_t  = tdsel1  & seltp_t ;
+	assign	tdsel1_r  = tdsel1  & seltp_r ;
+	assign	tdsel1_b  = tdsel1  & seltp_b ;
+	assign	tdsel1_l  = tdsel1  & seltp_l ;
+
+	assign	tdsel0_t  = tdsel0  & seltp_t ;
+	assign	tdsel0_r  = tdsel0  & seltp_r ;
+	assign	tdsel0_b  = tdsel0  & seltp_b ;
+	assign	tdsel0_l  = tdsel0  & seltp_l ;
+
+// =====================================================================================
+// ÆþÎÏ¥Ç¡¼¥¿¿®¹æ¤ÎÁªÂò
+// -------------------------------------------------------------------------------------
+
+	assign	tdin2 = tdin2_t | tdin2_r | tdin2_b | tdin2_l ;
+	assign	tdin1 = tdin1_t | tdin1_r | tdin1_b | tdin1_l ;
+	assign	tdin0 = tdin0_t | tdin0_r | tdin0_b | tdin0_l ;
+
+// ---------------------------------------
+//   Ì¿ÎáÁÞÆþ»þ¤Î¤ßÃ¼»ÒÆþÎÏ¤òÍ­¸ú¤Ë¤¹¤ë
+// ---------------------------------------
+//                __________________________________________________________
+//  RESETINBNF	_|
+//                                  ________________________________________
+//  TMDENCLK	___________________| 
+//                   _   _   _               _   _   _   _   _   _   _   _ 
+//  X2		____| |_| |_| |_____________| |_| |_| |_| |_| |_| |_| |_| |_
+//                                        ____________       _______________ 
+//  RDSETUP	_________________________|            |_____|
+//                                           _______________________________
+//  RESSQSTA	____________________________| 
+//                                  ________________________________________
+//  PTESINST    ___________________|
+//                                  ________________________________________
+//  tinstp_inst ___________________|
+//                                  ____  tinstsig : Mode Check
+//  TINSTSIG	___________________|    |___________________________________
+//              ___________________  ___  __________________________________
+//  TP3-0       _______in__________><out><__________in_(ID-code/Inst)_______
+//                                                                       
+
+	assign	tesin3 = tinstp_inst & ( rdsetup | ressqsta ) & tdin3 ;
+	assign	tesin2 = tinstp_inst & ( rdsetup | ressqsta ) & tdin2 ;
+	assign	tesin1 = tinstp_inst & ( rdsetup | ressqsta ) & tdin1 ;
+	assign	tesin0 = tinstp_inst & ( rdsetup | ressqsta ) & tdin0 ;
+
+// ----------------------------------------------------------------
+//   INCDECEN¥»¥Ã¥È»þ¤ËINCDEC2-0Ã¼»ÒÆþÎÏ¤òÍ­¸ú¤Ë¤¹¤ë
+//   CRC±é»»·ë²Ì½ÐÎÏµö²Ä»þ¤ËCRCOUTENÃ¼»ÒÆþÎÏ¤òÍ­¸ú¤Ë¤¹¤ë
+// ----------------------------------------------------------------
+//		      RAM INCDEC      FLASH INCDEC    R/F EXDUMP
+//   Tport0 (P20)  :	INCDEC0		INCDEC0		exrout0
+//   Tport1 (P21)  :	INCDEC1		CRCOUTEN	exrout1
+//   Tport2 (P22)  :	INCDEC2		rout1		exrout2
+//   Tport3 (P40)  :	rout0		rout0		exrout3
+//   Tport5 (P137) :	CRCOUTEN	  -		INCDEC0
+//
+//   * FLASH INCDEC Mode and RAM/FLASH EXDUMP Mode
+//
+//	 INCDEC2-1 : L fixed
+//
+ 
+//
+// v1.3 mod indec0
+//
+//     tdin5 --> f/f output
+//
+	reg	incdec0_for_exdump_p ;
+	wire	incdec0_for_exdump ;
+
+	// synopsys async_set_reset "instresb"
+	always @ ( posedge baseck or negedge instresb ) begin
+	  if      ( !instresb  )   incdec0_for_exdump_p <= 1'b0 ;
+	  else if ( tinstp_exdmp ) incdec0_for_exdump_p <= 1'b1 ;
+	end
+
+//
+// ¥Û¡¼¥ë¥É¥±¥¢¤Î¤¿¤á¡¢Ç°¤Î¤¿¤áÆþ¤ì¤Æ¤ª¤¯¡£(optlfsr¤È»÷¤¿¤è¤¦¤Ê·ÐÏ©¤Ê¤Î¤Ç¡Ë
+// ÉÔÍ×¤À¤Ã¤¿¤é¸å¤ÇÈ´¤¤¤Æ¤â¤é¤¦¡£
+//
+        QLK0RMODECTL2V1_HOLDDLY2  incdec0_holdbuf   ( .in1(incdec0_for_exdump_p), .out1(incdec0_for_exdump) );
+
+
+	assign	incdec2 = tinstp_incr & tdin2  ;
+	assign	incdec1 = tinstp_incr & tdin1  ;
+
+// v1.3 mod
+//	assign	incdec0 = ( tinstp_exdmp ) ? tdin5              : (( tinstp_incr | tinstp_incf ) & tdin0 ) ;
+	assign	incdec0 = ( tinstp_exdmp ) ? incdec0_for_exdump : (( tinstp_incr | tinstp_incf ) & tdin0 ) ;
+
+	assign	crcouten = ( tinstp_incr ) ? tdin5 : ( tinstp_incf & tdin1 ) ;
+
+// -------------------------------------------------------------------------------------
+//   SCAN¥Ç¡¼¥¿¿®¹æ¤ÎÁªÂò
+// -------------------------------------------------------------------------------------
+
+	assign	scanin    = tesdbt ? lfsscain  : ( tesscan & tdin2 ) ;
+	assign	scanclk_p = tesdbt ? btclkin   : ( tesscan & tdin4 ) ;
+	assign	scanen_p  = tesdbt ? lfsscaen  : ( tesscan & tdin0 ) ;
+	assign	scanresz  = tesdbt ? lfssresz  : ( tesscan & tdin1 ) ;
+
+	QLK0RMODECTL2V1_SCANDRIVE_LVX scanbuf1 ( .sig_out(scanclk) , .sig_in(scanclk_p) );
+	QLK0RMODECTL2V1_SCANDRIVE_LVX scanbuf2 ( .sig_out(scanen)  , .sig_in(scanen_p)  );
+
+// -------------------------------------------------------------------------------------
+//   EXCLK1¤ÎÀ¸À® ---> CSC
+// -------------------------------------------------------------------------------------
+
+	assign	exclk1 = ( tinstp_bct | tinstp_eck ) & tdin0 ;
+
+// =====================================================================================
+// ½ÐÎÏ¥Ç¡¼¥¿¿®¹æ¤ÎÀ¸À®
+// -------------------------------------------------------------------------------------
+
+// --  ¥Æ¥¹¥È¥â¡¼¥É³ÎÇ§¿®¹æ¤ÎÀ¸À® -----------------------------------
+//   TESINST¥â¡¼¥É¤ËÆþ¤Ã¤¿¤³¤È¤ò³ÎÇ§¤¹¤ë¤¿¤á¤Ë¥Ñ¥ë¥¹¤ò½ÐÎÏ¤¹¤ë
+
+	assign	tinstsig = tesinst & ~rdsetup & ~ressqsta & ~resb ;
+// ------------------------------------------------------------------
+
+// v1.3 add select plug or socket SCANOUT ---------------------------
+	wire   scanout_sel ;
+
+	assign scanout_sel = ( bbtesscan_or ) ? bbscanout : scanout ;
+// ------------------------------------------------------------------
+
+	always @ ( tesscan or optiddq or tesdbt or rmd or flrdok or
+		    tinstp_inst or tinstp_def or tinstp_bct or tinstp_eck or 
+		    tinstp_oprd or tinstp_incr or tinstp_incf or tinstp_exdmp or 
+		    scanout_sel or tinstsig or rout0 or rout1 or rt0mon0 or rt0mon1 or wdtmon or exrout or
+		    tinstp_optad1bit or tinstp_optad4bit or tout_1bit or tout_4bit ) begin
+	  casex ( { tesscan , optiddq , tesdbt , rmd  , flrdok , 
+		    tinstp_inst , tinstp_def , tinstp_bct , tinstp_eck , 
+		    tinstp_oprd , tinstp_incr , tinstp_incf , tinstp_exdmp ,
+		    tinstp_optad1bit, tinstp_optad4bit } )	// synopsys parallel_case
+
+	    15'b1100x00000000_00 : { tdout3   , tdout2   , tdout1  , tdout0 }
+			         = { scanout_sel , 3'b000 } ;			// TESSCAN
+	    15'b1010xxxxxxxxx_xx : { tdout3   , tdout2   , tdout1  , tdout0 }
+			         = { scanout_sel , 3'b000 } ;			// TESDBT
+	    15'b0x0x010000000_00 : { tdout3   , tdout2   , tdout1  , tdout0 }
+			         = { tinstsig, 3'b000 } ;			// TESINST ( MODE Check )
+	    15'b0x00101000000_00 : { tdout3   , tdout2   , tdout1  , tdout0 }
+			         = { rout0   , 3'b000 } ;			// TESINST ( Default Output )
+	    15'b000x100100000_00 : { tdout3   , tdout2   , tdout1  , tdout0 }
+			         = { rt0mon0 , rt0mon1  , wdtmon  , 1'b0   } ;	// TESINST ( Binary Counter Test )
+	    15'b0000100010000_00 : { tdout3   , tdout2   , tdout1  , tdout0 }
+			         = { rout0   , 3'b000 } ;			// TESINST ( EXCCK )
+	    15'b000x100000100_00 : { tdout3   , tdout2   , tdout1  , tdout0 }
+			         = { rout0   , 3'b000 } ;			// TESINST ( RAM INCDEC )
+	    15'b000x100000010_00 : { tdout3   , tdout2   , tdout1  , tdout0 }
+			         = { rout0   , rout1    , 2'b00 } ;		// TESINST ( FLASH INCDEC )
+	    15'b000x100000001_00 : { tdout3   , tdout2   , tdout1  , tdout0 }
+			         = { exrout } ;					// TESINST ( EXDUMP )
+            15'b000x100000000_10 : { tdout3   , tdout2   , tdout1  , tdout0 }
+                                 = { tout_1bit , 3'b000 } ;                     // TESINST ( ADOUT 1BIT )
+            15'b000x100000000_01 : { tdout3   , tdout2   , tdout1  , tdout0 }
+                                 = { tout_4bit } ;                     		// TESINST ( ADOUT 4BIT )
+	    default              : { tdout3  , tdout2   , tdout1  , tdout0 }
+			         = { 4'b0000   } ;	
+	  endcase
+	end
+
+// =====================================================================================
+// ¥Æ¥¹¥È¥³¡¼¥ÉÆþÎÏ¥Ç¡¼¥¿¤ÎÏ¢·ë
+// ¥«¥¦¥ó¥¿¤ËINCDECCK ¤òÍí¤á¤Æ¤¤¤ë¤Î¤Ï¡¢INCDECCK=H¤Î¤È¤­CPUÌ¿Îá¤Ë¿·µ¬Ì¿Îá¤ò¥ê¥ê¡¼¥¹¤µ¤»¤Ê¤¤¤¿¤á¡£
+// (CPU¤Ë¤ÆREAD or WRITE Ì¿Îá¤ò¼Â¹Ô¤µ¤»¤¿¾õÂÖ¤Ç¥¢¥É¥ì¥¹¤ò¥¤¥ó¥¯¥ê¥á¥ó¥È¤µ¤»¤ë)
+// =====================================================================================
+
+	QLK0RMODECTL2V1_GATECLK_LVN gate_slflash ( .clk_out ( slflashin ) , .clk_in ( slflash ) , .en( testmod ) ) ;
+
+	wire	st_counten = tesinst & ~( ( st_count==2'b00 ) & ~slflashin ) ;
+
+	//      synopsys async_set_reset "instresb"
+	always @ ( posedge baseck or negedge instresb ) begin
+	  if      ( !instresb  ) st_count <= 2'b0 ;
+	  else if ( st_counten ) st_count <= st_count + 2'b1 ;
+	end
+
+	//      synopsys async_set_reset "instresb"
+	always @ ( posedge baseck or negedge instresb ) begin
+	  if      ( !instresb        ) waitfl <= 1'b0 ;
+	  else if (  slflashin       ) waitfl <= 1'b1 ;
+	  else if (  st_count==2'b11 ) waitfl <= 1'b0 ;
+	end
+
+	//      synopsys async_set_reset "instresb"
+	always @ ( posedge baseck or negedge instresb ) begin
+	  if ( !instresb )
+		{ tid27 , tid26 , tid25 , tid24 , tid19 , tid18 , tid17 , tid16 ,
+		  tid11 , tid10 , tid9  , tid8  , tid3_p, tid2_p, tid1_p, tid0_p  } <= 16'b0 ;
+	  else if ( st_count == 2'b11 ) 
+		{ tid27  , tid26  , tid25  , tid24  } <= { tesin3 , tesin2 , tesin1 , tesin0 };
+	  else if ( st_count == 2'b10 )
+		{ tid19  , tid18  , tid17  , tid16  } <= { tesin3 , tesin2 , tesin1 , tesin0 };
+	  else if ( st_count == 2'b01 )
+		{ tid11  , tid10  , tid9   , tid8   } <= { tesin3 , tesin2 , tesin1 , tesin0 };
+	  else if ( st_count == 2'b00 )
+		{ tid3_p , tid2_p , tid1_p , tid0_p } <= { tesin3 , tesin2 , tesin1 , tesin0 };
+	end
+
+
+	//      synopsys async_set_reset "instresb"
+	always @ ( negedge baseck or negedge instresb ) begin
+	  if ( !instresb )
+		{ tid31 , tid30 , tid29 , tid28 , tid23 , tid22 , tid21 , tid20 ,
+		  tid15 , tid14 , tid13 , tid12 , tid7  , tid6  , tid5  , tid4  , 
+		  tid3  , tid2  , tid1  , tid0  } <= 20'b0 ;
+	  else if ( st_count == 2'b00 ) 
+		{ tid31 , tid30 , tid29 , tid28  } <= { tesin3 , tesin2 , tesin1 , tesin0 };
+	  else if ( st_count == 2'b11 )
+		{ tid23 , tid22 , tid21 , tid20  } <= { tesin3 , tesin2 , tesin1 , tesin0 };
+	  else if ( st_count == 2'b10 )
+		{ tid15 , tid14 , tid13 , tid12  } <= { tesin3 , tesin2 , tesin1 , tesin0 };
+	  else if ( st_count == 2'b01 ) begin
+		  { tid7  , tid6  , tid5  , tid4 } <= { tesin3 , tesin2 , tesin1 , tesin0 } ;
+		  { tid3  , tid2  , tid1  , tid0 } <= { tid3_p , tid2_p , tid1_p , tid0_p } ;
+		end
+	end
+
+endmodule
+
+
+module QLK0RMODECTL2V1_GATECLK_LVN ( clk_out, clk_in, en ) ;
+
+	input		clk_in, en ;
+	output		clk_out ;
+
+	TBAD2X1 gateclk1 ( .H01( clk_in ), .H02( en ), .N01( clk_out ) ) ;
+
+endmodule
+
+
+module QLK0RMODECTL2V1_SCANDRIVE_LVX ( sig_out, sig_in );
+
+	input		sig_in  ;
+	output		sig_out ;
+
+	TBBUFCLX4  scandrive  ( .N01(sig_out), .H01(sig_in) );
+
+endmodule
+
+//
+// for hold
+//
+module QLK0RMODECTL2V1_HOLDDLY1 ( out1, in1 );
+  input in1;
+  output out1;
+  wire   n1, n2, n3;
+
+  TBDLY1X2 holddly1_1 ( .N01(n1), .H01(in1) );
+  TBDLY1X2 holddly1_2 ( .N01(n2), .H01(n1) );
+  TBBUFX2  holddly1_3 ( .N01(n3), .H01(n2) );
+  TBBUFX2  holddly1_4 ( .N01(out1), .H01(n3) );
+endmodule
+
+
+module QLK0RMODECTL2V1_HOLDDLY2 ( out1, in1 );
+  input in1;
+  output out1;
+  wire   n1, n2;
+
+  TBDLY1X2 holddly2_1 ( .N01(n1), .H01(in1) );
+  TBDLY1X2 holddly2_2 ( .N01(n2), .H01(n1) );
+  TBBUFX2  holddly2_3 ( .N01(out1), .H01(n2) );
+endmodule
+
+module QLK0RMODECTL2V1_SEC ( ptesinst, tesinst, tiider );
+
+        input   ptesinst ;
+        output  tesinst, tiider ;
+
+        assign  tesinst = ptesinst ;
+        assign  tiider  = 1'b0 ;
+
+endmodule

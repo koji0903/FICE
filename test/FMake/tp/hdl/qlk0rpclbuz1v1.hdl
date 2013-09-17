@@ -1,0 +1,599 @@
+// ==============================================================//
+//                                                               //
+// 78K0R series Clock Output/Buzzer Output Control Macro         //
+//                                                               //
+//  Module   : QLK0RPCLBUZ1V1                                    //
+//  Date     : 2009/09/23                                        //
+//  Revision : 1.00                                              //
+//  Designer : Y.SAKAGUCHI (yuusuke.sakaguchi@nms.necel.com)     //
+//  Note     : Modify for QLK0RPCLBUZ0V1                         //
+//                                                               //
+// ------------------------------------------------------------- //
+//                                                               //
+//  QLK0RPCLBUZ1V1                                               //
+//    |--- QLK0RPCLBUZ1V1_APBBI                                  //
+//    |--- QLK0RPCLBUZ1V1_MAIN                                   //
+//      |--- QLK0RPCLBUZ1V1_CTS                                  //
+//      |--- QLK0RPCLBUZ1V1_OR                                   //
+//	|--- QLK0RPCLBUZ1V1_ANDGATE                              //
+//                                                               //
+// ==============================================================//
+
+//****************************************************************************
+//	最上位階層
+//****************************************************************************
+module QLK0RPCLBUZ1V1 ( 
+			PWDATA15,	PWDATA11,
+			PWDATA10,	PWDATA9,	PWDATA8,	PWDATA7,
+			PWDATA3,	PWDATA2,	PWDATA1,
+			PWDATA0,	
+			PRDATA15,	PRDATA11,	PRDATA10,	PRDATA9,	PRDATA8,
+			PRDATA7,	PRDATA3,	PRDATA2,	PRDATA1,	PRDATA0,
+			PADDR0,		PSEL,		PENABLE,	PWRITE,		
+			PCLKRW,		RESETB,		RESB,		RESSTP,		FMAIN,
+			SCANMODE,	SCANCLK,	SCANRESZ,
+			PCLBUZ0,	PCLBUZ1,	FSUB
+		      );
+//			PRDATA14, PRDATA13, PRDATA12, PRDATA6, PRDATA5, PRDATA4,
+
+
+input		PCLKRW;
+input		RESETB;
+input		RESB;
+input		RESSTP;
+input		FMAIN;
+input 		FSUB;
+input		SCANMODE;
+input		SCANCLK;
+input		SCANRESZ;
+input		PADDR0;
+input		PSEL;
+input		PENABLE;
+input		PWRITE;
+input		PWDATA15;
+input		PWDATA11;
+input		PWDATA10;
+input		PWDATA9;
+input		PWDATA8;
+input		PWDATA7;
+input		PWDATA3;
+input		PWDATA2;
+input		PWDATA1;
+input		PWDATA0;
+
+output		PRDATA15;
+output		PRDATA11;
+output		PRDATA10;
+output		PRDATA9;
+output		PRDATA8;
+output		PRDATA7;
+output		PRDATA3;
+output		PRDATA2;
+output		PRDATA1;
+output		PRDATA0;
+
+output		PCLBUZ1;
+output		PCLBUZ0;
+//output		PRDATA14;
+//output		PRDATA13;
+//output		PRDATA12;
+//output		PRDATA6;
+//output		PRDATA5;
+//output		PRDATA4;
+
+wire		we_cks1;
+wire		we_cks0;
+wire		re_cks1;
+wire		re_cks0;
+wire		fmain_scck;
+wire		fsub_scck;
+
+
+
+//各モジュール接続
+
+QLK0RPCLBUZ1V1_APBBI apbbi (
+			.PWRITE(PWRITE), .PENABLE(PENABLE), .PSEL(PSEL), .PADDR0(PADDR0),
+			.re_cks0(re_cks0), .re_cks1(re_cks1), .we_cks0(we_cks0), .we_cks1(we_cks1)
+			);
+
+QLK0RPCLBUZ1V1_MAIN main (
+			.resstp(RESSTP),	.resetb(RESETB),	.fmain(fmain_scck),		.fsub(fsub_scck),	
+			.pclkrw(PCLKRW),	.resb(RESB),		.pclbuz0(PCLBUZ0),	.pclbuz1(PCLBUZ1),
+			.scanmode(SCANMODE),	.scanclk(SCANCLK),	.scanresz(SCANRESZ),	
+			.we_cks0(we_cks0),	.we_cks1(we_cks1),	.re_cks0(re_cks0),	.re_cks1(re_cks1),
+
+			.din({PWDATA15, PWDATA11, PWDATA10, PWDATA9, PWDATA8,
+			      PWDATA7, 	PWDATA3,  PWDATA2,  PWDATA1, PWDATA0}),
+
+//			.dout({PRDATA15, PRDATA14, PRDATA13, PRDATA12, PRDATA11, PRDATA10, PRDATA9, PRDATA8,
+//			       PRDATA7,  PRDATA6,  PRDATA5,  PRDATA4,  PRDATA3,  PRDATA2,  PRDATA1, PRDATA0})
+			.dout({PRDATA15, PRDATA11, PRDATA10, PRDATA9, PRDATA8,
+			       PRDATA7,  PRDATA3,  PRDATA2,  PRDATA1, PRDATA0})
+        	        ) ;
+
+        QLK0RPCLBUZ1V1_CTS_FMAIN   fmain_cts   (
+                .clkin(FMAIN),  .scanclk(SCANCLK), .scanmode(SCANMODE), .clkout(fmain_scck) );
+
+        QLK0RPCLBUZ1V1_CTS_FSUB   fsub_cts   (
+                .clkin(FSUB),  .scanclk(SCANCLK), .scanmode(SCANMODE), .clkout(fsub_scck) );
+
+endmodule
+//****************************************************************************
+//	APB　バスI/F部
+//****************************************************************************
+module  QLK0RPCLBUZ1V1_APBBI(
+			   PWRITE,	PENABLE,	PSEL,	    PADDR0,
+			   re_cks0,	re_cks1,	we_cks0,    we_cks1
+		       	);
+
+input		PADDR0;
+input		PSEL;
+input		PENABLE;
+input		PWRITE;
+
+output		we_cks0;
+output		we_cks1;
+output		re_cks0;
+output		re_cks1;
+
+wire		we_cks0;
+wire		we_cks1;
+wire		re_cks0;
+wire		re_cks1;
+wire		sel_cks0;
+wire		sel_cks1;
+
+	//Address Decode
+
+	assign sel_cks0 = PSEL & PADDR0;
+	assign sel_cks1 = PSEL & !PADDR0;
+
+	//Write Enable
+
+	assign we_cks0 = sel_cks0 & PENABLE & PWRITE;
+	assign we_cks1 = sel_cks1 & PENABLE & PWRITE;
+
+	//Read Enable
+
+	assign re_cks0 = sel_cks0 & PENABLE & !PWRITE;
+	assign re_cks1 = sel_cks1 & PENABLE & !PWRITE;
+
+endmodule
+
+
+//****************************************************************************
+//	CKU　メイン部
+//****************************************************************************
+module  QLK0RPCLBUZ1V1_MAIN	(
+			 din,		resetb,		resstp,		fmain,		fsub,
+		         pclkrw,	resb,		we_cks0,	we_cks1,	re_cks0,
+			 re_cks1,	scanmode,	scanclk,	scanresz,
+		         dout,		pclbuz0,	pclbuz1
+			) ;
+
+
+input	[9:0]	din;
+input		pclkrw;
+input		resetb;
+input		resb;
+input		resstp;
+input		fmain;
+input		scanmode;
+input		scanclk;
+input		scanresz;
+input		fsub;
+input		we_cks0;
+input		we_cks1;
+input		re_cks0;
+input		re_cks1;
+
+output		pclbuz0;
+output		pclbuz1;
+//output [15:0]	dout;
+output	[9:0]	dout;
+
+reg	[12:0]	countm ;
+reg	[6:0]	counts ;
+reg		pclsel0;
+reg		pclsel1;
+reg		scan_moni;
+reg             count_en0;
+reg             count_en1;
+reg             pcloe0_me;
+reg             pcloe1_me;
+reg		pclbuz0_feed;
+reg             pclbuz1_feed;
+
+//wire	[15:0]	dout;
+wire	[9:0]	dout;
+wire		resstp_dft;
+wire            fmain_prs_clock;
+wire		fsub_prs_clock;
+wire		fmain_sc;
+wire		fsub_sc;
+wire		count_en_main;
+wire		count_en_sub;
+wire            countm_en;
+wire            counts_en;
+wire		countm12;
+wire		countm11;
+wire		countm10;
+wire		countm3;
+wire		countm2;
+wire		countm1;
+wire		countm0;
+wire		counts6;
+wire		counts5;
+wire		counts4;
+wire		counts3;
+wire		counts2;
+wire		counts1;
+wire		counts0;
+wire		countm_1;
+wire            countm_2;
+wire            countm_3;
+wire            countm_4;
+wire            counts_1;
+wire		counts_2;
+wire            counts_3;
+wire            counts_4;
+wire            pclsel0_cku;
+wire            pclsel1_cku;
+wire            pclsel0_scan;
+wire		pclsel1_scan;
+//wire            countm_out;
+//wire            counts_out;
+
+	//	レジスター設定
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  name  |  bit7  |  bit6  |  bit5  |  bit4  |  bit3  |  bit2  |  bit1  |  bit0  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  CKS0  | PCLOE0 |    0   |    0   |    0   |  CSEL0 |  CCS02 | CCS01  | CCS00  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	reg		pcloe0, csel0, ccs02, ccs01, ccs00 ;
+
+	// synopsys async_set_reset "resb"
+	always @ ( posedge pclkrw or negedge resb ) begin
+	   if ( !resb ) begin
+	      pcloe0 <= 1'b0;
+	      csel0  <= 1'b0;
+	      ccs02  <= 1'b0;
+	      ccs01  <= 1'b0;
+	      ccs00  <= 1'b0;
+	   end
+	   else if ( we_cks0 ) begin
+	      pcloe0 <= din[9];		// bit7
+	      csel0  <= din[8];		// bit3
+	      ccs02  <= din[7];		// bit2
+	      ccs01  <= din[6];		// bit1
+	      ccs00  <= din[5];		// bit0
+	   end
+	end
+
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  name  |  bit7  |  bit6  |  bit5  |  bit4  |  bit3  |  bit2  |  bit1  |  bit0  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	//  CKS1  | PCLOE1 |    0   |    0   |    0   |  CSEL1 |  CCS12 | CCS11  | CCS10  |
+	//        +--------+--------+--------+--------+--------+--------+--------+--------+
+	reg		pcloe1, csel1, ccs12, ccs11, ccs10 ;
+
+	// synopsys async_set_reset "resb"
+	always @ ( posedge pclkrw or negedge resb ) begin
+	   if ( !resb ) begin
+	      pcloe1 <= 1'b0;
+	      csel1  <= 1'b0;
+	      ccs12  <= 1'b0;
+	      ccs11  <= 1'b0;
+	      ccs10  <= 1'b0;
+	   end
+	   else if ( we_cks1 ) begin
+	      pcloe1 <= din[4];		// bit7
+	      csel1  <= din[3];		// bit3
+	      ccs12  <= din[2];		// bit2
+	      ccs11  <= din[1];		// bit1
+	      ccs10  <= din[0];		// bit0
+	   end
+	end
+
+	// DATA READ 
+	assign dout     = (re_cks0)     ? {pcloe0, csel0, ccs02, ccs01, ccs00, 5'h00}
+                        : (re_cks1)     ? {5'h00, pcloe1, csel1, ccs12, ccs11, ccs10}
+                        : 10'h000;
+
+	// RESSTP作成
+	assign resstp_dft = (scanmode) ? !scanresz : resstp;
+
+	//An anti-meta measure_DFF
+
+	// synopsys async_set_reset "resetb"
+	always @(negedge resetb or posedge fmain) begin
+	   if   (!resetb)  count_en0 <= 1'b0;
+	   else		   count_en0 <= count_en_main;
+	end
+
+	// synopsys async_set_reset "resetb"
+	always @(negedge resetb or posedge fsub) begin
+	   if   (!resetb)  count_en1 <= 1'b0;
+	   else            count_en1 <= count_en_sub;
+	end
+
+	// synopsys async_set_reset "resetb"
+ 	always @(negedge resetb or posedge pclsel0_cku) begin
+           if   (!resetb)  pcloe0_me <= 1'b0;
+           else		   pcloe0_me <= pcloe0;
+        end
+
+	// synopsys async_set_reset "resetb"
+        always @(negedge resetb or posedge pclsel1_cku) begin
+           if   (!resetb)  pcloe1_me <= 1'b0;
+           else            pcloe1_me <= pcloe1;
+        end
+
+ 	
+//SS3rd modify
+//	TBGTSMLALADPCLX2 countm_gate (
+//                      .N01(fmain_prs_clock), .N02(countm_out), .H01(count_en0), .H02(fmain), .H03(scanmode) );
+	TBGTSMLALADCLX2 countm_gate (
+                      .N01(fmain_prs_clock), .H01(count_en0), .H02(fmain), .H03(scanmode) );
+
+	// synopsys async_set_reset "resstp_dft"
+	always @ ( posedge fmain_prs_clock or posedge resstp_dft ) begin
+	   if      (resstp_dft)	countm[12:0] <= 13'b0 ;
+	   else			countm[12:0] <= countm[12:0] + 1'b1; 
+	end
+
+	assign countm12 = countm[12] ;
+	assign countm11 = countm[11] ;
+	assign countm10 = countm[10] ;
+	assign countm3  = countm[3] ;
+	assign countm2  = countm[2] ;
+	assign countm1  = countm[1] ;
+	assign countm0  = countm[0] ;
+
+//SS3rd modify
+//	TBGTSMLALADPCLX2 counts_gate (
+//                      .N01(fsub_prs_clock),  .N02(counts_out), .H01(count_en1), .H02(fsub),  .H03(scanmode) );
+	TBGTSMLALADCLX2 counts_gate (
+                      .N01(fsub_prs_clock),  .H01(count_en1), .H02(fsub),  .H03(scanmode) );
+
+	// synopsys async_set_reset "resetb"
+	always @ ( posedge fsub_prs_clock or negedge resetb ) begin
+	   if      (!resetb)	counts[6:0] <= 7'b0 ;
+	   else                 counts[6:0] <= counts[6:0] + 1'b1; 
+	end
+
+	assign counts6 = counts[6] ;
+	assign counts5 = counts[5] ;
+	assign counts4 = counts[4] ;
+	assign counts3 = counts[3] ;
+	assign counts2 = counts[2] ;
+	assign counts1 = counts[1] ;
+	assign counts0 = counts[0] ;
+
+	// SCANMODE時は、原発は固定する
+//SS3rd modify
+//	QLK0RPCLBUZ1V1_OR fmain_fix ( .in1(fmain), .in2(scanmode), .out(fmain_sc) ) ;
+//      QLK0RPCLBUZ1V1_OR fsub_fix  ( .in1(fsub),  .in2(scanmode), .out(fsub_sc) ) ;
+	QLK0RPCLBUZ1V1_OR fmain_fix ( .in1(fmain_prs_clock), .in2(scanmode), .out(fmain_sc) ) ;
+        QLK0RPCLBUZ1V1_OR fsub_fix  ( .in1(fsub_prs_clock),  .in2(scanmode), .out(fsub_sc) ) ;
+
+	// 周辺LSI用クロック選択回路0
+	always @ ( csel0 or ccs02 or ccs01 or ccs00 or
+		   fmain_sc or countm0 or countm1 or countm2 or
+		   countm3 or countm10 or countm11 or countm12 or
+		   fsub_sc or counts0 or counts1 or counts2 or
+		   counts3 or counts4 or counts5 or counts6 ) begin
+	   case ( { csel0, ccs02, ccs01, ccs00 } ) //synopsys parallel_case
+		4'b0000 : pclsel0 = fmain_sc ;	// main
+		4'b0001 : pclsel0 = countm0  ;	// main/2^1
+		4'b0010 : pclsel0 = countm1  ;	// main/2^2
+		4'b0011 : pclsel0 = countm2  ;	// main/2^3
+		4'b0100 : pclsel0 = countm3  ;	// main/2^4
+		4'b0101 : pclsel0 = countm10 ;	// main/2^11
+		4'b0110 : pclsel0 = countm11 ;	// main/2^12
+		4'b0111 : pclsel0 = countm12 ;	// main/2^13
+		4'b1000 : pclsel0 = fsub_sc  ;	// sub
+		4'b1001 : pclsel0 = counts0  ;	// sub/2
+		4'b1010 : pclsel0 = counts1  ;	// sub/2^2
+		4'b1011 : pclsel0 = counts2  ;	// sub/2^3
+		4'b1100 : pclsel0 = counts3  ;	// sub/2^4
+		4'b1101 : pclsel0 = counts4  ;	// sub/2^5
+		4'b1110 : pclsel0 = counts5  ;	// sub/2^6
+		4'b1111 : pclsel0 = counts6  ;	// sub/2^7
+//		default : pclsel0 = fsub_sc  ;
+	   endcase
+	end
+
+	// 周辺LSI用クロック選択回路1
+	always @ ( csel1 or ccs12 or ccs11 or ccs10 or
+		   fmain_sc or countm0 or countm1 or countm2 or
+		   countm3 or countm10 or countm11 or countm12 or
+		   fsub_sc or counts0 or counts1 or counts2 or
+		   counts3 or counts4 or counts5 or counts6 ) begin
+	   case ( { csel1, ccs12, ccs11, ccs10 } ) //synopsys parallel_case
+		4'b0000 : pclsel1 = fmain_sc ;	// main
+		4'b0001 : pclsel1 = countm0  ;	// main/2^1
+		4'b0010 : pclsel1 = countm1  ;	// main/2^2
+		4'b0011 : pclsel1 = countm2  ;	// main/2^3
+		4'b0100 : pclsel1 = countm3  ;	// main/2^4
+		4'b0101 : pclsel1 = countm10 ;	// main/2^11
+		4'b0110 : pclsel1 = countm11 ;	// main/2^12
+		4'b0111 : pclsel1 = countm12 ;	// main/2^13
+		4'b1000 : pclsel1 = fsub_sc  ;	// sub
+		4'b1001 : pclsel1 = counts0  ;	// sub/2
+		4'b1010 : pclsel1 = counts1  ;	// sub/2^2
+		4'b1011 : pclsel1 = counts2  ;	// sub/2^3
+		4'b1100 : pclsel1 = counts3  ;	// sub/2^4
+		4'b1101 : pclsel1 = counts4  ;	// sub/2^5
+		4'b1110 : pclsel1 = counts5  ;	// sub/2^6
+		4'b1111 : pclsel1 = counts6  ;	// sub/2^7
+//		default : pclsel1 = fsub_sc  ;
+	   endcase
+	end
+
+	
+	//A stop signal of PRS for Fmain
+	assign count_en_main = ( (pcloe0 | pclbuz0_feed) & ~csel0) | ( (pcloe1 | pclbuz1_feed) & ~csel1 ) ;
+
+	//A stop signal of PRS for Fsub
+	assign count_en_sub  = ( (pcloe0 | pclbuz0_feed) & csel0) | ( (pcloe1 | pclbuz1_feed) & csel1 ) ;
+
+
+	QLK0RPCLBUZ1V1_CTS_PCLSEL0 pclsel0_cku_cts (
+                .clkin(pclsel0), .scanclk(scanclk), .scanmode(scanmode), .clkout(pclsel0_cku) );
+
+        QLK0RPCLBUZ1V1_CTS_PCLSEL1 pclsel1_cku_cts (
+                .clkin(pclsel1), .scanclk(scanclk), .scanmode(scanmode), .clkout(pclsel1_cku) );
+
+	
+	//gating_cell_resolution
+
+	// synopsys async_set_reset "resetb"
+	always @(negedge resetb or negedge pclsel0_cku) begin
+           if   (!resetb)  pclbuz0_feed <= 1'b0;
+           else            pclbuz0_feed <= pcloe0_me;
+        end	
+
+	QLK0RPCLBUZ1V1_OR loe0_scan_or  ( .in1(pclsel0_cku),  .in2(scanmode), .out(pclsel0_scan) ) ;
+	QLK0RPCLBUZ1V1_ANDGATE pcl0_and  ( .in1(pclbuz0_feed),  .in2(pclsel0_scan), .out(pclbuz0) ) ;
+
+	// synopsys async_set_reset "resetb"
+	always @(negedge resetb or negedge pclsel1_cku) begin   
+           if   (!resetb)  pclbuz1_feed <= 1'b0;
+           else            pclbuz1_feed <= pcloe1_me;
+        end     
+
+	QLK0RPCLBUZ1V1_OR loe1_scan_or  ( .in1(pclsel1_cku),  .in2(scanmode), .out(pclsel1_scan) ) ;
+	QLK0RPCLBUZ1V1_ANDGATE pcl1_and  ( .in1(pclbuz1_feed),  .in2(pclsel1_scan), .out(pclbuz1) ) ;
+
+
+	//scan_monitor_FF
+	// synopsys async_set_reset "scanresz"
+//	always @ ( posedge scanclk or negedge scanresz ) begin
+//           if ( !scanresz )     scan_moni <= 1'b0 ;
+//           else                 scan_moni <= pclsel0 ^ pclsel1 ^ countm_out ^ counts_out;
+//        end
+	always @ ( posedge scanclk or negedge scanresz ) begin
+           if ( !scanresz )     scan_moni <= 1'b0 ;
+           else                 scan_moni <= pclsel0 ^ pclsel1 ;
+        end
+
+
+endmodule
+
+//*********************************************************
+
+`ifndef FPGA_ICE
+module QLK0RPCLBUZ1V1_CTS_PCLSEL0 ( clkin , scanclk , scanmode , clkout );
+
+input	clkin;
+input	scanclk; 
+input	scanmode;
+
+output	clkout;
+
+wire	scanmodez;
+wire	scanclk_a;
+wire	clkin_a;
+wire	clkout_p;
+
+	TBINVX4 sc_inv ( .N01(scanmodez), .H01(scanmode) );
+
+	TBND2X4 clk_gate0 ( .N01(scanclk_a) , .H01(scanclk)   , .H02(scanmode)  ) ;
+	TBND2X4 clk_gate1 ( .N01(clkin_a)   , .H01(clkin)     , .H02(scanmodez) ) ;
+	TBND2X4 clk_gate2 ( .N01(clkout_p)  , .H01(scanclk_a) , .H02(clkin_a)   ) ;
+
+	TBBUFCLX4 root ( .N01(clkout), .H01(clkout_p) );
+
+endmodule
+`endif
+
+//*********************************************************
+
+`ifndef FPGA_ICE
+module QLK0RPCLBUZ1V1_CTS_PCLSEL1 ( clkin , scanclk , scanmode , clkout );
+
+input   clkin;
+input   scanclk;
+input   scanmode;
+
+output  clkout;
+
+wire    scanmodez;
+wire    scanclk_a;
+wire    clkin_a;
+wire    clkout_p;
+
+        TBINVX4 sc_inv ( .N01(scanmodez), .H01(scanmode) );
+
+        TBND2X4 clk_gate0 ( .N01(scanclk_a) , .H01(scanclk)   , .H02(scanmode)  ) ;
+        TBND2X4 clk_gate1 ( .N01(clkin_a)   , .H01(clkin)     , .H02(scanmodez) ) ;
+        TBND2X4 clk_gate2 ( .N01(clkout_p)  , .H01(scanclk_a) , .H02(clkin_a)   ) ;
+
+        TBBUFCLX4 root ( .N01(clkout), .H01(clkout_p) );
+
+endmodule
+`endif
+
+//*********************************************************
+
+module  QLK0RPCLBUZ1V1_OR ( in1, in2, out ) ;
+
+	input		in1, in2 ;
+	output		out ;
+
+	assign out = in1 | in2 ;
+
+endmodule
+
+//*********************************************************
+
+module QLK0RPCLBUZ1V1_ANDGATE ( out , in1 , in2 ) ;
+
+        input   in1 , in2 ;
+        output  out ;
+
+        TBAD2X2 and2 ( .N01(out), .H01(in1), .H02(in2) ) ;
+
+endmodule
+
+//*********************************************************
+`ifndef FPGA_ICE
+module QLK0RPCLBUZ1V1_CTS_FMAIN ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+        wire    scanmodez, scanclk_a, clkin_a, clkout_p;
+
+        TBINVX4 sc_inv ( .N01(scanmodez), .H01(scanmode) );
+
+        TBND2X2 clk_gate0 ( .N01(scanclk_a) , .H01(scanclk)   , .H02(scanmode)  ) ;
+        TBND2X2 clk_gate1 ( .N01(clkin_a)   , .H01(clkin)     , .H02(scanmodez) ) ;
+        TBND2X2 clk_gate2 ( .N01(clkout_p)  , .H01(scanclk_a) , .H02(clkin_a)   ) ;
+
+        TBBUFCLX4 root ( .N01(clkout), .H01(clkout_p) );
+
+endmodule
+`endif
+
+`ifndef FPGA_ICE
+module QLK0RPCLBUZ1V1_CTS_FSUB ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+        wire    scanmodez, scanclk_a, clkin_a, clkout_p;
+
+        TBINVX4 sc_inv ( .N01(scanmodez), .H01(scanmode) );
+
+        TBND2X2 clk_gate0 ( .N01(scanclk_a) , .H01(scanclk)   , .H02(scanmode)  ) ;
+        TBND2X2 clk_gate1 ( .N01(clkin_a)   , .H01(clkin)     , .H02(scanmodez) ) ;
+        TBND2X2 clk_gate2 ( .N01(clkout_p)  , .H01(scanclk_a) , .H02(clkin_a)   ) ;
+
+        TBBUFCLX4 root ( .N01(clkout), .H01(clkout_p) );
+
+endmodule
+`endif
+

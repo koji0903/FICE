@@ -1,0 +1,97 @@
+/**********************************************************************/
+/*                                                                    */
+/* K0R series PORT bit macro                                          */
+/*                                                                    */
+/*   [ port bit : 出力ポート ]                                        */
+/*                                                                    */
+/*    PL あり                                                         */
+/*    兼用出力機能 なし                                               */
+/*    兼用入力機能 なし                                               */
+/*                                                                    */
+/*    Module   : QPK0RBCON002V1                                       */
+/*    Date     : 2009/12/9                                            */
+/*    Revision : 1.00                                                 */
+/*    Designer : S.Nakata ( NMS )                                     */
+/*    Note     :                                                      */
+/*                                                                    */
+/**********************************************************************/
+/*                                                                    */
+/* <<入力信号>>                                         <<接続先>>    */
+/* PCLKRW      : 周辺マクロ用 BASECLK                   CG            */
+/* PRESETZ     : 周辺マクロ用リセット信号               RESETCTL      */
+/* PWDATA      : 入力データバス                         APB Bridge    */
+/* RE_PORT     : PORTリードイネーブル信号               port control  */
+/* WE_PL       : PLレジスタライトイネーブル信号         port control  */
+/* SEL_PL      : PL Register select 信号                port control  */
+/* SEL_PU      : PL Register select 信号                port control  */
+/*                                                                    */
+/* SCANMODE    : SCANテストモード信号                   MODECTL       */
+/* TESDBT      : BTモード信号                           MODECTL       */
+/*                                                                    */
+/* <<出力信号>>                                         <<接続先>>    */
+/* PRDATA      : 出力データバス                         APB Bridge    */
+/* PUON        : プルアップ抵抗制御信号                 buffer        */
+/* ENO         : 出力イネーブル信号                     buffer        */
+/* ENI         : 入力イネーブル信号                     buffer        */
+/* DOUT        : 出力データ信号                         buffer        */
+/*                                                                    */
+/*                                                                    */
+/**********************************************************************/
+
+module QPK0RBCON002V1 ( PCLKRW   , PRESETZ  , PWDATA   , RE_PORT  ,
+			WE_PL    , SEL_PL   ,
+			SCANMODE , TESDBT   ,
+			PRDATA   , ENO      , DOUT
+                        ) ;
+
+	input		PCLKRW   , PRESETZ  , PWDATA   , RE_PORT  ;
+	input		WE_PL    , SEL_PL   ; 
+	input		SCANMODE , TESDBT   ;
+	output		PRDATA   , ENO      , DOUT     ;
+
+	reg		PL       , READ_DATA;
+	reg		ENO      ;
+	wire		PRDATA   , DOUT     , btmode   ;
+
+
+//=====  port register write access  =====
+
+        //      synopsys async_set_reset "PRESETZ"
+        always @ ( posedge PCLKRW or negedge PRESETZ ) begin
+            if ( ! PRESETZ )
+                PL <= 1'b0 ;
+            else if ( WE_PL )
+                PL <= PWDATA ;
+            else
+                PL <= PL ;
+        end
+
+
+//=====  port register read access  =====
+
+	always @ ( SEL_PL or PL ) begin
+	    case ( { SEL_PL } )		// synopsys parallel_case
+		1'b1	: READ_DATA = PL ;
+		1'b0	: READ_DATA = 1'b0 ;
+	    endcase
+	end
+
+	assign PRDATA = READ_DATA & RE_PORT ;
+
+//=====  port function  =====
+
+//--- SIP品を考慮してBT時は出力を1に固定 ----------
+	assign	btmode	= SCANMODE & TESDBT ;
+	assign	DOUT = ( btmode )? 1'b1: PL ;
+
+        always@ ( SCANMODE or TESDBT ) begin
+            case ( { SCANMODE, TESDBT } )	// synopsys parallel_case
+                2'b00   : ENO = 1'b1 ;		// user mode
+                2'b10   : ENO = 1'b0 ;          // scan mode
+                2'b11   : ENO = 1'b1 ;          // bt mode
+                default : ENO = 1'b1 ;
+            endcase
+        end
+
+endmodule
+

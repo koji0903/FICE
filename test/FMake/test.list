@@ -1,0 +1,6 @@
+./tp/config_fpga.def
+./tp/R5F10PMFJ.v
+./tp/crl78fcspf00_f14m.v
+./tp/crl78hcapcore_f14m.v
+./tp/crl78hcapckgate.v
+./tp/crl78fpericore_f14m.v

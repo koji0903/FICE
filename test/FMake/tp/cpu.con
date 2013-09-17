@@ -1,0 +1,10 @@
+STPST	ice.STPST,STPST:terminal
+PID1	ice.CPUPID1
+PID0	ice.CPUPID0
+PB2		ice.PB2
+PB1		ice.PB1
+PB0		ice.PB0
+#PC[1]	ice.PC1
+CPUWR	ice.CPUWR,svmodif2.CPUWR
+#CPU_OUT	cspf.mp200.cpu.CPU_IN
+CPU_IN	cspf.mp200.cpu.CPU_OUT

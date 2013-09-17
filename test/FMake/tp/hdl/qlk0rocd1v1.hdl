@@ -1,0 +1,1997 @@
+//===============================================================================================
+// 78K0R SS3rd On Chip Debug Macro module
+//
+//	Module : QLK0ROCD1V1
+//		 From QLK0ROCD0V1 (K0R SS2nd Macro)
+//
+//	Note   : 2009/09/12	Ver.0.01
+//
+//				CKOUTEN flag is deleted		--> ASIM[5] del
+//				FILTEREN flag is deleted	--> ASIM[1] del
+//
+//	Note   : 2009/09/23	Ver.0.02	DF
+//	Note   : 2009/10/01	Ver.0.03
+//
+//				intsr bit and intst bit are shared	-->MONSTA1[1]  del
+//				USERMD module is deleted
+//				OCDRUN flag is deleted	-->MONMOD[5] del
+//
+//	Note   : 2009/10/20     Ver.0.04
+//
+//				ocden[7:0] = CAH  --> OCDMODE ( not changed)
+//					   = 3AH  --> use TOOL0
+//					   = 35H  --> use TOOLRXD/TOOLTXD
+//
+//				delete	SPRGMOD
+//				delete	SELFMODE
+//				delete	INTSTO
+//				add	PREMODE
+//
+//				clock gating del --> to CSC MACRO
+//
+//
+//	Note	: 2009/10/22	Ver.0.10
+//				rename	SVOCDPERI0 --> SVPERI0
+//				rename	SVOCDPERI1 --> SVPERI1
+//				rename	OCDSTPRELE --> OCDSTREL
+//				rename	WAITMEM    --> OCDWAIT
+//				delete	PC,MA,MDR,MDW mask
+//
+//
+//	Note    : 2009/11/03	Ver.0.20
+//				rename	PREMODE --> GOFIRM
+//				delete	WAITEXM
+//
+//	Note	: 2009/11/05	Ver.0.21
+//
+//				add	INTAS02       -> INTAS02 = INTOCD | OCDSTREL
+//				rename  SCLOCK        -> FIHOCD
+//				rename  SEL32M 	      -> OPFRQSL3
+//				rename  PCxx 	      -> MONPCxx
+//				rename  MAxx	      -> MONMAxx
+//				rename  MDRINxx	      -> MONMDRxx
+//				rename  MDWINxx	      -> MONMDWxx
+//				rename  ocden         -> toolen
+//					sel_ocden     -> sel_toolen
+//					we_ocden      -> we_toolen
+//					we_ocden_flg  -> we_toolen_flg
+//					we_ocden_once -> we_toolen_once
+//
+//	Note	: 2009/11/09	Ver.0.22
+//
+//				add	OCDCLKEN      -> for clock gating : OCDCLKEN = OPOCDEN | GOFIRM | SPRGMOD | OCDMOD
+//				delete	UART clock gating (ocd_sprg)
+//
+//	Note	: 2009/11/09    Ver.0.3
+//
+//				SFR mapping change
+//				PSELOCD --> PSELOCD1,PSELOCD2
+//
+//
+//	Note	: 2010/01/08	Ver.0.4
+//				rename	OCDCLKEN  -> REQOCD
+//				rename	OPFRQSL3  -> FRQSEL3 （接続先もCIBからCSCに変更）
+//				rename	STPST     -> OCDASEN （接続先もCPUからCSCに変更）
+//
+//				rename TOP only	  BASECK --> PCLKOCD (名前が紛らわしいためTOPのみ変更)
+//
+//
+//	Note	: 2010/01/14	Ver.0.5
+//				FRQSEL3で選択するクロックを逆に変更。
+//
+//				FRQSEL3	  Freq.
+//				-------------------
+//				   0	-> 24MHz
+//				   1	-> 32MHz
+//
+//
+//	Note	: 2010/01/19	Ver.0.6
+//				TXSレジスタアドレス変更
+//
+//				PSEL		オフセット
+//				--------------------
+//			現状：	PSELOCD2	9H
+//			変更：	PSELOCD1	DH
+//
+//
+//	Note	: 2010/02/02	Ver.0.7
+//				rename TOP only	 RESB --> PRESOCDZ(チップ上で名前が紛らわしいためTOPのみ変更)
+//				rename TOP only	 RX   --> RXOCD   (チップ上で名前が紛らわしいためTOPのみ変更)
+//				rename TOP only	 TX   --> TXOCD   (チップ上で名前が紛らわしいためTOPのみ変更)
+//
+//
+//	Note	: 2010/07/19	Ver.1.1
+//				SPRGMOD,SLTRXTX --> GOFRIM & SPRGMOD, GOFRIM & SLTRXTX
+//
+//
+//===============================================================================================
+
+module QLK0ROCD1V1 (
+                MONMDR15, MONMDR14, MONMDR13, MONMDR12, MONMDR11, MONMDR10, MONMDR9, MONMDR8,
+                MONMDR7,  MONMDR6,  MONMDR5,  MONMDR4,  MONMDR3,  MONMDR2,  MONMDR1, MONMDR0,		 
+		MDR15,    MDR14,    MDR13,    MDR12,    MDR11,    MDR10,    MDR9,    MDR8,
+		MDR7,     MDR6,     MDR5,     MDR4,     MDR3,     MDR2,     MDR1,    MDR0,
+		MDW15,    MDW14,    MDW13,    MDW12,    MDW11,    MDW10,    MDW9,    MDW8,
+		MDW7,     MDW6,     MDW5,     MDW4,     MDW3,     MDW2,     MDW1,    MDW0,
+                MONMDW15, MONMDW14, MONMDW13, MONMDW12, MONMDW11, MONMDW10, MONMDW9, MONMDW8,
+                MONMDW7,  MONMDW6,  MONMDW5,  MONMDW4,  MONMDW3,  MONMDW2,  MONMDW1, MONMDW0,
+		MONPC19,  MONPC18,  MONPC17,  MONPC16,
+		MONPC15,  MONPC14,  MONPC13,  MONPC12,	MONPC11,  MONPC10,  MONPC9,   MONPC8,
+		MONPC7,   MONPC6,   MONPC5,   MONPC4,	MONPC3,   MONPC2,   MONPC1,   MONPC0,
+		MONMA15,  MONMA14,  MONMA13,  MONMA12,  MONMA11,  MONMA10,  MONMA9,   MONMA8,
+		MONMA7,   MONMA6,   MONMA5,   MONMA4,	MONMA3,   MONMA2,   MONMA1,   MONMA0,
+		MA3,      MA2,	    MA1,      MA0,
+                PRESOCDZ, PCLKOCD,  CPURD,    CPUWR,
+		OCDMOD,   MONMD,	
+                INTAS02,  SVSTOP,   SVPERI0,  SVPERI1,
+                OCDRESMK,
+                RXOCD, TXOCD, SOFTBRK, OPOCDEN, PSELOCD1, PSELOCD2, WDOP, MONMDSTP,
+		SPRGMOD, SLBMEM, SLMEM, 
+		INTSRO, OCDWAIT, 
+		SCANMODE, SCANCLK, SYSRESB, OCDASEN, INTACK, BRKMSK,
+		SKIPEXE,
+		FIHOCD,  FRQSEL3, TOOLRX, SLTRXTX,
+		GOFIRM, REQOCD
+		) ;
+
+  input		MONMDR15, MONMDR14, MONMDR13, MONMDR12, MONMDR11, MONMDR10, MONMDR9, MONMDR8,	
+                MONMDR7,  MONMDR6,  MONMDR5,  MONMDR4,  MONMDR3,  MONMDR2,  MONMDR1, MONMDR0,
+		MDW15,    MDW14,    MDW13,    MDW12,    MDW11,    MDW10,    MDW9,    MDW8,
+		MDW7,     MDW6,     MDW5,     MDW4,     MDW3,     MDW2,     MDW1,    MDW0,
+                MONMDW15, MONMDW14, MONMDW13, MONMDW12, MONMDW11, MONMDW10, MONMDW9, MONMDW8,
+                MONMDW7,  MONMDW6,  MONMDW5,  MONMDW4,  MONMDW3,  MONMDW2,  MONMDW1, MONMDW0,
+		MONPC19,  MONPC18,  MONPC17,  MONPC16,
+		MONPC15,  MONPC14,  MONPC13,  MONPC12,  MONPC11,  MONPC10,  MONPC9,   MONPC8,
+		MONPC7,   MONPC6,   MONPC5,   MONPC4,   MONPC3,   MONPC2,   MONPC1,   MONPC0,
+		MONMA15,  MONMA14,  MONMA13,  MONMA12,  MONMA11,  MONMA10,  MONMA9,   MONMA8,
+		MONMA7,   MONMA6,   MONMA5,   MONMA4,	MONMA3,   MONMA2,   MONMA1,   MONMA0,
+		MA3,      MA2,	    MA1,      MA0,
+                PRESOCDZ, PCLKOCD,  CPURD,    CPUWR,
+                MONMD,    MONMDSTP,
+		SOFTBRK,  OPOCDEN, PSELOCD1,PSELOCD2, RXOCD, WDOP, SLBMEM,
+		SLMEM,    OCDWAIT,
+		SCANMODE, SCANCLK, SYSRESB, OCDASEN, INTACK, BRKMSK, SKIPEXE;
+
+  input		FIHOCD, FRQSEL3, TOOLRX ;
+  input		GOFIRM ;
+
+  output	INTAS02,
+		MDR15,    MDR14,   MDR13,   MDR12,   MDR11,   MDR10,   MDR9,    MDR8,
+		MDR7,     MDR6,    MDR5,    MDR4,    MDR3,    MDR2,    MDR1,    MDR0,
+		SVSTOP,   SVPERI0, SVPERI1, OCDMOD,  OCDRESMK,	
+		TXOCD,
+		INTSRO;
+
+  output	SLTRXTX, SPRGMOD, REQOCD ;
+
+  wire	[15:0]	dout, din ;
+  wire		sel_bpal0, sel_bpah0, sel_bpas0, sel_bacdvl0, sel_bacdvh0, 
+                sel_bacdml0, sel_bacdmh0, sel_monmod,
+		sel_monsta0, sel_asim, sel_rxb, sel_toolen, 
+  	        we_bpal0, we_bpah0, we_bpas0, we_bacdvl0, we_bacdvh0,
+                we_bacdml0, we_bacdmh0, we_monmod, we_asim, we_txs,
+		we_toolen;
+
+//
+// for leda 2009.10.24
+//
+  wire	[19:0]	monpc;
+  wire	[15:0]	monma;
+
+  assign monpc = { MONPC19, MONPC18, MONPC17, MONPC16, MONPC15, MONPC14, MONPC13, MONPC12, MONPC11, MONPC10,
+                   MONPC9,  MONPC8,  MONPC7,  MONPC6,  MONPC5,  MONPC4,  MONPC3,  MONPC2,  MONPC1,  MONPC0 } ;
+
+  assign monma = { MONMA15, MONMA14, MONMA13, MONMA12, MONMA11, MONMA10, MONMA9, MONMA8,
+                   MONMA7,  MONMA6,  MONMA5,  MONMA4,  MONMA3,  MONMA2,  MONMA1, MONMA0 } ;
+
+
+
+  QLK0ROCD1V1_MAIN      main(
+		.mdrin({MONMDR15,MONMDR14,MONMDR13,MONMDR12,MONMDR11,MONMDR10,MONMDR9,MONMDR8,
+			MONMDR7,MONMDR6,MONMDR5,MONMDR4,MONMDR3,MONMDR2,MONMDR1,MONMDR0}),
+                .mdwin({MONMDW15,MONMDW14,MONMDW13,MONMDW12,MONMDW11,MONMDW10,MONMDW9,MONMDW8,
+                      MONMDW7,MONMDW6,MONMDW5,MONMDW4,MONMDW3,MONMDW2,MONMDW1,MONMDW0}),
+//              .pc({PC19,PC18,PC17,PC16,PC15,PC14,PC13,PC12,PC11,PC10,PC9,PC8,PC7,PC6,PC5,PC4,PC3,PC2,PC1,PC0}),
+//              .ma({MA15,MA14,MA13,MA12,MA11,MA10,MA9,MA8,MA7,MA6,MA5,MA4,MA3,MA2,MA1,MA0}),
+		.pc(monpc[19:0]),
+		.ma(monma[15:0]),
+                .resb(PRESOCDZ),
+		.ocdmod(OCDMOD),
+                .baseck(PCLKOCD),   	.monmd(MONMD),
+	 	.cpurd (CPURD),  	.cpuwr(CPUWR), 		.ocdresmk(OCDRESMK),	.intas02(INTAS02),
+                .svstop(SVSTOP),        .svperi0(SVPERI0),      .svperi1(SVPERI1),
+                .dout(dout[15:0]), 	.din(din[15:0]),
+                .rx(RXOCD),  		.tx(TXOCD),
+                .we_bpal0(we_bpal0),    .we_bpah0(we_bpah0),    .we_bpas0(we_bpas0),
+                .we_bacdvl0(we_bacdvl0), .we_bacdvh0(we_bacdvh0), .we_bacdml0(we_bacdml0), .we_bacdmh0(we_bacdmh0),
+                .we_monmod(we_monmod),
+		.we_asim(we_asim),
+                .we_txs(we_txs),	 .we_toolen(we_toolen), 
+                .sel_bpal0(sel_bpal0),   .sel_bpah0(sel_bpah0),   .sel_bpas0(sel_bpas0),
+                .sel_bacdvl0(sel_bacdvl0), .sel_bacdvh0(sel_bacdvh0), .sel_bacdml0(sel_bacdml0), .sel_bacdmh0(sel_bacdmh0),
+                .sel_monmod(sel_monmod),   .sel_monsta0(sel_monsta0),
+		.sel_asim(sel_asim),	.sel_rxb(sel_rxb),
+		.sel_toolen(sel_toolen),
+		.softbrk(SOFTBRK),	.opocden (OPOCDEN),	.wdop(WDOP),
+		.monmdstp(MONMDSTP),
+		.sprgmod(SPRGMOD), 	.slbmem(SLBMEM), 	.slmem(SLMEM),
+                .intsr_sprg(INTSRO),
+		.ocdwait(OCDWAIT),
+		.sysresb(SYSRESB),	.ocdasen(OCDASEN),
+		.intack(INTACK),	.brkmsk(BRKMSK),	.skipexe(SKIPEXE),
+		.fihocd(FIHOCD),	.frqsel3(FRQSEL3),	.toolrx(TOOLRX),	.sltrxtx(SLTRXTX),
+		.scanmode(SCANMODE),	.scanclk(SCANCLK),	.gofirm(GOFIRM),	.reqocd(REQOCD)
+                ) ;
+
+  QLK0ROCD1V1_BI      bi(
+                .ma3(MA3), .ma2(MA2), .ma1(MA1), .ma0(MA0),		
+                .mdr({MDR15,MDR14,MDR13,MDR12,MDR11,MDR10,MDR9,MDR8,MDR7,MDR6,MDR5,MDR4,MDR3,MDR2,MDR1,MDR0}),
+                .mdw({MDW15,MDW14,MDW13,MDW12,MDW11,MDW10,MDW9,MDW8,MDW7,MDW6,MDW5,MDW4,MDW3,MDW2,MDW1,MDW0}),
+	        .cpurd(CPURD),           .cpuwr(CPUWR),
+                .din(din[15:0]),
+                .dout(dout[15:0]),
+                .we_bpal0(we_bpal0),     .we_bpah0(we_bpah0),     .we_bpas0(we_bpas0),
+                .we_bacdvl0(we_bacdvl0), .we_bacdvh0(we_bacdvh0), .we_bacdml0(we_bacdml0), .we_bacdmh0(we_bacdmh0),
+                .we_monmod(we_monmod),   .we_asim(we_asim),
+                .we_txs(we_txs),	 .we_toolen(we_toolen),
+                .sel_bpal0(sel_bpal0),   .sel_bpah0(sel_bpah0),   .sel_bpas0(sel_bpas0),
+                .sel_bacdvl0(sel_bacdvl0), .sel_bacdvh0(sel_bacdvh0), .sel_bacdml0(sel_bacdml0), .sel_bacdmh0(sel_bacdmh0),
+                .sel_monmod(sel_monmod),   .sel_monsta0(sel_monsta0),
+                .sel_asim(sel_asim),     .sel_rxb(sel_rxb),
+		.sel_toolen(sel_toolen), 
+                .pselocd1(PSELOCD1),	.pselocd2(PSELOCD2),
+		.ocdmod(OCDMOD),	.opocden(OPOCDEN),	.sprgmod(SPRGMOD),      .gofirm(GOFIRM) 
+                ) ;
+
+endmodule
+
+//================================================================================
+//  78K/0 K0R On Chip Debug Macro module
+//
+//    Module   : QLK0ROCD1V1_BI
+//
+//================================================================================
+
+module QLK0ROCD1V1_BI (
+                ma3, ma2, ma1, ma0, mdr, mdw,
+		cpurd, cpuwr, din, dout,
+                we_bpal0, we_bpah0, we_bpas0,
+		we_bacdvl0, we_bacdvh0, we_bacdml0, we_bacdmh0,
+                we_monmod, we_asim, we_txs, we_toolen,
+                sel_bpal0, sel_bpah0, sel_bpas0,
+		sel_bacdvl0, sel_bacdvh0, sel_bacdml0, sel_bacdmh0,
+		sel_monmod, sel_monsta0,
+                sel_asim, sel_rxb, sel_toolen,
+                pselocd1, pselocd2, ocdmod, opocden, sprgmod, gofirm
+                );
+
+  input [15:0]  dout, mdw ;
+  input         cpurd, cpuwr, pselocd1, pselocd2, ocdmod, opocden, sprgmod, gofirm;
+  input 	ma3, ma2, ma1, ma0;
+
+  output [15:0] din, mdr ;
+  output        sel_bpal0, sel_bpah0, sel_bpas0, sel_bacdvl0, sel_bacdvh0,
+                sel_bacdml0, sel_bacdmh0, sel_monmod, sel_monsta0, sel_asim,
+                sel_rxb, sel_toolen,
+  	        we_bpal0, we_bpah0, we_bpas0, we_bacdvl0, we_bacdvh0,
+                we_bacdml0, we_bacdmh0, we_monmod, we_asim,
+		we_txs, we_toolen;
+
+// 060210 del rd_en and use cpurd instead 
+//  wire          rd_en ;
+  reg           sel_bpal0, sel_bpah0, sel_bpas0, sel_bacdvl0, sel_bacdvh0,
+                sel_bacdml0, sel_bacdmh0, sel_monmod, sel_monsta0, sel_asim,
+                sel_rxb, sel_toolen;
+
+//========== address decode ===========================================================================
+
+// add address decode by yen 051003 //pselocd (from CS) comes in asynchronously?
+// 091118 add pselocd1 pselocd2
+//        del sel_bpc0 to MOMOD
+//        del sel_monsta1 to ASIM
+//        del sel_brgc0   to ASIM
+
+ always @ (pselocd1 or pselocd2 or opocden or gofirm or ocdmod or sprgmod or ma3 or ma2 or ma1 or ma0) begin 
+   {sel_toolen, sel_bpal0,sel_bpah0,sel_bpas0,
+    sel_bacdvl0,sel_bacdvh0,sel_bacdml0,sel_bacdmh0,
+    sel_monmod,sel_monsta0,sel_asim,sel_rxb} = {12'b0} ;
+   if ((pselocd1 == 1'b1) && (opocden | gofirm | ocdmod | sprgmod)) begin
+	case ({ ma3, ma2, ma1, ma0}) 
+    		4'b1101 :   sel_rxb     = 1'b1;
+    		4'b1110 :   sel_monsta0 = 1'b1;
+    		4'b1111 :   sel_asim    = 1'b1;
+    		default :
+		   	{sel_toolen,sel_bpal0,sel_bpah0,sel_bpas0,
+    			sel_bacdvl0,sel_bacdvh0,sel_bacdml0,sel_bacdmh0,
+    			sel_monmod,sel_monsta0,sel_asim,sel_rxb} = {12'b0} ;
+        endcase
+    end
+    else if ((pselocd2 == 1'b1) && (opocden | gofirm | ocdmod | sprgmod)) begin
+        case ({ ma3, ma2, ma1, ma0})
+                4'b0000 :   sel_toolen  = 1'b1;
+                4'b0001 :   sel_bpal0   = 1'b1;
+                4'b0010 :   sel_bpah0   = 1'b1;
+                4'b0011 :   sel_bpas0   = 1'b1;
+                4'b0100 :   sel_bacdvl0 = 1'b1;
+                4'b0101 :   sel_bacdvh0 = 1'b1;
+                4'b0110 :   sel_bacdml0 = 1'b1;
+                4'b0111 :   sel_bacdmh0 = 1'b1;
+                4'b1000 :   sel_monmod  = 1'b1;
+                default :
+                        {sel_toolen,sel_bpal0,sel_bpah0,sel_bpas0,
+                        sel_bacdvl0,sel_bacdvh0,sel_bacdml0,sel_bacdmh0,
+                        sel_monmod,sel_monsta0,sel_asim,sel_rxb} = {12'b0} ;
+        endcase
+    end
+    else begin
+             {sel_toolen, sel_bpal0,sel_bpah0,sel_bpas0,
+              sel_bacdvl0,sel_bacdvh0,sel_bacdml0,sel_bacdmh0,
+              sel_monmod,sel_monsta0,sel_asim,sel_rxb} = {12'b0} ;
+	end
+  end
+
+//======= write enable ==============================================================
+//
+    assign  we_toolen  = sel_toolen  & cpuwr;
+    assign  we_bpal0   = sel_bpal0   & cpuwr & ocdmod;
+    assign  we_bpah0   = sel_bpah0   & cpuwr & ocdmod;
+    assign  we_bpas0   = sel_bpas0   & cpuwr & ocdmod;
+    assign  we_bacdvl0 = sel_bacdvl0 & cpuwr & ocdmod;
+    assign  we_bacdvh0 = sel_bacdvh0 & cpuwr & ocdmod;
+    assign  we_bacdml0 = sel_bacdml0 & cpuwr & ocdmod;
+    assign  we_bacdmh0 = sel_bacdmh0 & cpuwr & ocdmod;
+    assign  we_monmod  = sel_monmod  & cpuwr & ocdmod;
+    assign  we_asim    = sel_asim    & cpuwr & (ocdmod | gofirm | sprgmod );
+    assign  we_txs     = sel_rxb     & cpuwr & (ocdmod | gofirm | sprgmod );
+
+//==== assign bus output driver =====================================================
+//  sfrbus Read/Write control
+
+//   assign rd_en = cpurd & ( sel_toolen | sel_bpal0 | sel_bpah0 | sel_bpas0 | sel_rxb |	
+//                           sel_bacdvl0 | sel_bacdvh0 | sel_bacdml0 | sel_bacdmh0 | 
+//			     sel_monmod | sel_monsta0 | sel_asim | sel_brgc0 | sel_bpc0 ) ;
+
+        assign mdr[0]  = dout[0]  & cpurd; 
+        assign mdr[1]  = dout[1]  & cpurd; 
+        assign mdr[2]  = dout[2]  & cpurd; 
+        assign mdr[3]  = dout[3]  & cpurd;
+        assign mdr[4]  = dout[4]  & cpurd;
+        assign mdr[5]  = dout[5]  & cpurd;
+        assign mdr[6]  = dout[6]  & cpurd;
+        assign mdr[7]  = dout[7]  & cpurd;
+        assign mdr[8]  = dout[8]  & cpurd;
+        assign mdr[9]  = dout[9]  & cpurd;
+        assign mdr[10] = dout[10] & cpurd;
+        assign mdr[11] = dout[11] & cpurd;
+        assign mdr[12] = dout[12] & cpurd;
+        assign mdr[13] = dout[13] & cpurd;
+        assign mdr[14] = dout[14] & cpurd;
+        assign mdr[15] = dout[15] & cpurd;
+
+        assign din = mdw ;
+
+endmodule
+
+//=========================================================================================================
+//  78K/0 K0R On Chip Debug Macro module
+//
+//    Module   : QLK0ROCD1V1_MAIN
+//
+//=========================================================================================================
+
+module QLK0ROCD1V1_MAIN (
+                mdrin, mdwin, pc, ma, resb, ocdmod,
+		baseck, monmd, cpuwr, cpurd, ocdresmk,
+		intas02,
+                svstop, svperi0, svperi1,
+                dout, din,
+	        rx, tx,
+                we_bpal0, we_bpah0, we_bpas0,
+		we_bacdvl0, we_bacdvh0, we_bacdml0, we_bacdmh0,
+                we_monmod, we_asim, we_txs, we_toolen,
+                sel_bpal0, sel_bpah0, sel_bpas0,
+		sel_bacdvl0, sel_bacdvh0, sel_bacdml0, sel_bacdmh0,
+		sel_monmod, sel_monsta0, sel_asim,
+                sel_rxb, sel_toolen,
+		softbrk, opocden, wdop,
+		monmdstp,
+		sprgmod, slbmem, slmem,
+		intsr_sprg, ocdwait,
+		sysresb, ocdasen, intack, brkmsk, skipexe,
+		fihocd, frqsel3, toolrx, sltrxtx, scanmode, scanclk, gofirm, reqocd
+                ) ;
+  input [15:0]  mdrin, mdwin, ma, din;
+  input	[19:0]	pc ;
+  input         resb, baseck,
+		monmd, cpuwr, cpurd,
+		we_bpal0, we_bpah0, we_bpas0, we_bacdvl0, we_bacdvh0,
+                we_bacdml0, we_bacdmh0, we_monmod, we_asim,
+                we_txs, we_toolen,
+                sel_bpal0, sel_bpah0, sel_bpas0, sel_bacdvl0, sel_bacdvh0,
+                sel_bacdml0, sel_bacdmh0, sel_monmod, sel_monsta0, sel_asim,
+                sel_rxb, sel_toolen,
+                softbrk, opocden, rx, wdop, monmdstp,
+		slbmem, ocdwait, slmem, sysresb, ocdasen, intack, brkmsk,
+		skipexe;
+
+  input		fihocd, frqsel3, toolrx ;
+  input		scanmode, scanclk ;
+  input		gofirm ;
+
+  output[15:0]	dout ;
+  output        ocdmod, intas02, svstop, svperi0, svperi1, ocdresmk,
+  		tx,
+		intsr_sprg;
+
+  output	sprgmod, sltrxtx, reqocd ;
+
+  wire [7:0]    toolen, buffer;
+  wire		intst, intsr, txen, rxen, ocdmod;
+  wire		mdl1,mdl0;
+  wire		reqocd;
+  wire		rxin ;
+
+// add 091105
+  wire	[7:0]	txs ;
+
+
+// add 060210 for masking by ocdmod
+// del 091022
+//wire [19:0]	pc_ocd;
+//wire [15:0]   ma_ocd, mdrin_ocd, mdwin_ocd;
+
+// if sprgmod = 1 (serial programming mode) --> output INTST & INTSR
+// 20091014 INTST del
+//assign 	intst_sprg = intst & sprgmod;
+  assign        intsr_sprg = intsr & sprgmod;
+
+// 091104 opocden del
+// MODCTL module 
+//assign ocdmod = (opocden && (ocden == 8'b11001010))? 1'b1 : 1'b0;
+  assign ocdmod = (toolen == 8'b11001010)? 1'b1 : 1'b0;
+
+// 091014 select tool0/toolrx/tooltx
+//assign sltrxtx = (toolen == 8'b00110101) ? 1'b1 : 1'b0;
+//
+// v1.1 100719 gofirm add
+  assign sltrxtx = (gofirm && ( toolen == 8'b00110101)) ? 1'b1 : 1'b0;
+
+// 091014 sprgmod when toolen = 3AH or 35H
+//assign sprgmod = ( (toolen == 8'b00111010) || (toolen == 8'b00110101) ) ? 1'b1 : 1'b0;
+//
+// v1.1 100719 gofirm add
+  assign sprgmod = ( gofirm && ( (toolen == 8'b00111010) || (toolen == 8'b00110101)) ) ? 1'b1 : 1'b0;
+
+
+// 060203 clock gating --> 060207 modify (rxen | txen) & (ocdmod | sprgmod) --> (ocdmod | sprgmod) 
+// 091014 clock gating --> modify (ocdmod | sprgmod) --> (ocdmod | sprgmod | premode)
+// 091103 clock gating --> modify (ocdmod | sprgmod | premode)  --> modify (ocdmod | sprgmod | gofirm)
+// 091109 clock gating --> modify (ocdmod | sprgmod | gofirm) --> (ocdmod | sprgmod | gofirm | opocden )
+//assign ocd_sprg  = (ocdmod | sprgmod | gofirm);
+
+  assign reqocd  = (ocdmod | sprgmod | gofirm | opocden ) ;
+
+// Rx select
+  assign rxin = ( ~ocdmod & sltrxtx ) ? toolrx : rx ;
+
+
+QLK0ROCD1V1_UART    uart(
+                .sclock(fihocd), .resb(resb), .rxe(rxen), .txe(txen), .sinofil(rxin), .so(tx),
+                .mdl({mdl1,mdl0}),
+                .we_txs(we_txs), .txs(txs[7:0]),
+                .rxb(buffer),  .intst_baseck(intst),   .intsr_baseck(intsr),
+		.frqsel3(frqsel3),
+		.baseck(baseck),  .scanmode(scanmode),  .scanclk(scanclk)
+                );
+
+QLK0ROCD1V1_BRKCTL    brkctl(
+                .mdrin(mdrin[15:0]),	.mdwin(mdwin[15:0]),	
+                .pc(pc[19:0]),      	.ma(ma[15:0]),
+                .dout(dout[15:0]),	.din(din[15:0]),
+                .baseck(baseck),	.resb(resb),
+                .sysresb(sysresb),
+		.monmd(monmd), 		.cpuwr(cpuwr),		 	.cpurd(cpurd),
+                .ocdmod(ocdmod),	.intas02(intas02),		.svstop(svstop),
+		.svperi0(svperi0), 	.svperi1(svperi1),		.ocdresmk(ocdresmk),
+                .intst(intst),   	.intsr(intsr),
+		.txen(txen),		.rxen(rxen),
+		.softbrk(softbrk),      .rx(rx),
+                .sel_bpal0(sel_bpal0)  , .sel_bpah0(sel_bpah0), 	.sel_bpas0(sel_bpas0),
+                .sel_bacdvl0(sel_bacdvl0), .sel_bacdvh0(sel_bacdvh0),
+                .sel_bacdml0(sel_bacdml0), .sel_bacdmh0(sel_bacdmh0),
+                .sel_monmod(sel_monmod),
+                .sel_monsta0(sel_monsta0),  .sel_asim(sel_asim),
+                .sel_rxb(sel_rxb),
+		.sel_toolen(sel_toolen),
+                .we_bpal0(we_bpal0), 	.we_bpah0(we_bpah0), 		.we_bpas0(we_bpas0),
+                .we_bacdvl0(we_bacdvl0), .we_bacdvh0(we_bacdvh0),
+                .we_bacdml0(we_bacdml0), .we_bacdmh0(we_bacdmh0),
+                .we_monmod(we_monmod),	.we_asim(we_asim),
+		.we_toolen(we_toolen),
+		.toolen(toolen),	.wdop(wdop), 			.monmdstp(monmdstp),
+		.sprgmod(sprgmod),      .slbmem(slbmem),
+		.slmem(slmem), .mdl({mdl1,mdl0}), .ocdwait(ocdwait),
+		.buffer(buffer),	.ocdasen(ocdasen),
+		.intack(intack),	.brkmsk(brkmsk),
+		.skipexe(skipexe),
+		.we_txs(we_txs),	.rxb_buf(txs[7:0])
+               ) ;
+endmodule
+
+//=======================================================================================
+//  78K0R K0R On Chip Debug Macro module
+//
+//    Module   : QLK0ROCD1V1_BRKCTL
+//
+// QLK0ROCD1V1_BRKCTL
+//   |
+//   +-	QLK0ROCD1V1_REGCTL
+//   |
+//   +-	QLK0ROCD1V1_SVMOD
+//   |
+//   +-	QLK0ROCD1V1_BRKAC
+//   |
+//   +-	QLK0ROCD1V1_BRKPA
+//   |
+//   +-	QLK0ROCD1V1_BRKSTEP
+//   |
+//   +-	QLK0ROCD1V1_BRKALL
+//
+//=========================================================================================
+
+module QLK0ROCD1V1_BRKCTL (
+                mdrin, mdwin, pc, ma, dout, din,
+		baseck, resb, sysresb,
+		monmd, cpuwr, cpurd, ocdmod, intas02,
+                svstop, svperi0, svperi1, ocdresmk,
+                intst, intsr,
+		txen, rxen,
+		softbrk, rx,
+                sel_bpal0, sel_bpah0, sel_bpas0,
+                sel_bacdvl0, sel_bacdvh0, sel_bacdml0, sel_bacdmh0, sel_monmod, sel_monsta0,
+                sel_asim, sel_rxb, sel_toolen,
+                we_bpal0, we_bpah0, we_bpas0, we_bacdvl0, we_bacdvh0,
+                we_bacdml0, we_bacdmh0, we_monmod, we_asim,
+		we_toolen,
+		toolen, wdop, monmdstp, 
+		sprgmod, slbmem,
+		slmem, mdl, ocdwait, buffer,
+		ocdasen, intack, brkmsk, skipexe,
+		we_txs, rxb_buf
+                ) ;
+
+  input [15:0]  mdrin, mdwin, ma, din;
+  input	[19:0]	pc ;
+  input [7:0]   buffer;
+  input         baseck, resb, softbrk, rx, monmd, cpuwr, cpurd, ocdmod,
+                intst, intsr, wdop, monmdstp, sysresb,
+  		sel_bpal0, sel_bpah0, sel_bpas0, sel_bacdvl0, sel_bacdvh0,
+                sel_bacdml0, sel_bacdmh0, sel_monmod, sel_monsta0,
+		sel_asim, sel_rxb, sel_toolen,
+		we_bpal0, we_bpah0, we_bpas0, we_bacdvl0, we_bacdvh0,
+                we_bacdml0, we_bacdmh0, we_monmod, we_asim,
+		we_toolen,
+		sprgmod, slbmem, ocdwait, slmem, ocdasen, intack, brkmsk,
+		skipexe;
+
+  input		we_txs ;
+
+  output [15:0]	dout ;
+  output        intas02, svstop, svperi0, svperi1, ocdresmk, txen, rxen ;
+  output [1:0]  mdl;
+  output [7:0]  toolen;
+
+  output [7:0]	rxb_buf ;
+
+  wire	[19:0]	bpa ;
+  wire  [7:0]   bacdvl0, bacdvh0, bacdml0, bacdmh0;
+  wire		bpc0_we, bpc0_re, brkpa_set, brkacc_set, brkstep_set, frzen0, frzen1, sstep,
+		brkpa, brkacc, brkstep, bpc0_bpm, bpc0_wdacc;
+  wire          ocdmod, intst_brk;
+
+  QLK0ROCD1V1_REGCTL	  reg_ctl (
+                .baseck(baseck),	.dout(dout[15:0]),        .din(din[15:0]),
+		.brkpa_set(brkpa_set),	.brkacc_set(brkacc_set),  .brkstep_set(brkstep_set),	.softbrk(softbrk),	
+		.ocdresmk(ocdresmk), 	.bpa(bpa[19:0]),
+              	.bacdvl0(bacdvl0[7:0]),	.bacdvh0(bacdvh0[7:0]),  .bacdml0(bacdml0[7:0]),  .bacdmh0(bacdmh0[7:0]), 
+                .bpc0_we(bpc0_we),      .bpc0_re(bpc0_re),
+                .intsr(intsr),          .intst(intst),         .frzen0(frzen0), 	.frzen1(frzen1),
+                .sstep(sstep), 		.toolen(toolen),
+		.txen(txen),		.rxen(rxen),
+                .sel_bpal0(sel_bpal0),   .sel_bpah0(sel_bpah0),   .sel_bpas0(sel_bpas0),
+                .sel_bacdvl0(sel_bacdvl0), .sel_bacdvh0(sel_bacdvh0),
+                .sel_bacdml0(sel_bacdml0), .sel_bacdmh0(sel_bacdmh0), .sel_monmod(sel_monmod),
+                .sel_monsta0(sel_monsta0), .sel_asim(sel_asim),
+                .sel_rxb(sel_rxb), .sel_toolen(sel_toolen),
+                .we_bpal0(we_bpal0),     .we_bpah0(we_bpah0),     .we_bpas0(we_bpas0),
+                .we_bacdvl0(we_bacdvl0), .we_bacdvh0(we_bacdvh0),
+                .we_bacdml0(we_bacdml0), .we_bacdmh0(we_bacdmh0),   .we_monmod(we_monmod),
+		.we_asim(we_asim),
+		.we_toolen(we_toolen),
+                .rx(rx),    .bpc0_bpm(bpc0_bpm),  .monmd(monmd), .bpc0_wdacc(bpc0_wdacc),
+		.sysresb(sysresb), .mdl(mdl),  .buffer(buffer),
+		.intst_brk(intst_brk),
+		.monmdstp(monmdstp),
+	 	.resb(resb),		.sprgmod(sprgmod),	.ocdmod(ocdmod),
+		.we_txs(we_txs),	.rxb_buf(rxb_buf[7:0])
+                );		
+
+  QLK0ROCD1V1_SVMOD	  sv_mod  (
+                .frzen0(frzen0),       .frzen1(frzen1),           .ocdmod(ocdmod),
+                .monmd(monmd),         .svstop(svstop),
+                .svperi0(svperi0),     .svperi1(svperi1)
+		);
+
+  QLK0ROCD1V1_BRKPA       brk_pa (
+                .pc(pc[19:0]),           .bpa(bpa[19:0]),
+                .brkpa(brkpa),           .baseck(baseck),	.resb(resb),
+                .monmd(monmd),           .bpc0_bpm(bpc0_bpm),
+		.intack(intack),	 .brkmsk(brkmsk), 	.ocdwait(ocdwait),
+		.skipexe(skipexe),	.ocdmod(ocdmod)
+                );
+
+  QLK0ROCD1V1_BRKAC       brk_ac (
+                .mdrin(mdrin[15:0]),	.mdwin(mdwin[15:0]),	
+		.ma(ma[15:0]),		.bpa(bpa[15:0]),
+                .baseck(baseck),         .resb(resb), 
+                .cpurd(cpurd),           .cpuwr(cpuwr),
+                .bpc0_we(bpc0_we),      .bpc0_re(bpc0_re),
+                .bacdvl0(bacdvl0[7:0]), .bacdvh0(bacdvh0[7:0]),
+                .bacdml0(bacdml0[7:0]),   .bacdmh0(bacdmh0[7:0]),
+                .brkacc(brkacc),        .monmd(monmd),        .bpc0_bpm(bpc0_bpm),
+		.wdop(wdop), 		.wdacc(bpc0_wdacc),	.slmem(slmem),   .ocdwait(ocdwait),
+		.ocdmod(ocdmod)
+                );
+
+  QLK0ROCD1V1_BRKSTEP     brk_step (
+		.baseck(baseck),        .resb(resb),              .sstep(sstep),
+		.monmdstp(monmdstp),    .brkstep(brkstep),	  .ocdmod(ocdmod)
+		);
+
+  QLK0ROCD1V1_BRKALL	  brk_all  (
+		.baseck(baseck),        .resb(resb),
+		.brkpa(brkpa),          .brkacc(brkacc), 	.brkstep(brkstep),
+		.intas02(intas02),      .brkpa_set(brkpa_set),	.brkacc_set(brkacc_set),   .brkstep_set(brkstep_set),
+		.intsr(intsr),		.intst_brk(intst_brk),
+		.sprgmod(sprgmod),	.slbmem(slbmem), 	.monmd(monmd), 		.ocdmod(ocdmod),
+		.rx(rx),		.ocdasen(ocdasen)
+		);
+endmodule
+
+//========================================================================================================
+//
+//  Access break	(Effective  when bpc0_bpm=1)
+//   Break occurs when data is read/writen at the designated address
+//
+//=======================================================================================================
+
+module QLK0ROCD1V1_BRKAC (
+		mdrin, mdwin, ma, bpa,
+                baseck, resb, cpurd, cpuwr, bpc0_we, bpc0_re,
+                bacdvl0, bacdvh0, bacdml0, bacdmh0, brkacc, bpc0_bpm, monmd, wdop, wdacc, slmem, ocdwait,
+		ocdmod
+               ) ;
+
+  input	[15:0]	mdwin, mdrin, bpa, ma ;
+  input [7:0]   bacdvl0, bacdvh0, bacdml0, bacdmh0 ;
+  input         baseck, resb, cpurd, cpuwr, bpc0_we, bpc0_re, monmd, bpc0_bpm,
+  	        wdop, wdacc, ocdwait, slmem, ocdmod;
+  output	brkacc ;
+  reg		brkacc1, brkacc2 ;
+  reg 		dmatch;
+  wire		brkacc_temp, amatch ;	// dmatch: data match; amatch: addr match
+  wire		cmp_l, cmp_h, cmp_hl;
+
+  assign amatch = (slmem && bpc0_bpm && (ma[15:1] == bpa[15:1])) ? 1'b1 : 1'b0;
+  assign cmp_l = ~ma[0] & ~wdacc & ~bpa[0];
+  assign cmp_h = (~wdop & ma[0] | wdop & ~ma[0]) & (~wdacc & bpa[0]);
+  assign cmp_hl = wdop & ~ma[0] & wdacc & ~bpa[0];
+
+  always @ (mdwin or mdrin or bacdml0 or bacdmh0 or bacdvl0 or bacdvh0 or
+             cmp_l or cmp_h or cmp_hl or cpuwr or bpc0_we or cpurd or bpc0_re or monmd) begin
+     casex ({cmp_l, cmp_h, cmp_hl, cpuwr, bpc0_we, cpurd, bpc0_re, monmd}) 
+//compare BPAL0
+       8'b100110?0:	dmatch = ((mdwin[7:0] & ~bacdml0) == (bacdvl0 & ~bacdml0))? 1'b1 : 1'b0;       
+       8'b1000?110:	dmatch = ((mdrin[7:0] & ~bacdml0) == (bacdvl0 & ~bacdml0))? 1'b1 : 1'b0;     
+//compare BPAH0
+       8'b010110?0:	dmatch = ((mdwin[15:8] & ~bacdmh0) == (bacdvh0 & ~bacdmh0))? 1'b1 : 1'b0;
+       8'b0100?110:	dmatch = ((mdrin[15:8] & ~bacdmh0) == (bacdvh0 & ~bacdmh0))? 1'b1 : 1'b0;
+//compare BPAH0 & BPAL0
+       8'b001110?0:	dmatch = (((mdwin[15:8] & ~bacdmh0) == (bacdvh0 & ~bacdmh0)) &&
+                   	          ((mdwin[7:0] & ~bacdml0) == (bacdvl0 & ~bacdml0)))? 1'b1 : 1'b0;
+       8'b0010?110:	dmatch = (((mdrin[15:8] & ~bacdmh0) == (bacdvh0 & ~bacdmh0)) &&
+                                  ((mdrin[7:0] & ~bacdml0) == (bacdvl0 & ~bacdml0)))? 1'b1 : 1'b0;
+       default:		dmatch = 1'b0;
+     endcase
+  end  
+
+// write break OR read break
+// move ~monmd to amatch & dmatch description
+   assign brkacc_temp = ((bpc0_bpm & cpuwr & bpc0_we & amatch & dmatch) |
+                        (bpc0_bpm & cpurd & bpc0_re & amatch & dmatch & ~ocdwait));
+
+  //synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)		brkacc1 <= 1'b0;
+        else if (ocdmod)	brkacc1 <= brkacc_temp;		// clock gating
+  end
+
+  //synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)		brkacc2 <= 1'b0;
+        else if (ocdmod)	brkacc2 <= brkacc1;		// clock gating
+  end
+
+  assign brkacc = brkacc1 & ~brkacc2 ;
+
+endmodule
+
+//=======================================================================================================
+//
+// register control
+//
+//=====================================================================================================
+
+module QLK0ROCD1V1_REGCTL (
+                baseck, dout, din,
+                brkpa_set, brkacc_set, brkstep_set, softbrk, ocdresmk,
+                bpa, bacdvl0, bacdvh0, bacdml0, bacdmh0, bpc0_we, bpc0_re,
+		intsr, intst, frzen0, frzen1, sstep, toolen,
+		txen, rxen,
+                sel_bpal0, sel_bpah0, sel_bpas0,
+                sel_bacdvl0, sel_bacdvh0, sel_bacdml0, sel_bacdmh0, sel_monmod, sel_monsta0,
+		sel_asim, sel_rxb, sel_toolen,
+                we_bpal0, we_bpah0, we_bpas0, we_bacdvl0, we_bacdvh0,
+                we_bacdml0, we_bacdmh0, we_monmod, we_asim,
+		we_toolen,
+                rx, bpc0_bpm, monmd, bpc0_wdacc, sysresb,
+		mdl, buffer,
+		intst_brk,
+		monmdstp,
+		resb, sprgmod, ocdmod, we_txs, rxb_buf
+                ) ;
+
+  input [15:0]  din;
+  input  [7:0]  buffer;
+  input		brkpa_set, brkacc_set, softbrk, brkstep_set,
+		sel_bpal0, sel_bpah0, sel_bpas0,
+                sel_bacdvl0, sel_bacdvh0, sel_bacdml0, sel_bacdmh0, sel_monmod, sel_monsta0,
+		sel_asim, sel_rxb, sel_toolen,
+                we_bpal0, we_bpah0, we_bpas0, we_bacdvl0, we_bacdvh0,
+                we_bacdml0, we_bacdmh0, we_monmod, we_asim,
+		we_toolen,
+		intsr, intst,
+		baseck, monmd, rx, sysresb, monmdstp,
+		resb, sprgmod, ocdmod;
+
+  input		we_txs ;	// add 091105
+
+  output        txen, rxen, intst_brk; 
+  output [19:0]	bpa ;
+  output [15:0]	dout ;
+  output [7:0]  bacdvl0, bacdvh0, bacdml0, bacdmh0, toolen ;
+
+  output	frzen0, frzen1, sstep, ocdresmk ;
+  output        bpc0_we, bpc0_re, bpc0_bpm, bpc0_wdacc;
+  output [1:0]  mdl;
+ 
+  output [7:0]	rxb_buf ;	// add 091105
+
+
+  reg [1:0]   mdl;  
+  reg [15:0]  dout;
+  reg [7:0]   bpal0, bpah0, bacdvl0, bacdvh0, bacdml0, bacdmh0;
+  reg [7:0]   rxb_buf, toolen;
+  reg [3:0]   bpas0;
+  reg		monsta1;
+  reg  	      txen, rxen, lasttx;
+  reg	      brksoftreg, brkstepreg, brkaccreg, brkpareg;	
+  reg         frzen0, frzen1, sstep, resmsk;
+  reg         bpc0_re, bpc0_we, bpc0_wdacc, bpc0_bpm;           //each bit of bpc0 register
+  reg         brkresreg;
+
+  reg		txen_delay ;
+
+  wire	[19:0]	bpa;
+  wire  [11:0]  all_sl;
+  wire		brkres;
+
+//-------------------------------------------------------
+// OCD mode register (default: 00H --> CAH) (if not connecting with debugger 00H --> FFH)
+//-------------------------------------------------------
+// rename ocden --> toolen
+//
+  reg	     we_toolen_flg; 	// memory if we_toolen = 1 until now
+  wire       we_toolen_once;
+
+// add we_toolen_once: once we_toolen = 1, we_toolen_flg = 1 forever 
+
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+	if (!sysresb)		we_toolen_flg <= 1'b0 ;
+	else if (we_toolen)	we_toolen_flg <= 1'b1;
+  end
+
+ assign we_toolen_once = we_toolen & ~we_toolen_flg;  // if we_toolen_flg = 1 --> we_toolen_once = 0  
+
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+	if (!sysresb)			toolen[7:0] <= 8'b0;
+	else if (we_toolen_once)	toolen[7:0] <= din[7:0];
+  end
+
+//-------------------------------------------------------
+// address register for break before operation (value set by user --> bpal0, bpah0, bpas0)
+//-------------------------------------------------------
+// lower 8-bit
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+        if (!sysresb)		bpal0[7:0] <= 8'hff;
+	else if (we_bpal0)	bpal0[7:0] <= din[15:8] ;
+  end
+
+// higher 8-bit
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+	if (!sysresb)		bpah0[7:0] <= 8'hff;
+        else if (we_bpah0)	bpah0[7:0] <= din[7:0] ;
+  end
+
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+	if (!sysresb)		bpas0[3:0] <= 4'hf;
+        else if (we_bpas0)	bpas0[3:0] <= din[11:8] ;
+  end
+
+  assign bpa[19:0]  = { bpas0[3:0], bpah0[7:0], bpal0[7:0] } ;
+
+//-------------------------------------------------------
+// Access Break point data register  (value set by user --> bacdvl0, bacdvh0)
+//-------------------------------------------------------
+
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+	if (!sysresb)		bacdvl0[7:0] <= 8'h00 ;
+        else if (we_bacdvl0)	bacdvl0[7:0] <= din[7:0] ;
+  end
+
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+	if (!sysresb)		bacdvh0[7:0] <= 8'h00 ;
+	else if (we_bacdvh0)	bacdvh0[7:0] <= din[15:8] ;
+  end
+
+//-------------------------------------------------------
+// Access Break point data mask register  (value set by user --> bacdml0, bacdmh0)
+//-------------------------------------------------------
+
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+	if (!sysresb)		bacdml0[7:0] <= 8'h00 ;
+ 	else if (we_bacdml0)	bacdml0[7:0] <= din[7:0] ;
+  end
+
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+	if (!sysresb)		bacdmh0[7:0] <= 8'h00 ;
+        else if (we_bacdmh0)	bacdmh0[7:0] <= din[15:8] ;
+  end
+
+//-------------------------------------------------------
+// Access Break point control register (value set by user --> bpc0)
+//-------------------------------------------------------
+//
+//  //synopsys async_set_reset "sysresb"
+//  always @ (posedge baseck or negedge sysresb) begin
+//        if (!sysresb) begin
+//		bpc0_re <= 1'b0;
+//		bpc0_we <= 1'b0;
+//                bpc0_wdacc <= 1'b0;
+//		bpc0_bpm <= 1'b0;
+//	end
+//	else if (we_bpc0) begin
+//		bpc0_re <= din[0];
+//	        bpc0_we <= din[1];
+//		bpc0_wdacc <= din[2]; 	
+//		bpc0_bpm <= din[7];
+//	end
+//  end
+//
+//-------------------------------------------------------
+// monitor mode register (value set by user --> MONMOD)
+//-------------------------------------------------------
+// bit6 (RESMSK), bit2 (FRZEN1) , bit1 (FRZEN0),  bit0 (SSTEP) 
+//
+// 091118 we_bpc0 --> we_monmod
+//
+//	bit7	bit6	bit5	bit4	bit3	bit2	bit1	bit0
+//	BPM	WDACC	WE	RE	RESMSK	FRZEN1	FRZEN0	SSTEP
+
+  //synopsys async_set_reset "sysresb"
+  always @ (posedge baseck or negedge sysresb) begin
+        if (!sysresb) begin 
+		bpc0_bpm    <= 1'b0;
+		bpc0_wdacc  <= 1'b0;
+		bpc0_we	    <= 1'b0;
+		bpc0_re	    <= 1'b0;
+                resmsk 	    <= 1'b0;
+                frzen1 	    <= 1'b0;
+                frzen0	    <= 1'b0;
+                sstep	    <= 1'b0;		
+	end
+	else if (we_monmod) begin
+		bpc0_bpm    <= din[7];
+		bpc0_wdacc  <= din[6];
+		bpc0_we     <= din[5];
+		bpc0_re     <= din[4];
+                resmsk	    <= din[3];
+                frzen1	    <= din[2];
+                frzen0	    <= din[1];
+                sstep	    <= din[0];
+	end	
+  end
+
+  assign ocdresmk = (monmd | resmsk) & ocdmod;  
+
+//-------------------------------------------------------
+// monitor mode status register (check each situation --> MONSTA0) // read only!!
+//-------------------------------------------------------
+// bit7 (TOOL0) (no latch)
+// bit6 (USERMD) this part is moved to outer level 051116 
+
+// make the following break bit's reset signal
+  //synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+	if (!resb)		brkresreg <= 1'b0;  
+	else if (ocdmod)	brkresreg <= monmdstp;			// clock gating
+   end
+
+  assign  brkres = (brkresreg & ~monmdstp);
+
+// bit4 (BRKSOFT)
+  //synopsys async_set_reset "resb"
+  always @ ( posedge baseck or negedge resb) begin
+	if (!resb)			brksoftreg <= 1'b0;
+	else if (ocdmod) begin						// clock gating
+		if (brkres)		brksoftreg <= 1'b0;
+		else if (softbrk)	brksoftreg <= 1'b1;
+	end	
+  end
+
+// bit3 (BRKSTEP)
+  //synopsys async_set_reset "resb"
+  always @ ( posedge baseck or negedge resb) begin
+	if (!resb) 				brkstepreg <= 1'b0;
+	else if (ocdmod) begin						// clock gating
+		if (brkres && !brksoftreg)	brkstepreg <= 1'b0;
+		else if (brkstep_set)		brkstepreg <= 1'b1;
+	end
+  end
+
+// bit1 (BRKACC)
+  //synopsys async_set_reset "resb"
+  always @ ( posedge baseck or negedge resb) begin
+	if (!resb) 				brkaccreg <= 1'b0;
+	else if (ocdmod) begin						// clock gating
+		if (brkres && !brksoftreg)	brkaccreg <= 1'b0;
+		else if (brkacc_set)		brkaccreg <= 1'b1;
+	end
+  end
+
+// bit0 (BRKPA)
+  //synopsys async_set_reset "resb"
+  always @ ( posedge baseck or negedge resb) begin
+	if (!resb)				brkpareg <= 1'b0;
+	else if (ocdmod) begin						// clock gating
+		if (brkres && !brksoftreg)	brkpareg <= 1'b0;
+		else if (brkpa_set)		brkpareg <= 1'b1;
+	end
+  end
+
+//-------------------------------------------------------
+// monitor mode status register (value set and monitor by user --> MONSTA1)
+//-------------------------------------------------------
+// get INTST from UART and consider LASTTX condition
+//assign intst_brk = (lasttx && txen)? 1'b0 : intst;       // send to BRKALL
+  assign intst_brk = (lasttx && (txen || txen_delay ))? 1'b0 : intst;       // send to BRKALL
+
+//091201 add
+
+  //synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)		txen_delay	<= 1'b0; 
+        else if (ocdmod)	txen_delay	<= txen;
+  end
+
+
+//// bit0 INTSR or  INTST
+//  //synopsys async_set_reset "resb"
+//  always @ (posedge baseck or negedge resb) begin
+//	if (!resb) 			monsta1 <= 1'b0;
+//	else if (ocd_sprg) begin					// clock gating ok, but new condition
+//					monsta1 <= (we_monsta1)? din[8] : (intst | intsr |monsta1);
+//	end
+//  end
+
+
+// 20091020 clock_gating delete
+//
+// bit0 INTSR or INTST
+////synopsys async_set_reset "resb"
+//always @ (posedge baseck or negedge resb) begin
+//	if (!resb)		monsta1 <= 1'b0;
+//	else if (we_monsta1)	monsta1 <= din[8];
+//	else			monsta1 <= ( intst | intsr | monsta1 ) ;
+//end
+//
+//-------------------------------------------------------
+// UART mode register (value set and monitor by user --> ASIM)
+//-------------------------------------------------------
+// 060206 for clock gating
+// bit7 (TXEN) 
+//  //synopsys async_set_reset "resb"
+//  always @ (posedge baseck or negedge resb) begin
+//        if (!resb) txen <= 1'b0 ;
+//        else if (we_asim) txen <= din[7] ;
+//             else if (lasttx && intst && !sprgmod) txen <= 1'b0 ;  // if not SPRGMOD, after transmitting, if lasttx=1 --> txen=0;
+//  end
+
+//
+// bit7 (TXEN), bit6 (RXEN), bit5 (CKOUTEN), bit1 (FILTEREN), bit0 (LASTTX)
+//
+// bit5,1 delete
+//
+//  //synopsys async_set_reset "resb"
+//  always @ (posedge baseck or negedge resb) begin
+//        if (!resb) begin
+//		txen <= 1'b0;
+//                rxen <= 1'b0 ;
+//                lasttx <= 1'b0 ;
+//        end
+//	else if (ocd_sprg) begin		// for clock gating
+//                txen <= (we_asim)? din[7] : (~(lasttx & intst & ~sprgmod) & txen);
+//                rxen <= (we_asim)? din[6] : rxen;
+//                lasttx <= (we_asim)? din[0] : lasttx;
+//   	        end
+//  end
+
+// 20091020 clock_gating delete
+//
+
+//------------------------------------------------------------------------------------
+// 091118 we_brgc0,we_monsta1 --> we_asim
+//
+//	bit7	bit6	bit5	bit4	bit3	bit2	bit1	bit0
+//	txen	rxen		lasttx	intstr		mdl1	mdl0
+//
+
+  //synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+	if (!resb) begin
+		txen	  <= 1'b0;
+		rxen	  <= 1'b0;
+		lasttx	  <= 1'b0;
+		monsta1	  <= 1'b0;
+		mdl[1:0]  <= 2'b0;
+	end
+	else if (we_asim) begin
+		txen	  <= din[15];
+		rxen	  <= din[14];
+		lasttx	  <= din[12];
+		monsta1	  <= din[11];
+		mdl[1:0]  <= din[9:8];
+	end
+	else begin
+		txen	  <= (~(lasttx & intst & ~sprgmod) & txen);
+		rxen	  <= rxen;
+		lasttx	  <= lasttx;
+		monsta1   <= ( intst | intsr | monsta1 ) ;
+		mdl[1:0]  <= mdl[1:0];
+	end
+  end
+
+//
+// Change  11bit --> 2bit
+//
+//-------------------------------------------------------
+// UART Baudrate generation control register (value set and monitor by user --> BRGC0) 
+//-------------------------------------------------------
+//  //synopsys async_set_reset "resb"
+//  always @ (posedge baseck or negedge resb) begin
+//	if (!resb)		mdl[1:0] <= 2'b0 ;
+//	else if (we_brgc0)	mdl[1:0] <= din[9:8] ;
+//  end
+//
+//
+//-------------------------------------------------------
+// Transmit data set register (set and read by user --> TXS/RXB)
+//-------------------------------------------------------
+
+// for receiving data's buf 
+// 091105 add txs buf
+  //synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+	if (!resb)		rxb_buf[7:0] <= 8'hff ;
+	else if (we_txs)	rxb_buf[7:0] <= din[15:8];
+	else if (intsr)		rxb_buf[7:0] <= buffer[7:0];                   // if receive finishes, received data --> rxb_buf
+  end
+
+
+
+//----------------------------------------------------------------------	
+
+    assign all_sl = {sel_toolen, sel_bpal0, sel_bpah0, sel_bpas0, sel_bacdvl0, sel_bacdvh0, sel_bacdml0, sel_bacdmh0,
+		     sel_monmod, sel_monsta0, sel_asim, sel_rxb};
+
+// read	--> consider when sel_xxx signal occurs
+    always @ ( all_sl or toolen or bpal0 or bpah0 or bpas0 or bacdvl0 or bacdvl0 or bacdvh0 or bacdml0 or bacdmh0 or
+	       bpc0_re or bpc0_we or bpc0_bpm or bpc0_wdacc or rx or
+	       brksoftreg or brkpareg or brkaccreg or brkstepreg or
+               txen or rxen or intsr or lasttx or
+	       rxb_buf or monsta1 or 
+	       resmsk or frzen1 or frzen0 or sstep or mdl
+		) begin
+
+        case ( all_sl ) 
+          12'b100000000000: dout[15:0] = {8'b0, toolen} ;
+          12'b010000000000: dout[15:0] = {bpal0, 8'b0} ;
+          12'b001000000000: dout[15:0] = {8'b0, bpah0} ;
+          12'b000100000000: dout[15:0] = {4'b0, bpas0[3:0], 8'b0} ;
+          12'b000010000000: dout[15:0] = {8'b0, bacdvl0} ;
+          12'b000001000000: dout[15:0] = {bacdvh0, 8'b0} ;
+          12'b000000100000: dout[15:0] = {8'b0, bacdml0} ;
+          12'b000000010000: dout[15:0] = {bacdmh0, 8'b0} ;
+
+          12'b000000001000: dout[15:0] = {8'b0, bpc0_bpm, bpc0_wdacc, bpc0_we, bpc0_re, resmsk, frzen1, frzen0, sstep} ;
+          12'b000000000100: dout[15:0] = {8'b0, rx, 1'b0, 1'b0, brksoftreg, brkstepreg, 1'b0, brkaccreg, brkpareg} ;
+          12'b000000000010: dout[15:0] = {txen, rxen, 1'b0, lasttx, monsta1, 1'b0, mdl[1:0], 8'b0} ;
+          12'b000000000001: dout[15:0] = {rxb_buf, 8'b0} ;
+          default: 	    dout[15:0] = 16'b0;
+        endcase
+   end
+
+endmodule
+
+//=====================================================================================================
+//
+// request to stop the peripherals when monitor mode
+//
+//======================================================================================================
+
+module QLK0ROCD1V1_SVMOD ( frzen0, frzen1, ocdmod, monmd, svstop, svperi0, svperi1 );
+
+  input         frzen0, frzen1, ocdmod, monmd ;
+  output        svstop, svperi0, svperi1 ;
+
+  assign svstop = monmd & ocdmod ;
+  assign svperi0 = frzen0 & svstop ;
+  assign svperi1 = frzen1 & svstop ;
+
+endmodule
+
+//==================================================================================================
+//
+// break before PA operation
+//  compare pc & bpa[19:0] => when match -> brkpa=1 
+//
+//==================================================================================================
+
+module QLK0ROCD1V1_BRKPA (
+		pc, bpa, brkpa, baseck, resb, monmd, bpc0_bpm, intack, brkmsk, ocdwait,
+		ocdmod, skipexe);
+
+  input	[19:0]	pc, bpa;
+  input		baseck, resb, monmd, bpc0_bpm, intack, brkmsk, ocdwait, skipexe, ocdmod;
+  output	brkpa ;
+  reg		brkpa1, brkpa2;
+
+// add 060112 to avoid brkpa when INT OPERATION caused by other reason
+  reg         intack1;
+  wire        intack2;        // high when both intack & intack1
+
+//synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb ) begin
+      if (!resb)		intack1 <= 1'b0;
+      else if (ocdmod)		intack1 <= intack;	// clock gating
+  end
+
+  assign intack2 = (intack | intack1);
+
+// add 060123 to mask BRKPA (ocdwait is for reserve)
+  wire          brkpa_off;
+
+// 091103 del waitexm
+//assign brkpa_off = (bpc0_bpm | monmd | intack2 | brkmsk | ocdwait | waitexm | skipexe); 
+  assign brkpa_off = (bpc0_bpm | monmd | intack2 | brkmsk | ocdwait | skipexe); 
+
+//synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb ) begin
+   	if (!resb)			brkpa1 <= 1'b0;
+	else if (ocdmod) begin			// clock gating
+       	        if (brkpa_off)		brkpa1 <= 1'b0;
+	        else if (pc == bpa)	brkpa1 <= 1'b1; 
+	        else			brkpa1 <= 1'b0;
+	end
+  end
+
+//synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb ) begin
+        if (!resb)		brkpa2 <= 1'b0;
+	else if (ocdmod)	brkpa2 <= brkpa1;	// clock gating 
+  end
+
+ assign brkpa = (brkpa1 & ~brkpa2);
+
+endmodule
+
+//===================================================================================================================
+//
+// Break Action! 
+// Break per each instruction... 05/09/07
+//
+//===================================================================================================================
+
+module QLK0ROCD1V1_BRKSTEP (baseck, resb, sstep, monmdstp, brkstep, ocdmod);
+
+  input		baseck, resb, sstep, monmdstp, ocdmod;
+  output	brkstep ;
+  reg		brkstep1, brkstep2 ;
+
+  //synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+	if (!resb)		brkstep1 <= 1'b0 ;
+	else if (ocdmod)	brkstep1 <= ~monmdstp & sstep ;
+  end
+
+  //synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)		brkstep2 <= 1'b0 ;
+	else if (ocdmod)	brkstep2 <= brkstep1 ;
+  end
+
+  assign brkstep = (brkstep1 & ~brkstep2) ;
+
+endmodule
+
+//===================================================================================================================
+//
+// BRAK ALL
+// collect all breaks and transfer to CPU
+//
+//===================================================================================================================
+
+module QLK0ROCD1V1_BRKALL  (
+		baseck, resb, brkpa, brkacc, brkstep, intas02,
+                brkpa_set, brkacc_set, brkstep_set,
+		intsr, intst_brk,
+		sprgmod, slbmem, monmd, ocdmod,
+		rx, ocdasen );
+
+  input		baseck, resb ;
+  input		sprgmod, slbmem, monmd, ocdmod;
+  input		brkpa, brkacc, brkstep ;
+  input		intsr, intst_brk;
+  input		rx, ocdasen;
+
+  output	intas02 ;
+  output	brkpa_set, brkacc_set, brkstep_set ;
+
+  wire		intocdon;
+
+  wire		ocdstrel, intocd ;
+
+  reg		int_ocd_break_pre ;
+
+// breake enable
+  assign intocdon = (~sprgmod & ~slbmem & ocdmod);
+
+  assign brkpa_set = brkpa & intocdon;
+  assign brkacc_set = brkacc & intocdon;
+  assign brkstep_set = brkstep & intocdon;
+
+//
+// 20100107 add
+//  SLBMEMとのANDでヒゲが発生する。INTマクロが非同期になったので
+//  baseck↓で切りなおす。
+//
+  //synopsys async_set_reset "resb"
+  always @ (negedge baseck or negedge resb) begin
+	if (!resb)		int_ocd_break_pre <= 1'b0 ;
+	else if (ocdmod)	int_ocd_break_pre <= ( brkpa_set | brkacc_set | brkstep_set ) ;
+  end
+
+// output
+//assign intocd = brkpa_set | brkacc_set | brkstep_set | ((intsr | intst_brk) & intocdon & ~monmd);
+  assign intocd = int_ocd_break_pre                    | ((intsr | intst_brk) & intocdon & ~monmd);
+  assign ocdstrel = (ocdmod & ocdasen & ~rx);
+
+// 091106 add
+  assign intas02 = intocd | ocdstrel ;
+
+
+endmodule
+
+////////////////////////////////////////////////////////////
+//
+// UART Block
+//
+//
+////////////////////////////////////////////////////////////
+
+module QLK0ROCD1V1_UART (sclock, resb, rxe, txe, sinofil, so, mdl,
+		we_txs, txs, rxb, intst_baseck, intsr_baseck,
+		frqsel3,
+		baseck, scanmode, scanclk
+		);
+
+  input		sclock, resb, rxe, txe, we_txs, sinofil ;
+  input		frqsel3 ;
+  input		baseck, scanmode, scanclk ;
+  input	[7:0]	txs;
+  input	[1:0]	mdl;
+
+  output	so, intst_baseck, intsr_baseck ;
+  output[7:0]	rxb;
+
+  wire	[3:0]	state ;
+  wire	[7:0]	rxb;
+  wire	[10:0]	all;
+  wire		sclock_16m, si, bitmiddle, bitend, bitend_1t,
+  		intst, intsr, rxstart, startbit, rxexc,
+		we_txs2, wrtim, rxdi, txend,
+		clk1m, clk500k, clk250k ;
+
+
+// add 060524 clear condition: re ->tr: tr_posedge, tr->re: tr_negedge
+  reg		tr_1t, tr_2t;
+  wire		tr_posedge, tr_negedge, reg_reset;
+
+//
+//                _________________________
+// txe   ________|                        |________________
+//                 _________________________
+// tr_1t __________|                        |______________
+//               ___
+// pos   ________| |_______________________________________
+//                                        ___
+// neg   _________________________________| |______________
+//
+
+// add 060524 clear condition when none -> tr or re -> tr
+  //synopsys async_set_reset "resb"
+  always @ (posedge sclock_16m or negedge resb ) begin
+	if (!resb)		tr_1t <= 1'b0;
+	else			tr_1t <= txe ;
+  end
+
+  //synopsys async_set_reset "resb"
+  always @ (posedge sclock_16m or negedge resb ) begin
+	if (!resb)		tr_2t <= 1'b0;
+	else			tr_2t <= tr_1t ;
+  end
+
+//
+// add 060524 clear condition: re ->tr: tr_posedge, tr->re: tr_negedge
+//
+  assign tr_posedge = ~tr_2t & txe;
+  assign tr_negedge = tr_2t & ~txe;
+  assign reg_reset  = (tr_posedge | tr_negedge);
+
+//--------------------------------------------------------------------------------------------------------------------
+
+  wire          int_pre, int_baseck ;
+
+  assign intsr_baseck = int_baseck & ( ~txe & rxe );
+  assign intst_baseck = int_baseck & ( txe );
+
+//--------------------------------------------------------------------------------------------------------------------
+// Noise Filter
+//
+  QLK0ROCD1V1_UART_FILTER uart_filter ( .sck(sclock_16m), .resb(resb), .exin(sinofil), .filterout(si) );
+
+//--------------------------------------------------------------------------------------------------------------------
+// for startbit detect 〜 rxexc state
+//
+  QLK0ROCD1V1_UART_RXC  uart_rxc ( .sclock_16m(sclock_16m), .resb(resb), .rxe(rxe), .txe(txe),
+				.si(si), .bitend(bitend), .bitmiddle(bitmiddle), .scanmode(scanmode),
+				.state(state[3:0]), .rxstart(rxstart), .startbit(startbit), .rxdi(rxdi) );
+
+//--------------------------------------------------------------------------------------------------------------------
+// write-enable signal for low frequency baseck
+//
+  QLK0ROCD1V1_UART_WETXS2  uart_wetx2( .baseck(baseck), .resb(resb), .we_txs(we_txs),
+				.txend(txend), .scanmode(scanmode),
+				.scanclk(scanclk),  .we_txs2(we_txs2) );
+
+//--------------------------------------------------------------------------------------------------------------------
+// txs state
+//
+  QLK0ROCD1V1_UART_TXC  uart_txc ( .sclock_16m(sclock_16m), .resb(resb), .we_txs2(we_txs2),
+				.txe(txe), .bitend(bitend), .scanmode(scanmode), .state(state[3:0]),
+				.txend(txend), .wrtim(wrtim), .bitend_1t(bitend_1t));
+
+//--------------------------------------------------------------------------------------------------------------------
+// binary counter
+//
+  QLK0ROCD1V1_UART_COUNTER5BU uart_bcounter ( .sclock(sclock), .resb(resb),
+				 .frqsel3(frqsel3), .scanmode(scanmode),  .scanclk(scanclk),
+				 .clk16m_s(sclock_16m) );
+ 
+
+//--------------------------------------------------------------------------------------------------------------------
+// Baud Rate CTL
+//
+  QLK0ROCD1V1_UART_BRGCCTL  uart_brgcctl ( .sclock_16m(sclock_16m), .resb(resb), .rxe(rxe), .txe(txe),
+				.si(si), .rxdi(rxdi), .wrtim(wrtim), .scanmode(scanmode), .mdl(mdl[1:0]),
+				.state(state[3:0]), .bitmiddle(bitmiddle), .bitend(bitend) );
+
+
+//--------------------------------------------------------------------------------------------------------------------
+// RXTX shift & state
+//
+  QLK0ROCD1V1_UART_RXTXC uart_rxtxc ( .sclock_16m(sclock_16m), .resb(resb), .si(si),
+				.rxe(rxe), .rxstart(rxstart), .txe(txe), .wrtim(wrtim),
+				.bitmiddle(bitmiddle), .bitend(bitend), .bitend_1t(bitend_1t),
+				.startbit(startbit), .reg_reset(reg_reset), .scanmode(scanmode),
+				.txs(txs[7:0]), .so(so), .int_pre(int_pre), .state(state[3:0]),
+				.rxb(rxb[7:0]));
+
+//--------------------------------------------------------------------------------------------------------------------
+// int edge detect
+//
+  QLK0ROCD1V1_UART_INTEDGE  uart_int_edge ( .baseck(baseck), .resb(resb), .int_pre(int_pre),
+				.scanmode(scanmode), .scanclk(scanclk),
+				.int_baseck(int_baseck) ) ;
+
+endmodule
+
+
+
+
+
+//===================================================================================================================
+// startbit detect
+//===================================================================================================================
+
+module QLK0ROCD1V1_UART_RXC ( sclock_16m, resb, rxe, txe, si, bitend,
+			bitmiddle, scanmode, state, rxstart, startbit,
+			rxdi ) ;
+
+  input		sclock_16m, resb, rxe, txe, si ;
+  input		bitend, bitmiddle ;
+  input		scanmode ;
+  input	[3:0]	state ;
+
+  output	rxstart, startbit, rxdi ;
+
+  wire		rxe_b_s1 ;
+  reg           rxstart, startbit, rxdi ;
+
+
+//
+// rxe="L",またはrxe="H"でも、txe="H"ならリセット。
+//
+  assign rxe_b_s1 = resb & (~(~rxe|txe) | scanmode);
+
+
+// check RxD is LOW continuely 2 times baseck to see if start bit
+  //synopsys async_set_reset "rxe_b_s1"
+  always @(posedge sclock_16m or negedge rxe_b_s1) begin
+	if (!rxe_b_s1)		rxdi <= 1'b1;
+	else			rxdi <= si;
+  end
+
+
+// start bit begins
+  //synopsys async_set_reset "rxe_b_s1"
+  always @(posedge sclock_16m or negedge rxe_b_s1) begin
+	if (!rxe_b_s1)						rxstart <= 1'b0;
+	else if ( state == 4'h0 && si == 1'b0 && rxdi == 1'b0 )	rxstart <= 1'b1;
+	else if ( state == 4'h1 && bitend == 1'b1)		rxstart <= 1'b0;
+  end
+
+// ___         ___
+//    |       |
+//    |_______|
+//
+//    ^  (rxstart=1'b1)
+
+// start bit completely detected 
+  //synopsys async_set_reset "rxe_b_s1"
+  always @(posedge sclock_16m or negedge rxe_b_s1) begin
+	if (!rxe_b_s1)							startbit <= 1'b0;
+	else if (rxstart == 1'b1 && si == 1'b0 && bitmiddle == 1'b1 )	startbit <= 1'b1;
+	else if (state == 4'h2)						startbit <= 1'b0;
+	else								startbit <= startbit;
+  end
+
+// ___         ___
+//    |       |
+//    |_______|
+//
+//        ^  (startbit=1'b1)
+
+
+endmodule
+
+//===================================================================================================================
+// write-enable signal for low frequency baseck
+//===================================================================================================================
+
+module QLK0ROCD1V1_UART_WETXS2 ( baseck, resb, we_txs, txend, scanmode, scanclk, we_txs2 ) ;
+
+  input         baseck, resb, we_txs, txend ;
+  input		scanmode, scanclk ;
+
+  output        we_txs2 ;
+
+  reg           we_txs_baseck, we_txs2 ;
+  wire          reset_we ;
+
+//assign reset_we = (~we_txs) | txend ;
+//assign reset_we = (~we_txs_baseck) | txend ;
+  assign reset_we = (~(we_txs_baseck | we_txs)) | txend ;
+
+  wire    reset_we_s ;
+//assign  reset_we_s = scanmode ? ~resb : reset_we ;
+  assign  reset_we_s = resb & (~reset_we | scanmode);
+
+  // synopsys async_set_reset "reset_we_s"
+  always @ ( posedge baseck or negedge resb ) begin
+        if (!resb)		we_txs_baseck <= 1'b0 ;
+        else			we_txs_baseck <= we_txs ;
+  end
+
+  wire    we_txs_s ;
+  assign  we_txs_s = scanmode ? scanclk : we_txs_baseck ;
+
+  //synopsys async_set_reset " reset_we_s "
+  always @ ( posedge we_txs_s or negedge reset_we_s ) begin
+        if ( !reset_we_s )	we_txs2 <= 1'b0 ;
+        else              	we_txs2 <= 1'b1 ;
+  end
+
+endmodule
+
+//===================================================================================================================
+//
+// TX CTL
+//
+module  QLK0ROCD1V1_UART_TXC ( sclock_16m, resb, we_txs2, txe, bitend, scanmode,
+			state, txend, wrtim, bitend_1t ) ;
+
+  input		sclock_16m, resb ;
+  input		we_txs2, txe, bitend ;
+  input		scanmode ;
+  input	[3:0]	state ;
+
+  output	txend, wrtim, bitend_1t ;
+
+  reg           wrtim, txend, slvtxe, txexc, txeset, bitend_1t ;
+  wire          txe_b_s1 ;
+  wire          txwrtm ;
+  wire          txwr, txwr_s ;
+  wire          tsetin ;
+
+
+//assign txwr   = ~( txexc & ~txend ) & we_txs2 & txe ;
+  assign txwr   = ~txexc & we_txs2 & (state == 4'h0) ;
+
+//assign tsetin = ~( txexc & ~txend ) & txeset & txe ;
+  assign tsetin = ~txexc & txeset ;
+
+
+//assign txe_b_s1 = scanmode ? ~resb : ~txe ;
+  assign txe_b_s1 = resb & ( txe | scanmode);
+
+  assign txwr_s = scanmode ? 1'b0 : txwr ;
+
+
+  //synopsys async_set_reset " txwr_s , txe_b_s1 "
+  always@( posedge sclock_16m or posedge txwr_s or negedge txe_b_s1 ) begin
+        if ( !txe_b_s1 )		txeset <= 1'b0 ;
+//      else if ( txwr_s )		txeset <= (state == 4'h0)? 1'b1 : 1'b0;
+        else if ( txwr_s )		txeset <= 1'b1 ;
+        else                           	txeset <= tsetin ;
+  end
+
+  //synopsys async_set_reset " txe_b_s1 "
+  always@( negedge sclock_16m or negedge txe_b_s1 ) begin
+        if ( !txe_b_s1 )         	txexc <= 1'b0 ;
+        else                           	txexc <= txeset | ( txexc & txe & ~txend ) ;
+  end
+
+  //synopsys async_set_reset " txe_b_s1 "
+  always@( posedge sclock_16m or negedge txe_b_s1 ) begin
+	if ( !txe_b_s1 )				txend <= 1'b0 ;
+	else if ( state == 4'ha && bitend == 1'b1 )	txend <= 1'b1 ;
+	else						txend <= 1'b0 ;
+  end
+
+  //synopsys async_set_reset " txe_b_s1 "
+  always@( negedge sclock_16m or negedge txe_b_s1 ) begin
+        if ( !txe_b_s1 )         	slvtxe <= 1'b0 ;
+        else                           	slvtxe <= txexc ;
+  end
+
+  assign txwrtm  = ~slvtxe & txexc ;
+
+  //synopsys async_set_reset " txe_b_s1 "
+  always@( negedge sclock_16m or negedge txe_b_s1 ) begin
+        if ( !txe_b_s1 )         	wrtim <= 1'b0 ;
+        else                           	wrtim <= ( txwrtm & ~txend ) ;
+  end
+
+//
+// 送信時、bitendのタイミングでstateをUPさせるため、データ転送タイミングは
+// その次のクロック(FIHOCD)立ち上がり
+//
+  //synopsys async_set_reset "resb"
+  always @(posedge sclock_16m or negedge txe_b_s1) begin
+	if (!txe_b_s1)			bitend_1t <= 1'b0;
+	else				bitend_1t <= bitend ;
+  end
+
+endmodule
+
+//===================================================================================================================
+//
+// Baud Rate CTL
+//
+
+module QLK0ROCD1V1_UART_BRGCCTL ( sclock_16m, resb, rxe, txe, si, rxdi,
+			wrtim, scanmode, mdl, state, bitmiddle, bitend ) ;
+
+  input		sclock_16m, resb ;
+  input		rxe, txe, si, rxdi, wrtim ;
+  input		scanmode ;
+  input	[1:0]	mdl ;
+  input	[3:0]	state ;
+
+  output	bitmiddle, bitend ;
+
+  reg           halfbit ;
+  reg	[6:0]	eqbrc, counter ;
+
+  wire		rxtx_b_s1 ;
+  wire		bitmiddle, bitend ;
+  wire          mdl1, mdl0 ;
+
+  assign  mdl1 = mdl[1] ;
+  assign  mdl0 = mdl[0] ;
+
+//-----------------------------------------------------------------------------------------------------
+
+//
+// rxe="H"またはtxe="H"以外はリセット
+//
+  assign rxtx_b_s1 = resb & ( rxe | txe | scanmode );
+
+
+  //synopsys async_set_reset "rxtx_b_s1"
+  always @(posedge sclock_16m or negedge rxtx_b_s1) begin
+	if (!rxtx_b_s1)				counter <= 7'h0;
+	else if (state == 4'h0) begin
+		if (txe) 			counter <= 7'h1;		// start to count from 1 (start bit 1-bit shorter
+		else     			counter <= 7'h2;		// rxstart detection costs 2 clocks
+	end
+	else if (counter == eqbrc)		counter <= 7'b0;
+	else					counter <= counter + 7'h01;
+  end
+
+
+  //synopsys async_set_reset "rxtx_b_s1"
+  always @(posedge sclock_16m or negedge rxtx_b_s1) begin
+	if (!rxtx_b_s1)											halfbit <= 1'b0;
+	else begin
+		if (txe == 1'b0 && rxe == 1'b1 && state == 4'h0 && si == 1'b0  && rxdi == 1'b0 )	halfbit <= 1'b0;
+		else if (txe == 1'b1 && wrtim == 1'b1 ) 						halfbit <= 1'b0;
+		else if (counter == eqbrc)								halfbit <= ~halfbit;
+		else 											halfbit <= halfbit;
+	end
+  end
+
+
+  assign bitmiddle = ~txe & rxe  & (counter == eqbrc) & ~halfbit;
+  assign bitend    = (rxe | txe) & (counter == eqbrc) &  halfbit;
+
+
+  always@( mdl1 or mdl0 ) begin
+        case ( { mdl1, mdl0 } ) //synopsys parallel_case
+                2'b11   : eqbrc = 7'h07 ;       // K=8/1Mbps
+                2'b10   : eqbrc = 7'h0f ;	// K=16/500bps
+                2'b01   : eqbrc = 7'h1f ;	// K=32/250bps
+                2'b00   : eqbrc = 7'h44 ;	// K=69/115.94(for 115.2kbps)
+                default : eqbrc = 7'b00 ;       // kari
+        endcase
+  end
+
+endmodule
+
+//===================================================================================================================
+// RXTX shift & state
+//
+
+module QLK0ROCD1V1_UART_RXTXC ( sclock_16m, resb, si, rxe, rxstart, txe, wrtim, bitmiddle, bitend,
+			bitend_1t, startbit, reg_reset, scanmode, txs, so, int_pre, state, rxb );
+
+  input		sclock_16m, resb ;
+  input		si, rxe, rxstart, txe, wrtim, bitmiddle, bitend, bitend_1t, startbit, reg_reset ;
+  input		scanmode ;
+  input	[7:0]	txs ;
+
+  output	so, int_pre ;
+  output[3:0]	state ;
+  output[7:0]	rxb ;
+
+  wire		rxtx_b_s1 ;
+  wire	[7:0]	rxb ;
+  wire	[10:0]	all ;
+
+  reg		shift_clock, so, int_pre ;
+  reg	[3:0]	state ;
+  reg	[7:0]	shift_master ;
+
+//
+// rxe="H"またはtxe="H"以外はリセット
+//
+  assign rxtx_b_s1 = resb & ( rxe | txe | scanmode );
+
+
+  assign all = {rxe, rxstart, txe, wrtim, state, bitend, startbit, reg_reset};
+
+  //synopsys async_set_reset "rxtx_b_s1"
+  always @(posedge sclock_16m or negedge rxtx_b_s1) begin
+        if (!rxtx_b_s1) 	    state <= 4'b0;		// state = 0 when neither transmit nor receive mode
+        else begin
+           casex (all)
+                11'b????_????_??1 : state <= 4'b0;              // state = 0 when re -> tr or tr -> re
+                11'b1100_0000_000 : state <= 4'b0001;           // state++ when receive enable and receive start
+                11'b1100_0001_110 : state <= 4'b0010;           // state++ when receive enable and state = 1
+                11'b1000_0001_100 : state <= 4'b0000;           // receiving start-bit resampling NG!! (return state:0)       //add hashimoto 051109
+                11'b1000_001?_100 : state <= state + 4'b0001;   // receiving
+                11'b1000_01??_100 : state <= state + 4'b0001;   // receiving
+                11'b1000_100?_100 : state <= state + 4'b0001;   // receiving until 9bits(1start bit + 8 data)
+                11'b1000_1010_100 : state <= state + 4'b0001;   // receiving until state == A (stop bit)
+                11'b1000_1011_?00 : state <= 4'b0;              // when state >= B --> turn to low after 1 clock
+        // modify 060523 don't care rxstart
+                11'b??11_0000_0?0 : state <= state + 4'b0001;   // sending starts (from counter == 0)
+                11'b??10_0??1_1?0 : state <= state + 4'b0001;   // sending
+                11'b??10_001?_1?0 : state <= state + 4'b0001;   // sending
+                11'b??10_01??_1?0 : state <= state + 4'b0001;   // sending
+                11'b??10_100?_1?0 : state <= state + 4'b0001;   // sending
+                11'b??10_1010_1?0 : state <= state + 4'b0001;   // sending until state == A
+                11'b??10_1011_??0 : state <= 4'b0;              // when state >= B --> turn to low after 1 clock
+                default           : state <= state;             // state keeps
+           endcase
+        end
+  end
+
+
+  always @(txe or rxe or state or reg_reset) begin
+        if (reg_reset)                                          shift_clock = 1'b0 ;
+        else if (txe) begin
+                if ((state >= 4'b0010) && (state <= 4'b1010))   shift_clock = 1'b1 ;    // while transmitting, final state: A -> B
+                else                                            shift_clock = 1'b0 ;
+        end
+        else if (rxe) begin
+                if ((state >= 4'b0010) && (state <= 4'b1001))   shift_clock = 1'b1 ;    // stop bitは取り込まない
+                else                                            shift_clock = 1'b0 ;
+        end
+        else begin
+                                                                shift_clock = 1'b0 ;
+        end
+  end
+
+  //synopsys async_set_reset "rxtx_b_s1"
+  always @(posedge sclock_16m or negedge rxtx_b_s1) begin
+        if (!rxtx_b_s1)                                      	{shift_master, so} <= {9'h1ff};
+        else if (txe) begin
+	  if (wrtim)                              		{shift_master, so} <= {txs, 1'b0};	// we_txs=1, din[15:8] -->  shift_master
+	  else if (shift_clock ==1'b1 && bitend_1t == 1'b1 )	{shift_master, so} <= {1'b1, shift_master};     // LSB shifts to so
+        end
+        else if (rxe) begin
+          if (shift_clock ==1'b1 && bitmiddle == 1'b1 )		{shift_master, so} <= {si, shift_master[7:1], 1'b1};    // LSB first in
+        end
+  end
+
+
+  assign rxb = shift_master;
+
+  //synopsys async_set_reset "rxtx_b_s1"
+  always @(posedge sclock_16m or negedge rxtx_b_s1) begin
+        if (!rxtx_b_s1)			int_pre <= 1'b0 ;
+        else if (state == 4'hb)		int_pre <= 1'b1 ;
+	else				int_pre <= 1'b0 ;
+  end
+
+endmodule
+
+//===================================================================================================================
+// int edge detect
+//===================================================================================================================
+
+module QLK0ROCD1V1_UART_INTEDGE  ( baseck, resb, int_pre, scanmode, scanclk, int_baseck ) ;
+
+  input         baseck, resb ;
+  input		int_pre ;
+  input         scanmode, scanclk ;
+
+  output        int_baseck ;
+
+  reg           int_ed_reg, int_baseck ;
+  wire          int_baseck_m, int_ed_reset, int_trig, int_s ;
+
+//kari
+  assign  int_baseck_m = (~baseck & int_baseck);
+
+//assign  int_ed_reset = ( scanmode ) ? ~resb : int_baseck_m ;
+  assign  int_ed_reset = resb & ( ~int_baseck_m | scanmode );
+
+
+
+  assign  int_trig     = ( scanmode ) ? scanclk : int_pre ;
+  assign  int_s        = ( scanmode ) ? int_pre : 1'b1 ;
+
+  //synopsys async_set_reset "int_ed_reset"
+  always @(posedge int_trig or negedge int_ed_reset) begin
+        if(!int_ed_reset)	int_ed_reg <= 1'b0 ;
+        else                    int_ed_reg <= int_s ;
+  end
+
+//
+// for DMA
+//
+  //synopsys async_set_reset "resb"
+  always @(posedge baseck or negedge resb) begin
+        if(!resb)		int_baseck <= 1'b0 ;
+        else			int_baseck <= int_ed_reg ;
+  end
+
+endmodule
+
+//===================================================================================================================
+// Noise filter
+//===================================================================================================================
+   module QLK0ROCD1V1_UART_FILTER ( sck, resb, exin, filterout ) ;
+
+  input		sck, resb ;
+  input		exin ;
+
+  output	filterout ;
+
+  reg		latch1, latch2 ;
+
+  wire		exnorout;
+
+
+  assign exnorout =  exin ~^ latch1 ;
+
+  //synopsys async_set_reset " resb "
+  always @ ( posedge sck or negedge resb ) begin
+	if (!resb)	latch1 <= 1'b0 ;
+	else  		latch1 <= exin ;
+  end
+
+  //synopsys async_set_reset " resb "
+  always @ ( posedge sck or negedge resb ) begin
+	if (!resb)	latch2 <= 1'b0;
+	else  		latch2 <= latch2 & ~exnorout | latch1 & exnorout;
+  end
+
+  assign filterout = latch2 ;
+
+endmodule
+
+//===================================================================================================================
+// Binary Counter
+//===================================================================================================================
+module QLK0ROCD1V1_UART_COUNTER5BU ( sclock, resb, frqsel3,
+				     scanmode, scanclk, clk16m_s ) ;
+
+  input		sclock, resb ;
+  input		frqsel3, scanmode, scanclk ;
+
+  output	clk16m_s ;
+
+  reg		count1 ;
+  reg		count15p1, count15p2, count15n1, count15n2 ;
+
+  wire		clk_s, clk_s_b ;
+  wire		clk16m, clk16m_in, clk16m_s ;
+
+
+//
+// ゲーティングラッチを想定すると、ネガエッジの方でクロック通過エラーになる。
+// このため、ANDゲートであらかじめとめる。
+// 2009.10.24
+//
+// クロック出力の根元でとめるように変更のため、マクロからは削除
+// 2009.11.09
+//
+//QLK0ROCD1V1_UART_GCLK  and_uart ( .clk_out(clk), .clk_in(sclock), .clk_en(ocd_sprg) );
+//
+//assign  clk_s = scanmode ? scanclk : clk ;
+  assign  clk_s = scanmode ? scanclk : sclock ;
+
+//
+// 1/2 clk (16MHz <---32MHz)
+//
+  // synopsys async_set_reset "resb"
+  always  @ ( posedge clk_s or negedge resb ) begin
+	if ( !resb )	count1 <= 1'b0 ;
+	else 		count1 <= ~count1 ;
+  end
+
+
+//
+// 1/1.5 (16MHz <---24MHz)
+//
+
+  wire    count15, count15_nor ;
+
+  assign  count15_nor = ~count15p1 & ~count15n1 & ~count15p2 & ~count15n2 ;
+
+  // synopsys async_set_reset "resb"
+  always  @ ( posedge clk_s or negedge resb ) begin
+	if ( !resb )	count15p1 <= 1'b0 ;
+	else 		count15p1 <= count15_nor ;
+  end
+
+  // synopsys async_set_reset "resb"
+  always  @ ( negedge clk_s or negedge resb ) begin
+	if ( !resb )	count15n1 <= 1'b0 ;
+	else		count15n1 <= count15p1 ;
+  end
+
+  // synopsys async_set_reset "resb"
+  always  @ ( posedge clk_s or negedge resb ) begin
+	if ( !resb )	count15p2 <= 1'b0 ;
+	else		count15p2 <= count15n1 ;
+  end
+
+  // synopsys async_set_reset "resb"
+  always  @ ( negedge clk_s or negedge resb ) begin
+	if ( !resb )	count15n2 <= 1'b0 ;
+	else		count15n2 <= count15p2 ;
+  end
+
+  assign count15 = count15p1 | count15n2 ;
+
+//assign clk16m    = ( frqsel3 ) ? count15 : count1 ;	// 24mhz clock select when frqsel3 is 1
+  assign clk16m    = ( frqsel3 ) ? count1  : count15 ;	// 32mhz clock select when frqsel3 is 1 at 2010.01.14
+  assign clk16m_in = ( scanmode ) ? scanclk : clk16m ;
+
+  QLK0ROCD1V1_UART_BUF root ( .clk_out(clk16m_s), .clk_in(clk16m_in) ) ;
+
+endmodule
+
+//////////////////////////////////////////
+//
+//
+//
+//
+//
+//////////////////////////////////////////
+
+`ifndef FPGA_ICE
+module  QLK0ROCD1V1_UART_BUF ( clk_out , clk_in ) ;
+
+  input         clk_in ;
+  output        clk_out ;
+
+  reg           clk_out ;
+
+  function      gclkfunc2 ;
+  // synopsys map_to_module TBBUFCLX4
+  // synopsys return_port_name N01
+  input H01;
+  gclkfunc2 = H01 ;
+  endfunction
+
+  always @(clk_in)
+        clk_out = gclkfunc2(clk_in);
+
+endmodule
+`endif
+

@@ -1,0 +1,6 @@
+# RESB -> ice.RESB
+RESB   ice.RESB
+PID1   ice.PID1
+PID0   ice.PID0
+ICE_RESB		ICE_RESB:terminal
+FCLK			cspf.mp200.cpu.FCLK

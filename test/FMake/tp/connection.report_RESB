@@ -1,0 +1,150 @@
+
+# M:InstanceName,ModuleName
+
+M:ice,ICE
+M:svmodif2,svmodif2
+M:wwdt,wwdt
+M:cspf.mp200.csc,CSC
+M:cspf.mod_a,ModA
+M:cspf.mod_b,ModB
+M:cspf.mp200.ocd,OCD
+M:cspf.mp200.cpu,CPU
+M:cspf.mp200.pgcsc.kerneltop,pgcsc_kerneltop
+M:cspf.mp200.pgcsc.kerneltop2.mdiv01,mdiv
+M:cspf.pgcsc2.kerneltop3,pgcsc_kerneltop3
+M:cspf.pgcsc2.kerneltop2.mdiv01,mdiv
+M:pericore.mc200,MC200
+M:pericore.portiotop.porttop,PORTTOP
+
+
+# Connect Information
+
+ice.RESB <- cspf.mp200.csc.RESB
+ice.ICE_RESB <- cspf.mp200.csc.ICE_RESB
+ice.STPST <- cspf.mp200.cpu.STPST
+ice.CPUPID1 <- cspf.mp200.cpu.PID1
+ice.CPUPID0 <- cspf.mp200.cpu.PID0
+ice.PID1 -> cspf.mp200.csc.PID1
+ice.PID0 -> cspf.mp200.csc.PID0
+ice.PA[2:0] <- cspf.mp200.cpu.PA2
+ice.PA[2:0] <- cspf.mp200.cpu.PA1
+ice.PA[2:0] <- cspf.mp200.cpu.PA0
+ice.PB2 <- cspf.mp200.cpu.PB2
+ice.PB1 <- cspf.mp200.cpu.PB1
+ice.PB0 <- cspf.mp200.cpu.PB0
+ice.PC1 <- 1'b0
+ice.CPUWR <- cspf.mp200.cpu.CPUWR
+ice.dgen02 <- pericore.portiotop.porttop.dgen[2:0]
+ice.dgen01 <- pericore.portiotop.porttop.dgen[2:0]
+ice.dgen00 <- pericore.portiotop.porttop.dgen[2:0]
+svmodif2.SVSTOP -> cspf.mp200.csc.SVSTOP
+svmodif2.SVSTOPICE <- cspf.mp200.ocd.SVSTOP
+svmodif2.CPUWR <- cspf.mp200.cpu.CPUWR
+svmodif2.ADCHSEL1 <- cspf.mp200.pgcsc.kerneltop.ADCHSEL1
+svmodif2.ADCHSEL0 <- cspf.mp200.pgcsc.kerneltop.ADCHSEL0
+wwdt.SCANCLK <- 1'b0
+wwdt.SCAN -> OPEN
+cspf.mp200.csc.RESB -> RESB [TOP Terminal]
+cspf.mp200.csc.RESB -> pericore.portiotop.porttop.rst_res_n
+cspf.mp200.csc.RESB -> ice.RESB
+cspf.mp200.csc.RESB -> cspf.pgcsc2.kerneltop3.rst_res_n
+cspf.mp200.csc.RESB -> cspf.pgcsc2.kerneltop2.mdiv01.rst_res_n
+cspf.mp200.csc.RESB -> cspf.mp200.cpu.rst_res_n
+cspf.mp200.csc.RESB -> cspf.mp200.pgcsc.kerneltop.rst_res_n
+cspf.mp200.csc.RESB -> cspf.mp200.pgcsc.kerneltop2.mdiv01.rst_res_n
+cspf.mp200.csc.ICE_RESB -> ICE_RESB [TOP Terminal]
+cspf.mp200.csc.ICE_RESB -> pericore.portiotop.porttop.rst
+cspf.mp200.csc.ICE_RESB -> ice.ICE_RESB
+cspf.mp200.csc.ICE_RESB -> cspf.pgcsc2.kerneltop3.rst
+cspf.mp200.csc.ICE_RESB -> cspf.pgcsc2.kerneltop2.mdiv01.rst
+cspf.mp200.csc.ICE_RESB -> cspf.mp200.cpu.rst
+cspf.mp200.csc.ICE_RESB -> cspf.mp200.pgcsc.kerneltop.rst
+cspf.mp200.csc.ICE_RESB -> cspf.mp200.pgcsc.kerneltop2.mdiv01.rst
+cspf.mp200.csc.stpst <- cspf.mp200.cpu.STPST
+cspf.mp200.csc.SVSTOP <- svmodif2.SVSTOP
+cspf.mp200.csc.PID1 <- ice.PID1
+cspf.mp200.csc.PID0 <- ice.PID0
+cspf.mp200.csc.PA2 <- cspf.mp200.cpu.PA2
+cspf.mp200.csc.PA1 <- cspf.mp200.cpu.PA1
+cspf.mp200.csc.PA0 <- cspf.mp200.cpu.PA0
+cspf.mp200.csc.PB2 <- cspf.mp200.cpu.PB2
+cspf.mp200.csc.PB1 <- cspf.mp200.cpu.PB1
+cspf.mp200.csc.PB0 <- cspf.mp200.cpu.PB0
+cspf.mp200.csc.PC[2:0] <- cspf.mp200.cpu.PC[2:0]
+cspf.mp200.csc.CPUWR <- cspf.mp200.cpu.CPUWR
+cspf.mp200.csc.SCANCLK <- 1'b0
+cspf.mp200.csc.FCLK -> cspf.mp200.cpu.FCLK
+cspf.mp200.csc.FCLK -> cspf.mp200.cpu.EMEMRAMCLK
+cspf.mod_a.A <- cspf.mod_b.B
+cspf.mod_a.cpu_stpst <- cspf.mod_b.cpu_stpst
+cspf.mod_a.ADCHSEL1 <- cspf.mp200.pgcsc.kerneltop.ADCHSEL1
+cspf.mod_a.ADCHSEL0 <- cspf.mp200.pgcsc.kerneltop.ADCHSEL0
+cspf.mod_b.B -> cspf.mod_a.A
+cspf.mod_b.cpu_stpst -> cspf.mod_a.cpu_stpst
+cspf.mp200.ocd.SVSTOP -> svmodif2.SVSTOPICE
+cspf.mp200.ocd.PB2 <- cspf.mp200.cpu.PB2
+cspf.mp200.ocd.PB1 <- cspf.mp200.cpu.PB1
+cspf.mp200.ocd.PB0 <- cspf.mp200.cpu.PB0
+cspf.mp200.cpu.rst_res_n <- cspf.mp200.csc.RESB
+cspf.mp200.cpu.rst <- cspf.mp200.csc.ICE_RESB
+cspf.mp200.cpu.PID1 -> ice.CPUPID1
+cspf.mp200.cpu.PID0 -> ice.CPUPID0
+cspf.mp200.cpu.STPST -> STPST [TOP Terminal]
+cspf.mp200.cpu.STPST -> ice.STPST
+cspf.mp200.cpu.STPST -> cspf.mp200.csc.stpst
+cspf.mp200.cpu.STPST -> cspf.mp200.pgcsc.kerneltop.cpu_stpst
+cspf.mp200.cpu.STPST -> cspf.mp200.pgcsc.kerneltop2.mdiv01.cpu_stpst
+cspf.mp200.cpu.PA2 -> ice.PA[2]
+cspf.mp200.cpu.PA2 -> cspf.mp200.csc.PA2
+cspf.mp200.cpu.PA1 -> ice.PA[1]
+cspf.mp200.cpu.PA1 -> cspf.mp200.csc.PA1
+cspf.mp200.cpu.PA0 -> ice.PA[0]
+cspf.mp200.cpu.PA0 -> cspf.mp200.csc.PA0
+cspf.mp200.cpu.PB2 -> ice.PB2
+cspf.mp200.cpu.PB2 -> cspf.mp200.csc.PB2
+cspf.mp200.cpu.PB2 -> cspf.mp200.ocd.PB2
+cspf.mp200.cpu.PB1 -> ice.PB1
+cspf.mp200.cpu.PB1 -> cspf.mp200.csc.PB1
+cspf.mp200.cpu.PB1 -> cspf.mp200.ocd.PB1
+cspf.mp200.cpu.PB0 -> ice.PB0
+cspf.mp200.cpu.PB0 -> cspf.mp200.csc.PB0
+cspf.mp200.cpu.PB0 -> cspf.mp200.ocd.PB0
+cspf.mp200.cpu.PC[2:0] -> cspf.mp200.csc.PC[2:0]
+cspf.mp200.cpu.dummy_wire -> OPEN # Or Distination Instance was not defined in Conf File
+cspf.mp200.cpu.dw2 -> OPEN # Or Distination Instance was not defined in Conf File
+cspf.mp200.cpu.dw1 -> OPEN # Or Distination Instance was not defined in Conf File
+cspf.mp200.cpu.dw0 -> OPEN # Or Distination Instance was not defined in Conf File
+cspf.mp200.cpu.pd <- 1'b0 # Connect PullDown Cell
+cspf.mp200.cpu.CPUWR -> ice.CPUWR
+cspf.mp200.cpu.CPUWR -> svmodif2.CPUWR
+cspf.mp200.cpu.CPUWR -> cspf.mp200.csc.CPUWR
+cspf.mp200.cpu.CPUBUS[3:0] -> OPEN
+cspf.mp200.cpu.CPU_OUT -> cspf.mp200.cpu.CPU_IN
+cspf.mp200.cpu.CPU_IN <- cspf.mp200.cpu.CPU_OUT
+cspf.mp200.cpu.FCLK <- cspf.mp200.csc.FCLK
+cspf.mp200.cpu.EMEMRAMCLK <- cspf.mp200.csc.FCLK
+cspf.mp200.pgcsc.kerneltop.rst_res_n <- cspf.mp200.csc.RESB
+cspf.mp200.pgcsc.kerneltop.rst <- cspf.mp200.csc.ICE_RESB
+cspf.mp200.pgcsc.kerneltop.cpu_stpst <- cspf.mp200.cpu.STPST
+cspf.mp200.pgcsc.kerneltop.ADCHSEL0 -> svmodif2.ADCHSEL0
+cspf.mp200.pgcsc.kerneltop.ADCHSEL0 -> cspf.mod_a.ADCHSEL0
+cspf.mp200.pgcsc.kerneltop.ADCHSEL1 -> svmodif2.ADCHSEL1
+cspf.mp200.pgcsc.kerneltop.ADCHSEL1 -> cspf.mod_a.ADCHSEL1
+cspf.mp200.pgcsc.kerneltop2.mdiv01.rst_res_n <- cspf.mp200.csc.RESB
+cspf.mp200.pgcsc.kerneltop2.mdiv01.rst <- cspf.mp200.csc.ICE_RESB
+cspf.mp200.pgcsc.kerneltop2.mdiv01.cpu_stpst <- cspf.mp200.cpu.STPST
+cspf.pgcsc2.kerneltop3.rst_res_n <- cspf.mp200.csc.RESB
+cspf.pgcsc2.kerneltop3.rst <- cspf.mp200.csc.ICE_RESB
+cspf.pgcsc2.kerneltop3.cpu_stpst <- 1'b0
+cspf.pgcsc2.kerneltop2.mdiv01.rst_res_n <- cspf.mp200.csc.RESB
+cspf.pgcsc2.kerneltop2.mdiv01.rst <- cspf.mp200.csc.ICE_RESB
+cspf.pgcsc2.kerneltop2.mdiv01.cpu_stpst <- 1'b0
+pericore.mc200.d2 <- pericore.portiotop.porttop.dgen[2:0]
+pericore.mc200.d1 <- pericore.portiotop.porttop.dgen[2:0]
+pericore.mc200.d0 <- pericore.portiotop.porttop.dgen[2:0]
+pericore.portiotop.porttop.rst_res_n <- cspf.mp200.csc.RESB
+pericore.portiotop.porttop.rst <- cspf.mp200.csc.ICE_RESB
+pericore.portiotop.porttop.dgen[2:0] -> ice.dgen02
+pericore.portiotop.porttop.dgen[2:0] -> pericore.mc200.d2
+pericore.portiotop.porttop.dgen[2:0] -> pericore.mc200.d1
+pericore.portiotop.porttop.dgen[2:0] -> pericore.mc200.d0

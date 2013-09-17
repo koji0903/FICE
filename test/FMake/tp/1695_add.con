@@ -1,0 +1,18 @@
+DIN sub001.sub002.sub003.sub004.sub005.d
+DIN2 sub001.sub002.sub003.sub004.xxx
+DIN3 sub001.sub002.sub003.sub004.UUU
+DIN5 sub001.sub002.sub003.sub004.out_mod2.OutSignal0
+
+DIN6 out_mod.OutSignal
+
+#DIN4 sub001.sub002.sub003.sub004.out_mod2.OutSignal 
+#DOUT4 sub001.sub002.sub003.sub004.in_mod2.InSignal 
+#DOUT4 sub001.sub002.sub003.sub004.KKK
+DIN4 sub001.sub002.sub003.sub004.KKK
+DOUT4 sub001.sub002.sub003.sub004.in_mod2.InSignal0
+
+#DOUT4 sub001.sub002.sub003.sub004.in_mod3.InSignal0
+
+#DIN sub001.sub002.sub003.d
+#DIN sub001.sub002.b
+DOUT DOUT:terminal

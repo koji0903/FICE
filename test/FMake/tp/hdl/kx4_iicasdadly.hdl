@@ -1,0 +1,53 @@
+//-----------------------------------------------------------
+//	Module Name		KX4_IICASDADLY
+//	Version			1.10
+//-----------------------------------------------------------
+
+module KX4_IICASDADLY ( SDA, SDADLY, SCANMODE, CLK60M ) ;
+
+	input  SDA, SCANMODE, CLK60M ;
+	output SDADLY ;
+
+	wire   sda_dly ;
+
+	assign SDADLY = ( SCANMODE ) ? SDA : sda_dly ;
+
+	KX4_IICASDADLY_DLY50N  dly_50n ( .out(sda_dly), .in(SDA), .iceclk(CLK60M) ) ;
+
+endmodule
+
+//==============================================================
+// Sub module for ICE
+//==============================================================
+
+`ifndef FPGA_ICE
+
+   // for Device
+   module KX4_IICASDADLY_DLY50N ( out , in , iceclk ) ;
+	input	in , iceclk ;
+	output	out ;
+
+	TBFILTER1X2 dly50n ( .N01(out) , .H01(in) ) ;
+
+   endmodule
+
+`else
+
+   // for ICE
+   module KX4_IICASDADLY_DLY50N ( out , in , iceclk ) ;
+	input	in , iceclk ;
+	output	out ;
+
+	reg [2:0] dly;
+	reg out;
+	always @( posedge iceclk ) begin
+		dly <= {dly[1:0], in};
+		if ((dly[0]==in)&&(dly[1]==in)&&(dly[2]==in)) begin
+			out <= dly[2];
+		end
+	end
+
+   endmodule
+
+`endif
+

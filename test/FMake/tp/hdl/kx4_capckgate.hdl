@@ -1,0 +1,105 @@
+
+// (C) Copyright NEC Electronics Corporation 2009
+// All Rights Reserved. Do not duplicate without prior written
+// consent of NEC Electronics Corporation.
+
+// Macro Name      : KX4_CAPBUF
+// Version         : 1.00
+// Date            : 2010.06.15
+// Author          : Masaki.Ouchiyama
+// History         : 0.00      2010/06/24 DF1
+//                 : 0.01      2010/07/02 DF2
+//		   : 0.02      2010/08/07 DF4.1
+//		   :	change OSCOUTS -> csc.FSUB
+//		   : 0.03      2010/09/27 CF1.0 ECO
+//		   :    add SCANMODE
+
+
+module KX4_CAPCKGATE (
+	 BBMOSC		,OSCOUTM
+	,BBHIOSC	,R32MOUT
+	,BBFMAIN	,FMAIN
+	,BBFSUB		,FSUB
+	,BBFCLK		,FCLKRT
+	,BBFIL		,R15KOUT
+
+	,BBMODE		,SCANMODE
+);
+
+output	BBMOSC	;
+output	BBHIOSC	;
+output	BBFMAIN	;
+output	BBFSUB	;
+output	BBFCLK	;
+output	BBFIL	;
+
+input	OSCOUTM	;
+input	R32MOUT	;
+input	FMAIN	;
+input	FSUB	;
+input	FCLKRT	;
+input	R15KOUT	;
+
+input	BBMODE	;
+input	SCANMODE ;
+
+wire	BBMODE_SCANMODE ;
+
+
+	KX4_CAPCKGATE_OR  gate_bb_scan 	( .bbscan( BBMODE_SCANMODE ) ,.BBMODE ( BBMODE ) ,.scanmode( SCANMODE ) );
+
+	KX4_CAPCKGATE_AND gate_fclk 	( .clkout( BBFCLK	) ,.BBMODE ( BBMODE_SCANMODE ) ,.clkin( FCLKRT	) );
+
+	KX4_CAPCKGATE_AND gate_fmain 	( .clkout( BBFMAIN	) ,.BBMODE ( BBMODE ) ,.clkin( FMAIN	) );
+	KX4_CAPCKGATE_AND gate_fsub 	( .clkout( BBFSUB	) ,.BBMODE ( BBMODE ) ,.clkin( FSUB	) );
+
+	KX4_CAPCKGATE_AND gate_mosc 	( .clkout( BBMOSC	) ,.BBMODE ( BBMODE ) ,.clkin( OSCOUTM	) );
+	KX4_CAPCKGATE_AND gate_hiosc 	( .clkout( BBHIOSC	) ,.BBMODE ( BBMODE ) ,.clkin( R32MOUT	) );
+	KX4_CAPCKGATE_AND gate_liosc 	( .clkout( BBFIL	) ,.BBMODE ( BBMODE ) ,.clkin( R15KOUT	) );
+
+endmodule
+
+`ifndef FPGA_ICE
+// for Device
+	module KX4_CAPCKGATE_AND ( clkout, BBMODE, clkin );
+	input BBMODE;
+	input clkin;
+	
+	output clkout;
+	
+		TBAD2X2 u_ckgate ( .H01(clkin), .H02(BBMODE), .N01(clkout) );
+	
+	endmodule
+
+	module KX4_CAPCKGATE_OR ( bbscan, BBMODE, scanmode );
+	input BBMODE;
+	input scanmode;
+	
+	output bbscan;
+	
+		TBOR2X2 bbeco1 ( .H01(scanmode), .H02(BBMODE), .N01(bbscan) );
+	
+	endmodule
+`else
+// for ICE
+	module KX4_CAPCKGATE_AND ( clkout, BBMODE, clkin );
+	input BBMODE;
+	input clkin;
+	
+	output clkout;
+	
+		assign clkout = BBMODE & clkin ;
+	
+	endmodule
+
+	module KX4_CAPCKGATE_OR ( bbscan, BBMODE, scanmode );
+	input BBMODE;
+	input scanmode;
+	
+	output bbscan;
+	
+		assign bbscan = scanmode | BBMODE ;
+	
+	endmodule
+`endif
+

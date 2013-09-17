@@ -1,0 +1,1617 @@
+//************************************************************************
+//
+//  Module Name : KX4_BBR
+//  Date        : 2010/2/4
+//  Name  	: Ryota Muratomi(ryouta.muratomi@qdk-lsi.com)
+//
+//************************************************************************
+//  Ver2.0	: 2010/7/1 	K.yamaguchi
+//************************************************************************
+//	2010.07.09: Add pselp5 PIM
+//	2010.07.31: S.Nakata
+//		change csc' psel( RMC is not includ GDCSC)
+//	2010.08.07: M.Ouhicyama
+//		add BBMA15-11
+//	2010.08.21: M.Ouchiyama
+//		change prdwdth7-0 -> prdwdth15-8
+//		delete PRDWDT14,13,10,8.
+//			WWDT macro was deleted these port.
+//************************************************************************
+
+module KX4_BUSBRIDGE (
+		SLMEM,    CPURD,    CPUWR,
+		MA15,     MA14,     MA13,     MA12,     MA11,     MA10,     MA9,      MA8,
+		MA7,      MA6,      MA5,      MA4,      MA3,      MA2,      MA1,      MA0,
+		MDW15,    MDW14,    MDW13,    MDW12,    MDW11,    MDW10,    MDW9,     MDW8,
+		MDW7,     MDW6,     MDW5,     MDW4,     MDW3,     MDW2,     MDW1,     MDW0,
+		BBMODE,   BBNVM1,   BBNVM2,   BBTESINST, PRDSELEN,
+		FLRO15,  FLRO14,  FLRO13,  FLRO12,  FLRO11,  FLRO10,  FLRO9,   FLRO8,
+		FLRO7,   FLRO6,   FLRO5,   FLRO4,   FLRO3,   FLRO2,   FLRO1,   FLRO0,
+		MDRRAM15, MDRRAM14, MDRRAM13, MDRRAM12, MDRRAM11, MDRRAM10, MDRRAM9,  MDRRAM8,
+		MDRRAM7,  MDRRAM6,  MDRRAM5,  MDRRAM4,  MDRRAM3,  MDRRAM2,  MDRRAM1,  MDRRAM0,
+		MDRMUL15, MDRMUL14, MDRMUL13, MDRMUL12, MDRMUL11, MDRMUL10, MDRMUL9,  MDRMUL8,
+		MDRMUL7,  MDRMUL6,  MDRMUL5,  MDRMUL4,  MDRMUL3,  MDRMUL2,  MDRMUL1,  MDRMUL0,
+		MDRINT15, MDRINT14, MDRINT13, MDRINT12, MDRINT11, MDRINT10, MDRINT9,  MDRINT8,
+		MDRINT7,  MDRINT6,  MDRINT5,  MDRINT4,  MDRINT3,  MDRINT2,  MDRINT1,  MDRINT0,
+		MDRDMA15, MDRDMA14, MDRDMA13, MDRDMA12, MDRDMA11, MDRDMA10, MDRDMA9,  MDRDMA8,
+		MDRDMA7,  MDRDMA6,  MDRDMA5,  MDRDMA4,  MDRDMA3,  MDRDMA2,  MDRDMA1,  MDRDMA0,
+		MDROCD15, MDROCD14, MDROCD13, MDROCD12, MDROCD11, MDROCD10, MDROCD9,  MDROCD8,
+		MDROCD7,  MDROCD6,  MDROCD5,  MDROCD4,  MDROCD3,  MDROCD2,  MDROCD1,  MDROCD0,
+		MDRIM815, MDRIM814, MDRIM813, MDRIM812, MDRIM811, MDRIM810, MDRIM89,  MDRIM88,
+		MDRIM87,  MDRIM86,  MDRIM85,  MDRIM84,  MDRIM83,  MDRIM82,  MDRIM81,  MDRIM80,
+		MDRIM411, MDRIM410, MDRIM49,  MDRIM48,  MDRIM43,  MDRIM42,  MDRIM41,  MDRIM40,
+		MDRPOG15, MDRPOG14, MDRPOG13, MDRPOG12, MDRPOG11, MDRPOG10, MDRPOG9,  MDRPOG8,
+		MDRPOG7,  MDRPOG6,  MDRPOG5,  MDRPOG4,  MDRPOG3,  MDRPOG2,  MDRPOG1,  MDRPOG0,
+                MDRCID15, MDRCID14, MDRCID13, MDRCID12, MDRCID11, MDRCID10, MDRCID9,  MDRCID8,
+                MDRCID7,  MDRCID6,  MDRCID5,  MDRCID4,  MDRCID3,  MDRCID2,  MDRCID1,  MDRCID0,
+		PRDCSC15, PRDCSC14, PRDCSC13, PRDCSC12, PRDCSC11, PRDCSC10, PRDCSC9,  PRDCSC8,
+		PRDCSC7,  PRDCSC6,  PRDCSC5,  PRDCSC4,  PRDCSC3,  PRDCSC2,  PRDCSC1,  PRDCSC0,
+		PRDPCL15, PRDPCL14, PRDPCL13, PRDPCL12, PRDPCL11, PRDPCL10, PRDPCL9,  PRDPCL8,
+		PRDPCL7,  PRDPCL6,  PRDPCL5,  PRDPCL4,  PRDPCL3,  PRDPCL2,  PRDPCL1,  PRDPCL0,
+		PRDMOD15, PRDMOD14, PRDMOD13, PRDMOD12, PRDMOD11, PRDMOD10, PRDMOD9,  PRDMOD8,
+		PRDMOD7,  PRDMOD6,  PRDMOD5,  PRDMOD4,  PRDMOD3,  PRDMOD2,  PRDMOD1,  PRDMOD0,
+		PRDWDT15,                     PRDWDT12, PRDWDT11,           PRDWDT9,
+		PRDFCB15, PRDFCB14, PRDFCB13, PRDFCB12, PRDFCB11, PRDFCB10, PRDFCB9,  PRDFCB8,
+		PRDFCB7,  PRDFCB6,  PRDFCB5,  PRDFCB4,  PRDFCB3,  PRDFCB2,  PRDFCB1,  PRDFCB0,
+		PRDRTC15, PRDRTC14, PRDRTC13, PRDRTC12, PRDRTC11, PRDRTC10, PRDRTC9,  PRDRTC8,
+		PRDRTC7,  PRDRTC6,  PRDRTC5,  PRDRTC4,  PRDRTC3,  PRDRTC2,  PRDRTC1,  PRDRTC0,
+		PRDIIC15, PRDIIC14, PRDIIC13, PRDIIC12, PRDIIC11, PRDIIC10, PRDIIC9,  PRDIIC8,
+		PRDIIC7,  PRDIIC6,  PRDIIC5,  PRDIIC4,  PRDIIC3,  PRDIIC2,  PRDIIC1,  PRDIIC0,
+		PRDTA015, PRDTA014, PRDTA013, PRDTA012, PRDTA011, PRDTA010, PRDTA09,  PRDTA08,
+		PRDTA07,  PRDTA06,  PRDTA05,  PRDTA04,  PRDTA03,  PRDTA02,  PRDTA01,  PRDTA00,
+		PRDSA015, PRDSA014, PRDSA013, PRDSA012, PRDSA011, PRDSA010, PRDSA09,  PRDSA08,
+		PRDSA07,  PRDSA06,  PRDSA05,  PRDSA04,  PRDSA03,  PRDSA02,  PRDSA01,  PRDSA00,
+		PRDSA115, PRDSA114, PRDSA113, PRDSA112, PRDSA111, PRDSA110, PRDSA19,  PRDSA18,
+		PRDSA17,  PRDSA16,  PRDSA15,  PRDSA14,  PRDSA13,  PRDSA12,  PRDSA11,  PRDSA10,
+		PRDAD15,  PRDAD14,  PRDAD13,  PRDAD12,  PRDAD11,  PRDAD10,  PRDAD9,   PRDAD8,
+		PRDAD7,   PRDAD6,   PRDAD5,   PRDAD4,   PRDAD3,   PRDAD2,   PRDAD1,   PRDAD0,
+		PRDCIC15, PRDCIC14, PRDCIC13, PRDCIC12, PRDCIC11, PRDCIC10, PRDCIC9,  PRDCIC8,
+		PRDCIC7,  PRDCIC6,  PRDCIC5,  PRDCIC4,  PRDCIC3,  PRDCIC2,  PRDCIC1,  PRDCIC0,
+                PRDCID15, PRDCID14, PRDCID13, PRDCID12, PRDCID11, PRDCID10, PRDCID9,  PRDCID8,
+                PRDCID7,  PRDCID6,  PRDCID5,  PRDCID4,  PRDCID3,  PRDCID2,  PRDCID1,  PRDCID0,
+		PRDP0007, PRDP0006, PRDP0005, PRDP0004, PRDP0003, PRDP0002, PRDP0001, PRDP0000,
+		PRDP0115, PRDP0114, PRDP0113, PRDP0112, PRDP0111, PRDP0110, PRDP0109, PRDP0108,
+		PRDP0207, PRDP0206, PRDP0205, PRDP0204, PRDP0203, PRDP0202, PRDP0201, PRDP0200,
+		PRDP0315, PRDP0314, PRDP0313, PRDP0312, PRDP0311, PRDP0310, PRDP0309, PRDP0308,
+		PRDP0407, PRDP0406, PRDP0405, PRDP0404, PRDP0403, PRDP0402, PRDP0401, PRDP0400,
+		PRDP0515, PRDP0514, PRDP0513, PRDP0512, PRDP0511, PRDP0510, PRDP0509, PRDP0508,
+		PRDP0607, PRDP0606, PRDP0605, PRDP0604, PRDP0603, PRDP0602, PRDP0601, PRDP0600,
+		PRDP0715, PRDP0714, PRDP0713, PRDP0712, PRDP0711, PRDP0710, PRDP0709, PRDP0708,
+		PRDP1207, PRDP1206, PRDP1205, PRDP1204, PRDP1203, PRDP1202, PRDP1201, PRDP1200,
+		PRDP1315, PRDP1314, PRDP1313, PRDP1312, PRDP1311, PRDP1310, PRDP1309, PRDP1308,
+		PRDP1407, PRDP1406, PRDP1405, PRDP1404, PRDP1403, PRDP1402, PRDP1401, PRDP1400,
+		PRDSCN15, PRDSCN14, PRDSCN13, PRDSCN12, PRDSCN11, PRDSCN10, PRDSCN9,  PRDSCN8,
+		PRDSCN7,  PRDSCN6,  PRDSCN5,  PRDSCN4,  PRDSCN3,  PRDSCN2,  PRDSCN1,  PRDSCN0,
+		PRDMAW15, PRDMAW14, PRDMAW13, PRDMAW12, PRDMAW11, PRDMAW10, PRDMAW9,  PRDMAW8,
+		PRDMAW7,  PRDMAW6,  PRDMAW5,  PRDMAW4,  PRDMAW3,  PRDMAW2,  PRDMAW1,  PRDMAW0,
+		PRDCRC15, PRDCRC14, PRDCRC13, PRDCRC12, PRDCRC11, PRDCRC10, PRDCRC9,  PRDCRC8,	// Ver2.0
+		PRDCRC7,  PRDCRC6,  PRDCRC5,  PRDCRC4,  PRDCRC3,  PRDCRC2,  PRDCRC1,  PRDCRC0,	// Ver2.0
+		BBPRDATA15,  BBPRDATA14,  BBPRDATA13,  BBPRDATA12,  BBPRDATA11,  BBPRDATA10,  BBPRDATA9,   BBPRDATA8,
+		BBPRDATA7,   BBPRDATA6,   BBPRDATA5,   BBPRDATA4,   BBPRDATA3,   BBPRDATA2,   BBPRDATA1,   BBPRDATA0,
+		PENABLE,  PWRITE,   WAITMEM,
+		BBPENABLE,   BBPWRITE,
+  		BBMA15 ,BBMA14 ,BBMA13 ,BBMA12 ,BBMA11,
+		BBMA10,   BBMA9,    BBMA8,    BBMA7,    BBMA6,    BBMA5,
+		BBMA4,    BBMA3,    BBMA2,    BBMA1,    BBMA0,
+		PADDR6,   PADDR5,   PADDR4,   PADDR3,   PADDR2,   PADDR1,   PADDR0,
+		PSELP0,   PSELP1,   PSELP2,   PSELP3,   PSELP4,   PSELP5,   PSELP6,   PSELP7,
+                PSELP12,  PSELP13,  PSELP14,
+		PSELSA01, PSELSA02, PSELSA11, PSELSA12, PSELAD1,  PSELAD2,  PSELKR,   PSELIM8,
+                PSELIM4,  PSELIIC1, PSELIIC2, PSELTA01, PSELTA02, PSELOCD1, PSELOCD2, PSELRTC,
+                PSELWWDT, PSELPCL,  PSELCSC1, PSELCSC2, PSELCSC3, PSELCPU,  PSELBCD,  PSELDMAC,
+                PSELINT1, PSELMD1,  PSELMD2,  PSELMOD1, PSELMOD2, PSELPOG1, PSELPOG2,
+		PSELMAW,  PSELSCN,
+		PSELCRC,						// Ver2.0
+		PSELFCB1, PSELFCB2, PSELCIBC, PSELCIBD, PSELCIB4,
+		BBSELSFR1, BBSELSFR2,
+		SLAPB,
+		MDR15,    MDR14,    MDR13,    MDR12,    MDR11,    MDR10,    MDR9,     MDR8,
+		MDR7,     MDR6,     MDR5,     MDR4,     MDR3,     MDR2,     MDR1,     MDR0,
+		MDWFLRO15, MDWFLRO14, MDWFLRO13, MDWFLRO12, MDWFLRO11, MDWFLRO10, MDWFLRO9,  MDWFLRO8,
+		MDWFLRO7,  MDWFLRO6,  MDWFLRO5,  MDWFLRO4,  MDWFLRO3,  MDWFLRO2,  MDWFLRO1,  MDWFLRO0,   
+		GDPORT,   GDINT,    GDCSC 
+		);
+
+  input		SLMEM,    CPURD,    CPUWR ;
+
+  input		MA15,     MA14,     MA13,     MA12,     MA11,     MA10,     MA9,      MA8,
+		MA7,      MA6,      MA5,      MA4,      MA3,      MA2,      MA1,      MA0 ;
+
+  input		MDW15,    MDW14,    MDW13,    MDW12,    MDW11,    MDW10,    MDW9,     MDW8,
+		MDW7,     MDW6,     MDW5,     MDW4,     MDW3,     MDW2,     MDW1,     MDW0 ;
+
+  input		BBMODE,   BBNVM1,   BBNVM2,   PRDSELEN, BBTESINST ;
+
+  input		FLRO15,  FLRO14,  FLRO13,  FLRO12,  FLRO11,  FLRO10,  FLRO9,   FLRO8,
+		FLRO7,   FLRO6,   FLRO5,   FLRO4,   FLRO3,   FLRO2,   FLRO1,   FLRO0 ;
+
+  input         MDRRAM15, MDRRAM14, MDRRAM13, MDRRAM12, MDRRAM11, MDRRAM10, MDRRAM9,  MDRRAM8,
+                MDRRAM7,  MDRRAM6,  MDRRAM5,  MDRRAM4,  MDRRAM3,  MDRRAM2,  MDRRAM1,  MDRRAM0,
+                MDRMUL15, MDRMUL14, MDRMUL13, MDRMUL12, MDRMUL11, MDRMUL10, MDRMUL9,  MDRMUL8,
+                MDRMUL7,  MDRMUL6,  MDRMUL5,  MDRMUL4,  MDRMUL3,  MDRMUL2,  MDRMUL1,  MDRMUL0,
+                MDRINT15, MDRINT14, MDRINT13, MDRINT12, MDRINT11, MDRINT10, MDRINT9,  MDRINT8,
+                MDRINT7,  MDRINT6,  MDRINT5,  MDRINT4,  MDRINT3,  MDRINT2,  MDRINT1,  MDRINT0,
+                MDRDMA15, MDRDMA14, MDRDMA13, MDRDMA12, MDRDMA11, MDRDMA10, MDRDMA9,  MDRDMA8,
+                MDRDMA7,  MDRDMA6,  MDRDMA5,  MDRDMA4,  MDRDMA3,  MDRDMA2,  MDRDMA1,  MDRDMA0,
+                MDROCD15, MDROCD14, MDROCD13, MDROCD12, MDROCD11, MDROCD10, MDROCD9,  MDROCD8,
+                MDROCD7,  MDROCD6,  MDROCD5,  MDROCD4,  MDROCD3,  MDROCD2,  MDROCD1,  MDROCD0,
+                MDRIM815, MDRIM814, MDRIM813, MDRIM812, MDRIM811, MDRIM810, MDRIM89,  MDRIM88,
+                MDRIM87,  MDRIM86,  MDRIM85,  MDRIM84,  MDRIM83,  MDRIM82,  MDRIM81,  MDRIM80,
+                MDRIM411, MDRIM410, MDRIM49,  MDRIM48,  MDRIM43,  MDRIM42,  MDRIM41,  MDRIM40,
+                MDRPOG15, MDRPOG14, MDRPOG13, MDRPOG12, MDRPOG11, MDRPOG10, MDRPOG9,  MDRPOG8,
+                MDRPOG7,  MDRPOG6,  MDRPOG5,  MDRPOG4,  MDRPOG3,  MDRPOG2,  MDRPOG1,  MDRPOG0,
+                MDRCID15, MDRCID14, MDRCID13, MDRCID12, MDRCID11, MDRCID10, MDRCID9,  MDRCID8,
+                MDRCID7,  MDRCID6,  MDRCID5,  MDRCID4,  MDRCID3,  MDRCID2,  MDRCID1,  MDRCID0,
+                PRDCSC15, PRDCSC14, PRDCSC13, PRDCSC12, PRDCSC11, PRDCSC10, PRDCSC9,  PRDCSC8,
+                PRDCSC7,  PRDCSC6,  PRDCSC5,  PRDCSC4,  PRDCSC3,  PRDCSC2,  PRDCSC1,  PRDCSC0,
+                PRDPCL15, PRDPCL14, PRDPCL13, PRDPCL12, PRDPCL11, PRDPCL10, PRDPCL9,  PRDPCL8,
+                PRDPCL7,  PRDPCL6,  PRDPCL5,  PRDPCL4,  PRDPCL3,  PRDPCL2,  PRDPCL1,  PRDPCL0,
+                PRDMOD15, PRDMOD14, PRDMOD13, PRDMOD12, PRDMOD11, PRDMOD10, PRDMOD9,  PRDMOD8,
+                PRDMOD7,  PRDMOD6,  PRDMOD5,  PRDMOD4,  PRDMOD3,  PRDMOD2,  PRDMOD1,  PRDMOD0,
+                PRDWDT15,                     PRDWDT12, PRDWDT11,           PRDWDT9,
+                PRDFCB15, PRDFCB14, PRDFCB13, PRDFCB12, PRDFCB11, PRDFCB10, PRDFCB9,  PRDFCB8,
+                PRDFCB7,  PRDFCB6,  PRDFCB5,  PRDFCB4,  PRDFCB3,  PRDFCB2,  PRDFCB1,  PRDFCB0,
+                PRDRTC15, PRDRTC14, PRDRTC13, PRDRTC12, PRDRTC11, PRDRTC10, PRDRTC9,  PRDRTC8,
+                PRDRTC7,  PRDRTC6,  PRDRTC5,  PRDRTC4,  PRDRTC3,  PRDRTC2,  PRDRTC1,  PRDRTC0,
+                PRDIIC15, PRDIIC14, PRDIIC13, PRDIIC12, PRDIIC11, PRDIIC10, PRDIIC9,  PRDIIC8,
+                PRDIIC7,  PRDIIC6,  PRDIIC5,  PRDIIC4,  PRDIIC3,  PRDIIC2,  PRDIIC1,  PRDIIC0,
+                PRDTA015, PRDTA014, PRDTA013, PRDTA012, PRDTA011, PRDTA010, PRDTA09,  PRDTA08,
+                PRDTA07,  PRDTA06,  PRDTA05,  PRDTA04,  PRDTA03,  PRDTA02,  PRDTA01,  PRDTA00,
+                PRDSA015, PRDSA014, PRDSA013, PRDSA012, PRDSA011, PRDSA010, PRDSA09,  PRDSA08,
+                PRDSA07,  PRDSA06,  PRDSA05,  PRDSA04,  PRDSA03,  PRDSA02,  PRDSA01,  PRDSA00,
+                PRDSA115, PRDSA114, PRDSA113, PRDSA112, PRDSA111, PRDSA110, PRDSA19,  PRDSA18,
+                PRDSA17,  PRDSA16,  PRDSA15,  PRDSA14,  PRDSA13,  PRDSA12,  PRDSA11,  PRDSA10,
+                PRDAD15,  PRDAD14,  PRDAD13,  PRDAD12,  PRDAD11,  PRDAD10,  PRDAD9,   PRDAD8,
+                PRDAD7,   PRDAD6,   PRDAD5,   PRDAD4,   PRDAD3,   PRDAD2,   PRDAD1,   PRDAD0,
+                PRDCIC15, PRDCIC14, PRDCIC13, PRDCIC12, PRDCIC11, PRDCIC10, PRDCIC9,  PRDCIC8,
+                PRDCIC7,  PRDCIC6,  PRDCIC5,  PRDCIC4,  PRDCIC3,  PRDCIC2,  PRDCIC1,  PRDCIC0,
+                PRDCID15, PRDCID14, PRDCID13, PRDCID12, PRDCID11, PRDCID10, PRDCID9,  PRDCID8,
+                PRDCID7,  PRDCID6,  PRDCID5,  PRDCID4,  PRDCID3,  PRDCID2,  PRDCID1,  PRDCID0,
+                PRDP0007, PRDP0006, PRDP0005, PRDP0004, PRDP0003, PRDP0002, PRDP0001, PRDP0000,
+                PRDP0115, PRDP0114, PRDP0113, PRDP0112, PRDP0111, PRDP0110, PRDP0109, PRDP0108,
+                PRDP0207, PRDP0206, PRDP0205, PRDP0204, PRDP0203, PRDP0202, PRDP0201, PRDP0200,
+                PRDP0315, PRDP0314, PRDP0313, PRDP0312, PRDP0311, PRDP0310, PRDP0309, PRDP0308,
+                PRDP0407, PRDP0406, PRDP0405, PRDP0404, PRDP0403, PRDP0402, PRDP0401, PRDP0400,
+                PRDP0515, PRDP0514, PRDP0513, PRDP0512, PRDP0511, PRDP0510, PRDP0509, PRDP0508,
+                PRDP0607, PRDP0606, PRDP0605, PRDP0604, PRDP0603, PRDP0602, PRDP0601, PRDP0600,
+                PRDP0715, PRDP0714, PRDP0713, PRDP0712, PRDP0711, PRDP0710, PRDP0709, PRDP0708,
+                PRDP1207, PRDP1206, PRDP1205, PRDP1204, PRDP1203, PRDP1202, PRDP1201, PRDP1200,
+                PRDP1315, PRDP1314, PRDP1313, PRDP1312, PRDP1311, PRDP1310, PRDP1309, PRDP1308,
+                PRDP1407, PRDP1406, PRDP1405, PRDP1404, PRDP1403, PRDP1402, PRDP1401, PRDP1400,
+                PRDSCN15, PRDSCN14, PRDSCN13, PRDSCN12, PRDSCN11, PRDSCN10, PRDSCN9,  PRDSCN8,
+                PRDSCN7,  PRDSCN6,  PRDSCN5,  PRDSCN4,  PRDSCN3,  PRDSCN2,  PRDSCN1,  PRDSCN0,
+                PRDMAW15, PRDMAW14, PRDMAW13, PRDMAW12, PRDMAW11, PRDMAW10, PRDMAW9,  PRDMAW8,
+                PRDMAW7,  PRDMAW6,  PRDMAW5,  PRDMAW4,  PRDMAW3,  PRDMAW2,  PRDMAW1,  PRDMAW0,
+		PRDCRC15, PRDCRC14, PRDCRC13, PRDCRC12, PRDCRC11, PRDCRC10, PRDCRC9,  PRDCRC8,	// Ver2.0
+		PRDCRC7,  PRDCRC6,  PRDCRC5,  PRDCRC4,  PRDCRC3,  PRDCRC2,  PRDCRC1,  PRDCRC0,	// Ver2.0
+                BBPRDATA15,  BBPRDATA14,  BBPRDATA13,  BBPRDATA12,  BBPRDATA11,  BBPRDATA10,  BBPRDATA9,   BBPRDATA8,
+                BBPRDATA7,   BBPRDATA6,   BBPRDATA5,   BBPRDATA4,   BBPRDATA3,   BBPRDATA2,   BBPRDATA1,   BBPRDATA0,
+                GDPORT,   GDINT,    GDCSC ;
+		
+
+  output	PENABLE,  PWRITE,   WAITMEM ;
+  output	BBPENABLE,   BBPWRITE ;
+  output	BBMA10,   BBMA9,    BBMA8,    BBMA7,    BBMA6,    BBMA5, 
+		BBMA4,    BBMA3,    BBMA2,    BBMA1,    BBMA0 ;
+
+// 10.08.07 add: for PLUG's ram access
+  output	BBMA15 ,BBMA14 ,BBMA13 ,BBMA12 ,BBMA11;
+
+  output	PADDR6,   PADDR5,   PADDR4,   PADDR3,   PADDR2,   PADDR1,   PADDR0 ;
+
+
+  output	PSELP0,   PSELP1,   PSELP2,   PSELP3,   PSELP4,   PSELP5,   PSELP6,   PSELP7,
+		PSELP12,  PSELP13,  PSELP14 ;
+
+  output        PSELSA01, PSELSA02, PSELSA11, PSELSA12, PSELAD1,  PSELAD2,  PSELKR,   PSELIM8,
+                PSELIM4,  PSELIIC1, PSELIIC2, PSELTA01, PSELTA02, PSELOCD1, PSELOCD2, PSELRTC,
+                PSELWWDT, PSELPCL,  PSELCSC1, PSELCSC2, PSELCSC3, PSELCPU,  PSELBCD,  PSELDMAC,
+                PSELINT1, PSELMD1,  PSELMD2,  PSELMOD1, PSELMOD2, PSELPOG1, PSELPOG2,
+                PSELMAW,  PSELSCN,
+		PSELCRC, 				// Ver2.0
+                PSELFCB1, PSELFCB2, PSELCIBC, PSELCIBD, PSELCIB4 ;
+
+  output	BBSELSFR1, BBSELSFR2 ;
+
+  output	SLAPB ;
+
+  output        MDR15,    MDR14,    MDR13,    MDR12,    MDR11,    MDR10,    MDR9,     MDR8,
+                MDR7,     MDR6,     MDR5,     MDR4,     MDR3,     MDR2,     MDR1,     MDR0 ;
+
+  output        MDWFLRO15, MDWFLRO14, MDWFLRO13, MDWFLRO12, MDWFLRO11, MDWFLRO10, MDWFLRO9,  MDWFLRO8,
+                MDWFLRO7,  MDWFLRO6,  MDWFLRO5,  MDWFLRO4,  MDWFLRO3,  MDWFLRO2,  MDWFLRO1,  MDWFLRO0;  //12.16追加
+
+
+  wire		SLAPB ;
+
+  KX4_BUSBRIDGE_APBCTL	apbctl	(
+		.cpurd(CPURD),   .cpuwr(CPUWR),    .slapb(SLAPB),
+		.bbmode(BBMODE), .bbnvm1(BBNVM1),  .bbnvm2(BBNVM2),
+		.ma10(MA10),        .ma9(MA9),.ma8(MA8), .ma7(MA7), .ma6(MA6), .ma5(MA5), .ma4(MA4),
+		.ma3(MA3),          .ma2(MA2),.ma1(MA1), .ma0(MA0),
+                .mdw({   MDW15,      MDW14,    MDW13,     MDW12,     MDW11,     MDW10,   MDW9,    MDW8,
+		         MDW7,       MDW6,     MDW5,      MDW4,      MDW3,      MDW2,    MDW1,    MDW0 }),
+		.flro({ FLRO15,    FLRO14,   FLRO13,  FLRO12,   FLRO11,   FLRO10,   FLRO9,  FLRO8,
+			 FLRO7,     FLRO6,    FLRO5,   FLRO4,    FLRO3,    FLRO2,    FLRO1,  FLRO0 }),
+		.penable(PENABLE),  .pwrite(PWRITE),.waitmem(WAITMEM),
+		.bbpenable(BBPENABLE), .bbpwrite(BBPWRITE),
+		.bbma10(BBMA10),    .bbma9(BBMA9),  .bbma8(BBMA8), .bbma7(BBMA7), .bbma6(BBMA6), .bbma5(BBMA5),
+		.bbma4(BBMA4),      .bbma3(BBMA3),  .bbma2(BBMA2), .bbma1(BBMA1), .bbma0(BBMA0),
+		.mdwflro({MDWFLRO15,   MDWFLRO14,       MDWFLRO13,      MDWFLRO12,      MDWFLRO11,      MDWFLRO10,MDWFLRO9, MDWFLRO8,
+			 MDWFLRO7,    MDWFLRO6,        MDWFLRO5,       MDWFLRO4,       MDWFLRO3,       MDWFLRO2, MDWFLRO1, MDWFLRO0 }),
+		.prdselen(PRDSELEN)
+
+		,.ma15(MA15) ,.ma14(MA14) ,.ma13(MA13) ,.ma12(MA12) ,.ma11(MA11)
+		,.bbma15(BBMA15) ,.bbma14(BBMA14) ,.bbma13(BBMA13) ,.bbma12(BBMA12) ,.bbma11(BBMA11)
+		);
+
+  KX4_BUSBRIDGE_CS	cs	(
+		.slmem(SLMEM),
+		.ma15(MA15), .ma14(MA14), .ma13(MA13), .ma12(MA12), .ma11(MA11), .ma10(MA10), .ma9(MA9), .ma8(MA8),
+		.ma7(MA7),   .ma6(MA6),   .ma5(MA5),   .ma4(MA4),   .ma3(MA3),   .ma2(MA2),   .ma1(MA1), .ma0(MA0),
+		.bbtesinst(BBTESINST),
+		.paddr6(PADDR6),     .paddr5(PADDR5),     .paddr4(PADDR4), .paddr3(PADDR3), .paddr2(PADDR2),
+		.paddr1(PADDR1),     .paddr0(PADDR0),
+		.pselp0(PSELP0),     .pselp1(PSELP1),     .pselp2(PSELP2),     .pselp3(PSELP3), .pselp4(PSELP4), .pselp5(PSELP5),
+		.pselp6(PSELP6),     .pselp7(PSELP7),     .pselp12(PSELP12),   .pselp13(PSELP13), .pselp14(PSELP14),
+		.pselsa01(PSELSA01), .pselsa02(PSELSA02), .pselsa11(PSELSA11), .pselsa12(PSELSA12),
+		.pselad1(PSELAD1),   .pselad2(PSELAD2),   .pselkr(PSELKR),     .pselim8(PSELIM8), .pselim4(PSELIM4),
+		.pseliic1(PSELIIC1), .pseliic2(PSELIIC2), .pselta01(PSELTA01), .pselta02(PSELTA02),
+		.pselocd1(PSELOCD1), .pselocd2(PSELOCD2), .pselrtc(PSELRTC),   .pselwwdt(PSELWWDT),
+		.pselpcl(PSELPCL),   .pselcsc1(PSELCSC1), .pselcsc2(PSELCSC2), .pselcsc3(PSELCSC3),
+		.pselcpu(PSELCPU),   .pselbcd(PSELBCD),   .pseldmac(PSELDMAC), .pselint1(PSELINT1),
+		.pselmd1(PSELMD1),   .pselmd2(PSELMD2),   .pselpog1(PSELPOG1), .pselpog2(PSELPOG2),
+		.pselmod1(PSELMOD1), .pselmod2(PSELMOD2), .pselmaw(PSELMAW),   .pselscn(PSELSCN),
+		.pselcrc(PSELCRC), 				// Ver2.0
+		.pselfcb1(PSELFCB1), .pselfcb2(PSELFCB2), .pselcibc(PSELCIBC), .pselcibd(PSELCIBD),
+		.pselcib4(PSELCIB4),
+		.bbselsfr1(BBSELSFR1), .bbselsfr2(BBSELSFR2),
+		.slapb(SLAPB),       .cpuwr(CPUWR),
+                .gdport(GDPORT),     .gdint(GDINT),       .gdcsc(GDCSC)
+		);
+
+  KX4_BUSBRIDGE_BUSOR	busor	(
+		.mdrram({ MDRRAM15, MDRRAM14, MDRRAM13, MDRRAM12, MDRRAM11, MDRRAM10, MDRRAM9,  MDRRAM8,
+			  MDRRAM7,  MDRRAM6,  MDRRAM5,  MDRRAM4,  MDRRAM3,  MDRRAM2,  MDRRAM1,  MDRRAM0 }),
+		.mdrmul({ MDRMUL15, MDRMUL14, MDRMUL13, MDRMUL12, MDRMUL11, MDRMUL10, MDRMUL9,  MDRMUL8,
+			  MDRMUL7,  MDRMUL6,  MDRMUL5,  MDRMUL4,  MDRMUL3,  MDRMUL2,  MDRMUL1,  MDRMUL0 }),
+		.mdrint({ MDRINT15, MDRINT14, MDRINT13, MDRINT12, MDRINT11, MDRINT10, MDRINT9,  MDRINT8,
+			  MDRINT7,  MDRINT6,  MDRINT5,  MDRINT4,  MDRINT3,  MDRINT2,  MDRINT1,  MDRINT0 }),
+		.mdrdma({ MDRDMA15, MDRDMA14, MDRDMA13, MDRDMA12, MDRDMA11, MDRDMA10, MDRDMA9,  MDRDMA8,
+			  MDRDMA7,  MDRDMA6,  MDRDMA5,  MDRDMA4,  MDRDMA3,  MDRDMA2,  MDRDMA1,  MDRDMA0 }),
+		.mdrocd({ MDROCD15, MDROCD14, MDROCD13, MDROCD12, MDROCD11, MDROCD10, MDROCD9,  MDROCD8,
+			  MDROCD7,  MDROCD6,  MDROCD5,  MDROCD4,  MDROCD3,  MDROCD2,  MDROCD1,  MDROCD0 }),
+		.mdrim8({ MDRIM815, MDRIM814, MDRIM813, MDRIM812, MDRIM811, MDRIM810, MDRIM89,  MDRIM88,
+			  MDRIM87,  MDRIM86,  MDRIM85,  MDRIM84,  MDRIM83,  MDRIM82,  MDRIM81,  MDRIM80 }),
+		.mdrim4h({MDRIM411, MDRIM410, MDRIM49,  MDRIM48						 }),
+		.mdrim4l({MDRIM43,  MDRIM42,  MDRIM41,  MDRIM40						 }),
+                .mdrpog({ MDRPOG15, MDRPOG14, MDRPOG13, MDRPOG12, MDRPOG11, MDRPOG10, MDRPOG9,  MDRPOG8,
+                          MDRPOG7,  MDRPOG6,  MDRPOG5,  MDRPOG4,  MDRPOG3,  MDRPOG2,  MDRPOG1,  MDRPOG0}),
+                .mdrcid({ MDRCID15, MDRCID14, MDRCID13, MDRCID12, MDRCID11, MDRCID10, MDRCID9,  MDRCID8,
+                          MDRCID7,  MDRCID6,  MDRCID5,  MDRCID4,  MDRCID3,  MDRCID2,  MDRCID1,  MDRCID0 }),
+		.prdcsc({ PRDCSC15, PRDCSC14, PRDCSC13, PRDCSC12, PRDCSC11, PRDCSC10, PRDCSC9,  PRDCSC8,
+			  PRDCSC7,  PRDCSC6,  PRDCSC5,  PRDCSC4,  PRDCSC3,  PRDCSC2,  PRDCSC1,  PRDCSC0 }),
+		.prdpcl({ PRDPCL15, PRDPCL14, PRDPCL13, PRDPCL12, PRDPCL11, PRDPCL10, PRDPCL9,  PRDPCL8,
+			  PRDPCL7,  PRDPCL6,  PRDPCL5,  PRDPCL4,  PRDPCL3,  PRDPCL2,  PRDPCL1,  PRDPCL0 }),
+		.prdmod({ PRDMOD15, PRDMOD14, PRDMOD13, PRDMOD12, PRDMOD11, PRDMOD10, PRDMOD9,  PRDMOD8,
+			  PRDMOD7,  PRDMOD6,  PRDMOD5,  PRDMOD4,  PRDMOD3,  PRDMOD2,  PRDMOD1,  PRDMOD0 }),
+		.prdwdth({PRDWDT15, 1'b0,     1'b0,     PRDWDT12, PRDWDT11, 1'b0,     PRDWDT9,  1'b0    }),
+		.prdfcb({ PRDFCB15, PRDFCB14, PRDFCB13, PRDFCB12, PRDFCB11, PRDFCB10, PRDFCB9,  PRDFCB8,
+			  PRDFCB7,  PRDFCB6,  PRDFCB5,  PRDFCB4,  PRDFCB3,  PRDFCB2,  PRDFCB1,  PRDFCB0 }),
+		.prdrtc({ PRDRTC15, PRDRTC14, PRDRTC13, PRDRTC12, PRDRTC11, PRDRTC10, PRDRTC9,  PRDRTC8,
+			  PRDRTC7,  PRDRTC6,  PRDRTC5,  PRDRTC4,  PRDRTC3,  PRDRTC2,  PRDRTC1,  PRDRTC0 }),
+		.prdiic({ PRDIIC15, PRDIIC14, PRDIIC13, PRDIIC12, PRDIIC11, PRDIIC10, PRDIIC9,  PRDIIC8,
+			  PRDIIC7,  PRDIIC6,  PRDIIC5,  PRDIIC4,  PRDIIC3,  PRDIIC2,  PRDIIC1,  PRDIIC0 }),
+		.prdta0({ PRDTA015, PRDTA014, PRDTA013, PRDTA012, PRDTA011, PRDTA010, PRDTA09,  PRDTA08,
+			  PRDTA07,  PRDTA06,  PRDTA05,  PRDTA04,  PRDTA03,  PRDTA02,  PRDTA01,  PRDTA00 }),
+		.prdsa0({ PRDSA015, PRDSA014, PRDSA013, PRDSA012, PRDSA011, PRDSA010, PRDSA09,  PRDSA08,
+			  PRDSA07,  PRDSA06,  PRDSA05,  PRDSA04,  PRDSA03,  PRDSA02,  PRDSA01,  PRDSA00 }),
+		.prdsa1({ PRDSA115, PRDSA114, PRDSA113, PRDSA112, PRDSA111, PRDSA110, PRDSA19,  PRDSA18,
+			  PRDSA17,  PRDSA16,  PRDSA15,  PRDSA14,  PRDSA13,  PRDSA12,  PRDSA11,  PRDSA10 }),
+		.prdad({  PRDAD15,  PRDAD14,  PRDAD13,  PRDAD12,  PRDAD11,  PRDAD10,  PRDAD9,   PRDAD8,
+			  PRDAD7,   PRDAD6,   PRDAD5,   PRDAD4,   PRDAD3,   PRDAD2,   PRDAD1,   PRDAD0 }),
+		.prdcibc({PRDCIC15, PRDCIC14, PRDCIC13, PRDCIC12, PRDCIC11, PRDCIC10, PRDCIC9,  PRDCIC8,
+			  PRDCIC7,  PRDCIC6,  PRDCIC5,  PRDCIC4,  PRDCIC3,  PRDCIC2,  PRDCIC1,  PRDCIC0 }),
+                .prdcibd({PRDCID15, PRDCID14, PRDCID13, PRDCID12, PRDCID11, PRDCID10, PRDCID9,  PRDCID8,
+                          PRDCID7,  PRDCID6,  PRDCID5,  PRDCID4,  PRDCID3,  PRDCID2,  PRDCID1,  PRDCID0 }),
+		.prdp0({  PRDP0007, PRDP0006, PRDP0005, PRDP0004, PRDP0003, PRDP0002, PRDP0001, PRDP0000 }),
+		.prdp1({  PRDP0115, PRDP0114, PRDP0113, PRDP0112, PRDP0111, PRDP0110, PRDP0109, PRDP0108 }),
+		.prdp2({  PRDP0207, PRDP0206, PRDP0205, PRDP0204, PRDP0203, PRDP0202, PRDP0201, PRDP0200 }),
+		.prdp3({  PRDP0315, PRDP0314, PRDP0313, PRDP0312, PRDP0311, PRDP0310, PRDP0309, PRDP0308 }),
+		.prdp4({  PRDP0407, PRDP0406, PRDP0405, PRDP0404, PRDP0403, PRDP0402, PRDP0401, PRDP0400 }),
+		.prdp5({  PRDP0515, PRDP0514, PRDP0513, PRDP0512, PRDP0511, PRDP0510, PRDP0509, PRDP0508 }),
+		.prdp6({  PRDP0607, PRDP0606, PRDP0605, PRDP0604, PRDP0603, PRDP0602, PRDP0601, PRDP0600 }),
+		.prdp7({  PRDP0715, PRDP0714, PRDP0713, PRDP0712, PRDP0711, PRDP0710, PRDP0709, PRDP0708 }),
+		.prdp12({ PRDP1207, PRDP1206, PRDP1205, PRDP1204, PRDP1203, PRDP1202, PRDP1201, PRDP1200 }),
+		.prdp13({ PRDP1315, PRDP1314, PRDP1313, PRDP1312, PRDP1311, PRDP1310, PRDP1309, PRDP1308 }),
+		.prdp14({ PRDP1407, PRDP1406, PRDP1405, PRDP1404, PRDP1403, PRDP1402, PRDP1401, PRDP1400 }),
+		.prdscn({ PRDSCN15, PRDSCN14, PRDSCN13, PRDSCN12, PRDSCN11, PRDSCN10, PRDSCN9,  PRDSCN8,
+			  PRDSCN7,  PRDSCN6,  PRDSCN5,  PRDSCN4,  PRDSCN3,  PRDSCN2,  PRDSCN1,  PRDSCN0 }),
+		.prdmaw({ PRDMAW15, PRDMAW14, PRDMAW13, PRDMAW12, PRDMAW11, PRDMAW10, PRDMAW9,  PRDMAW8,
+			  PRDMAW7,  PRDMAW6,  PRDMAW5,  PRDMAW4,  PRDMAW3,  PRDMAW2,  PRDMAW1,  PRDMAW0 }),
+		.prdcrc({ PRDCRC15, PRDCRC14, PRDCRC13, PRDCRC12, PRDCRC11, PRDCRC10, PRDCRC9,  PRDCRC8,	// Ver2.0
+			  PRDCRC7,  PRDCRC6,  PRDCRC5,  PRDCRC4,  PRDCRC3,  PRDCRC2,  PRDCRC1,  PRDCRC0 }),	// Ver2.0
+		.bbprdata({  BBPRDATA15,  BBPRDATA14,  BBPRDATA13,  BBPRDATA12,  BBPRDATA11,  BBPRDATA10,  BBPRDATA9,   BBPRDATA8,
+			  BBPRDATA7,   BBPRDATA6,   BBPRDATA5,   BBPRDATA4,   BBPRDATA3,   BBPRDATA2,   BBPRDATA1,   BBPRDATA0 }),
+		.mdr({    MDR15,    MDR14,    MDR13,    MDR12,    MDR11,    MDR10,    MDR9,     MDR8,
+	                  MDR7,     MDR6,     MDR5,     MDR4,     MDR3,     MDR2,     MDR1,     MDR0 })
+		) ;
+
+endmodule
+
+//------------------------------------------------------------------------
+//	APBCTL
+//
+//------------------------------------------------------------------------
+module KX4_BUSBRIDGE_APBCTL (
+		cpurd, cpuwr, slapb,
+		bbmode, bbnvm1, bbnvm2,
+		ma10, ma9, ma8, ma7, ma6, ma5, ma4, ma3, ma2, ma1, ma0,
+		mdw, flro,
+		penable, pwrite, waitmem,
+		bbpenable, bbpwrite,
+		bbma10, bbma9, bbma8, bbma7, bbma6, bbma5, bbma4, bbma3, bbma2, bbma1, bbma0,
+//		bbmdw, 
+		prdselen, mdwflro
+
+		,ma15 ,ma14 ,ma13 ,ma12 ,ma11
+		,bbma15 ,bbma14 ,bbma13 ,bbma12 ,bbma11
+		);  //12.16追加
+
+  input		cpurd, cpuwr, slapb ;
+  input		bbmode, bbnvm1, bbnvm2 ;
+  input		ma10, ma9, ma8, ma7, ma6, ma5, ma4, ma3, ma2, ma1, ma0 ;
+  input	[15:0]	mdw, flro ;
+  input 	prdselen ;
+
+  output	penable, pwrite, waitmem ;
+  output	bbpenable, bbpwrite ;
+  output	bbma10, bbma9, bbma8, bbma7, bbma6, bbma5, bbma4, bbma3, bbma2, bbma1, bbma0 ;
+//  output[15:0]	bbmdw ;
+  output[15:0]  mdwflro; //12.16追加
+
+// 10.08.07 add: for PLUG's ram access
+input	ma15 ,ma14 ,ma13 ,ma12 ,ma11 ;
+output	bbma15 ,bbma14 ,bbma13 ,bbma12 ,bbma11 ;
+//
+  wire		penable_pre, nvm_en ;
+
+
+  assign penable_pre = cpuwr | cpurd ;
+  assign penable = penable_pre & slapb ;
+  assign pwrite  = cpuwr & slapb ; 
+
+//  assign mdwflro[15:0] = (prdselen) ? flro[15:0] : mdw[15:0] ; //12.16追加
+
+
+//1st製品ではPREADYを使用するマクロは無いので搭載しない。
+//assign  waitmem = penable_pre & ~pready;
+  assign  waitmem = 1'b0;
+
+
+//-------------------------------------
+// for BB
+
+  assign bbpenable = penable_pre & bbmode;
+  assign bbpwrite  = cpuwr & bbmode;
+
+// 10.08.07 add: for PLUG's ram access
+  assign bbma15 = ma15 & bbmode ;
+  assign bbma14 = ma14 & bbmode ;
+  assign bbma13 = ma13 & bbmode ;
+  assign bbma12 = ma12 & bbmode ;
+  assign bbma11 = ma11 & bbmode ;
+//
+
+  assign bbma10 = ma10 & bbmode ;
+  assign bbma9  = ma9  & bbmode ;
+  assign bbma8  = ma8  & bbmode ;
+  assign bbma7  = ma7  & bbmode ;
+  assign bbma6  = ma6  & bbmode ;
+  assign bbma5  = ma5  & bbmode ;
+  assign bbma4  = ma4  & bbmode ;
+  assign bbma3  = ma3  & bbmode ;
+  assign bbma2  = ma2  & bbmode ;
+  assign bbma1  = ma1  & bbmode ;
+  assign bbma0  = ma0  & bbmode ;
+
+// for anarog trim & prdsel
+  assign nvm_en = bbnvm1 | bbnvm2 | prdselen ;
+
+  assign mdwflro[15] = ( nvm_en ) ? flro[15] : mdw[15] ;
+  assign mdwflro[14] = ( nvm_en ) ? flro[14] : mdw[14] ;
+  assign mdwflro[13] = ( nvm_en ) ? flro[13] : mdw[13] ;
+  assign mdwflro[12] = ( nvm_en ) ? flro[12] : mdw[12] ;
+  assign mdwflro[11] = ( nvm_en ) ? flro[11] : mdw[11] ;
+  assign mdwflro[10] = ( nvm_en ) ? flro[10] : mdw[10] ;
+  assign mdwflro[9]  = ( nvm_en ) ? flro[9]  : mdw[9]  ;
+  assign mdwflro[8]  = ( nvm_en ) ? flro[8]  : mdw[8]  ;
+  assign mdwflro[7]  = ( nvm_en ) ? flro[7]  : mdw[7]  ;
+  assign mdwflro[6]  = ( nvm_en ) ? flro[6]  : mdw[6]  ;
+  assign mdwflro[5]  = ( nvm_en ) ? flro[5]  : mdw[5]  ;
+  assign mdwflro[4]  = ( nvm_en ) ? flro[4]  : mdw[4]  ;
+  assign mdwflro[3]  = ( nvm_en ) ? flro[3]  : mdw[3]  ;
+  assign mdwflro[2]  = ( nvm_en ) ? flro[2]  : mdw[2]  ;
+  assign mdwflro[1]  = ( nvm_en ) ? flro[1]  : mdw[1]  ;
+  assign mdwflro[0]  = ( nvm_en ) ? flro[0]  : mdw[0]  ;
+
+//
+//BBMODEでのAND削除
+//
+//assign bbmdw[15] = ( mdw[15] & bbmode ) | ( flro[15] & bbmode & bbnvm ) ;
+//assign bbmdw[14] = ( mdw[14] & bbmode ) | ( flro[14] & bbmode & bbnvm ) ;
+//assign bbmdw[13] = ( mdw[13] & bbmode ) | ( flro[13] & bbmode & bbnvm ) ;
+//assign bbmdw[12] = ( mdw[12] & bbmode ) | ( flro[12] & bbmode & bbnvm ) ;
+//assign bbmdw[11] = ( mdw[11] & bbmode ) | ( flro[11] & bbmode & bbnvm ) ;
+//assign bbmdw[10] = ( mdw[10] & bbmode ) | ( flro[10] & bbmode & bbnvm ) ;
+//assign bbmdw[9]  = ( mdw[9]  & bbmode ) | ( flro[9]  & bbmode & bbnvm ) ;
+//assign bbmdw[8]  = ( mdw[8]  & bbmode ) | ( flro[8]  & bbmode & bbnvm ) ;
+//assign bbmdw[7]  = ( mdw[7]  & bbmode ) | ( flro[7]  & bbmode & bbnvm ) ;
+//assign bbmdw[6]  = ( mdw[6]  & bbmode ) | ( flro[6]  & bbmode & bbnvm ) ;
+//assign bbmdw[5]  = ( mdw[5]  & bbmode ) | ( flro[5]  & bbmode & bbnvm ) ;
+//assign bbmdw[4]  = ( mdw[4]  & bbmode ) | ( flro[4]  & bbmode & bbnvm ) ;
+//assign bbmdw[3]  = ( mdw[3]  & bbmode ) | ( flro[3]  & bbmode & bbnvm ) ;
+//assign bbmdw[2]  = ( mdw[2]  & bbmode ) | ( flro[2]  & bbmode & bbnvm ) ;
+//assign bbmdw[1]  = ( mdw[1]  & bbmode ) | ( flro[1]  & bbmode & bbnvm ) ;
+//assign bbmdw[0]  = ( mdw[0]  & bbmode ) | ( flro[0]  & bbmode & bbnvm ) ;
+
+endmodule
+
+//------------------------------------------------------------------------
+//	CS
+//
+//------------------------------------------------------------------------
+module KX4_BUSBRIDGE_CS (
+		slmem,
+		ma15,ma14,ma13,ma12,ma11,ma10,ma9, ma8, 
+		ma7, ma6, ma5, ma4, ma3, ma2, ma1, ma0,
+		bbtesinst,
+		paddr6,   paddr5,   paddr4,   paddr3,   paddr2,   paddr1, paddr0,
+		pselp0,   pselp1,   pselp2,   pselp3,   pselp4,   pselp5,
+		pselp6,   pselp7,   pselp12,  pselp13,  pselp14,
+		pselsa01, pselsa02, pselsa11, pselsa12, pselad1,  pselad2,
+		pselkr,   pselim8,  pselim4,
+		pseliic1, pseliic2, pselta01, pselta02, pselocd1, pselocd2,
+		pselrtc,  pselwwdt, pselpcl,  pselcsc1, pselcsc2, pselcsc3,
+		pselcpu,  pselbcd,  pseldmac, pselint1, pselmd1,  pselmd2,
+		pselmod1, pselmod2, pselmaw,  pselscn,
+		pselcrc, 			// Ver2.0
+		pselpog1, pselpog2,
+		pselfcb1, pselfcb2, pselcibc, pselcibd, pselcib4,
+		bbselsfr1, bbselsfr2,
+		slapb,    cpuwr,
+                gdport,   gdint,    gdcsc );
+
+  input		slmem ;
+  input		ma15, ma14, ma13, ma12, ma11, ma10, ma9, ma8,
+		ma7, ma6, ma5, ma4, ma3, ma2, ma1, ma0 ;
+  input		bbtesinst ;
+
+  input         cpuwr,  gdport, gdint,  gdcsc;
+
+  output	paddr6, paddr5, paddr4, paddr3, paddr2, paddr1, paddr0;
+
+  output	pselp0, pselp1, pselp2, pselp3, pselp4, pselp5,
+		pselp6, pselp7, pselp12, pselp13, pselp14 ;
+
+  output	pselsa01, pselsa02, pselsa11, pselsa12, pselad1, pselad2,
+		pselkr,   pselim8,  pselim4,
+		pseliic1, pseliic2, pselta01, pselta02, pselocd1, pselocd2,
+		pselrtc,  pselwwdt, pselpcl,  pselcsc1, pselcsc2, pselcsc3,
+		pselcpu,  pselbcd,  pseldmac, pselint1, pselmd1,  pselmd2,
+		pselmod1, pselmod2, pselmaw,  pselscn,
+		pselcrc, 			// Ver2.0
+		pselpog1, pselpog2,
+		pselfcb1, pselfcb2, pselcibc, pselcibd, pselcib4 ;
+
+  output	slapb ;
+
+  output	bbselsfr1, bbselsfr2 ;
+
+  reg	[6:0]	paddr ;
+
+
+  reg		pselsa01,pselsa02,pselsa11,pselsa12, pselad1,  pselad2,
+		pselkr,  
+		pseliic1,pseliic2,pselta01,pselta02, pselocd1, pselocd2,
+		pselrtc, pselwwdt,pselpcl, 
+		pselcpu, pselbcd, pseldmac,pselmd1,  pselmd2,
+		pselmod1,pselmod2,pselmaw, pselscn, 
+		pselcrc, 			// Ver2.0
+  		pselpog2,pselp13  ;
+
+  reg		pselp0_gd,   pselp0_ngd,  pselp1_gd,  pselp1_ngd,  pselp2_gd,  pselp2_ngd,
+		pselp3_gd,   pselp3_ngd,  pselp4_gd,  pselp4_ngd,  pselp5_gd,  pselp5_ngd,
+		pselp6_gd,   pselp6_ngd,  pselp7_gd,  pselp7_ngd,  pselp12_gd, pselp12_ngd,
+		pselp14_gd,  pselp14_ngd,
+		pselpog1_gd, pselpog1_ngd  ;
+
+  reg		pselim4_gd,  pselim8_gd,  pselint1_gd,
+		pselcsc1_gd, pselcsc2_gd, pselcsc3_gd;
+  reg		selrmc ;
+
+  reg		pselfcb1_pre, pselfcb2_pre, pselcibc_pre, pselcib4_pre, pselcibd_pre ;
+  reg		bbselsfr1,     bbselsfr2 ;
+
+  wire		pselfcb1, pselfcb2, pselcibc, pselcibd, pselcib4 ;
+
+  wire		pselp0,  pselp1, pselp2,  pselp3, pselp4, pselp5,
+		pselp6,  pselp7, pselp12, pselp14,
+		pselpog1 ;
+
+  wire		pselim8,  pselim4,  pselcsc1, pselcsc2, pselcsc3,
+                pselint1 ;
+
+  wire	[15:0]	ma_all ;
+  wire	[11:0]	ma15_to_ma4 ;
+  wire	[7:0]	ma15_to_ma8 ;
+  wire	[6:0]	ma6_to_ma0 ;
+  wire	[3:0]	ma3_to_ma0 ;
+
+  assign  ma_all      = {ma15,ma14,ma13,ma12,ma11,ma10,ma9,ma8,ma7,ma6,ma5,ma4,ma3,ma2,ma1,ma0} ;
+  assign  ma15_to_ma4 = {ma15,ma14,ma13,ma12,ma11,ma10,ma9,ma8,ma7,ma6,ma5,ma4} ;
+  assign  ma15_to_ma8 = {ma15,ma14,ma13,ma12,ma11,ma10,ma9,ma8} ;
+  assign  ma3_to_ma0  = {ma3,ma2,ma1,ma0} ;
+  assign  ma6_to_ma0  = {ma6,ma5,ma4,ma3,ma2,ma1,ma0} ;
+
+//================
+// address change
+//================
+
+  always @ ( ma_all or ma6_to_ma0 ) begin
+	case ( ma_all )
+	//TAU8_1stsfr (PADDR3-1)
+		16'hff18	: paddr = 7'h00 ;	// TDR00 PSEL1 OFFSET=0000H
+		16'hff19	: paddr = 7'h01 ;
+		16'hff1a	: paddr = 7'h02 ;	// TDR01 PSEL1 OFFSET=0002H
+		16'hff1b	: paddr = 7'h03 ;
+	//ADCTL (PADDR3-0)
+		16'hff1e	: paddr = 7'h06 ;	// ADCR0L   PSEL  OFFSET=0004H
+		16'hff1f	: paddr = 7'h07 ;	// ADCR0H   PSEL  OFFSET=0005H
+	//default
+		default		: paddr = ma6_to_ma0 ;
+	endcase
+  end
+
+  assign paddr6 = paddr[6] & slapb; 
+  assign paddr5 = paddr[5] & slapb; 
+  assign paddr4 = paddr[4] & slapb; 
+  assign paddr3 = paddr[3] & slapb; 
+  assign paddr2 = paddr[2] & slapb; 
+  assign paddr1 = paddr[1] & slapb; 
+  assign paddr0 = paddr[0] & slapb; 
+
+//========================
+// 1st SFR (一部 2nd)
+//========================
+
+// PORT0 #FFF00
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'h0})	: pselp0_ngd = 1'b1 ;	// PL
+			default				: pselp0_ngd = 1'b0 ;
+	endcase
+  end
+
+// PORT0 #FFF20, #F0030, #F0040, #F0050, #F0060
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'h0})     : pselp0_gd = 1'b1 ;    // PM
+                        ({1'b1,8'h00,4'b0011,4'h0})     : pselp0_gd = 1'b1 ;    // PU        -2nd sfr
+                        ({1'b1,8'h00,4'b010x,4'h0})     : pselp0_gd = 1'b1 ;    // PIM & POM -2nd sfr
+                        ({1'b1,8'h00,4'b0110,4'h0})     : pselp0_gd = 1'b1 ;    // PMC       -2nd sfr
+                        default                         : pselp0_gd = 1'b0 ;
+        endcase
+  end
+
+// PORT1 #FFF01
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'h1})	: pselp1_ngd = 1'b1 ;	// PL
+			default				: pselp1_ngd = 1'b0 ;
+	endcase
+  end
+
+// PORT1 #FFF21, #F0031, #F0041, #F0051
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'h1})     : pselp1_gd = 1'b1 ;    // PM
+                        ({1'b1,8'h00,4'b0011,4'h1})     : pselp1_gd = 1'b1 ;    // PU        -2nd sfr
+                        ({1'b1,8'h00,4'b010x,4'h1})     : pselp1_gd = 1'b1 ;    // PIM & POM -2nd sfr
+                        default                         : pselp1_gd = 1'b0 ;
+        endcase
+  end
+
+// PORT2 #FFF02
+  always @(slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'h2})	: pselp2_ngd = 1'b1 ;	// PL 
+			default				: pselp2_ngd = 1'b0 ;
+	endcase
+  end
+
+// PORT2 #FFF22
+  always @(slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'h2})     : pselp2_gd = 1'b1 ;    // PM
+                        default                         : pselp2_gd = 1'b0 ;
+        endcase
+  end
+
+// PORT3 #FFF03
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'h3})	: pselp3_ngd = 1'b1 ;	// PL 
+			default				: pselp3_ngd = 1'b0 ;
+	endcase
+  end
+
+// PORT3 #FFF23, #F0033
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'h3})     : pselp3_gd = 1'b1 ;    // PM
+                        ({1'b1,8'h00,4'b0011,4'h3})     : pselp3_gd = 1'b1 ;    // PU        -2nd sfr
+                        default                         : pselp3_gd = 1'b0 ;
+        endcase
+  end
+
+
+// PORT4 #FFF04
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'h4})	: pselp4_ngd = 1'b1 ;	// PL
+			default				: pselp4_ngd = 1'b0 ;
+	endcase
+  end
+
+// PORT4 #FFF24, #F0034
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'h4})     : pselp4_gd = 1'b1 ;    // PM
+                        ({1'b1,8'h00,4'b0011,4'h4})     : pselp4_gd = 1'b1 ;    // PU        -2nd sfr
+                        default                         : pselp4_gd = 1'b0 ;
+        endcase
+  end
+
+
+//PORT5 #FFF05
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'h5})	: pselp5_ngd = 1'b1 ;	// PL
+			default				: pselp5_ngd = 1'b0 ;
+	endcase
+  end
+
+//PORT5 #FFF25, #F0035,#F0055H
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'h5})     : pselp5_gd = 1'b1 ;    // PM
+                        ({1'b1,8'h00,4'b0011,4'h5})     : pselp5_gd = 1'b1 ;    // PU        -2nd sfr
+//                      ({1'b1,8'h00,4'b0101,4'h5})     : pselp5_gd = 1'b1 ;    // POM        -2nd sfr
+                        ({1'b1,8'h00,4'b010x,4'h5})     : pselp5_gd = 1'b1 ;    // POM & PIM        -2nd sfr
+                        default                         : pselp5_gd = 1'b0 ;
+        endcase
+  end
+
+
+// PORT6 #FFF06
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'h6})	: pselp6_ngd = 1'b1 ;	// PL
+			default				: pselp6_ngd = 1'b0 ;
+	endcase
+  end
+
+// PORT6 #FFF26
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'h6})     : pselp6_gd = 1'b1 ;    // PM
+                        default                         : pselp6_gd = 1'b0 ;
+        endcase
+  end
+
+// PORT7 #FFF07
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0000,4'h7})     : pselp7_ngd = 1'b1 ;    // PL
+			default				: pselp7_ngd = 1'b0 ;
+	endcase
+  end
+
+// PORT7 #FFF27, #F0037,#F0057
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'h7})     : pselp7_gd = 1'b1 ;    // PM
+                        ({1'b1,8'h00,4'b0011,4'h7})     : pselp7_gd = 1'b1 ;    // PU        -2nd sfr
+                        ({1'b1,8'h00,4'b0101,4'h7})     : pselp7_gd = 1'b1 ;    // POM        -2nd sfr
+                        default                         : pselp7_gd = 1'b0 ;
+        endcase
+  end
+
+// PORT12 #FFF0C
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'hc})	: pselp12_ngd = 1'b1 ;	// PL
+			default				: pselp12_ngd = 1'b0 ;
+	endcase
+  end
+
+// PORT12 FFF2C, #F003C, #F006C
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'hc})     : pselp12_gd = 1'b1 ;   // PM
+                        ({1'b1,8'h00,4'b0011,4'hc})     : pselp12_gd = 1'b1 ;   // PU        -2nd sfr
+                        ({1'b1,8'h00,4'b0110,4'hc})     : pselp12_gd = 1'b1 ;      // PMC       -2nd sfr
+                        default                         : pselp12_gd = 1'b0 ;
+        endcase
+  end
+
+
+// PORT13 #FFF0D
+// 20091210 PM13,PU13 del
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'hd})	: pselp13 = 1'b1 ;	// PL
+			default				: pselp13 = 1'b0 ;
+	endcase
+  end
+
+
+// PORT14 #FFF0E
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+			({1'b1,8'hff,4'b0000,4'he})	: pselp14_ngd = 1'b1 ;	// PL
+			default				: pselp14_ngd = 1'b0 ;
+	endcase
+  end
+
+// PORT14 #FFF2E, #F003E, #F006E
+  always @ ( slmem or ma15_to_ma8 or ma7 or ma6 or ma5 or ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma8,ma7,ma6,ma5,ma4,ma3_to_ma0 })
+                        ({1'b1,8'hff,4'b0010,4'he})     : pselp14_gd = 1'b1 ;   // PM
+                        ({1'b1,8'h00,4'b0011,4'he})     : pselp14_gd = 1'b1 ;   // PU        -2nd sfr
+                        ({1'b1,8'h00,4'b0110,4'he})     : pselp14_gd = 1'b1 ;   // PMC       -2nd sfr
+                        default                         : pselp14_gd = 1'b0 ;
+        endcase
+  end
+
+
+
+// SAU0 PSEL1 #FFF10-#FFF13 #FFF44-#FFF47
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2 })
+			({1'b1,12'hff1,2'b00})	: pselsa01 = 1'b1 ;      // SDR00,SDR01
+                        ({1'b1,12'hff4,2'b01})	: pselsa01 = 1'b1 ;      // SDR02,SDR03
+                        default			: pselsa01 = 1'b0 ;
+	endcase
+  end
+
+
+// SAU1 PSEL1 #FFF48-#FFF4B
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2 })
+                        ({1'b1,12'hff4,2'b10})	: pselsa11 = 1'b1 ;	// SDR10,SDR11
+                        default			: pselsa11 = 1'b0 ;
+                endcase
+  end
+
+
+
+// ADCTL #FFF1E,#FFF1F,#FFF30,#FFF31,#FFF32
+// アドレスチェンジ対象
+// 20091210 ADPC del -> move
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'hff1,4'b111x}): pselad1 = 1'b1 ;	// ADCR,ADCRH
+			({1'b1,12'hff3,4'b000x}): pselad1 = 1'b1 ;	// ADM0,ADS
+			({1'b1,12'hff3,4'b0010}): pselad1 = 1'b1 ;	// ADM1
+			default			: pselad1 = 1'b0 ;
+	endcase
+  end
+
+
+// KR(PORT7) #FFF37
+  always @ ( slmem or ma_all) begin
+	casex ({ slmem,ma_all })
+			({1'b1,16'hff37})	: pselkr = 1'b1 ;	// KRM
+			default			: pselkr = 1'b0 ;
+	endcase
+  end
+
+
+// INTM8 #FFF38-#FFF39
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1 })
+			({1'b1,12'hff3,3'b100})	: pselim8_gd = 1'b1 ;
+			default			: pselim8_gd = 1'b0 ;
+	endcase
+  end
+
+// INTM4 #FFF3A-#FFF3B
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1 })
+			({1'b1,12'hff3,3'b101}) : pselim4_gd = 1'b1 ;
+			default			: pselim4_gd = 1'b0 ;
+	endcase
+  end
+
+//
+// 20091210 move
+//
+// LIN-SEL #FFF3C
+//always @ ( slmem or ma_all) begin
+//	casex ({ slmem,ma_all })
+//			({1'b1,16'hff3c})	: pselisc = 1'b1 ;	// ISC
+//			default			: pselisc = 1'b0 ;
+//	endcase
+//end
+//
+
+
+// IICA PSEL1 #FFF50-#FFF52
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'hff5,4'b0000}): pseliic1 = 1'b1 ;	// IICA
+			({1'b1,12'hff5,4'b0001}): pseliic1 = 1'b1 ;	// IICS
+			({1'b1,12'hff5,4'b0010}): pseliic1 = 1'b1 ;	// IICF
+			default			: pseliic1 = 1'b0 ;
+	endcase
+  end
+
+
+// TAU08 PSEL1 #FFF18-#FFF1B, #FFF64H-#FFF6F
+// アドレスチェンジ対象
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2 })
+			({1'b1,12'hff1,2'b10})	: pselta01 = 1'b1 ;	// TDR00,TDR01
+			({1'b1,12'hff6,2'b01})	: pselta01 = 1'b1 ;	// TDR02,TDR03
+			({1'b1,12'hff6,2'b10})	: pselta01 = 1'b1 ;	// TDR04,TDR05
+			({1'b1,12'hff6,2'b11})	: pselta01 = 1'b1 ;	// TDR06,TDR07
+			default			: pselta01 = 1'b0 ;
+	endcase
+  end
+
+
+// FCB PSEL1 #FFF80-#FFF8F
+// 20091210 change
+  always @ ( slmem or ma15_to_ma4 ) begin
+        casex ({ slmem,ma15_to_ma4 })
+                        ({1'b1,12'hff8})        : pselfcb1_pre = 1'b1 ;
+                        default                 : pselfcb1_pre = 1'b0 ;
+        endcase
+  end
+
+
+// RTC #FFF90-#FFF9E
+// 20091210 change
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0})
+			({1'b1,12'hff9,4'b0xxx}): pselrtc = 1'b1 ;
+			({1'b1,12'hff9,4'b10xx}): pselrtc = 1'b1 ;
+			({1'b1,12'hff9,4'b110x}): pselrtc = 1'b1 ;
+			({1'b1,12'hff9,4'b1110}): pselrtc = 1'b1 ;
+			default			: pselrtc = 1'b0 ;
+	endcase
+  end
+
+
+// CSC PSEL1 #FFFA0-FFFA4
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'hffa,4'b00xx}): pselcsc1_gd = 1'b1 ;	// CMC,CSC,OSTC,OSTS
+			({1'b1,12'hffa,4'b0100}): pselcsc1_gd = 1'b1 ;	// CKC
+			default			: pselcsc1_gd = 1'b0 ;
+	endcase
+  end
+
+// PCLBUZ #FFFA5-FFFA6
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'hffa,4'b0101}): pselpcl = 1'b1 ;
+			({1'b1,12'hffa,4'b0110}): pselpcl = 1'b1 ;
+			default			: pselpcl = 1'b0 ;
+	endcase
+  end
+
+
+// CSC PSEL3 #FFFA8-FFFAA
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'hffa,4'b1000}): pselcsc3_gd = 1'b1 ;	// RESF
+			({1'b1,12'hffa,4'b1001}): pselcsc3_gd = 1'b1 ;	// LVIM
+			({1'b1,12'hffa,4'b1010}): pselcsc3_gd = 1'b1 ;	// LVIM
+			default			: pselcsc3_gd = 1'b0 ;
+	endcase
+  end
+
+
+// WWDT  #FFFAB
+  always @ ( slmem or ma_all) begin
+	casex ({ slmem,ma_all })
+			({1'b1,16'hffab})	: pselwwdt = 1'b1 ;	// WDTE
+			default			: pselwwdt = 1'b0 ;
+	endcase
+  end
+
+
+// Ver2.0
+// CRC #FFFAC #F02FA-#F02FB
+  always @ ( slmem or ma15_to_ma4 or ma3_to_ma0) begin
+	casex ({ slmem,ma15_to_ma4,ma3_to_ma0})
+			({1'b1,12'hffa,4'b1100}): pselcrc = 1'b1 ;	// CRCIN
+			({1'b1,12'h02f,4'b101x}): pselcrc = 1'b1 ;	// CRCD
+			default                 : pselcrc = 1'b0 ;
+	endcase
+  end
+
+
+// OCD PSEL1  #AFFFAD,#FFFAE-#FFFAF
+  always @ ( slmem or ma15_to_ma4 or ma3_to_ma0) begin
+        casex ({ slmem,ma15_to_ma4,ma3_to_ma0})
+                        ({1'b1,12'hffa,4'b1101}): pselocd1 = 1'b1 ;
+                        ({1'b1,12'hffa,4'b111x}): pselocd1 = 1'b1 ;
+                        default                 : pselocd1 = 1'b0 ;
+        endcase
+  end
+
+
+
+// DMAC #FFFB0-#FFFBD
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1 })
+			({1'b1,12'hffb,3'b0xx}) : pseldmac = 1'b1 ;
+			({1'b1,12'hffb,3'b10x}) : pseldmac = 1'b1 ;
+			({1'b1,12'hffb,3'b110}) : pseldmac = 1'b1 ;
+			default			: pseldmac = 1'b0 ;
+	endcase
+  end
+
+//
+// 20091210 move
+//
+// CIB PSEL1  #FFFBE #FFFBF
+//always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 ) begin
+//	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1 })
+//			({1'b1,12'hffb,3'b111})	: pselcib1_pre = 1'b1 ;	// BECTL, FWVPCTL
+//                      default			: pselcib1_pre = 1'b0 ;
+//	endcase
+//end
+
+
+// INT1 #FFFD0-FFFD1,#FFFD4-FFFD5,#FFFD8-FFFD9,#FFFDC-FFFDD, #FFFE0-FFFEF
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1 })
+	  		({1'b1,12'hffd,3'b000})	: pselint1_gd = 1'b1 ;
+	  		({1'b1,12'hffd,3'b010})	: pselint1_gd = 1'b1 ;
+	  		({1'b1,12'hffd,3'b100})	: pselint1_gd = 1'b1 ;
+	  		({1'b1,12'hffd,3'b110})	: pselint1_gd = 1'b1 ;
+	  		({1'b1,12'hffe,3'bxxx})	: pselint1_gd = 1'b1 ;
+			default			: pselint1_gd = 1'b0 ;
+	endcase
+  end
+
+
+// MULDIV #FFFF0-#FFFF7
+  always @ ( slmem or ma15_to_ma4 or ma3 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3 })
+			({1'b1,12'hfff,1'b0})	: pselmd1 = 1'b1 ;
+			default			: pselmd1 = 1'b0 ;
+	endcase
+  end
+
+
+  // CPU #FFFF8-#FFFFA, #FFFFC-FFFFE
+  always @ ( slmem or ma15_to_ma4 or ma3_to_ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3_to_ma0 })
+			({1'b1,12'hfff,4'h8})	: pselcpu = 1'b1 ;
+			({1'b1,12'hfff,4'h9})	: pselcpu = 1'b1 ;
+			({1'b1,12'hfff,4'ha})	: pselcpu = 1'b1 ;
+			({1'b1,12'hfff,4'hc})	: pselcpu = 1'b1 ;
+			({1'b1,12'hfff,4'hd})	: pselcpu = 1'b1 ;
+			({1'b1,12'hfff,4'he})	: pselcpu = 1'b1 ;
+			default			: pselcpu = 1'b0 ;
+	endcase
+  end
+
+
+//========================
+// 2nd SFR
+//========================
+
+// AD PSEL2 #F0010-F0013
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 ) begin
+        casex ({ slmem,ma15_to_ma4,ma3,ma2 })
+                        ({1'b1,12'h001,2'b00})	: pselad2 = 1'b1 ;
+                        default                 : pselad2 = 1'b0 ;
+        endcase
+  end
+
+
+// No Garded 100119 change
+// PORGA PSEL1 #F0070-F0074,F0078,F007D
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'h007,4'b00xx}): pselpog1_ngd = 1'b1 ;	// NFEN0/1,ISC
+			({1'b1,12'h007,4'b0100}): pselpog1_ngd = 1'b1 ;	// TIS0
+			({1'b1,12'h007,4'b1000}): pselpog1_ngd = 1'b1 ;	// IAW
+			({1'b1,12'h007,4'b1101}): pselpog1_ngd = 1'b1 ;	// GDIDIS 	// Ver2.0
+			default			: pselpog1_ngd = 1'b0 ;
+	endcase
+  end
+
+
+// Garded    100119 change
+// PORGA PSEL1 #F0076,F0077
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+        casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+                        ({1'b1,12'h007,4'b0110}): pselpog1_gd = 1'b1 ; // ADPC
+                        ({1'b1,12'h007,4'b0111}): pselpog1_gd = 1'b1 ; // PIOR
+                        default                 : pselpog1_gd = 1'b0 ;
+        endcase
+  end
+
+
+
+// PORGA PSEL2 #F007E-F007F
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 ) begin
+        casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1 })
+                        ({1'b1,12'h007,3'b111})	: pselpog2 = 1'b1 ;     // PRDSEL
+                        default                 : pselpog2 = 1'b0 ;
+        endcase
+  end
+
+
+
+// OCD PSEL2 #F0080-#F0088
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0) begin
+        casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0})
+                        ({1'b1,12'h008,4'b0xxx}): pselocd2 = 1'b1 ;
+                        ({1'b1,12'h008,4'b1000}): pselocd2 = 1'b1 ;
+                        default                 : pselocd2 = 1'b0 ;
+        endcase
+  end
+
+
+//
+// 20100118 change
+//
+// CIBD PSEL #F0090,#F0092
+//
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0) begin
+        casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+                        ({1'b1,12'h009,4'b00x0}): pselcibd_pre = 1'b1 ;
+                        default                : pselcibd_pre = 1'b0 ;
+        endcase
+  end
+
+
+
+//
+// 20100201 change
+//
+// CIBC PSEL #F00A0-#F00AF
+//
+  always @ ( slmem or ma15_to_ma4 ) begin
+		casex ({ slmem,ma15_to_ma4 })
+			({1'b1,12'h00a})	: pselcibc_pre = 1'b1 ;
+			default 		: pselcibc_pre = 1'b0 ;
+		endcase
+  end
+
+
+
+//
+// 20100118 change
+//
+// FCB PSEL2 #F00B0-#F00BF, #F00C0-#F00CF
+//
+  always @ ( slmem or ma15_to_ma4) begin
+        casex ({ slmem,ma15_to_ma4})
+                        ({1'b1,12'h00b}): pselfcb2_pre = 1'b1 ;
+                        ({1'b1,12'h00c}): pselfcb2_pre = 1'b1 ;
+                        default         : pselfcb2_pre = 1'b0 ;
+        endcase
+  end
+
+
+
+// MULDIV #F00E0-#F00E3 #F00E8
+  always @ ( slmem or ma15_to_ma4 or ma3_to_ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3_to_ma0 })
+			({1'b1,12'h00e,4'h0})	: pselmd2 = 1'b1 ;
+			({1'b1,12'h00e,4'h1})	: pselmd2 = 1'b1 ;
+			({1'b1,12'h00e,4'h2})	: pselmd2 = 1'b1 ;
+			({1'b1,12'h00e,4'h3})	: pselmd2 = 1'b1 ;
+			({1'b1,12'h00e,4'h8})	: pselmd2 = 1'b1 ;
+			default			: pselmd2 = 1'b0 ;
+	endcase
+  end
+
+// PSELBCD #F00FE
+  always @ ( slmem or ma15_to_ma4 or ma3_to_ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3_to_ma0 })
+			({1'b1,12'h00f,4'he})	: pselbcd = 1'b1 ;
+			({1'b1,12'h00f,4'hf})	: pselbcd = 1'b1 ;	// VECTCTRL
+			default			: pselbcd = 1'b0 ;
+	endcase
+  end
+
+
+
+// CSC PSEL2 #F00F0-#F00F1, #F00F3-#F00F7
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'h00f,4'b0000}): pselcsc2_gd = 1'b1 ;  // PER0
+			({1'b1,12'h00f,4'b0001}): pselcsc2_gd = 1'b1 ;  // PER1
+			({1'b1,12'h00f,4'b0011}): pselcsc2_gd = 1'b1 ;  // OSMC
+			({1'b1,12'h00f,4'b010x}): pselcsc2_gd = 1'b1 ;  // RMC,RAMCTL
+			({1'b1,12'h00f,4'b011x}): pselcsc2_gd = 1'b1 ;  // TCSC0,TCSC1
+			default 		: pselcsc2_gd = 1'b0 ;
+	endcase
+  end
+
+// 2010.07.31 change --- RMCはSFRガード非対象 ---
+// CSC PSEL2 #F00F4
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'h00f,4'b0100}): selrmc = 1'b1 ;  // RMC
+			default 		: selrmc = 1'b0 ;
+	endcase
+  end
+
+// SAU0 PSEL2 #F0100-#F0139
+  always @ ( slmem or ma15_to_ma4 or ma3_to_ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3_to_ma0 })
+			({1'b1,12'h010,4'bxxxx})	: pselsa02 = 1'b1 ;
+			({1'b1,12'h011,4'bxxxx})	: pselsa02 = 1'b1 ;
+			({1'b1,12'h012,4'bxxxx})	: pselsa02 = 1'b1 ;
+			({1'b1,12'h013,4'b0xxx})	: pselsa02 = 1'b1 ;
+			({1'b1,12'h013,4'b100x})	: pselsa02 = 1'b1 ;
+			default				: pselsa02 = 1'b0 ;
+	endcase
+  end
+
+
+// SAU1 PSEL2 #F0140-#F016F,#0174,#F0175
+  always @ ( slmem or ma15_to_ma4 or ma3_to_ma0 ) begin
+        casex ({ slmem,ma15_to_ma4,ma3_to_ma0 })
+                        ({1'b1,12'h014,4'bxxxx})	: pselsa12 = 1'b1 ;
+                        ({1'b1,12'h015,4'bxxxx})	: pselsa12 = 1'b1 ;
+                        ({1'b1,12'h016,4'bxxxx})	: pselsa12 = 1'b1 ;
+                        ({1'b1,12'h017,4'b010x})	: pselsa12 = 1'b1 ;
+                        default                	        : pselsa12 = 1'b0 ;
+        endcase
+  end
+
+
+// TAU08 PSEL2 #F0180-#F01BF
+  always @ ( slmem or ma15_to_ma4  ) begin
+	casex ({ slmem,ma15_to_ma4 })
+			({1'b1,12'h018})	: pselta02 = 1'b1 ;
+			({1'b1,12'h019})	: pselta02 = 1'b1 ;
+			({1'b1,12'h01a})	: pselta02 = 1'b1 ;
+			({1'b1,12'h01b})	: pselta02 = 1'b1 ;
+			default			: pselta02 = 1'b0 ;
+	endcase
+  end
+
+
+// IICA PSEL2 #F0230-#F0235
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'h023,4'b00xx}): pseliic2 = 1'b1 ;
+			({1'b1,12'h023,4'b0100}): pseliic2 = 1'b1 ;
+			({1'b1,12'h023,4'b0101}): pseliic2 = 1'b1 ;
+			default			: pseliic2 = 1'b0 ;
+	endcase
+  end
+
+
+// MODECTL #02F0-#02F6
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+        casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'h02F,4'b0000}): pselmod1 = 1'b1 ;
+                        ({1'b1,12'h02F,4'b001x}): pselmod1 = 1'b1 ;
+                        ({1'b1,12'h02F,4'b0100}): pselmod1 = 1'b1 ;
+                        ({1'b1,12'h02F,4'b0110}): pselmod1 = 1'b1 ;
+                        default                 : pselmod1 = 1'b0 ;
+        endcase
+  end
+
+
+// MODECTL #F0700-#F0709
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'h070,4'b0xxx}): pselmod2 = 1'b1 ;
+			({1'b1,12'h070,4'b100x}): pselmod2 = 1'b1 ;
+			default			: pselmod2 = 1'b0 ;
+	endcase
+  end
+
+// special #F0730-#F0737
+  always @ ( slmem or ma15_to_ma4 or ma3 ) begin
+		casex ({ slmem,ma15_to_ma4,ma3 })
+			({1'b1,12'h073,1'b0})	: pselmaw = 1'b1 ;
+			default			: pselmaw = 1'b0 ;
+		endcase
+  end
+
+// special #F0740,#F0744
+  always @ ( slmem or ma15_to_ma4 or ma3 or ma2 or ma1 or ma0 ) begin
+	casex ({ slmem,ma15_to_ma4,ma3,ma2,ma1,ma0 })
+			({1'b1,12'h074,4'b0x00}): pselscn = 1'b1 ;
+			default			: pselscn = 1'b0 ;
+	endcase
+  end
+
+
+// special CIB PSEL4  #F0750-#F0757
+always @ ( slmem or ma15_to_ma4 or ma3 ) begin
+      casex ({ slmem,ma15_to_ma4,ma3 })
+                      ({1'b1,12'h075,1'b0})	: pselcib4_pre = 1'b1 ;
+                      default              	: pselcib4_pre = 1'b0 ;
+      endcase
+end
+
+
+
+//========================
+// for BB
+//========================
+
+// BBSELSFR #FF00-#FFFF
+  always @ ( slmem or ma15_to_ma4 ) begin
+		casex ({ slmem,ma15_to_ma4 })
+			({1'b1,12'b1111_1111_xxxx})	: bbselsfr1 = 1'b1 ;
+			default				: bbselsfr1 = 1'b0 ;
+		endcase
+  end
+
+
+// BBSELSFR2 #0000-#07FF
+  always @ ( slmem or ma15_to_ma4 ) begin
+		casex ({ slmem,ma15_to_ma4 })
+			({1'b1,12'b0000_0xxx_xxxx})	: bbselsfr2 = 1'b1 ;
+			default				: bbselsfr2 = 1'b0 ;
+		endcase
+  end
+
+
+
+//========================
+//for IAWCTL_SFR.GARD
+//========================
+  
+  assign pselim8  = pselim8_gd  & ~(cpuwr & gdint);
+  assign pselim4  = pselim4_gd  & ~(cpuwr & gdint);
+  assign pselint1 = pselint1_gd & ~(cpuwr & gdint);
+  assign pselcsc1 = pselcsc1_gd & ~(cpuwr & gdcsc);
+  assign pselcsc2 =(pselcsc2_gd & ~(cpuwr & gdcsc)) | selrmc ;
+  assign pselcsc3 = pselcsc3_gd & ~(cpuwr & gdcsc);
+
+  assign pselp0   = pselp0_ngd  | pselp0_gd  & ~(cpuwr & gdport);
+  assign pselp1   = pselp1_ngd  | pselp1_gd  & ~(cpuwr & gdport);
+  assign pselp2   = pselp2_ngd  | pselp2_gd  & ~(cpuwr & gdport);
+  assign pselp3   = pselp3_ngd  | pselp3_gd  & ~(cpuwr & gdport);
+  assign pselp4   = pselp4_ngd  | pselp4_gd  & ~(cpuwr & gdport);
+  assign pselp5   = pselp5_ngd  | pselp5_gd  & ~(cpuwr & gdport);
+  assign pselp6   = pselp6_ngd  | pselp6_gd  & ~(cpuwr & gdport);
+  assign pselp7   = pselp7_ngd  | pselp7_gd  & ~(cpuwr & gdport);
+  assign pselp12  = pselp12_ngd | pselp12_gd & ~(cpuwr & gdport);
+  assign pselp14  = pselp14_ngd | pselp14_gd & ~(cpuwr & gdport);
+
+  assign pselpog1 = pselpog1_ngd  | pselpog1_gd & ~(cpuwr & gdport);
+
+//========================
+// for BBTESINST
+//========================
+
+  assign pselfcb1 = pselfcb1_pre & ~bbtesinst;
+  assign pselfcb2 = pselfcb2_pre & ~bbtesinst;
+//assign pselcibc = pselcibc_pre & ~bbtesinst;
+  assign pselcibc = pselcibc_pre ;		// Ver2.0
+  assign pselcib4 = pselcib4_pre & ~bbtesinst;
+  assign pselcibd = pselcibd_pre & ~bbtesinst;
+
+//========================
+// all
+//========================
+
+  assign slapb = pselp0   | pselp1   | pselp2   | pselp3   | pselp4   | pselp5   |
+		 pselp6   | pselp7   | pselp12  | pselp13  | pselp14  |
+		 pselsa01 | pselsa02 | pselsa11 | pselsa12 | pselad1  | pselad2  |
+		 pselkr   | pselim8  | pselim4  | pselpog1 | pselpog2 |
+		 pseliic1 | pseliic2 | pselta01 | pselta02 | pselocd1 | pselocd2 |
+		 pselrtc  | pselwwdt | pselpcl  | pselcsc1 | pselcsc2 | pselcsc3 |
+		 pselcpu  | pselbcd  | pseldmac | pselint1 | pselmd1  | pselmd2  |
+		 pselmod1 | pselmod2 | pselmaw  | pselscn  |
+		 pselcrc  |						// Ver2.0
+		 pselfcb1 | pselfcb2 | pselcibc | pselcibd | pselcib4 ;
+
+endmodule
+
+//------------------------------------------------------------------------
+//	MDR & APB Read Bus OR
+//
+//------------------------------------------------------------------------
+module KX4_BUSBRIDGE_BUSOR (
+		mdrram, mdrmul, mdrint, mdrdma, mdrocd, mdrim8, mdrim4l,
+		mdrim4h, mdrpog, mdrcid,
+		prdcsc, prdpcl, prdmod, prdwdth, prdfcb, prdrtc, prdiic,
+		prdta0, prdsa0, prdsa1, prdad, prdcibc, prdcibd,
+		prdp0, prdp1, prdp2, prdp3, prdp4, prdp5, prdp6, prdp7,
+		prdp12, prdp13, prdp14,
+		prdscn, prdmaw, 
+		prdcrc,							// Ver2.0
+		bbprdata,
+		mdr 
+		) ;
+
+  input	[15:0]	mdrram, mdrmul, mdrint, mdrdma, mdrocd, mdrim8, mdrpog, mdrcid ;
+  input	[15:0]	prdcsc, prdpcl, prdmod, prdfcb, prdrtc, prdiic, prdta0,
+		prdsa0, prdsa1, prdad,  prdcibc, prdcibd, prdscn, prdmaw, bbprdata ;
+  input	[15:0]	prdcrc ;						// Ver2.0
+  input	[7:0]	prdwdth ;
+  input	[7:0]	prdp0, prdp1, prdp2, prdp3, prdp4, prdp5, prdp6, prdp7,
+		prdp12, prdp13, prdp14 ;
+  input	[3:0]	mdrim4l, mdrim4h ;
+
+  output[15:0]	mdr ;
+
+  wire	[15:0]	mdr_pre ;
+  wire		mdr15, mdr14, mdr13, mdr12, mdr11, mdr10, mdr9,  mdr8,
+		mdr7,  mdr6,  mdr5,  mdr4,  mdr3,  mdr2,  mdr1,  mdr0 ;
+
+  assign mdr[15:0] = { mdr15, mdr14, mdr13, mdr12, mdr11, mdr10, mdr9,  mdr8, 
+		       mdr7,  mdr6,  mdr5,  mdr4,  mdr3,  mdr2,  mdr1,  mdr0 };
+
+//// or
+
+  assign mdr_pre[15:12] = mdrmul[15:12]  | mdrint[15:12]  | mdrdma[15:12]  | mdrocd[15:12] |
+		          mdrim8[15:12]  | mdrpog[15:12]  | mdrcid[15:12]  |
+		          prdcsc[15:12]  | prdpcl[15:12]  | prdmod[15:12]  | prdfcb[15:12] |
+		          prdiic[15:12]  | prdta0[15:12]  | prdsa0[15:12]  | prdsa1[15:12] |
+		          prdad[15:12]   | prdcibc[15:12] | prdcibd[15:12] | prdp1[7:4]    | prdp3[7:4]    | 
+		          prdp5[7:4]     | prdp7[7:4]     | prdp13[7:4]    |
+		          prdcrc[15:12]  | 						// Ver2.0
+		          prdscn[15:12]  | prdmaw[15:12]  | bbprdata[15:12]   ;
+
+  assign mdr_pre[11:8]  = mdrmul[11:8]   | mdrint[11:8]   | mdrdma[11:8]   | mdrocd[11:8]  |
+                          mdrim8[11:8]   | mdrim4h[3:0]   | mdrpog[11:8]   | mdrcid[11:8]  |
+                          prdcsc[11:8]   | prdpcl[11:8]   | prdmod[11:8]   | prdfcb[11:8]  |
+                          prdiic[11:8]   | prdta0[11:8]   | prdsa0[11:8]   | prdsa1[11:8]  |
+                          prdad[11:8]    | prdcibc[11:8]  | prdcibd[11:8]  | prdp1[3:0]    | prdp3[3:0]    |
+                          prdp5[3:0]     | prdp7[3:0]     | prdp13[3:0]    |
+		          prdcrc[11:8]   | 						// Ver2.0
+                          prdscn[11:8]   | prdmaw[11:8]   | bbprdata[11:8]  ;
+
+  assign mdr_pre[7:4]  =  mdrmul[7:4]    | mdrint[7:4]    | mdrdma[7:4]    | mdrocd[7:4]   |
+                          mdrim8[7:4]    | mdrpog[7:4]    | mdrcid[7:4]    |
+                          prdcsc[7:4]    | prdpcl[7:4]    | prdmod[7:4]    | prdfcb[7:4]   |
+                          prdiic[7:4]    | prdta0[7:4]    | prdsa0[7:4]    | prdsa1[7:4]   |
+                          prdad[7:4]     | prdcibc[7:4]   | prdcibd[7:4]   | prdp0[7:4]    | prdp2[7:4]    |
+                          prdp4[7:4]     | prdp6[7:4]     | prdp12[7:4]    | prdp14[7:4]   |
+		          prdcrc[7:4]    | 						// Ver2.0
+                          prdscn[7:4]    | prdmaw[7:4]    | bbprdata[7:4]  ;
+
+  assign mdr_pre[3:0]  =  mdrmul[3:0]    | mdrint[3:0]    | mdrdma[3:0]    | mdrocd[3:0]   |
+                          mdrim8[3:0]    | mdrim4l[3:0]   | mdrpog[3:0]    | mdrcid[3:0]   |
+                          prdcsc[3:0]    | prdpcl[3:0]    | prdmod[3:0]    | prdfcb[3:0]   |
+                          prdiic[3:0]    | prdta0[3:0]    | prdsa0[3:0]    | prdsa1[3:0]   |
+                          prdad[3:0]     | prdcibc[3:0]   | prdcibd[3:0]   | prdp0[3:0]    | prdp2[3:0]    |
+                          prdp4[3:0]     | prdp6[3:0]     | prdp12[3:0]    | prdp14[3:0]   |
+		          prdcrc[3:0]    | 						// Ver2.0
+                          prdscn[3:0]    | prdmaw[3:0]    | bbprdata[3:0]  ;
+
+  wire	mdrram15 = mdrram[15] ;
+  wire	mdrram14 = mdrram[14] ;
+  wire	mdrram13 = mdrram[13] ;
+  wire	mdrram12 = mdrram[12] ;
+  wire	mdrram11 = mdrram[11] ;
+  wire	mdrram10 = mdrram[10] ;
+  wire	mdrram9  = mdrram[9] ;
+  wire	mdrram8  = mdrram[8] ;
+  wire	mdrram7  = mdrram[7] ;
+  wire	mdrram6  = mdrram[6] ;
+  wire	mdrram5  = mdrram[5] ;
+  wire	mdrram4  = mdrram[4] ;
+  wire	mdrram3  = mdrram[3] ;
+  wire	mdrram2  = mdrram[2] ;
+  wire	mdrram1  = mdrram[1] ;
+  wire	mdrram0  = mdrram[0] ;
+
+  wire	prdrtc15 = prdrtc[15] ;
+  wire	prdrtc14 = prdrtc[14] ;
+  wire	prdrtc13 = prdrtc[13] ;
+  wire	prdrtc12 = prdrtc[12] ;
+  wire	prdrtc11 = prdrtc[11] ;
+  wire	prdrtc10 = prdrtc[10] ;
+  wire	prdrtc9  = prdrtc[9] ;
+  wire	prdrtc8  = prdrtc[8] ;
+  wire	prdrtc7  = prdrtc[7] ;
+  wire	prdrtc6  = prdrtc[6] ;
+  wire	prdrtc5  = prdrtc[5] ;
+  wire	prdrtc4  = prdrtc[4] ;
+  wire	prdrtc3  = prdrtc[3] ;
+  wire	prdrtc2  = prdrtc[2] ;
+  wire	prdrtc1  = prdrtc[1] ;
+  wire	prdrtc0  = prdrtc[0] ;
+
+  wire	prdwdth15 = prdwdth[7] ;
+//wire	prdwdth14 = prdwdth[6] ;
+//wire	prdwdth13 = prdwdth[5] ;
+  wire	prdwdth12 = prdwdth[4] ;
+  wire	prdwdth11 = prdwdth[3] ;
+//wire	prdwdth10 = prdwdth[2] ;
+  wire	prdwdth9 = prdwdth[1] ;
+//wire	prdwdth8 = prdwdth[0] ;
+
+  wire	mdr_pre15 = mdr_pre[15] ;
+  wire	mdr_pre14 = mdr_pre[14] ;
+  wire	mdr_pre13 = mdr_pre[13] ;
+  wire	mdr_pre12 = mdr_pre[12] ;
+  wire	mdr_pre11 = mdr_pre[11] ;
+  wire	mdr_pre10 = mdr_pre[10] ;
+  wire	mdr_pre9  = mdr_pre[9] ;
+  wire	mdr_pre8  = mdr_pre[8] ;
+  wire	mdr_pre7  = mdr_pre[7] ;
+  wire	mdr_pre6  = mdr_pre[6] ;
+  wire	mdr_pre5  = mdr_pre[5] ;
+  wire	mdr_pre4  = mdr_pre[4] ;
+  wire	mdr_pre3  = mdr_pre[3] ;
+  wire	mdr_pre2  = mdr_pre[2] ;
+  wire	mdr_pre1  = mdr_pre[1] ;
+  wire	mdr_pre0  = mdr_pre[0] ;
+
+  KX4_BUSBRIDGE_BUSOR_MDRH	busor_mdr15	(
+			.mdrram(mdrram15), .prdrtc(prdrtc15), .prdwdt(prdwdth15), .mdr_pre(mdr_pre15), 
+			.mdr(mdr15)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRH_NOWDT	busor_mdr14	(
+			.mdrram(mdrram14), .prdrtc(prdrtc14), .mdr_pre(mdr_pre14), 
+			.mdr(mdr14)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRH_NOWDT	busor_mdr13	(
+			.mdrram(mdrram13), .prdrtc(prdrtc13), .mdr_pre(mdr_pre13), 
+			.mdr(mdr13)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRH	busor_mdr12	(
+			.mdrram(mdrram12), .prdrtc(prdrtc12), .prdwdt(prdwdth12), .mdr_pre(mdr_pre12), 
+			.mdr(mdr12)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRH	busor_mdr11	(
+			.mdrram(mdrram11), .prdrtc(prdrtc11), .prdwdt(prdwdth11), .mdr_pre(mdr_pre11), 
+			.mdr(mdr11)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRH_NOWDT	busor_mdr10	(
+			.mdrram(mdrram10), .prdrtc(prdrtc10), .mdr_pre(mdr_pre10), 
+			.mdr(mdr10)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRH	busor_mdr9	(
+			.mdrram(mdrram9), .prdrtc(prdrtc9), .prdwdt(prdwdth9), .mdr_pre(mdr_pre9), 
+			.mdr(mdr9)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRH_NOWDT	busor_mdr8	(
+			.mdrram(mdrram8), .prdrtc(prdrtc8), .mdr_pre(mdr_pre8), 
+			.mdr(mdr8)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRL	busor_mdr7	(
+			.mdrram(mdrram7), .prdrtc(prdrtc7), .mdr_pre(mdr_pre7), 
+			.mdr(mdr7)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRL	busor_mdr6	(
+			.mdrram(mdrram6), .prdrtc(prdrtc6), .mdr_pre(mdr_pre6), 
+			.mdr(mdr6)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRL	busor_mdr5	(
+			.mdrram(mdrram5), .prdrtc(prdrtc5), .mdr_pre(mdr_pre5), 
+			.mdr(mdr5)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRL	busor_mdr4	(
+			.mdrram(mdrram4), .prdrtc(prdrtc4), .mdr_pre(mdr_pre4), 
+			.mdr(mdr4)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRL	busor_mdr3	(
+			.mdrram(mdrram3), .prdrtc(prdrtc3), .mdr_pre(mdr_pre3), 
+			.mdr(mdr3)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRL	busor_mdr2	(
+			.mdrram(mdrram2), .prdrtc(prdrtc2), .mdr_pre(mdr_pre2), 
+			.mdr(mdr2)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRL	busor_mdr1	(
+			.mdrram(mdrram1), .prdrtc(prdrtc1), .mdr_pre(mdr_pre1), 
+			.mdr(mdr1)
+			);
+
+  KX4_BUSBRIDGE_BUSOR_MDRL	busor_mdr0	(
+			.mdrram(mdrram0), .prdrtc(prdrtc0), .mdr_pre(mdr_pre0), 
+			.mdr(mdr0)
+			);
+
+endmodule
+
+
+//------------------------------------------------------------------------
+// 	KX4_BUSBRIDGE_BUSOR_MDRH  set_dont_touch
+//------------------------------------------------------------------------
+module 	KX4_BUSBRIDGE_BUSOR_MDRH	(
+		mdrram, prdrtc, prdwdt, mdr_pre,
+		mdr 
+		) ;
+
+  input		mdrram, prdrtc, prdwdt, mdr_pre ;
+  output	mdr ;
+ 
+  wire		n1 ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch { U1 U2 } true
+  // synopsys dc_script_end
+
+//TBOR3X2 U1	( .H01(prdrtc), .H02(prdwdt), .H03(mdr_pre), .N01(n1) );
+  TBOR3X4 U1	( .H01(prdrtc), .H02(prdwdt), .H03(mdr_pre), .N01(n1) );
+  TBOR2X2 U2	( .H01(mdrram), .H02(n1), .N01(mdr) );
+
+endmodule
+
+
+//------------------------------------------------------------------------
+// 	KX4_BUSBRIDGE_BUSOR_MDRL  set_dont_touch
+//------------------------------------------------------------------------
+module 	KX4_BUSBRIDGE_BUSOR_MDRL	(
+		mdrram, prdrtc, mdr_pre,
+		mdr 
+		) ;
+
+  input		mdrram, prdrtc, mdr_pre ;
+  output	mdr ;
+ 
+  wire		n1 ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch { U1 U2 } true
+  // synopsys dc_script_end
+
+  TBOR2X2 U1	( .H01(prdrtc), .H02(mdr_pre), .N01(n1) );
+  TBOR2X2 U2	( .H01(mdrram), .H02(n1), .N01(mdr) );
+
+endmodule
+
+
+//------------------------------------------------------------------------
+// 	KX4_BUSBRIDGE_BUSOR_MDRH_NOWDT  set_dont_touch
+//------------------------------------------------------------------------
+module 	KX4_BUSBRIDGE_BUSOR_MDRH_NOWDT	(
+		mdrram, prdrtc, mdr_pre,
+		mdr 
+		) ;
+
+  input		mdrram, prdrtc, mdr_pre ;
+  output	mdr ;
+ 
+  wire		n1 ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch { U1 U2 } true
+  // synopsys dc_script_end
+
+  TBOR2X2 U1	( .H01(prdrtc), .H02(mdr_pre), .N01(n1) );
+  TBOR2X2 U2	( .H01(mdrram), .H02(n1), .N01(mdr) );
+
+endmodule
+

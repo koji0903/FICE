@@ -1,0 +1,1113 @@
+/************************************************************************/
+/* Module Name : QLK0RDMAC0V1                                           */
+/* Author      : K.Kawai                                                */
+/* Rev, Date   : 1.0a 2005/5/25                                         */
+/* Rev, Date   : 1.0b 2005/8/03                                         */
+/* Rev, Date   : 1.0c 2005/8/09                                         */
+/* Rev, Date   : 1.0d 2005/8/10                                         */
+/* Rev, Date   : 1.0e 2005/8/11                                         */
+/* Rev, Date   : 1.0f 2005/8/29                                         */
+/* Rev, Date   : 1.0g 2005/8/31                                         */
+/* Rev, Date   : 1.0h 2005/10/1                                         */
+/* Rev, Date   : 1.1  2006/01/14                                        */
+/* Rev, Date   : 1.2  2006/03/20                                        */
+/*                    2006/04/06                                        */
+/*                    2006/04/20                                        */
+/*                    2006/04/24                                        */
+/************************************************************************/
+//改訂履歴
+//  1.0a   DWAITnフラグ追加。特定シーケンス中にDMA転送が行われると、特定
+//         シーケンスが壊れてしまうという問題回避の為。
+//
+//  1.0b   SVSTOP端子追加。ブレイク中はDMA転送を保留できるようにする。
+//  1.0c   BITEN端子を削除。
+//  1.0d   dmarq0,1の論理を変更。
+//  1.0e   トリガの入力にエッジ検出回路を追加。
+//  1.0f   WAITEXM端子の削除。APBマクロのPREADYに対してウェイトをかけられ
+//         るようにDMAWAIT端子の追加。
+//  1.0g   SFRCTLの不要な入力を削除。DMACの階層化。
+//  1.0h   DMACの階層を変更。
+//
+//  v1.1   DSTnを0にして強制終了したら、dmarqをクリアするように変更
+//  [修正前]
+//  /*dmarq0,1                                             */
+//  /*---------------------------------------------        */
+//  /*dmarq_clr | dst | dmarq ||  dmarq                    */
+//  /*---------------------------------------------        */
+//  /*    1     |  X  |   X   ||    0                      */
+//  /*    0     |  0  |   X   ||   保持                    */
+//  /*    0     |  1  |   0   ||   dma_triger | stg        */
+//  /*    0     |  1  |   1   ||   保持                    */
+//  /*---------------------------------------------        */
+//  [修正後]
+//  /*dmarq0,1                                             */
+//  /*---------------------------------------------        */
+//  /*dmarq_clr | dst | dmarq ||  dmarq                    */
+//  /*---------------------------------------------        */
+//  /*    1     |  X  |   X   ||    0                      */
+//  /*    0     |  0  |   X   ||    0                      */
+//  /*    0     |  1  |   0   ||   dma_triger | stg        */
+//  /*    0     |  1  |   1   ||   保持                    */
+//  /*---------------------------------------------        */
+//
+//  v1.2   2006/03/20
+//         DMA転送強制終了後に連続してDMA許可信号をクリアするタイミングで
+//         DMA要求が競合した場合、クロックゲーティングの影響でハングアップ
+//         してしまう為、DMA許可信号(DEN0,DEN1)でのクロックゲーティングの
+//         条件を修正し、DMA要求受付中はクロックを停止しないように変更。
+//         また、強制終了直前のDMA転送を行わないように、DMARD,DMAWR,INTDMA0
+//         INTDMA1をDST0,DST1でマスクする。
+//
+//         2006/04/06
+//         LEDAのFATAL記述を修正。(論理に変更はなし)
+//
+//         2006/04/20
+//         DMARD,DMAWRをDSTでマスクする際、DMARQをDMA転送中に下げる論理に
+//         影響を与えていたのでマスクの場所を変更。Ver2.1ICEに影響あり。
+//
+//         2006/04/24
+//         EXMEMアクセス時にDMAWAIT信号でDMAにウェイトをかけるが、ウェイト
+//         中にDMAトリガを無視してしま為、dmarqの論理を修正。
+//         dmawait信号はdmarq_clr信号に絡める。
+/************************************************************************/
+//階層情報
+//    QLK0RDMAC0V1                                 
+//     !___________QLK0RDMAC0V1_BI    
+//     !
+//     !___________QLK0RDMAC0V1_MAIN               
+//                  !             
+//                  !___________QLK0RDMAC0V1_SFR   
+//                  !
+//                  !___________QLK0RDMAC0V1_TRIGSEL_1          
+//                  !
+//                  !___________QLK0RDMAC0V1_TRIGSEL_0          
+//
+/************************************************************************/
+
+module QLK0RDMAC0V1(
+    PSELDMAC,
+    MA3,MA2,MA1,MA0,
+    MDW15,MDW14,MDW13,MDW12,
+    MDW11,MDW10,MDW9,MDW8,
+    MDW7,MDW6,MDW5,MDW4,
+    MDW3,MDW2,MDW1,MDW0,
+    MDR15,MDR14,MDR13,MDR12,
+    MDR11,MDR10,MDR9,MDR8,
+    MDR7,MDR6,MDR5,MDR4,
+    MDR3,MDR2,MDR1,MDR0,
+    CPUWR,
+    CPURD,
+    WDOP,
+    TRIGER14,TRIGER13,TRIGER12,
+    TRIGER11,TRIGER10,TRIGER9,TRIGER8,
+    TRIGER7,TRIGER6,TRIGER5,TRIGER4,
+    TRIGER3,TRIGER2,TRIGER1,TRIGER0,
+    DMARQ,
+    DMAACK,
+    DMAMA15,DMAMA14,DMAMA13,DMAMA12,
+    DMAMA11,DMAMA10,DMAMA9,DMAMA8,
+    DMAMA7,DMAMA6,DMAMA5,DMAMA4,
+    DMAMA3,DMAMA2,DMAMA1,DMAMA0,
+    DMARD,
+    DMAWR,
+    DMAWDOP,
+    INTDMA0,INTDMA1,
+    DMAWAIT,
+    DMAEN,
+    DMACK,
+    RESB,
+    SVSTOP,
+    SCANMODE
+);
+    input       PSELDMAC, CPUWR, CPURD, WDOP;
+    input       MA3,MA2,MA1,MA0;
+    input       MDW15,MDW14,MDW13,MDW12,
+                MDW11,MDW10,MDW9,MDW8,
+                MDW7,MDW6,MDW5,MDW4,
+                MDW3,MDW2,MDW1,MDW0;
+    output      MDR15,MDR14,MDR13,MDR12,
+                MDR11,MDR10,MDR9,MDR8,
+                MDR7,MDR6,MDR5,MDR4,
+                MDR3,MDR2,MDR1,MDR0;
+    input       TRIGER14,TRIGER13,TRIGER12,
+                TRIGER11,TRIGER10,TRIGER9,TRIGER8,
+                TRIGER7,TRIGER6,TRIGER5,TRIGER4,
+                TRIGER3,TRIGER2,TRIGER1,TRIGER0;
+    output      DMARQ;
+    input       DMAACK;
+    output      DMAMA15,DMAMA14,DMAMA13,DMAMA12,
+                DMAMA11,DMAMA10,DMAMA9,DMAMA8,
+                DMAMA7,DMAMA6,DMAMA5,DMAMA4,
+                DMAMA3,DMAMA2,DMAMA1,DMAMA0;
+    output      DMARD, DMAWR, DMAWDOP;
+    output      INTDMA0,INTDMA1;
+    input       DMAWAIT;
+    output      DMAEN;
+    input       DMACK, RESB;
+    input       SVSTOP;
+    input       SCANMODE;
+
+    wire [15:0] mdr;
+    wire [15:0] dout;
+
+    wire        sel_dsa, 
+                sel_dra0, sel_dra1,
+                sel_dbc0, sel_dbc1, 
+                sel_dmc, sel_drc;
+    wire        we_dsa0, we_dsa1, we_dra0h, we_dra0l, 
+                we_dra1h, we_dra1l, we_dbc0h, we_dbc0l,
+                we_dbc1h, we_dbc1l, 
+                we_dmc0, we_dmc1,
+                we_drc0, we_drc1 ;
+                
+/********************************************************************/
+/*バスインターフェース QLK0RDMAC0V1_BI                              */
+/********************************************************************/
+    assign MDR15 = mdr[15];
+    assign MDR14 = mdr[14];
+    assign MDR13 = mdr[13];
+    assign MDR12 = mdr[12];
+    assign MDR11 = mdr[11];
+    assign MDR10 = mdr[10];
+    assign MDR9  = mdr[9];
+    assign MDR8  = mdr[8];
+    assign MDR7  = mdr[7];
+    assign MDR6  = mdr[6];
+    assign MDR5  = mdr[5];
+    assign MDR4  = mdr[4];
+    assign MDR3  = mdr[3];
+    assign MDR2  = mdr[2];
+    assign MDR1  = mdr[1];
+    assign MDR0  = mdr[0];
+
+    QLK0RDMAC0V1_BI bi(    
+        .pseldmac(PSELDMAC),
+        .ma3(MA3), .ma2(MA2), .ma1(MA1), .ma0(MA0),
+        .cpuwr(CPUWR), .cpurd(CPURD), .wdop(WDOP),
+        .mdr(mdr),
+        .dout(dout),
+        .sel_dsa(sel_dsa), .sel_dra0(sel_dra0), .sel_dra1(sel_dra1),
+        .sel_dbc0(sel_dbc0), .sel_dbc1(sel_dbc1), .sel_dmc(sel_dmc), .sel_drc(sel_drc),
+        .we_dsa0(we_dsa0), .we_dra0l(we_dra0l), .we_dra0h(we_dra0h),
+        .we_dbc0l(we_dbc0l), .we_dbc0h(we_dbc0h), .we_dmc0(we_dmc0), .we_drc0(we_drc0),
+        .we_dsa1(we_dsa1), .we_dra1l(we_dra1l), .we_dra1h(we_dra1h),
+        .we_dbc1l(we_dbc1l), .we_dbc1h(we_dbc1h), .we_dmc1(we_dmc1), .we_drc1(we_drc1));
+
+
+/********************************************************************/
+/*DMAコントローラメイン部 QLK0RDMAC0V1_MAIN                         */
+/*------------------------------------------------------------------*/
+/*[役割]                                                            */
+/* ･CPUにDMA制御信号の出力                                          */
+/* ･割り込み信号INTDMA0,1の出力                                     */
+/********************************************************************/
+    
+    QLK0RDMAC0V1_MAIN main(
+        .resb(RESB), .dmack(DMACK),
+        .dmawait(DMAWAIT), .svstop(SVSTOP),
+        .mdw15(MDW15), .mdw14(MDW14), .mdw13(MDW13), .mdw12(MDW12),
+        .mdw11(MDW11), .mdw10(MDW10), .mdw9(MDW9), .mdw8(MDW8),
+        .mdw7(MDW7), .mdw6(MDW6), .mdw5(MDW5), .mdw4(MDW4),
+        .mdw3(MDW3), .mdw2(MDW2), .mdw1(MDW1), .mdw0(MDW0),
+        .dout(dout),
+        .sel_dsa(sel_dsa), .sel_dra0(sel_dra0), .sel_dra1(sel_dra1),
+        .sel_dbc0(sel_dbc0), .sel_dbc1(sel_dbc1), .sel_dmc(sel_dmc), .sel_drc(sel_drc),
+        .we_dsa0(we_dsa0), .we_dra0l(we_dra0l), .we_dra0h(we_dra0h),
+        .we_dbc0l(we_dbc0l), .we_dbc0h(we_dbc0h), .we_dmc0(we_dmc0), .we_drc0(we_drc0),
+        .we_dsa1(we_dsa1), .we_dra1l(we_dra1l), .we_dra1h(we_dra1h),
+        .we_dbc1l(we_dbc1l), .we_dbc1h(we_dbc1h), .we_dmc1(we_dmc1), .we_drc1(we_drc1),
+        .dmarq(DMARQ), .dmaack(DMAACK),
+        .dmard(DMARD), .dmawr(DMAWR), .dmawdop(DMAWDOP), 
+        .dmama15(DMAMA15), .dmama14(DMAMA14), .dmama13(DMAMA13), .dmama12(DMAMA12),
+        .dmama11(DMAMA11), .dmama10(DMAMA10), .dmama9(DMAMA9), .dmama8(DMAMA8),
+        .dmama7(DMAMA7), .dmama6(DMAMA6), .dmama5(DMAMA5), .dmama4(DMAMA4),
+        .dmama3(DMAMA3), .dmama2(DMAMA2), .dmama1(DMAMA1), .dmama0(DMAMA0),
+        .intdma0(INTDMA0), .intdma1(INTDMA1),
+        .dmaen(DMAEN), 
+        .triger0(TRIGER0), .triger1(TRIGER1), .triger2(TRIGER2), .triger3(TRIGER3),
+        .triger4(TRIGER4), .triger5(TRIGER5), .triger6(TRIGER6), .triger7(TRIGER7),
+        .triger8(TRIGER8), .triger9(TRIGER9), .triger10(TRIGER10), .triger11(TRIGER11),
+        .triger12(TRIGER12), .triger13(TRIGER13), .triger14(TRIGER14),
+        .SCANMODE(SCANMODE));
+        
+endmodule
+
+/************************************************************************/
+/* Module Name : QLK0RDMAC0V1_MAIN                                      */
+/************************************************************************/
+module QLK0RDMAC0V1_MAIN(
+    resb, dmack,
+    dmawait,svstop,
+    mdw15,mdw14,mdw13,mdw12,
+    mdw11,mdw10,mdw9,mdw8,
+    mdw7,mdw6,mdw5,mdw4,
+    mdw3,mdw2,mdw1,mdw0,
+    dout,
+    sel_dsa, 
+    sel_dra0, sel_dra1,
+    sel_dbc0, sel_dbc1, 
+    sel_dmc, sel_drc,
+    we_dsa0,we_dra0l,we_dra0h,we_dbc0l,we_dbc0h,we_dmc0,we_drc0,
+    we_dsa1,we_dra1l,we_dra1h,we_dbc1l,we_dbc1h,we_dmc1,we_drc1,
+    dmarq,dmaack,
+    dmard,dmawr,dmawdop,
+    dmama15,dmama14,dmama13,dmama12,dmama11,dmama10,dmama9,dmama8,
+    dmama7,dmama6,dmama5,dmama4,dmama3,dmama2,dmama1,dmama0,
+    intdma0,intdma1,
+    dmaen,
+    triger0,triger1,triger2,triger3,
+    triger4,triger5,triger6,triger7,
+    triger8,triger9,triger10,triger11,
+    triger12,triger13,triger14,
+    SCANMODE
+);
+
+    input       resb,dmack;
+    input       dmawait,svstop;
+    input       mdw15,mdw14,mdw13,mdw12,
+                mdw11,mdw10,mdw9,mdw8,
+                mdw7,mdw6,mdw5,mdw4,
+                mdw3,mdw2,mdw1,mdw0;
+    output [15:0] dout;
+    input       sel_dsa, 
+                sel_dra0, sel_dra1,
+                sel_dbc0, sel_dbc1, 
+                sel_dmc, sel_drc;
+    input       we_dsa0,we_dra0l,we_dra0h,we_dbc0l,we_dbc0h,we_dmc0,we_drc0,
+                we_dsa1,we_dra1l,we_dra1h,we_dbc1l,we_dbc1h,we_dmc1,we_drc1;
+    output      dmarq;
+    input       dmaack;
+    output      dmard,dmawr,dmawdop;
+    output      dmama15,dmama14,dmama13,dmama12,dmama11,dmama10,dmama9,dmama8,
+                dmama7,dmama6,dmama5,dmama4,dmama3,dmama2,dmama1,dmama0;
+    output      intdma0, intdma1;
+    output      dmaen;
+    input       triger0,triger1,triger2,triger3,
+                triger4,triger5,triger6,triger7,
+                triger8,triger9,triger10,triger11,
+                triger12,triger13,triger14;
+    input       SCANMODE;
+
+    wire        dma_triger0,dma_triger1;
+
+    wire [7:0]  dsa0,dsa1;
+    wire [15:0] dra0,dra1;
+    wire [9:0]  dbc0,dbc1;
+    wire [3:0]  ifc0,ifc1;
+    wire        stg0,drs0,ds0,dwait0;
+    wire        stg1,drs1,ds1,dwait1;
+    wire        dst0,dst1,den0,den1;
+
+
+    reg         intdma0, intdma1;
+    reg         dmapr;
+    
+    reg [1:0]   dmaack_delay;
+    reg         dmarq0, dmarq1;
+    wire        dmarq_clr0, dmarq_clr1;
+    wire        dmaread,dmawrite,dmawordop;
+    reg [15:0]  ma; //dmama用
+    
+    reg [15:0]  dout;
+    
+    wire        dstmsk;
+
+    /*******************************************************/
+    /*dmarq0,1                                             */
+    /*---------------------------------------------        */
+    /*dmarq_clr | dst | dmarq ||  dmarq                    */
+    /*---------------------------------------------        */
+    /*    1     |  X  |   X   ||    0                      */
+    /*    0     |  0  |   X   ||    0                      */
+    /*    0     |  1  |   0   ||   dma_triger | stg        */
+    /*    0     |  1  |   1   ||   保持                    */
+    /*---------------------------------------------        */
+    /*******************************************************/
+
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dmarq0 <= 1'b0;
+        end else if(den0) begin
+            if(dmarq_clr0) begin
+            /*DMAACKを受付け後dmarq0を下げる.*/
+                    dmarq0 <= 1'b0;
+            end else if( ~dst0 ) begin
+                dmarq0 <= 1'b0;
+            end else if( ~dmarq0 ) begin
+                    dmarq0 <= dma_triger0 | stg0; /*stg0はソフトウェアトリガ0*/
+            end else begin
+            /*DMAACKを受付け後まで1を保持*/
+            /*DST0が0(DMA停止時)の場合トリガを受け付けない*/
+                    dmarq0 <= dmarq0;
+            end
+        end
+    end
+
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dmarq1 <= 1'b0;
+        end else if(den1) begin
+            if(dmarq_clr1) begin
+            /*DMAACKを受付け後dmarq1を下げる.*/
+                dmarq1 <= 1'b0;
+            end else if( ~dst1 ) begin
+                dmarq1 <= 1'b0;
+            end else if( ~dmarq1 ) begin
+                dmarq1 <= dma_triger1 | stg1; /*stg1はソフトウェアトリガ1*/
+            end else begin
+            /*DMAACKを受付け後まで1を保持*/
+            /*DST1が0(DMA停止時)の場合トリガを受け付けない*/
+                dmarq1 <= dmarq1;
+            end
+        end
+    end
+
+    assign dmarq = ((dmarq0 & ~dwait0)|(dmarq1 & ~dwait1)) & ~svstop & (~dmaread&~dmawrite);
+
+    /*DMA プライオリティ                     */
+    /*  0 : dmarq0の受付中,又は受け付け待ち  */
+    /*  1 : dmarq1の受付中                   */
+    //synopsys async_set_reset "RESB"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dmapr <= 1'b0;
+        end else if(den0 | den1) begin
+            if(!dmaread && !dmawrite) begin
+                if(!dmarq1) begin
+                    dmapr <= 1'b0;
+                end else if(!dmarq0) begin
+                    dmapr <= 1'b1;
+                end else begin
+                /*dmarq0とdmarq1が共に1の場合、多重受付なので*/
+                    dmapr <= dmapr;
+                end
+            end 
+        end
+    end
+    
+/********************************************************************/
+/* DMA control                                                      */
+/********************************************************************/
+/*
+        _   _   _   _   _   _   _   _   _   _   _   _   _   _   _  
+ DMACK   |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_| |_
+                ___
+ dma_triger0 __|   |_______________________________________________
+                ___
+ dma_triger1 __|   |_______________________________________________
+                    _______         _______
+ DMARQ      _______|       |_______|       |_______________________
+                        ___             ___
+ DMAACK     ___________|   |___________|   |_______________________
+                            ___             ___
+ dmaack_delay[0]___________|   |___________|   |___________________
+                                ___             ___
+ dmaack_delay[1]_______________|   |___________|   |_______________
+       ____________________ ___ ___ _______ ___ ___ _______________
+ DMAMA ____________________X_R_X_W_X_______X_R_X_W_X_______________
+                            ___             ___
+ DMARD ____________________|   |___________|   |___________________
+                                ___             ___
+ DMAWR ________________________|   |___________|   |_______________
+       ____________________________ _______________________________
+ dbc0  __________________1_________X______0________________________
+       ____________________________________________ _______________
+ dbc1  _______________________________3____________X______2________
+                            _______
+ dmawdop___________________|       |_______________________________
+*/
+
+    //synopsys async_set_reset "RESB"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dmaack_delay <= 2'b00;
+        end else if(dmaen) begin        /*クロックゲーティングの条件をdmaenに変更*/
+            if(!dmawait) begin
+                if(dmaack_delay==2'b00 && dmaack) begin
+                    dmaack_delay <= 2'b01;
+                end else if(dmaack_delay==2'b01) begin
+                    dmaack_delay <= 2'b10;
+                end else begin
+                    dmaack_delay <= 2'b00;
+                end
+            end
+        end
+    end
+    
+    assign dmaread = dmaack_delay[0];
+    assign dmawrite = dmaack_delay[1];
+    assign dmawordop = (dmapr) ? ds1 : ds0;
+
+    //DMAWAIT中はdmarqをクリアしない
+    assign dmarq_clr0 = ~dmapr & dmaack & ~dmawait;
+    assign dmarq_clr1 =  dmapr & dmaack & ~dmawait;
+    
+
+    always @(dmapr or dmaread or dmawrite or drs0 or drs1 or
+        dsa0 or dsa1 or dra0 or dra1) begin
+          //dmarq1の受付中
+          if( dmapr ) begin  
+              if( dmaread & ~dmawrite) begin  
+                  if( drs1 ) begin
+                      ma = dra1;           /*Ch1 RAM-->SFR Read*/
+                  end else begin              
+                      ma = {8'hff, dsa1};  /*Ch1 SFR-->RAM Read*/
+                  end
+              end else if( ~dmaread & dmawrite ) begin
+                  if( drs1 ) begin
+                      ma = {8'hff, dsa1};  /*Ch1 RAM-->SFR Write*/
+                  end else begin
+                      ma = dra1;           /*Ch1 SFR-->RAM Write*/
+                  end
+              end else begin
+                   ma = 16'b0;             /*Ch1 IDLE*/
+              end
+          //dmarq0の受付中,又は受け付け待ち
+          end else begin    
+              if( dmaread & ~dmawrite) begin 
+                  if( drs0 ) begin
+                      ma = dra0;           /*Ch0 RAM-->SFR Read*/
+                  end else begin
+                      ma = {8'hff, dsa0};  /*Ch0 SFR-->RAM Read*/
+                  end
+              end else if( ~dmaread & dmawrite ) begin
+                  if( drs0 ) begin
+                      ma = {8'hff, dsa0};  /*Ch0 RAM-->SFR Write*/
+                  end else begin
+                      ma = dra0;           /*Ch0 SFR-->RAM Write*/
+                  end
+              end else begin
+                   ma = 16'b0;             /*Ch0 IDLE*/
+              end
+          end
+    end
+
+/*強制終了直後DSTnがLowの場合はDMA転送をマスクする。*/
+    assign dstmsk = ~dmapr & dst0 | dmapr & dst1;
+
+    assign dmard = dmaread & dstmsk;
+    assign dmawr = dmawrite & dstmsk;
+    assign dmawdop = dmawordop & (dmaread | dmawrite);
+
+/*16bit転送モードの時には最下位ビットは無視され、偶数番地として扱われます。*/
+    assign {dmama15,dmama14,dmama13,dmama12,dmama11,dmama10,dmama9,dmama8,
+            dmama7,dmama6,dmama5,dmama4,dmama3,dmama2,dmama1} = ma[15:1];
+    assign dmama0 = ma[0] & ~dmawordop;
+
+//DEN0とDEN1のフラグがどちらかが１であれば、DMAEN出力信号をHighとして
+//HALT命令中でもDMARQをCPUが受け付ける事ができるようにする。
+//(v1.20)→CPUのDMA制御レジスタはDMA転送中しかクロックを必要としない為、
+//DENnに依らずDMA転送中のみDMAENをHiにする
+//DAM要求待ち時はCPU,DMA共に動作する必要がない回路はDMAENでクロックを
+//停止する。
+//DSTnをクリアによる強制終了後にDMARQを立ち下げる場合に停止してしまう
+//為dmaackを条件に追加。
+    assign dmaen = dmarq0 | dmarq1 | (|dmaack_delay) | dmaack;
+
+
+/********************************************************************/
+/* INTDMA0,INTDMA1                                                  */
+/********************************************************************/
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if(!resb) begin
+            intdma0 <= 1'b0;
+        end else if(dmaen) begin     /*クロックゲーティングの条件をdmaenに変更*/
+           if(!dmawait) begin
+               if( dbc0 == 10'b1 && ~dmapr & dmaread & dst0) begin 
+                   intdma0 <= 1'b1; /*強制終了直後に完了割り込みを発生しないようにはDSTでマスクする。*/
+               end else begin
+                   intdma0 <= 1'b0 ;
+               end
+           end
+        end
+    end
+    
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if(!resb) begin
+            intdma1 <= 1'b0;
+        end else if(dmaen) begin        /*クロックゲーティングの条件をdmaenに変更*/
+            if(!dmawait) begin
+                if( dbc1 == 10'b1 && dmapr & dmaread & dst1) begin
+                    intdma1 <= 1'b1;/*強制終了直後に完了割り込みを発生しないようにはDSTでマスクする。*/
+                end else begin
+                    intdma1 <= 1'b0 ;
+                end
+            end
+        end
+    end
+    
+/********************************************************************/
+/*SFR   QLK0RDMAC0V1_SFR                                            */
+/********************************************************************/
+
+    QLK0RDMAC0V1_SFR sfr(
+        .dmack(dmack), .resb(resb),
+        .dmawait(dmawait),
+        .we_dsa0(we_dsa0), .we_dra0l(we_dra0l), .we_dra0h(we_dra0h), 
+        .we_dbc0l(we_dbc0l), .we_dbc0h(we_dbc0h), .we_dmc0(we_dmc0), .we_drc0(we_drc0),
+        .we_dsa1(we_dsa1), .we_dra1l(we_dra1l), .we_dra1h(we_dra1h), 
+        .we_dbc1l(we_dbc1l), .we_dbc1h(we_dbc1h), .we_dmc1(we_dmc1), .we_drc1(we_drc1),
+        .mdw15(mdw15), .mdw14(mdw14), .mdw13(mdw13), .mdw12(mdw12),
+        .mdw11(mdw11), .mdw10(mdw10), .mdw9(mdw9), .mdw8(mdw8),
+        .mdw7(mdw7), .mdw6(mdw6), .mdw5(mdw5), .mdw4(mdw4),
+        .mdw3(mdw3), .mdw2(mdw2), .mdw1(mdw1), .mdw0(mdw0),
+        .dmapr(dmapr), .dmawr(dmawrite),
+        .dsa0(dsa0), .dra0(dra0), .dbc0(dbc0), .ifc0(ifc0), .ds0(ds0), 
+        .drs0(drs0), .dwait0(dwait0), .stg0(stg0), .dst0(dst0), .den0(den0),
+        .dsa1(dsa1), .dra1(dra1), .dbc1(dbc1), .ifc1(ifc1), .ds1(ds1), 
+        .drs1(drs1), .dwait1(dwait1), .stg1(stg1), .dst1(dst1), .den1(den1),
+        .SCANMODE(SCANMODE));
+        
+/********************************************************************/
+/* SFR Selector                                                     */
+/********************************************************************/
+
+    always @( sel_dsa or sel_dra0 or sel_dra1 or sel_dbc0 or 
+              sel_dbc1 or sel_dmc or sel_drc or
+              dsa0 or dsa1 or dra0 or dra1 or
+              dbc0 or dbc1 or ifc0 or ifc1 or ds0 or ds1 or drs0 or drs1 or
+              den0 or den1 or dst0 or dst1 or dwait0 or dwait1) begin
+        if(sel_dsa) begin
+            dout = {dsa1, dsa0};
+        end else if(sel_dra0) begin
+            dout = dra0;
+        end else if(sel_dra1) begin
+            dout = dra1;
+        end else if(sel_dbc0) begin
+            dout = {6'b0, dbc0};
+        end else if(sel_dbc1) begin
+            dout = {6'b0, dbc1};
+        end else if(sel_dmc) begin
+            dout = {1'b0, drs1, ds1, dwait1, ifc1, 1'b0, drs0, ds0, dwait0, ifc0};
+        end else if(sel_drc) begin
+            dout = {den1, 6'b0, dst1, den0, 6'b0, dst0};
+        end else begin
+            dout = 16'b0;
+        end
+
+    end
+
+/********************************************************************/
+/*トリガセレクタ QLK0RDMAC0V1_TRIGSEL                               */
+/*------------------------------------------------------------------*/
+/*[役割]                                                            */
+/* ･TRIGER0〜14の選択                                               */
+/* ･選択したトリガのエッジ検出                                      */
+/********************************************************************/
+
+    QLK0RDMAC0V1_TRIGSEL trigsel0(
+        .dmack(dmack), .resb(resb), 
+        .triger0(triger0), .triger1(triger1), .triger2(triger2), .triger3(triger3),
+        .triger4(triger4), .triger5(triger5), .triger6(triger6), .triger7(triger7),
+        .triger8(triger8), .triger9(triger9), .triger10(triger10), .triger11(triger11),
+        .triger12(triger12), .triger13(triger13), .triger14(triger14),
+        .ifc(ifc0), 
+        .dma_triger(dma_triger0));
+
+    QLK0RDMAC0V1_TRIGSEL trigsel1(
+        .dmack(dmack), .resb(resb), 
+        .triger0(triger0), .triger1(triger1), .triger2(triger2), .triger3(triger3),
+        .triger4(triger4), .triger5(triger5), .triger6(triger6), .triger7(triger7),
+        .triger8(triger8), .triger9(triger9), .triger10(triger10), .triger11(triger11),
+        .triger12(triger12), .triger13(triger13), .triger14(triger14),
+        .ifc(ifc1), 
+        .dma_triger(dma_triger1));
+        
+
+endmodule
+
+/************************************************************************/
+/* Module Name : QLK0RDMAC0V1_BI                                        */
+/************************************************************************/
+module QLK0RDMAC0V1_BI(    
+    pseldmac,
+    ma3,ma2,ma1,ma0,
+    cpuwr,cpurd,wdop,
+    mdr,
+    dout,
+    sel_dsa, 
+    sel_dra0, sel_dra1,
+    sel_dbc0, sel_dbc1, 
+    sel_dmc, sel_drc,
+    we_dsa0,we_dra0l,we_dra0h,we_dbc0l,we_dbc0h,we_dmc0,we_drc0,
+    we_dsa1,we_dra1l,we_dra1h,we_dbc1l,we_dbc1h,we_dmc1,we_drc1
+);
+
+    input         pseldmac;
+    input         ma3,ma2,ma1,ma0;
+    input         cpuwr, cpurd, wdop;
+
+    output [15:0] mdr;
+    input  [15:0] dout;
+    
+    output        sel_dsa, 
+                  sel_dra0, sel_dra1,
+                  sel_dbc0, sel_dbc1, 
+                  sel_dmc, sel_drc;
+    output        we_dsa0,we_dra0l,we_dra0h,we_dbc0l,we_dbc0h,we_dmc0,we_drc0,
+                  we_dsa1,we_dra1l,we_dra1h,we_dbc1l,we_dbc1h,we_dmc1,we_drc1;
+                
+    wire          rd_en;
+
+//======address decode ===================================================
+
+    assign sel_dsa  = pseldmac & ~ma3 & ~ma2  & ~ma1 ; //ma = 4'b000x
+    assign sel_dra0 = pseldmac & ~ma3 & ~ma2  &  ma1 ; //ma = 4'b001x
+    assign sel_dra1 = pseldmac & ~ma3 &  ma2  & ~ma1 ; //ma = 4'b010x
+    assign sel_dbc0 = pseldmac & ~ma3 &  ma2  &  ma1 ; //ma = 4'b011x
+    assign sel_dbc1 = pseldmac &  ma3 & ~ma2  & ~ma1 ; //ma = 4'b100x
+    assign sel_dmc  = pseldmac &  ma3 & ~ma2  &  ma1 ; //ma = 4'b101x
+    assign sel_drc  = pseldmac &  ma3 &  ma2  & ~ma1 ; //ma = 4'b110x
+    
+//=======Write Enable ====================================================
+
+    assign we_dsa0  = sel_dsa  & cpuwr & ~ma0 ;
+    assign we_dsa1  = sel_dsa  & cpuwr &  ma0 ;
+    assign we_dra0l = sel_dra0 & cpuwr & ~ma0 ;
+    assign we_dra0h = sel_dra0 & cpuwr & ( ma0 | wdop );
+    assign we_dra1l = sel_dra1 & cpuwr & ~ma0 ;
+    assign we_dra1h = sel_dra1 & cpuwr & ( ma0 | wdop );
+    assign we_dbc0l = sel_dbc0 & cpuwr & ~ma0 ;
+    assign we_dbc0h = sel_dbc0 & cpuwr & ( ma0 | wdop );
+    assign we_dbc1l = sel_dbc1 & cpuwr & ~ma0 ;
+    assign we_dbc1h = sel_dbc1 & cpuwr & ( ma0 | wdop );
+    assign we_dmc0  = sel_dmc  & cpuwr & ~ma0 ;
+    assign we_dmc1  = sel_dmc  & cpuwr &  ma0 ;
+    assign we_drc0  = sel_drc  & cpuwr & ~ma0 ;
+    assign we_drc1  = sel_drc  & cpuwr &  ma0 ;
+
+
+//==============MDR制御======================================================================
+
+    assign rd_en = cpurd & (sel_dsa | sel_dra0 | sel_dra1 | sel_dbc0 | sel_dbc1 | sel_dmc | sel_drc);
+    
+    assign mdr[0]  = dout[0]  & rd_en  ; 
+    assign mdr[1]  = dout[1]  & rd_en  ; 
+    assign mdr[2]  = dout[2]  & rd_en  ; 
+    assign mdr[3]  = dout[3]  & rd_en  ; 
+    assign mdr[4]  = dout[4]  & rd_en  ; 
+    assign mdr[5]  = dout[5]  & rd_en  ; 
+    assign mdr[6]  = dout[6]  & rd_en  ; 
+    assign mdr[7]  = dout[7]  & rd_en  ; 
+    assign mdr[8]  = dout[8]  & rd_en  ; 
+    assign mdr[9]  = dout[9]  & rd_en  ; 
+    assign mdr[10] = dout[10] & rd_en  ; 
+    assign mdr[11] = dout[11] & rd_en  ; 
+    assign mdr[12] = dout[12] & rd_en  ; 
+    assign mdr[13] = dout[13] & rd_en  ; 
+    assign mdr[14] = dout[14] & rd_en  ; 
+    assign mdr[15] = dout[15] & rd_en  ; 
+    
+endmodule
+
+/************************************************************************/
+/* Module Name : QLK0RDMAC0V1_TRIGSEL                                   */
+/************************************************************************/
+module QLK0RDMAC0V1_TRIGSEL(
+    dmack,resb,
+    triger0,triger1,triger2,triger3,
+    triger4,triger5,triger6,triger7,
+    triger8,triger9,triger10,triger11,
+    triger12,triger13,triger14,
+    ifc,
+    dma_triger
+);
+
+    input       dmack,resb;
+    input       triger0,triger1,triger2,triger3,
+                triger4,triger5,triger6,triger7,
+                triger8,triger9,triger10,triger11,
+                triger12,triger13,triger14;
+    input [3:0] ifc;
+    output      dma_triger;
+
+    reg         trig;
+    reg [1:0]   edge_detect;
+
+    always @(triger14 or triger13 or triger12 or triger11 or 
+             triger10 or triger9  or triger8  or triger7  or
+             triger6  or triger5  or triger4  or triger3  or
+             triger2  or triger1  or triger0  or ifc) begin
+        casex (ifc)
+            4'h1 : trig = triger0;
+            4'h2 : trig = triger1;
+            4'h3 : trig = triger2;
+            4'h4 : trig = triger3;
+            4'h5 : trig = triger4;
+            4'h6 : trig = triger5;
+            4'h7 : trig = triger6;
+            4'h8 : trig = triger7;
+            4'h9 : trig = triger8;
+            4'ha : trig = triger9;
+            4'hb : trig = triger10;
+            4'hc : trig = triger11;
+            4'hd : trig = triger12;
+            4'he : trig = triger13;
+            4'hf : trig = triger14;
+            default : trig = 1'b0;
+        endcase
+    end
+
+    /*エッジ検出回路*/
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if(!resb) begin
+            edge_detect <= 2'b00;
+        end else begin
+            edge_detect <= {edge_detect[0],trig};
+        end
+    end
+    
+    assign dma_triger = ~edge_detect[1] & edge_detect[0];
+
+endmodule
+
+module QLK0RDMAC0V1_SFR(
+    dmack,resb,
+    dmawait,
+    we_dsa0,we_dra0l,we_dra0h,we_dbc0l,we_dbc0h,we_dmc0,we_drc0,
+    we_dsa1,we_dra1l,we_dra1h,we_dbc1l,we_dbc1h,we_dmc1,we_drc1,
+    mdw15,mdw14,mdw13,mdw12,
+    mdw11,mdw10,mdw9,mdw8,
+    mdw7,mdw6,mdw5,mdw4,
+    mdw3,mdw2,mdw1,mdw0,
+    dmapr,dmawr,
+    dsa0,dra0,dbc0,ifc0,ds0,drs0,dwait0,stg0,dst0,den0,
+    dsa1,dra1,dbc1,ifc1,ds1,drs1,dwait1,stg1,dst1,den1,
+    SCANMODE
+);
+
+    input       dmack,resb;
+    input       dmawait;
+    input       we_dsa0,we_dra0l,we_dra0h,we_dbc0l,we_dbc0h,we_dmc0,we_drc0,
+                we_dsa1,we_dra1l,we_dra1h,we_dbc1l,we_dbc1h,we_dmc1,we_drc1;
+    input       mdw15,mdw14,mdw13,mdw12,
+                mdw11,mdw10,mdw9,mdw8,
+                mdw7,mdw6,mdw5,mdw4,
+                mdw3,mdw2,mdw1,mdw0;
+    input       dmapr,dmawr;
+    output [7:0] dsa0,dsa1;
+    output [15:0] dra0,dra1;
+    output [9:0] dbc0,dbc1;
+    output [3:0] ifc0,ifc1;
+    output      stg0,drs0,ds0,dwait0;
+    output      stg1,drs1,ds1,dwait1;
+    output      dst0,dst1,den0,den1;
+
+    input       SCANMODE;
+
+    reg [7:0]   dsa0, dsa1;
+    reg [15:0]  dra0, dra1;
+    reg [9:0]   dbc0, dbc1;
+    reg [3:0]   ifc0, ifc1;
+    reg         dwait0, ds0, drs0, dst0, den0 ;
+    reg         dwait1, ds1, drs1, dst1, den1 ;
+    
+    wire [15:0] mdw;
+    
+    wire        next_counter0, next_counter1;
+    
+    assign mdw = {mdw15,mdw14,mdw13,mdw12,mdw11,mdw10,mdw9,mdw8,
+                  mdw7,mdw6,mdw5,mdw4,mdw3,mdw2,mdw1,mdw0};
+
+
+/********************************************************************/
+/* Next Counter                                                     */
+/********************************************************************/
+                  
+    assign next_counter0 = ~dmapr & dmawr & ~dmawait;
+    assign next_counter1 =  dmapr & dmawr & ~dmawait;
+
+/********************************************************************/
+/*DMA SFR address register(DSA0,DSA1)                               */
+/*------------------------------------------------------------------*/
+/*DMAチャンネルn(n=0〜1)の転送元、又は転送先のSFRアドレスを設定する.*/
+/*16bit転送モードの時には最下位ビットは無視され、偶数番地として扱わ */
+/*れる。                                                            */
+/*DMA転送中には書き込みができない                                   */
+/*ワードアクセスは行わない                                          */
+/*ビット操作は行わない                                              */
+/*DEN0,DEN1でゲートクロック化している。                             */
+/*DMA要求がきていない時はクロックを停止させる                       */
+/********************************************************************/
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if(!resb) begin
+            dsa0 <= 8'b0;
+        end else if(den0) begin /*DMA要求がきていない時はクロックを停止させる*/
+            if(!dst0) begin /*DMA動作中は書き込めない*/
+                if (we_dsa0) begin
+                    dsa0 <= mdw[7:0] ;
+                end
+            end
+        end
+    end
+    
+    
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if(!resb) begin
+            dsa1 <= 8'b0;
+        end else if(den1) begin /*DMA要求がきていない時はクロックを停止させる*/
+            if(!dst1) begin /*DMA動作中は書き込めない*/
+                if (we_dsa1) begin
+                    dsa1 <= mdw[15:8] ;
+                end
+            end
+        end
+    end
+
+/********************************************************************/
+/*DMA RAM address register(DRA0,DRA1)                               */
+/*------------------------------------------------------------------*/
+/*DMAチャンネルn(n=0〜1)の転送先、又は転送元のRAMアドレスを設定する.*/
+/*DMA転送が始まると自動的にインクリメントされる                     */
+/*8bit転送モードでは1バイト転送毎に+1                               */
+/*16bit転送モードでは1バイト転送毎に+2                              */
+/*完了した時点で最終アドレス＋１で停止                              */
+/*DMA転送中には書き込みができない                                   */
+/*16bit転送モードの時には最下位ビットは無視され、偶数番地として扱わ */
+/*れる。                                                            */
+/*ワードアクセス可能                                                */
+/*ビット操作は行わない                                              */
+/*DEN0,DEN1でゲートクロック化している。                             */
+/********************************************************************/
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dra0 <= 16'b0;
+        end else if(den0) begin
+            if(!dst0) begin /*DMA転送中には書き込みができない*/
+                dra0[7:0] <=  (we_dra0l==1'b1)? mdw[7:0]  : dra0[7:0]  ;
+                dra0[15:8] <= (we_dra0h==1'b1)? mdw[15:8] : dra0[15:8] ;
+            end else begin /*DMA転送中*/
+                if (next_counter0) begin
+                    if(!ds0) begin
+                        dra0 <= dra0 + 16'h0001;
+                    end else begin
+                        dra0 <= dra0 + 16'h0002;
+                    end
+                end
+            end
+        end
+    end
+    
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dra1 <= 16'b0;
+        end else if(den1) begin
+            if(!dst1) begin /*DMA転送中には書き込みができない*/
+                dra1[7:0]  <= (we_dra1l==1'b1)? mdw[7:0]  : dra1[7:0] ;
+                dra1[15:8] <= (we_dra1h==1'b1)? mdw[15:8] : dra1[15:8] ;
+            end else begin /*DMA転送中*/
+                if (next_counter1) begin
+                    if(!ds1) begin
+                        dra1 <= dra1 + 16'h0001;
+                    end else begin
+                        dra1 <= dra1 + 16'h0002;
+                    end
+                end
+            end
+        end
+    end
+
+/********************************************************************/
+/*DMA byte count register(DBC0,DBC1)                                */
+/*------------------------------------------------------------------*/
+/*DMAチャンネルn(n=0〜1)の転送回数を設定する10bitレジスタ           */
+/*DMA転送中は、残りの転送回数を保持                                 */
+/*DMA転送中には書き込みができない                                   */
+/*ビット操作は行わない                                              */
+/*DEN0,DEN1でゲートクロック化している。                             */
+/********************************************************************/
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dbc0 <= 10'b0;
+        end else if(den0) begin
+            if(!dst0) begin /*DMA転送中には書き込みができない*/
+                dbc0[7:0] <= (we_dbc0l==1'b1)? mdw[7:0] : dbc0[7:0] ;
+                dbc0[9:8] <= (we_dbc0h==1'b1)? mdw[9:8] : dbc0[9:8] ;
+            end else begin /*DMA転送中*/
+                if (next_counter0) begin
+                    dbc0 <= dbc0 - 10'h001;
+                end
+            end
+        end
+    end
+    
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dbc1 <= 10'b0;
+        end else if(den1) begin
+            if(!dst1) begin /*DMA転送中には書き込みができない*/
+                dbc1[7:0] <= (we_dbc1l==1'b1)? mdw[7:0] : dbc1[7:0] ;
+                dbc1[9:8] <= (we_dbc1h==1'b1)? mdw[9:8] : dbc1[9:8] ;
+            end else begin /*DMA転送中*/
+                if (next_counter1) begin
+                    dbc1 <= dbc1 - 10'h001;
+                end
+            end
+        end
+    end
+
+/********************************************************************/
+/*DMA mode control register(DMC0,DMC1)                              */
+/*BIT7:STGn, BIT6:DRS0, BIT5:DS0, BIT4:DWAITn, BIT3-0:IFCn          */
+/*------------------------------------------------------------------*/
+/*DMAチャンネルnのDMA転送モードを制御するレジスタ                   */
+/*DMA動作中のアクセスはできない                                     */
+/*ワードアクセスは行えない                                          */
+/*ビット操作可能                                                    */
+/*リセット時:00H                                                    */
+/*DEN0,DEN1でゲートクロック化している。                             */
+/********************************************************************/
+   //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            ifc0 <= 4'b0;
+            ds0  <= 1'b0;
+            drs0 <= 1'b0;
+            //dwait0 <= 1'b0;
+        end else if(den0) begin
+            if (we_dmc0) begin
+                /*DMA動作中のアクセスはできない*/
+                ifc0[0] <= (dst0 & ifc0[0]) | (~dst0 & mdw[0]) ;
+                ifc0[1] <= (dst0 & ifc0[1]) | (~dst0 & mdw[1]) ;
+                ifc0[2] <= (dst0 & ifc0[2]) | (~dst0 & mdw[2]) ;
+                ifc0[3] <= (dst0 & ifc0[3]) | (~dst0 & mdw[3]) ;
+                ds0  <= (dst0 & ds0) | (~dst0 & mdw[5]) ;
+                drs0 <= (dst0 & drs0) | (~dst0 & mdw[6]) ;
+            end
+        end
+    end
+    
+   //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dwait0 <= 1'b0;
+        end else if(den0) begin /*DMA動作中のアクセス可能*/
+            if (we_dmc0) begin
+                dwait0  <= mdw[4] ;
+            end
+        end
+    end
+
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            ifc1 <= 4'b0;
+            ds1  <= 1'b0;
+            drs1 <= 1'b0;
+        end else if(den1) begin
+            if (we_dmc1) begin
+                /*DMA動作中のアクセスはできない*/
+                ifc1[0] <= (dst1 & ifc1[0]) | (~dst1 & mdw[8]) ;
+                ifc1[1] <= (dst1 & ifc1[1]) | (~dst1 & mdw[9]) ;
+                ifc1[2] <= (dst1 & ifc1[2]) | (~dst1 & mdw[10]) ;
+                ifc1[3] <= (dst1 & ifc1[3]) | (~dst1 & mdw[11]) ;
+                ds1  <= (dst1 & ds1) | (~dst1 & mdw[13]) ;
+                drs1 <= (dst1 & drs1) | (~dst1 & mdw[14]) ;
+            end
+        end
+    end
+    
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dwait1 <= 1'b0;
+        end else if(den1) begin /*DMA動作中のアクセス可能*/
+            if (we_dmc1) begin
+                dwait1  <= mdw[12] ;
+            end
+        end
+    end
+/********************************************************************/
+/*Software TriGer(STG0,STG1)                                        */
+/*------------------------------------------------------------------*/
+/*DMA転送が許可の状態(DSTn=1)でこのビットをセット(1)すると          */
+/*ソフトウェアトリガとなり、DMA転送を開始しする。                   */
+/*レジスタとして存在せず、読み出し値は常に0が読み出される。         */
+/*0を書き込んだ場合は転送が起きない。                               */
+/********************************************************************/    
+
+    assign stg0 = we_dmc0 & mdw[7] ;
+
+    assign stg1 = we_dmc1 & mdw[15] ;
+
+/********************************************************************/
+/*DMA RUN control register(DRC0,DRC1)                               */
+/*BIT6-1:0, BIT0:DSTn                                               */
+/*------------------------------------------------------------------*/
+/*DMAチャンネルnのDMA動作モードを制御するレジスタ。                 */
+/*DENnレジスタに1を書き込んだあとにDSTnレジスタに1を書き込む事で動作*/
+/*を開始。その後、DMA転送が終了すると自動的に0にクリアされる。      */
+/*強制終了する場合は0にクリアすることで強制終了する。               */
+/*ワードアクセスは行えない                                          */
+/*ビット操作可能                                                    */
+/*リセット時:00H                                                    */
+/*DEN0,DEN1でゲートクロック化している。(DEN0,DEN1は除く)            */
+/********************************************************************/
+
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dst0 <= 1'b0;
+        end else if(den0) begin
+            if (!dmawait) begin
+                if ( dbc0 == 10'b1 && ~dmapr & dmawr ) begin 
+                    dst0 <= 1'b0;
+                end else if (we_drc0) begin
+                    dst0 <= mdw[0] ;
+                end
+            end
+        end
+    end
+
+    
+    //synopsys async_set_reset "resb"
+    always @(posedge dmack or negedge resb) begin
+        if (!resb) begin
+            dst1 <= 1'b0;
+        end else if(den1) begin
+            if (!dmawait) begin
+                if ( dbc1 == 10'b1 && dmapr & dmawr ) begin 
+                    dst1 <= 1'b0;
+                end else if(we_drc1) begin
+                    dst1 <= mdw[8] ;
+                end
+            end
+        end
+    end
+
+    //synopsys async_set_reset "RESB"
+    always @(posedge dmack or negedge resb) begin
+        if(!resb) begin
+            den0 <= 1'b0;
+        end else if(!dst0) begin /*DMA動作中は書き込めない*/
+            if(we_drc0) begin
+                den0 <= mdw[7] ;
+            end
+        end
+    end
+    
+
+    //synopsys async_set_reset "RESB"
+    always @(posedge dmack or negedge resb) begin
+        if(!resb) begin
+            den1 <= 1'b0;
+        end else if(!dst1) begin /*DMA動作中は書き込めない*/
+            if(we_drc1) begin
+                den1 <= mdw[15] ;
+            end
+        end
+    end
+
+endmodule
+

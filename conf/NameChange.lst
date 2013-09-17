@@ -1,0 +1,145 @@
+##############################################################
+# 
+# Namme Change list for mkucf
+#
+##############################################################
+# FMake Hierarchy
+cspf_mc200_ocd_main_uart_sclock_16m,OCDCLK                          # OCDCLK
+cspf_mc200_ocd_main_uart_uart_bcounter_root_sclock_16m,OCDCLK       # OCDCLK
+cspf_mc200_ocd_main_uart_uart_bcounter_root_clk_out,OCDCLK 			# OCDCLK
+pericore_mp200_pcbz_pcbz_fmain_scck,FMAIN_PCLBUZ                    # FMAIN
+pericore_mp200_pcbz_pcbz_fmain_cts_fmain_scck,FMAIN_PCLBUZ          # FMAIN
+pericore_mp200_pcbz_pcbz_fmain_cts_clkout,FMAIN_PCLBUZ              # FMAIN
+pericore_mp200_pcbz_pcbz_fsub_scck,FSUB_PCLBUZ                      # FSUB
+pericore_mp200_pcbz_pcbz_fsub_cts_fsub_scck,FSUB_PCLBUZ				# FSUB
+cspf_mc200_csc_cg_hioscctl_fmain_sel_fih_p1,FIHP1                   # FIHP1
+cspf_mc200_csc_cg_hioscctl_fmain_sel_fih_p1_cts_fih_p1,FIHP1		# FIHP1
+cspf_mc200_csc_cg_hioscctl_fmain_sel_fih_p3,FIHP3                   # FIHP3
+cspf_mc200_csc_cg_mosccnt_fmx4,FMX4                                 # FMX4
+cspf_mc200_csc_cg_tbase_clk_fclkrt,FCLK                             # FCLK
+cspf_mc200_csc_cg_tbase_fclk_cts_clk_fclkrt,FCLK					# FCLK
+cspf_mc200_csc_cg_tbase_fclk_cts_clkout,FCLK						# FCLK
+cspf_mc200_csc_cg_tbase_fclk_c,FCLK									# FCLK
+cspf_mc200_csc_cg_tbase_fclk,FCLK									# FCLK
+cspf_mc200_csc_cg_tbase_ememramclk,FCLK								# FCLK
+cspf_mc200_csc_cg_tbase_EMEMRAMCLK,FCLK								# FCLK
+#cspf_mc200_csc_cg_tbase_FMakeWire_cspf_mc200_csc_EMEMRAMCLK,FCLK	# FCLK
+cspf_mc200_csc_cg_hioscctl_fihsync_fih4,FIH4                        # FIH4
+cspf_mc200_csc_cg_hioscctl_fihsync_fih4_cts_fih4,FIH4               # FIH4
+cspf_mc200_csc_cg_oscouts_nf_p,OSCOUTS                              # OSCOUTS
+cspf_mc200_csc_cg_oscctl_oscouts_nf_gate_clk_fsub,OSCOUTS           # OSCOUTS
+cspf_mc200_csc_cg_oscctl_oscouts_nf_gate_gclk,OSCOUTS				# OSCOUTS
+cspf_mc200_csc_rg_lvictl_counter_fil15kin,FIL15K                    # FIL15K
+cspf_mc200_csc_rg_lvictl_counter_reqlvi,FIL15K                      # FIL15K
+ice_top_wrapper_FMakeWire_cspf_l_rosc_CLK30MHZ,CLK30MHZ_GB          # CLK30MHZ_GB
+FMakeWire_ice_CLK30MHZ_GB,CLK30MHZ_GB                               # CLK30MHZ_GB
+ice_top_wrapper_FMakeWire_cspf_ice_top_wrapper_CLK60MHZ,CLK60MHZ    # CLK60MHZ
+FMakeWire_ice_CLK60MHZ,CLK60MHZ                                     # CLK60MHZ
+clk240base_FMakeWire_ice_top_wrapper_CLK240M,CLK240M                # CLK240M
+FMakeWire_ierl78clk240basev1_CLK240M,CLK240M                        # CLK240M
+FMakeWire_ierl78clk240basev1_CLK120M,CLK120M						# CLK120M
+FMakeWire_ierl78clk240basev1_CLK120M_c,CLK120M						# CLK120M
+cspf_h_rosc_clk_fhoco,R32MCLK										# R32MCLK
+cspf_h_rosc_R32MOUT,R32MCLK										    # R32MCLK
+clk_fsx_rtc,RTCCLK													# RTCCLK
+cspf_pgcsc_plug_div_dspclkp,BB32MOUT								# BB32MOUT (64MHz)
+cspf_pgcsc_plug_div_clk_div,PLUG_BBCLKR								# PLUG_BBCLKR
+cspf_pgcsc_div_dspclkp,BB32MOUT										# BB32MOUT (64MHz)
+cspf_pgcsc_div_clk_div,PLUG_BBCLKR									# PLUG_BBCLKR
+
+cspf_clk_fihfl,FIHFL												# FIHFL
+cspf_clk_fsx_rtc,RTCCLK												# RTCCLK
+cspf_pgcsc_kerneltop_wdtlococtl_clk_wdt_loscout,WDT_FIL				# WDT_FIL
+#cspf_pgcsc_kerneltop_pllctl_fpll64mclm,PLLCLK						# PLLCLK
+#cspf_pgcsc_kerneltop_pllctl_clk_fpll64m,PLLCLK						# PLLCLK
+cspf_mc200_csc_cg_tbase_clk_fclkrt,FCLK								# FCLK
+cspf_mc200_csc_cg_tbase_fclkz,FCLK									# FCLK
+cspf_mc200_csc_cg_mosccnt_fmx4,FMX4									# FMX4
+cspf_mc200_csc_cg_oscctl_oscouts_nf_p_rep,OSCOUTF					# OSCOUTF
+cspf_mc200_csc_cg_hioscctl_fmain_sel_fih_p3,FIHP3					# FIHP3					
+cspf_mc200_csc_cg_hioscctl_fmain_sel_fih_p3_cts_fih_p3,FIHP3		# FIHP3			
+cspf_clk_fihocd,FIHOCD												# FIHOCD
+cspf_clk_fhoco_i_i,R64MOUT											# R64MOUT
+cspf_clk_fhoco,R64MOUT												# R64MOUT
+cspf_mc200_csc_cg_hioscctl_fihsync_fih4,FIH4						# FIH4
+#pericore_mp200_pcbz_pcbz_fsub_scck,FSL_PCLBUZ						# FSL_PCLBUZ
+pericore_mp200_pcbz_pcbz_fsub_scck,FSUB_PCLBUZ                      # FSUB_PCLBUZ
+cspf_clk_fmx_i_i,OSCOUTM											# OSCOUTM
+cspf_clk_fmx,OSCOUTM												# OSCOUTM
+cspf_clk_fil_i_i,FIL												# FIL
+cspf_mc200_csc_rg_lvictl_counter_fil15kin,FIL15K					# FIL15K
+cspf_mc200_ocd_main_uart_uart_bcounter_sclock_16m,OCDCLK			# OCDCLK
+#cspf_mc200_csc_cg_oscctl_oscouts_nf_p,OSCOUTF_NF					# OSCOUTF_NF
+#cspf_mc200_csc_cg_oscctl_oscouts_nf_p_i,OSCOUTF_NF					# OSCOUTF_NF
+#FMAIN_PCLBUZ
+
+#original name,converted name # comment
+chiptop_chip_socket_ocd_main_uart_sclock_16m,OCDCLK                 # OCDCLK
+chiptop_chip_socket_pclbuz_fmain_scck,FMAIN_PCLBUZ                  # FMAIN
+chiptop_chip_socket_pclbuz_fsub_scck,FSUB_PCLBUZ                    # FSUB
+chiptop_chip_socket_csc_cg_hioscctl_fmain_sel_fih,FIH               # FIH
+chiptop_chip_socket_csc_cg_mosccnt_fmx4,FMX4                        # FMX4
+chiptop_chip_socket_csc_cg_tbase_FCLK_ICE,FCLK                      # FCLK_ICE
+chiptop_chip_socket_csc_cg_hioscctl_fmain_sel_fih_p,BBCLK           # BBCLK
+chiptop_chip_socket_csc_cg_hioscctl_fmain_sel_fih_p1,FIHP1          # FIHP1
+chiptop_chip_socket_csc_cg_hioscctl_fmain_sel_fih_p3,FIHP3          # FIHP3
+chiptop_chip_socket_csc_cg_hioscctl_fihsync_fih4,FIH4               # FIH4
+chiptop_chip_socket_csc_cg_oscouts_nf_p,OSCOUTS                     # OSCOUTS
+chiptop_chip_socket_csc_rg_resctl_main_fih_p,FIH_RG                 # FIH_RG
+chiptop_chip_socket_csc_rg_lvictl_counter_fil15kin,FIL15K           # FIL15K
+chiptop_chip_csc_cg_hioscctl_fmain_sel_fih,FIH               # FIH
+chiptop_chip_csc_cg_mosccnt_fmx4,FMX4                        # FMX4
+chiptop_chip_csc_cg_tbase_FCLK_ICE,FCLK                      # FCLK_ICE
+chiptop_chip_csc_cg_oscouts_nf_p,OSCOUTS                     # OSCOUTS
+chiptop_chip_csc_cg_hioscctl_fmain_sel_fih_p,BBCLK           # BBCLK
+chiptop_chip_csc_cg_hioscctl_fmain_sel_fih_p1,FIHP1          # FIHP1
+chiptop_chip_csc_cg_hioscctl_fmain_sel_fih_p3,FIHP3          # FIHP3
+chiptop_chip_csc_cg_hioscctl_fmain_sel_FIHP3,FIHP3           # FIHP3 (type D1A)
+chiptop_chip_csc_rg_resctl_main_fih_p,FIH_RG                 # FIH_RG
+#chiptop_chip_csc_rg_lvictl_counter_fil15kin,FIH_LVI          # FIH_LVI
+chiptop_chip_csc_rg_lvictl_counter_fil15kin,FIL15K           # FIL15K
+chiptop_chip_ocd_main_uart_sclock_16m,OCDCLK                 # OCDCLK
+chiptop_chip_pclbuz_fmain_scck,FMAIN_PCLBUZ                  # FMAIN
+chiptop_chip_pclbuz_fsub_scck,FSUB_PCLBUZ                    # FSUB
+chiptop_h_rosc_CLK160M,CLK160M                               # CLK160M
+chiptop_h_rosc_R32MOUT_c,R32MCLK_c                           # R32MCLK
+chiptop_h_rosc_R32MOUT,R32MCLK                               # R32MCLK
+chiptop_l_rosc_R15KOUT,FIL                                   # FIL
+CLK30MHZ_GB,CLK30MHZ_GB                                      # CLK30MHZ
+CLK60MHZ,CLK60MHZ                                            # CLK60MHZ
+USBCLK,USBCLK                                                # USBCLK
+USBIFWR,USBIFWR                                              # USBIFWR
+FMakeWire_ice_USBIFWR,USBIFWR                                # USBIFWR
+ice_ICEWR,ICEWR                                              # ICEWR
+ice_FMakeWire_ice_ICEWR,ICEWR								 # ICEWR
+FMakeWire_ice_ICEWR,ICEWR									 # ICEWR
+ice_timetagv2_CLK240M,CLK240M                                # CLK240M
+ICEWR_c,ICEWR                                                # ICEWR
+chiptop_h_rosc_FIHFL,FIHFL                                   # FIHFL
+chiptop_h_rosc_FIHOCD,FIHOCDCLK                              # FIHOCDCLK
+chiptop_chip_csc_cg_hioscctl_fihsync_fih4,FIH4               # FIH4
+chiptop_chip_pllctl_pllc_fclkds,BBFCLKDS                     # BBFCLKDS
+chiptop_chip_clkctl_FIL,FIL15K2                              # FIL15K2
+chiptop_chip_npbbb_SGVPSTB,SGVPSTB                           # SGVPSTB
+chiptop_chip_npbbb_MTRCVPSTB,MTRCVPSTB                       # MTRCVPSTB
+chiptop_chip_npbbb_CAN0VPSTB,CAN0VPSTB                       # CAN0VPSTB
+chiptop_chip_npbbb_CAN1VPSTB,CAN1VPSTB                       # CAN1VPSTB
+chiptop_chip_clkctl_pllctl_FPLLCLM,FPLL_CLM                  # FPLL_CLM
+chiptop_chip_clkctl_pllctl_FMAINCLM,FMAIN_CLM                # FMAIN_CLM
+chiptop_chip_clkctl_perctl_CANCLK0,CANCLK0                   # CANCLK0
+chiptop_chip_clkctl_perctl_CANCLK1,CANCLK1                   # CANCLK1
+chiptop_oscmain_X2DIN,X2DIN                                  # X2DIN
+chiptop_clk240base_CLK120M,CLK120M                           # CLK120M
+chiptop_clk240base_CLK240M,CLK240M                           # CLK240M
+ice_clockctl_main_clk,CLOCKCTL_COUNTER_MAIN                  # CLOCKCTL_COUNTER_MAIN
+ice_clockctl_subsource_c,CLOCKCTL_COUNTER_SUB                # CLOCKCTL_COUNTER_SUB 
+ice_clockctl_subsource,CLOCKCTL_COUNTER_SUB                  # CLOCKCTL_COUNTER_SUB 
+chiptop_RTCCLK,RTCCLK                                        # RTCCLK
+
+ice_ice_top_ICEWR,ICEWR                                              # ICEWR
+ice_ice_top_timetagv2_CLK240M,CLK240M                                # CLK240M
+ice_ice_top_clockctl_main_clk,CLOCKCTL_COUNTER_MAIN                  # CLOCKCTL_COUNTER_MAIN
+ice_ice_top_clockctl_subsource_c,CLOCKCTL_COUNTER_SUB                # CLOCKCTL_COUNTER_SUB 
+ice_ice_top_clockctl_subsource,CLOCKCTL_COUNTER_SUB                  # CLOCKCTL_COUNTER_SUB 
+
+

@@ -1,0 +1,145 @@
+//      File Name               /proj/78k0r_11/ss3rd/_macro/_soft/_kx4_port_v1.10/kx4_port13v1_mf3_v1.10/kx4_port13v1.hdl
+//	Module Name		KX4_PORT13V1
+//	Version			1.00
+//	Designer		S.Nakata (NMS)
+//      Version                 1.10
+//      Designer                H.Ono (RMS)
+//      Modify                  add signal      : SEL36P, SEL36PI
+//                              add signal      : PIO137
+
+module KX4_PORT13V1
+		   (	PCLKRW   , PRESETZ  , PSEL     , PWRITE   , PENABLE  , PADDR4   , PADDR5   , PADDR6   ,
+			PWDATA8  ,
+			NSRESB   ,
+			SEL64P   , SEL52P   , SEL48P   , SEL44P   , SEL40P   ,
+			SEL38P   , SEL36P   , SEL32P   , SEL30P   , SEL24P   , SEL20P   ,
+			SEL08P   ,
+			SEL64PI  , SEL52PI  , SEL48PI  , SEL44PI  , SEL40PI  ,
+			SEL38PI  , SEL36PI  , SEL32PI  , SEL30PI  , SEL24PI  , SEL20PI  ,
+			SCANMODE , TESDBT   ,
+			TDIN5    ,
+			PRDATA8  , PRDATA9  , PRDATA10 , PRDATA11 , PRDATA12 , PRDATA13 , PRDATA14 , PRDATA15 ,
+			MODIDIS  ,
+
+			EXINA7   ,
+
+			P137DIN  ,
+                        P130ENO  ,
+                        P130DOUT ,
+                        P137ENI  ,
+			PIO130   , PIO137
+
+			) ;
+
+	input		PCLKRW   , PRESETZ  , PSEL     , PWRITE   , PENABLE  , PADDR4  , PADDR5  , PADDR6  ;
+	input		PWDATA8  ;
+        input           NSRESB   ;
+	input		SEL64P   , SEL52P   , SEL48P   , SEL44P   , SEL40P   ;
+	input		SEL38P   , SEL36P   , SEL32P   , SEL30P   , SEL24P   , SEL20P   ;
+	input		SEL08P   ;
+	input		SEL64PI  , SEL52PI  , SEL48PI  , SEL44PI  , SEL40PI  ;
+	input		SEL38PI  , SEL36PI  , SEL32PI  , SEL30PI  , SEL24PI  , SEL20PI  ;
+	input		SCANMODE , TESDBT   ;
+	input		P137DIN  ;
+	input		MODIDIS  ;
+
+	output		PRDATA8  , PRDATA9  , PRDATA10 , PRDATA11 , PRDATA12 , PRDATA13 , PRDATA14 , PRDATA15 ;
+	output		P130ENO  ;
+	output		P130DOUT ;
+	output		P137ENI  ;
+	output		TDIN5    ;
+	output		PIO130   , PIO137   ;
+	output		EXINA7   ;
+
+	wire		RE_PORT  , OPEN_BUF7;
+	wire		SEL_PL   , SEL_PM   ; 
+	wire		WE_PL    ;
+	wire		AD_PL    , AD_PM    ;
+        wire            ICEENI   ;
+
+
+//       --------------------------------------------------------------------------------------------------------------------
+
+
+//	ICE chip	-----------------------------------------------------------------------------------------------------
+
+       `ifndef FPGA_ICE
+       assign  PIO130  =  1'b0;
+       assign  PIO137  =  1'b0;
+
+       `else
+       assign  PIO130  =  1'b1;
+       assign  PIO137  =  ~ICEENI ;
+       `endif
+
+//	BIT	-------------------------------------------------------------------------------------------------------------
+
+     QPK0RBCON002V1             portbit0 (
+        .PCLKRW ( PCLKRW )      , .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA8 )   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .SEL_PL ( SEL_PL )    ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    ,
+        .PRDATA ( PRDATA8 )     , .ENO ( P130ENO )      , .DOUT ( P130DOUT )
+        ) ;
+       
+     QPK0RBBNN001V1             portbit1 ( 
+        .PRDATA ( PRDATA9 )     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )
+        ) ;
+
+     QPK0RBBNN001V1             portbit2 ( 
+        .PRDATA ( PRDATA10)     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )
+        ) ;
+
+     QPK0RBBNN001V1             portbit3 ( 
+        .PRDATA ( PRDATA11)     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )
+        ) ;
+
+     QPK0RBBNN001V1             portbit4 ( 
+        .PRDATA ( PRDATA12)     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )
+        ) ;
+
+     QPK0RBBNN001V1             portbit5 ( 
+        .PRDATA ( PRDATA13)     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )
+        ) ;
+
+     QPK0RBBNN001V1             portbit6 ( 
+        .PRDATA ( PRDATA14)     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )
+        ) ;
+
+     QPK0RBCIN010V1             portbit7 (
+        .RE_PORT ( RE_PORT )    , .SEL_PL ( SEL_PL )   ,
+        .OPEN_BUF ( OPEN_BUF7 ) , .DIN ( P137DIN )     , .PRDATA ( PRDATA15)    , .ENI ( P137ENI )     ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )   ,
+	.MODIDIS ( MODIDIS )    ,
+	.EXINA ( EXINA7 )       ,
+        .TDIN ( TDIN5   )
+        ) ;
+
+//	CTL	-------------------------------------------------------------------------------------------------------------
+
+    QPK0RCBB13V1		portctl	(
+	.PSEL ( PSEL )		, .PWRITE ( PWRITE )	, .PENABLE ( PENABLE )	 , .NSRESB ( NSRESB )     ,
+	.AD_PL ( AD_PL )	, .AD_PM ( AD_PM )	,
+	.SEL64P ( SEL64P )   	, .SEL52P ( SEL52P )   	, .SEL48P ( SEL48P )	 , .SEL44P ( SEL44P )     , .SEL40P ( SEL40P )   ,
+	.SEL38P ( SEL38P )   	, .SEL36P ( SEL36P )   	, .SEL32P ( SEL32P )   	 , .SEL30P ( SEL30P )     , .SEL24P ( SEL24P )   ,
+	.SEL20P ( SEL20P )      , .SEL08P ( SEL08P )   	,
+	.SEL64PI ( SEL64PI )  	, .SEL52PI ( SEL52PI )  , .SEL48PI ( SEL48PI )   , .SEL44PI ( SEL44PI )   , .SEL40PI ( SEL40PI ) ,
+	.SEL38PI ( SEL38PI )  	, .SEL36PI ( SEL36PI )  , .SEL32PI ( SEL32PI )   , .SEL30PI ( SEL30PI )   , .SEL24PI ( SEL24PI ) ,
+	.SEL20PI ( SEL20PI )    ,
+	.SEL_PL ( SEL_PL )	, .SEL_PM ( SEL_PM )	,
+	.WE_PL ( WE_PL )	,
+	.RE_PORT ( RE_PORT )	,
+	.OPEN_BUF7 (OPEN_BUF7)  ,
+	.ICEENI ( ICEENI )
+	) ;
+
+
+//	DEC	-------------------------------------------------------------------------------------------------------------
+
+    QPK0RDB1V1			portdec	(
+	.PADDR6 ( PADDR6 )	, .PADDR5 ( PADDR5 )	, .PADDR4 ( PADDR4 )	,
+	.AD_PL ( AD_PL )	, .AD_PM ( AD_PM ) 
+	) ;
+
+
+endmodule
+

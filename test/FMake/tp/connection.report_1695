@@ -1,0 +1,44 @@
+
+# M:InstanceName,ModuleName
+
+M:sub001.out_mod,OutModule2
+M:in_mod0,InModule
+M:add_1695,add_1695
+M:sub001.sub002.sub003.sub004.in_mod3,InModule
+M:sub001.sub002.sub003.sub004.sub005,Sub005
+M:sub001.sub002.sub003.sub004.out_mod,OutModule
+M:sub001.sub002.sub003.sub004.out_mod2,OutModule
+M:out_mod,OutModule
+M:sub001.sub002.sub003.sub004.in_mod2,InModule
+
+
+# Connect Information
+
+sub001.out_mod.OutSignal[2:0] -> OPEN
+sub001.out_mod.OutSignal2 -> OutSignal2 [TOP Terminal]
+sub001.out_mod.OutSignal2 -> in_mod0.InSignal0
+in_mod0.InSignal[2:0] <- 3'b0
+in_mod0.InSignal0 <- sub001.out_mod.OutSignal2
+add_1695.DIN <- sub001.sub002.sub003.sub004.sub005.d
+add_1695.DIN2[2:0] <- sub001.sub002.sub003.sub004.sub005.f
+add_1695.DIN3[2:0] <- sub001.sub002.sub003.sub004.out_mod.OutSignal[2:0]
+add_1695.DIN5 <- sub001.sub002.sub003.sub004.out_mod2.OutSignal0
+add_1695.DIN6[2:0] <- out_mod.OutSignal[2:0]
+add_1695.DOUT -> DOUT [TOP Terminal]
+add_1695.DIN4[2:0] <- sub001.sub002.sub003.sub004.out_mod2.OutSignal[2:0]
+add_1695.DOUT4 -> sub001.sub002.sub003.sub004.in_mod2.InSignal0
+add_1695.DOUT4 -> sub001.sub002.sub003.sub004.in_mod3.InSignal0
+sub001.sub002.sub003.sub004.in_mod3.InSignal[2:0] <- sub001.sub002.sub003.sub004.out_mod2.OutSignal[2:0]
+sub001.sub002.sub003.sub004.in_mod3.InSignal0 <- add_1695.DOUT4
+sub001.sub002.sub003.sub004.sub005.d -> add_1695.DIN
+sub001.sub002.sub003.sub004.sub005.f -> add_1695.DIN2[2]
+sub001.sub002.sub003.sub004.out_mod.OutSignal[2:0] -> add_1695.DIN3[2:0]
+sub001.sub002.sub003.sub004.out_mod.OutSignal0 -> OPEN
+sub001.sub002.sub003.sub004.out_mod2.OutSignal[2:0] -> add_1695.DIN4[2:0]
+sub001.sub002.sub003.sub004.out_mod2.OutSignal[2:0] -> sub001.sub002.sub003.sub004.in_mod2.InSignal[2:0]
+sub001.sub002.sub003.sub004.out_mod2.OutSignal[2:0] -> sub001.sub002.sub003.sub004.in_mod3.InSignal[2:0]
+sub001.sub002.sub003.sub004.out_mod2.OutSignal0 -> add_1695.DIN5
+out_mod.OutSignal[2:0] -> add_1695.DIN6[2:0]
+out_mod.OutSignal0 -> OPEN
+sub001.sub002.sub003.sub004.in_mod2.InSignal[2:0] <- sub001.sub002.sub003.sub004.out_mod2.OutSignal[2:0]
+sub001.sub002.sub003.sub004.in_mod2.InSignal0 <- add_1695.DOUT4

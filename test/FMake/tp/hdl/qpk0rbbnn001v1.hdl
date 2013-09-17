@@ -1,0 +1,48 @@
+/**********************************************************************/
+/*                                                                    */
+/* K0R series PORT bit macro                                          */
+/*                                                                    */
+/*   [ port bit : 空き端子用ポート : NULL BIT ]                       */
+/*                                                                    */
+/*    Module   : QPK0RBBNN001V1                                       */
+/*    Date     : 2005/09/08                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : T.Suzuki(SYSWAVE)                                    */
+/*    Note     :                                                      */
+/*                                                                    */
+/**********************************************************************/
+/* NULLビット レジスタBタイプ用                                       */
+/*            リード値 ： PM=1 , OTHER=0                              */
+/**********************************************************************/
+/*                                                                    */
+/* <<入力信号>>                                         <<接続先>>    */
+/*                                                                    */
+/* RE_PORT     : PORTリードイネーブル信号               port control  */
+/* SEL_PM      : PM Register select 信号                port control  */
+/*                                                                    */
+/* <<出力信号>>                                         <<接続先>>    */
+/*                                                                    */
+/* PRDATA      : 出力データバス                         APB Bridge    */
+/*                                                                    */
+/**********************************************************************/
+
+module	QPK0RBBNN001V1 ( PRDATA , RE_PORT , SEL_PM ) ;
+
+	input		RE_PORT , SEL_PM ;
+	output		PRDATA ;
+
+	reg		READ_DATA ;
+
+//=====  port register read access  =====
+
+	always @ ( SEL_PM ) begin
+	    case ( SEL_PM )	// synopsys parallel_case
+		1'b1    : READ_DATA = 1'b1 ;
+		default : READ_DATA = 1'b0 ;
+	    endcase
+	end
+
+	assign PRDATA = READ_DATA & RE_PORT ;
+
+endmodule
+

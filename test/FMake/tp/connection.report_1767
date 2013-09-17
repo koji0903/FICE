@@ -1,0 +1,197 @@
+
+# M:InstanceName,ModuleName
+
+M:pulldown_cell0,pulldown_cell_pf
+M:cspf_wrapper.cspf.ocd,OCD
+M:cspf_wrapper.cspf.cpu,CPU
+M:cspf_wrapper.cspf.dma,DMA
+M:cspf_wrapper.cspf.bus,BUS
+M:cspf_wrapper.flash_code,flash_code
+M:cspf_wrapper.flash_code.dOut,dummyOut
+M:cspf_wrapper.cspf.mc200.dummy,Dummy
+M:cspf_wrapper.da,da
+M:svmodif,svmodif
+M:add_ff,add_ff
+M:ice_top,ICE_TOP_test
+M:cap_wrapper.cap_in,cap_in
+M:cspf_wrapper.cspf.mc200.add_ff2,add_ff2
+M:cspf_wrapper.cspf.mc200.port7,port7
+M:cspf_wrapper.cspf.mc200.port8,port8
+M:pericore.cap,cap
+M:pericore.add_ff,m1767_ff3
+M:pericore.connectA,ConnectA
+M:pericore.connectB,ConnectB
+
+
+# Connect Information
+
+pulldown_cell0.y -> OPEN
+pulldown_cell0.x -> ice_top.wire001
+pulldown_cell0.x -> add_ff.wire002
+cspf_wrapper.cspf.ocd.dummy <- D [TOP Terminal]
+cspf_wrapper.cspf.ocd.SVSTOP -> svmodif.SVSTOP
+cspf_wrapper.cspf.cpu.SVSTOP <- svmodif.SVSTOPICE
+cspf_wrapper.cspf.cpu.dummy -> dummy1 [TOP Terminal]
+cspf_wrapper.cspf.cpu.FCLK <- cspf_wrapper.da.FCLK
+cspf_wrapper.cspf.cpu.EMEMRAMCLK <- cspf_wrapper.da.FCLK
+cspf_wrapper.cspf.dma.SVSTOP <- svmodif.SVSTOPICE
+cspf_wrapper.cspf.dma.dummy -> dummy2 [TOP Terminal]
+cspf_wrapper.cspf.bus.test_clk <- cspf_wrapper.cspf.mc200.port7.test_clk
+cspf_wrapper.cspf.bus.D3 -> ice_top.D_Bus[3]
+cspf_wrapper.cspf.bus.D2 -> ice_top.D_Bus[2]
+cspf_wrapper.cspf.bus.D1 -> ice_top.D_Bus[1]
+cspf_wrapper.cspf.bus.D0 -> ice_top.D_Bus[0]
+cspf_wrapper.cspf.bus.wire_1718 <- cspf_wrapper.cspf.mc200.port7.wire_1718
+cspf_wrapper.cspf.bus.CON_BUS1 <- cspf_wrapper.cspf.mc200.port7.CON_BUS1
+cspf_wrapper.cspf.bus.CON_BUS0 <- cspf_wrapper.cspf.mc200.port7.CON_BUS0
+cspf_wrapper.cspf.bus.CE0 -> ice_top.CE0
+cspf_wrapper.cspf.bus.CE0 -> add_ff.CE0
+cspf_wrapper.cspf.bus.CE0 -> cspf_wrapper.flash_code.CE0
+cspf_wrapper.cspf.bus.A0 -> ice_top.A0
+cspf_wrapper.cspf.bus.A0 -> cspf_wrapper.flash_code.A0
+cspf_wrapper.cspf.bus.A1 -> ice_top.A1
+cspf_wrapper.cspf.bus.A1 -> cspf_wrapper.flash_code.A1
+cspf_wrapper.cspf.bus.A2 -> ice_top.A2
+cspf_wrapper.cspf.bus.A2 -> cspf_wrapper.flash_code.A2
+cspf_wrapper.cspf.bus.clkb_1777 <- add_ff.clk_1777
+cspf_wrapper.cspf.bus.clkb_bus_1777[2:0] <- add_ff.clk_bus_1777[2:0]
+cspf_wrapper.cspf.bus.RESETB <- cspf_wrapper.cspf.mc200.port8.rst_b
+cspf_wrapper.cspf.bus.rst_res_n <- cspf_wrapper.flash_code.rst_res_n
+cspf_wrapper.cspf.bus.VIMDS1 -> pericore.add_ff.VIMDS1
+cspf_wrapper.cspf.bus.VIMDS1 -> cspf_wrapper.cspf.mc200.port7.VIMDS1
+cspf_wrapper.cspf.bus.VIMDS0 -> pericore.add_ff.VIMDS0
+cspf_wrapper.cspf.bus.VIMDS0 -> cspf_wrapper.cspf.mc200.port7.VIMDS0
+cspf_wrapper.flash_code.BG2ADSEL -> BG2ADSEL [TOP Terminal]
+cspf_wrapper.flash_code.CE0 <- cspf_wrapper.cspf.bus.CE0
+cspf_wrapper.flash_code.DOUT -> DOUT [TOP Terminal]
+cspf_wrapper.flash_code.A0 <- cspf_wrapper.cspf.bus.A0
+cspf_wrapper.flash_code.A1 <- cspf_wrapper.cspf.bus.A1
+cspf_wrapper.flash_code.A2 <- cspf_wrapper.cspf.bus.A2
+cspf_wrapper.flash_code.ICECK60M <- add_ff.CLK60MHZ
+cspf_wrapper.flash_code.rst_sysrsout_n <- ice_top.SYSRSOUTB
+cspf_wrapper.flash_code.rst_res_n -> pericore.cap.rst_res_n
+cspf_wrapper.flash_code.rst_res_n -> pericore.add_ff.RESB
+cspf_wrapper.flash_code.rst_res_n -> cspf_wrapper.cspf.bus.rst_res_n
+cspf_wrapper.flash_code.bg2adsel -> OPEN # Or Distination Instance was not defined in Conf File
+cspf_wrapper.flash_code.SCANCLK <- 1'b0
+cspf_wrapper.flash_code.mod_scanen -> OPEN
+cspf_wrapper.flash_code.iceck30m <- add_ff.CLK30MHz
+cspf_wrapper.flash_code.dOut.RESB -> pericore.cap.rst_res_n
+cspf_wrapper.flash_code.dOut.RESB -> pericore.add_ff.RESB
+cspf_wrapper.flash_code.dOut.RESB -> cspf_wrapper.cspf.bus.rst_res_n
+cspf_wrapper.flash_code.dOut.BG2ADSEL -> BG2ADSEL [TOP Terminal]
+cspf_wrapper.cspf.mc200.dummy.PUONOUT <-> No-Connect
+cspf_wrapper.cspf.mc200.dummy.I <- cspf_wrapper.cspf.mc200.port7.O
+cspf_wrapper.da.da_data[1:0] <- cspf_wrapper.cspf.mc200.port7.DADATA[1:0]
+cspf_wrapper.da.FMAIN_FCLK -> pericore.connectA.I
+cspf_wrapper.da.FMAIN_FCLK -> pericore.connectB.I
+cspf_wrapper.da.FCLK -> cspf_wrapper.cspf.cpu.FCLK
+cspf_wrapper.da.FCLK -> cspf_wrapper.cspf.cpu.EMEMRAMCLK
+svmodif.SVSTOP <- cspf_wrapper.cspf.ocd.SVSTOP
+svmodif.SVSTOPICE -> cspf_wrapper.cspf.cpu.SVSTOP
+svmodif.SVSTOPICE -> cspf_wrapper.cspf.dma.SVSTOP
+svmodif.SVSTOPICE -> pericore.cap.SVSTOP
+add_ff.clk <- ice_top.clk_out
+add_ff.rst <- rst [TOP Terminal]
+add_ff.D <- D [TOP Terminal]
+add_ff.Q3 -> Q3 [TOP Terminal]
+add_ff.RESB <- cspf_wrapper.cspf.mc200.port7.test_wire
+add_ff.wire_connect_1718 <- cspf_wrapper.cspf.mc200.port7.wire_1718
+add_ff.CON_BUS1 <- cspf_wrapper.cspf.mc200.port7.CON_BUS1
+add_ff.CON_BUS0 <- cspf_wrapper.cspf.mc200.port7.CON_BUS0
+add_ff.CE0 <- cspf_wrapper.cspf.bus.CE0
+add_ff.clk_1777 -> ice_top.clka_1777
+add_ff.clk_1777 -> cspf_wrapper.cspf.bus.clkb_1777
+add_ff.clk_bus_1777[2:0] -> cspf_wrapper.cspf.bus.clkb_bus_1777[2:0]
+add_ff.CLK60MHZ -> ice_top.ICECK60M
+add_ff.CLK60MHZ -> cspf_wrapper.flash_code.ICECK60M
+add_ff.CLK60MHZ -> cspf_wrapper.cspf.mc200.add_ff2.CLK60M
+add_ff.ff2_Q <- cspf_wrapper.cspf.mc200.add_ff2.Q3
+add_ff.PUONOUT <- cspf_wrapper.cspf.mc200.add_ff2.PUONOUT
+add_ff.CPURSOUTB <- ice_top.SYSRSOUTB
+add_ff.CLK30MHz -> cspf_wrapper.flash_code.iceck30m
+add_ff.wire002 <- pulldown_cell0.x
+ice_top.clk <- clk [TOP Terminal]
+ice_top.rst <- rst [TOP Terminal]
+ice_top.D <- D [TOP Terminal]
+ice_top.D_Bus[3:0] <- cspf_wrapper.cspf.bus.D3
+ice_top.D_Bus[3:0] <- cspf_wrapper.cspf.bus.D2
+ice_top.D_Bus[3:0] <- cspf_wrapper.cspf.bus.D1
+ice_top.D_Bus[3:0] <- cspf_wrapper.cspf.bus.D0
+ice_top.X1 <- X1 [TOP Terminal]
+ice_top.Q -> Q1 [TOP Terminal]
+ice_top.clk_out -> cspf_wrapper.cspf.mc200.add_ff2.clk
+ice_top.clk_out -> add_ff.clk
+ice_top.test_clk <- cspf_wrapper.cspf.mc200.port7.test_clk
+ice_top.test_wire <- cspf_wrapper.cspf.mc200.port7.test_wire
+ice_top.connect_1718 <- cspf_wrapper.cspf.mc200.port7.wire_1718
+ice_top.connect_bus_1718_0 <- cspf_wrapper.cspf.mc200.port7.CON_BUS0
+ice_top.connect_bus_1718_1 <- cspf_wrapper.cspf.mc200.port7.CON_BUS1
+ice_top.CE0 <- cspf_wrapper.cspf.bus.CE0
+ice_top.A0 <- cspf_wrapper.cspf.bus.A0
+ice_top.A1 <- cspf_wrapper.cspf.bus.A1
+ice_top.A2 <- cspf_wrapper.cspf.bus.A2
+ice_top.clka_1777 <- add_ff.clk_1777
+ice_top.SYSRSOUTB -> cspf_wrapper.flash_code.rst_sysrsout_n
+ice_top.SYSRSOUTB -> add_ff.CPURSOUTB
+ice_top.ICECK60M <- add_ff.CLK60MHZ
+ice_top.wire001 <- pulldown_cell0.x
+ice_top.a1 <- pericore.cap.A
+ice_top.a0 <- pericore.cap.A
+cap_wrapper.cap_in.In1 <- pericore.cap.Out1
+cap_wrapper.cap_in.In0 <- pericore.cap.Out0
+cap_wrapper.cap_in.CapOut -> CapOut [TOP Terminal]
+cspf_wrapper.cspf.mc200.add_ff2.clk <- ice_top.clk_out
+cspf_wrapper.cspf.mc200.add_ff2.rst <- rst [TOP Terminal]
+cspf_wrapper.cspf.mc200.add_ff2.D <- D [TOP Terminal]
+cspf_wrapper.cspf.mc200.add_ff2.Q3 -> cspf_Q3 [TOP Terminal]
+cspf_wrapper.cspf.mc200.add_ff2.Q3 -> add_ff.ff2_Q
+cspf_wrapper.cspf.mc200.add_ff2.OUT_OPEN -> OPEN
+cspf_wrapper.cspf.mc200.add_ff2.FixedPin_Single <- 1'b0
+cspf_wrapper.cspf.mc200.add_ff2.FixedPin_Bus[2:0] <- 3'b111
+cspf_wrapper.cspf.mc200.add_ff2.NoConnectInPin <- No-Connect # [Check!] or Across the circuit ( not support to analyze now )
+cspf_wrapper.cspf.mc200.add_ff2.CLK60M <- add_ff.CLK60MHZ
+cspf_wrapper.cspf.mc200.add_ff2.PUONOUT -> add_ff.PUONOUT
+cspf_wrapper.cspf.mc200.add_ff2.ADINLP5V -> OPEN
+cspf_wrapper.cspf.mc200.add_ff2.fpga_pio[7:0] -> fpga_pio[7:0] [TOP Terminal]
+cspf_wrapper.cspf.mc200.add_ff2.PTTL <- PTTL06 [TOP Terminal]
+cspf_wrapper.cspf.mc200.port7.CON_BUS1 -> ice_top.connect_bus_1718_1
+cspf_wrapper.cspf.mc200.port7.CON_BUS1 -> add_ff.CON_BUS1
+cspf_wrapper.cspf.mc200.port7.CON_BUS1 -> cspf_wrapper.cspf.bus.CON_BUS1
+cspf_wrapper.cspf.mc200.port7.CON_BUS0 -> ice_top.connect_bus_1718_0
+cspf_wrapper.cspf.mc200.port7.CON_BUS0 -> add_ff.CON_BUS0
+cspf_wrapper.cspf.mc200.port7.CON_BUS0 -> cspf_wrapper.cspf.bus.CON_BUS0
+cspf_wrapper.cspf.mc200.port7.test_clk -> ice_top.test_clk
+cspf_wrapper.cspf.mc200.port7.test_clk -> cspf_wrapper.cspf.bus.test_clk
+cspf_wrapper.cspf.mc200.port7.test_wire -> ice_top.test_wire
+cspf_wrapper.cspf.mc200.port7.test_wire -> add_ff.RESB
+cspf_wrapper.cspf.mc200.port7.wire_1718 -> ice_top.connect_1718
+cspf_wrapper.cspf.mc200.port7.wire_1718 -> add_ff.wire_connect_1718
+cspf_wrapper.cspf.mc200.port7.wire_1718 -> cspf_wrapper.cspf.bus.wire_1718
+cspf_wrapper.cspf.mc200.port7.O -> cspf_wrapper.cspf.mc200.dummy.I
+cspf_wrapper.cspf.mc200.port7.VIMDS1 <- cspf_wrapper.cspf.bus.VIMDS1
+cspf_wrapper.cspf.mc200.port7.VIMDS0 <- cspf_wrapper.cspf.bus.VIMDS0
+cspf_wrapper.cspf.mc200.port7.PTTL <- PTTL07 [TOP Terminal]
+cspf_wrapper.cspf.mc200.port7.rstb <- cspf_wrapper.cspf.mc200.port8.rst_b
+cspf_wrapper.cspf.mc200.port7.DADATA[1:0] -> DADATA_Term[1:0] [TOP Terminal]
+cspf_wrapper.cspf.mc200.port7.DADATA[1:0] -> cspf_wrapper.da.da_data[1:0]
+cspf_wrapper.cspf.mc200.port8.SPAD <-> P80 [TOP Terminal]
+cspf_wrapper.cspf.mc200.port8.PTTL <- P80 [TOP Terminal]
+cspf_wrapper.cspf.mc200.port8.PTTL2 <- PTTL08 [TOP Terminal]
+cspf_wrapper.cspf.mc200.port8.SCANCLK <- 1'b0
+cspf_wrapper.cspf.mc200.port8.rst_b -> RESETB [TOP Terminal]
+cspf_wrapper.cspf.mc200.port8.rst_b -> cspf_wrapper.cspf.bus.RESETB
+cspf_wrapper.cspf.mc200.port8.rst_b -> cspf_wrapper.cspf.mc200.port7.rstb
+pericore.cap.rst_res_n <- cspf_wrapper.flash_code.rst_res_n
+pericore.cap.peri_o -> peri_o [TOP Terminal]
+pericore.cap.SVSTOP <- svmodif.SVSTOPICE
+pericore.cap.Out1 -> cap_wrapper.cap_in.In1
+pericore.cap.Out0 -> cap_wrapper.cap_in.In0
+pericore.cap.A -> ice_top.a1
+pericore.cap.A -> ice_top.a0
+pericore.add_ff.RESB <- cspf_wrapper.flash_code.rst_res_n
+pericore.add_ff.O -> FF3_O [TOP Terminal]
+pericore.add_ff.VIMDS1 <- cspf_wrapper.cspf.bus.VIMDS1
+pericore.add_ff.VIMDS0 <- cspf_wrapper.cspf.bus.VIMDS0
+pericore.connectA.I <- cspf_wrapper.da.FMAIN_FCLK
+pericore.connectB.I <- cspf_wrapper.da.FMAIN_FCLK

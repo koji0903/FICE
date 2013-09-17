@@ -1,0 +1,443 @@
+//*******+*********+*********+*********+*********+*********+*********+*********+
+//	VERILOG HDL
+//	Macro Name	: QLK0RIAW0V1 (Illegal Access Watch)
+//	Target Process	: MF3
+//	Revision	: 1.00
+//	Designer	: Siva(KPIT)
+//*******+*********+*********+*********+*********+*********+*********+*********+
+//	Copyright(C)2008 NEC Eletectronics Corp. All Rights Reserved.
+//*******+*********+*********+*********+*********+*********+*********+*********+
+//*******+*********+*********+*********+*********+*********+*********+*********+
+//	Structure
+//		QLK0RIAW0V1			(SOFT_TOP)
+//			QLK0RIAW0V1_MAIN	(main)
+//*******+*********+*********+*********+*********+*********+*********+*********+
+
+//*******+*********+*********+*********+*********+*********+
+//	QLK0RIAW0V1		(TOP)
+//*******+*********+*********+*********+*********+*********+
+
+module	QLK0RIAW0V1	(
+	RESB		,
+	BASECKHS	,
+	SLEXM		,
+	SLMEM		,
+	CPUWR		,
+	MONPC19		,
+	MONPC18		,
+	MONPC17		,
+	MONPC16		,
+	MONPC15		,
+	MONPC14		,
+	MONPC13		,
+	MONPC12		,
+	MONPC11		,
+	MONPC10		,
+	MONPC9		,
+	MONPC8		,
+	MONPC7		,
+	MONPC6		,
+	MONPC5		,
+	MONPC4		,
+	MONMA15		,
+	MONMA14		,
+	MONMA13		,
+	MONMA12		,
+	MONMA11		,
+	MONMA10		,
+	MONMA9		,
+	MONMA8		,
+	MONMA7		,
+	EXMA3		,
+	EXMA2		,
+	EXMA1		,
+	EXMA0		,
+	SVSTOP		,
+	SCANMODE	,
+	IAWRES		,
+	FLSIZE3		,	// Code flash size select signal
+	FLSIZE2		,	// Code flash size select signal
+	FLSIZE1		,	// Code flash size select signal
+	FLSIZE0		,	// Code flash size select signal
+	RAMSIZE7	,       // RAM Size select signal
+	RAMSIZE6	,       // RAM Size select signal
+	RAMSIZE5	,       // RAM Size select signal
+	RAMSIZE4	,       // RAM Size select signal
+	RAMSIZE3	,       // RAM Size select signal
+	RAMSIZE2	,       // RAM Size select signal
+	RAMSIZE1	,       // RAM Size select signal
+	RAMSIZE0	,       // RAM Size select signal
+	IAWEN		,       // Illegal access detect enable signal
+	OPWDEN		,       // Enable signal of WatchDog Timer
+	GDRAM1		,       // Write access Guard signal to RAM
+	GDRAM0		,       // Write access Guard signal to RAM
+	GDRAMWR		,       // RAM Guard area write access detect Signal
+	MONACTIVE	);      // RAM Guard area monitor signal
+
+//-------+---------+---------+---------+---------+---------
+input		RESB		;
+input		BASECKHS	;
+
+input		SLEXM		;
+input		SLMEM		;
+input		CPUWR		;
+
+input		MONPC19		;
+input		MONPC18		;
+input		MONPC17		;
+input		MONPC16		;
+input		MONPC15		;
+input		MONPC14		;
+input		MONPC13		;
+input		MONPC12		;
+input		MONPC11		;
+input		MONPC10		;
+input		MONPC9		;
+input		MONPC8		;
+input		MONPC7		;
+input		MONPC6		;
+input		MONPC5		;
+input		MONPC4		;
+
+input		MONMA15		;
+input		MONMA14		;
+input		MONMA13		;
+input		MONMA12		;
+input		MONMA11		;
+input		MONMA10		;
+input		MONMA9		;
+input		MONMA8		;
+input		MONMA7		;
+
+input		EXMA3		;
+input		EXMA2		;
+input		EXMA1		;
+input		EXMA0		;
+
+input		SVSTOP		;
+input		SCANMODE	;
+
+input		FLSIZE3		;	// Code flash size select signal
+input		FLSIZE2		;	// Code flash size select signal
+input		FLSIZE1		;	// Code flash size select signal
+input		FLSIZE0		;	// Code flash size select signal
+input		RAMSIZE7	;	// RAM Size select signal
+input		RAMSIZE6	;	// RAM Size select signal
+input		RAMSIZE5	;	// RAM Size select signal
+input		RAMSIZE4	;	// RAM Size select signal
+input		RAMSIZE3	;	// RAM Size select signal
+input		RAMSIZE2	;	// RAM Size select signal
+input		RAMSIZE1	;	// RAM Size select signal
+input		RAMSIZE0	;	// RAM Size select signal
+input		IAWEN		;	// Illegal access detect enable signal
+input		OPWDEN		;	// Enable signal of WatchDog Timer
+input		GDRAM1		;	// Write access Guard signal to RAM
+input		GDRAM0		;	// Write access Guard signal to RAM
+output		GDRAMWR		;	// RAM Guard area write access detect Signal
+
+output		IAWRES		;	// Illegal Access Watch Detected Signal
+output		MONACTIVE	;	// RAM Guard area Monitor Signal
+
+//-------+---------+---------+---------+---------+---------
+QLK0RIAW0V1_MAIN	MAIN	(
+	.RESB		(RESB		),
+	.BASECKHS	(BASECKHS	),
+	.SLEXM		(SLEXM		),
+	.SLMEM		(SLMEM		),
+	.CPUWR		(CPUWR		),
+	.MONPC19	(MONPC19	),
+	.MONPC18	(MONPC18	),
+	.MONPC17	(MONPC17	),
+	.MONPC16	(MONPC16	),
+	.MONPC15	(MONPC15	),
+	.MONPC14	(MONPC14	),
+	.MONPC13	(MONPC13	),
+	.MONPC12	(MONPC12	),
+	.MONPC11	(MONPC11	),
+	.MONPC10	(MONPC10	),
+	.MONPC9		(MONPC9		),
+	.MONPC8		(MONPC8		),
+	.MONPC7		(MONPC7		),
+	.MONPC6		(MONPC6		),
+	.MONPC5		(MONPC5		),
+	.MONPC4		(MONPC4		),
+	.MONMA15	(MONMA15	),
+	.MONMA14	(MONMA14	),
+	.MONMA13	(MONMA13	),
+	.MONMA12	(MONMA12	),
+	.MONMA11	(MONMA11	),
+	.MONMA10	(MONMA10	),
+	.MONMA9		(MONMA9		),
+	.MONMA8		(MONMA8		),
+	.MONMA7		(MONMA7		),
+	.EXMA3		(EXMA3		),
+	.EXMA2		(EXMA2		),
+	.EXMA1		(EXMA1		),
+	.EXMA0		(EXMA0		),
+	.SVSTOP		(SVSTOP		),
+	.SCANMODE	(SCANMODE	),
+	.IAWRES		(IAWRES		),
+	.FLSIZE3	(FLSIZE3	),	 // Code flash size select signal
+	.FLSIZE2	(FLSIZE2	),       // Code flash size select signal
+	.FLSIZE1	(FLSIZE1	),       // Code flash size select signal
+	.FLSIZE0	(FLSIZE0	),       // Code flash size select signal
+	.RAMSIZE7	(RAMSIZE7	),       // RAM Size select signal
+	.RAMSIZE6	(RAMSIZE6	),       // RAM Size select signal
+	.RAMSIZE5	(RAMSIZE5	),       // RAM Size select signal
+	.RAMSIZE4	(RAMSIZE4	),       // RAM Size select signal
+	.RAMSIZE3	(RAMSIZE3	),       // RAM Size select signal
+	.RAMSIZE2	(RAMSIZE2	),       // RAM Size select signal
+	.RAMSIZE1	(RAMSIZE1	),       // RAM Size select signal
+	.RAMSIZE0	(RAMSIZE0	),       // RAM Size select signal
+	.IAWEN		(IAWEN		),       // Illegal access detect enable signal
+	.OPWDEN		(OPWDEN		),       // Enable signal of WatchDog Timer
+	.GDRAM1		(GDRAM1		),       // Write access Guard signal to RAM
+	.GDRAM0		(GDRAM0		),       // Write access Guard signal to RAM
+	.GDRAMWR	(GDRAMWR	),      // RAM Guard area write access detect Signal
+	.MONACTIVE	(MONACTIVE	));      // RAM Guard area Monitor Signal
+
+endmodule
+
+//*******+*********+*********+*********+*********+*********+
+//	QLK0RIAW0V1_MAIN	(MAIN)
+//*******+*********+*********+*********+*********+*********+
+
+module	QLK0RIAW0V1_MAIN	(
+	RESB		,  		
+	BASECKHS	,
+
+	SLEXM		,
+	SLMEM		,
+	CPUWR		,
+
+	MONPC19		,
+	MONPC18		,
+	MONPC17		,
+	MONPC16		,
+	MONPC15		,
+	MONPC14		,
+	MONPC13		,
+	MONPC12		,
+	MONPC11		,
+	MONPC10		,
+	MONPC9		,
+	MONPC8		,
+	MONPC7		,
+	MONPC6		,
+	MONPC5		,
+	MONPC4		,
+
+	MONMA15		,
+	MONMA14		,
+	MONMA13		,
+	MONMA12		,
+	MONMA11		,
+	MONMA10		,
+	MONMA9		,
+	MONMA8		,
+	MONMA7		,
+
+	EXMA3		,
+	EXMA2		,
+	EXMA1		,
+	EXMA0		,
+
+	SVSTOP		,
+	SCANMODE	,
+	IAWRES		,
+
+	FLSIZE3		,	// Code flash size select signal             	
+	FLSIZE2		,	// Code flash size select signal
+	FLSIZE1		,	// Code flash size select signal
+	FLSIZE0		,	// Code flash size select signal
+	RAMSIZE7	,       // RAM Size select signal
+	RAMSIZE6	,       // RAM Size select signal
+	RAMSIZE5	,       // RAM Size select signal
+	RAMSIZE4	,       // RAM Size select signal
+	RAMSIZE3	,       // RAM Size select signal
+	RAMSIZE2	,       // RAM Size select signal
+	RAMSIZE1	,       // RAM Size select signal
+	RAMSIZE0	,       // RAM Size select signal
+	IAWEN		,       // Illegal access detect enable signal
+	OPWDEN		,       // Enable signal of WatchDog Timer
+	GDRAM1		,       // Write access Guard signal to RAM
+	GDRAM0		,       // Write access Guard signal to RAM
+	GDRAMWR		,       // RAM Guard area write access detect Signal
+	MONACTIVE	);      // RAM Guard area Monitor Signal
+
+//-------+---------+---------+---------+---------+---------
+input		RESB		;
+input		BASECKHS	;
+
+input		SLEXM		;
+input		SLMEM		;
+input		CPUWR		;
+
+
+input		MONPC19		;
+input		MONPC18		;
+input		MONPC17		;
+input		MONPC16		;
+input		MONPC15		;
+input		MONPC14		;
+input		MONPC13		;
+input		MONPC12		;
+input		MONPC11		;
+input		MONPC10		;
+input		MONPC9		;
+input		MONPC8		;
+input		MONPC7		;
+input		MONPC6		;
+input		MONPC5		;
+input		MONPC4		;
+
+input		MONMA15		;
+input		MONMA14		;
+input		MONMA13		;
+input		MONMA12		;
+input		MONMA11		;
+input		MONMA10		;
+input		MONMA9		;
+input		MONMA8		;
+input		MONMA7		;
+
+input		EXMA3		;
+input		EXMA2		;
+input		EXMA1		;
+input		EXMA0		;
+
+input		SVSTOP		;
+input		SCANMODE	;
+
+input		FLSIZE3		;	// Code flash size select signal
+input		FLSIZE2		;	// Code flash size select signal
+input		FLSIZE1		;	// Code flash size select signal
+input		FLSIZE0		;	// Code flash size select signal
+input		RAMSIZE7	;	// RAM Size select signal
+input		RAMSIZE6	;	// RAM Size select signal
+input		RAMSIZE5	;	// RAM Size select signal
+input		RAMSIZE4	;	// RAM Size select signal
+input		RAMSIZE3	;	// RAM Size select signal
+input		RAMSIZE2	;	// RAM Size select signal
+input		RAMSIZE1	;	// RAM Size select signal
+input		RAMSIZE0	;	// RAM Size select signal
+input		IAWEN		;	// Illegal access detect enable signal
+input		OPWDEN		;	// Enable signal of WatchDog Timer
+input		GDRAM1		;	// Write access Guard signal to RAM
+input		GDRAM0		;	// Write access Guard signal to RAM
+output		GDRAMWR		;	// RAM Guard area write access detect Signal
+output		IAWRES		;
+output		MONACTIVE	;	// RAM Guard area Monitor Signal
+
+//-------+---------+---------+---------+---------+---------
+wire		fetch_blank_error	;	// Blank area Fetch Error detect signal
+wire		fetch_data_flash_error	; 	// Data Flash area / Mirror area fetch detect signal
+wire		fetch_sfr_error		;	// SFR Fetch detect Signal
+wire		fetch_sfr2_error	;	// 2nd SFR Fetch detect Signal
+wire		IAWACTIVE		;	// Error Set enable Signal 
+wire		write_flash_error	;	// Code Flash area,Blank area and BFA area write access Detect Signal
+wire		write_mirror_error	;	// Data Flash area, Mirror area write access Detect Signal
+wire		data_read_error		;	// Data read access error Signal
+wire		iaw_reset_n		;	// IAWRES reset Signal
+
+wire 	[19:4]	MONPC			;
+wire 	[15:7]	MONMA			;
+wire 	[7:0]	RAMSIZE			;
+wire	[3:0]	EXMA			;
+wire	[3:0]	FLSIZE			;
+wire		MONPC19_16_Val_Chk	;
+wire		EXMA_Val_Chk	;
+wire	[2:0]	GDRAMSIZE		;	// GDRAM Decoded signal
+
+wire		error_all		;	// Error Detect Signal
+reg		IAWRES			;	// IAWRES register 
+//-------+---------+---------+---------+---------+---------
+
+// Concatenation Logic
+assign MONPC =  {MONPC19,MONPC18,MONPC17,MONPC16,MONPC15,MONPC14,MONPC13,MONPC12,MONPC11,MONPC10,MONPC9,MONPC8,MONPC7,MONPC6,MONPC5,MONPC4};
+assign MONMA = {MONMA15,MONMA14,MONMA13,MONMA12,MONMA11,MONMA10,MONMA9,MONMA8,MONMA7};
+assign RAMSIZE = {RAMSIZE7,RAMSIZE6,RAMSIZE5,RAMSIZE4,RAMSIZE3,RAMSIZE2,RAMSIZE1,RAMSIZE0};
+assign EXMA   = {EXMA3,EXMA2,EXMA1,EXMA0};
+assign FLSIZE  = {FLSIZE3,FLSIZE2,FLSIZE1,FLSIZE0};
+//*******+*********+*********+*********+
+//	FETCH ACCESS WATCH
+//*******+*********+*********+*********+
+
+assign MONPC19_16_Val_Chk = (MONPC[19:16] == 4'hF);
+
+// Blank area Fetch Detection
+assign	fetch_blank_error	= ( !MONPC19_16_Val_Chk &
+                                   (MONPC[19:16] > FLSIZE) & 
+				   (MONPC[19:12] != 8'hEF));	
+
+// Data Flash area / Mirror area Fetch Detection
+assign	fetch_data_flash_error	= ( MONPC19_16_Val_Chk &
+				   (MONPC[15:9]  >= {3'b0,4'b1000}) &
+				   (MONPC[15:8]  < RAMSIZE)); 
+
+//2nd SFR Fetch Detection
+assign	fetch_sfr2_error	= ( MONPC19_16_Val_Chk & 
+				   (MONPC[15:11] == 5'b0));       
+// SFR Fetch Detection
+assign	fetch_sfr_error		= ( MONPC19_16_Val_Chk & 
+				   (MONPC[15:4]  >= 12'hFEE));
+
+//*******+*********+*********+*********+
+//	READ ACCESS WATCH
+//*******+*********+*********+*********+
+
+assign data_read_error = SLEXM; 
+
+//*******+*********+*********+*********+
+//	WRITE ACCESS WATCH
+//*******+*********+*********+*********+
+assign EXMA_Val_Chk = (EXMA == 4'hF);
+// Code Flash area,Blank area and BFA area write access Detection 
+assign	write_flash_error	= (!SLMEM & CPUWR & !EXMA_Val_Chk);
+
+// Data Flash area , Mirro area write access Detection
+assign	write_mirror_error	= ((MONMA[15:9] >= {3'b000,4'b1000}) & 
+				   (MONMA[15:8] < RAMSIZE) & 
+				    EXMA_Val_Chk & 
+				    CPUWR);
+
+//*******+*********+*********+*********+
+//	IAWRES assert and deassert    
+//*******+*********+*********+*********+
+
+// Error Detect Signal
+
+assign	error_all  = fetch_sfr_error | fetch_sfr2_error | fetch_data_flash_error | fetch_blank_error | write_flash_error | write_mirror_error | data_read_error ;
+
+assign  IAWACTIVE =(IAWEN | OPWDEN); 	        // Error detection enable signal
+
+assign  iaw_reset_n = SCANMODE? RESB : (RESB & !SVSTOP);    // IAWRES clear condition
+
+//synopsys async_set_reset "iaw_reset_n"
+always	@(posedge BASECKHS or negedge iaw_reset_n) begin	// Delayed Error assertion
+	if(!iaw_reset_n)			       // IAWRES Reset
+		IAWRES <= 1'b0;
+	else if (IAWACTIVE & error_all) // Set on any error condition and Enable is 1 
+		IAWRES  <= 1'b1;
+end
+
+//*******+*********+*********+*********+
+//	RAM GUARD AREA DETECTION FUNC  
+//*******+*********+*********+*********+
+
+// GDRAMSIZE Decode
+
+assign GDRAMSIZE = (GDRAM1 & GDRAM0)?3'h4 : {1'b0,GDRAM1,GDRAM0}; 
+
+// RAM Guard area write access Detection
+
+assign GDRAMWR = ((SLMEM) & 
+		  (MONMA[15:7] >= ({RAMSIZE,1'b0})) &
+		  (MONMA[15:7] <  ({RAMSIZE,1'b0})+(GDRAMSIZE)) & 
+		  (CPUWR) & (!SVSTOP));
+
+// RAM Guard area monitor Signal
+
+assign MONACTIVE = IAWACTIVE | GDRAM1 | GDRAM0; 
+
+endmodule 

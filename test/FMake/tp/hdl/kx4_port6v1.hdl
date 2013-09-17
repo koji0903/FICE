@@ -1,0 +1,180 @@
+//      File Name               /proj/78k0r_11/ss3rd/_macro/_soft/_kx4_port_v1.10/kx4_port6v1_mf3_v1.10/kx4_port6v1.hdl
+//	Module Name		KX4_PORT6V1
+//	Version			1.00
+//	Designer		S.Nakata (NMS)
+//      Version                 1.10
+//      Designer                H.Ono (RMS)
+//      Modify                  add signal      : SEL36P, SEL36PI
+
+module KX4_PORT6V1
+		   (	PCLKRW   , PRESETZ  , PSEL     , PWRITE   , PENABLE  , PADDR4   , PADDR5   , PADDR6   ,
+			PWDATA0  , PWDATA1  , PWDATA2  , PWDATA3  ,
+			NSRESB   ,
+			SEL64P   , SEL52P   , SEL48P   , SEL44P   , SEL40P   ,
+			SEL38P   , SEL36P   , SEL32P   , SEL30P   , SEL24P   , SEL20P   ,
+			SEL08P   ,
+			SEL64PI  , SEL52PI  , SEL48PI  , SEL44PI  , SEL40PI  ,
+			SEL38PI  , SEL36PI  , SEL32PI  , SEL30PI  , SEL24PI  , SEL20PI  ,
+			SCANMODE , SCANCLK  , TESDBT   , OPTOPLRD ,
+			PRDATA0  , PRDATA1  , PRDATA2  , PRDATA3  , PRDATA4  , PRDATA5  , PRDATA6  , PRDATA7  ,
+
+			EXINA0   , EXINA1   , EXINA2   , EXINA3   ,
+			EXOUTA0  , EXOUTA1  , EXOUTA2  , EXOUTA3  ,
+			EXOUTB0  , EXOUTB1  , EXOUTB2  , EXOUTB3  ,
+			EXOUTC0  , EXOUTC1  , EXOUTC2  , EXOUTC3  ,
+
+                        P60DIN   , P61DIN   , P62DIN   , P63DIN   ,
+                        P60ENO   , P61ENO   , P62ENO   , P63ENO   ,
+                        P60DOUT  , P61DOUT  , P62DOUT  , P63DOUT  ,
+                        P60ENI   , P61ENI   , P62ENI   , P63ENI   ,
+                        PIO60    , PIO61    , PIO62    , PIO63    ,
+			EXOR
+			) ;
+
+	input		PCLKRW   , PRESETZ  , PSEL     , PWRITE   , PENABLE  , PADDR4   , PADDR5   , PADDR6   ;
+	input		PWDATA0  , PWDATA1  , PWDATA2  , PWDATA3  ;
+	input		NSRESB   ;
+	input		SEL64P   , SEL52P   , SEL48P   , SEL44P   , SEL40P   ;
+	input		SEL38P   , SEL36P   , SEL32P   , SEL30P   , SEL24P   , SEL20P   ;
+	input		SEL08P   ;
+	input		SEL64PI  , SEL52PI  , SEL48PI  , SEL44PI  , SEL40PI  ;
+	input		SEL38PI  , SEL36PI  , SEL32PI  , SEL30PI  , SEL24PI  , SEL20PI  ;
+	input		SCANMODE , SCANCLK  , TESDBT   , OPTOPLRD ;
+	input		P60DIN   , P61DIN   , P62DIN   , P63DIN   ;
+        input           EXOUTA0  , EXOUTA1  , EXOUTA2  , EXOUTA3  ;
+        input           EXOUTB0  , EXOUTB1  , EXOUTB2  , EXOUTB3  ;
+        input           EXOUTC0  , EXOUTC1  , EXOUTC2  , EXOUTC3  ;
+
+	output		PRDATA0  , PRDATA1  , PRDATA2  , PRDATA3  , PRDATA4  , PRDATA5  , PRDATA6  , PRDATA7  ;
+	output		P60ENO   , P61ENO   , P62ENO   , P63ENO   ;
+	output		P60DOUT  , P61DOUT  , P62DOUT  , P63DOUT  ;
+	output		P60ENI   , P61ENI   , P62ENI   , P63ENI   ;
+	output		PIO60    , PIO61    , PIO62    , PIO63    ;
+	output		EXINA0   , EXINA1   , EXINA2   , EXINA3   ;
+	output		EXOR     ;
+
+	reg		EXOR	 ;
+
+	wire		RE_PORT  , OPEN_BUF0, OPEN_BUF1, OPEN_BUF2, OPEN_BUF3;
+	wire		SEL_PL   , SEL_PM   ; 
+	wire		WE_PL    , WE_PM    ;
+	wire		AD_PL    , AD_PM    ;
+	wire  [3:0]	ICEENI   ;
+	wire		P60EXOR  , P61EXOR  , P62EXOR  , P63EXOR  ;
+
+//       --------------------------------------------------------------------------------------------------------------------
+
+         always@ ( posedge SCANCLK or negedge PRESETZ ) begin
+             if ( ! PRESETZ )
+                 EXOR <= 1'b0 ;
+             else
+                 EXOR <= P60EXOR ^ P61EXOR ^ P62EXOR ^ P63EXOR ;
+	 end
+
+//	ICE chip	-----------------------------------------------------------------------------------------------------
+
+        `ifndef FPGA_ICE
+        assign  PIO60 = 1'b0;
+        assign  PIO61 = 1'b0;
+        assign  PIO62 = 1'b0;
+        assign  PIO63 = 1'b0;
+
+	`else
+	assign	PIO60  =  P60ENO | ~ICEENI[0] ;
+	assign	PIO61  =  P61ENO | ~ICEENI[1] ;
+	assign	PIO62  =  P62ENO | ~ICEENI[2] ;
+	assign	PIO63  =  P63ENO | ~ICEENI[3] ;
+	`endif
+
+//	BIT	-------------------------------------------------------------------------------------------------------------
+
+     QPK0RBBBB001V1		portbit0 (
+	.PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )	, .PWDATA ( PWDATA0 )	, .RE_PORT ( RE_PORT )	,
+	.WE_PL ( WE_PL )	, .WE_PM ( WE_PM )  	,
+	.SEL_PL ( SEL_PL )	, .SEL_PM ( SEL_PM ) 	,
+	.OPEN_BUF ( OPEN_BUF0 ) , .DIN ( P60DIN )   	,
+        .EXOUTA ( EXOUTA0 )     , .EXOUTB ( EXOUTB0 )   , .EXOUTC ( EXOUTC0 )   ,
+	.SCANMODE ( SCANMODE )	, .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+	.PRDATA ( PRDATA0 )	, .ENO ( P60ENO )	, .ENI ( P60ENI )	, .DOUT ( P60DOUT )	,
+	.EXINA ( EXINA0 )	, .din_exor ( P60EXOR )
+	) ;
+
+     QPK0RBBBB001V1             portbit1 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA1 )   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    ,
+        .OPEN_BUF ( OPEN_BUF1 ) , .DIN ( P61DIN )       ,
+        .EXOUTA ( EXOUTA1 )     , .EXOUTB ( EXOUTB1 )   , .EXOUTC ( EXOUTC1 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( PRDATA1 )     , .ENO ( P61ENO )       , .ENI ( P61ENI )       , .DOUT ( P61DOUT )     ,
+        .EXINA ( EXINA1 )       , .din_exor ( P61EXOR )
+        ) ;
+
+     QPK0RBBBB001V1             portbit2 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA2 )   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    ,
+        .OPEN_BUF ( OPEN_BUF2 ) , .DIN ( P62DIN )       ,
+        .EXOUTA ( EXOUTA2 )     , .EXOUTB ( EXOUTB2 )   , .EXOUTC ( EXOUTC2 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( PRDATA2 )     , .ENO ( P62ENO )       , .ENI ( P62ENI )       , .DOUT ( P62DOUT )     ,
+        .EXINA ( EXINA2 )       , .din_exor ( P62EXOR )
+        ) ;
+
+     QPK0RBBBB001V1             portbit3 (
+        .PCLKRW ( PCLKRW )	, .PRESETZ ( PRESETZ )  , .PWDATA ( PWDATA3 )   , .RE_PORT ( RE_PORT )  ,
+        .WE_PL ( WE_PL )        , .WE_PM ( WE_PM )      ,
+        .SEL_PL ( SEL_PL )      , .SEL_PM ( SEL_PM )    ,
+        .OPEN_BUF ( OPEN_BUF3 ) , .DIN ( P63DIN )       ,
+        .EXOUTA ( EXOUTA3 )     , .EXOUTB ( EXOUTB3 )   , .EXOUTC ( EXOUTC3 )   ,
+        .SCANMODE ( SCANMODE )  , .TESDBT ( TESDBT )    , .OPTOPLRD ( OPTOPLRD ),
+        .PRDATA ( PRDATA3 )     , .ENO ( P63ENO )       , .ENI ( P63ENI )       , .DOUT ( P63DOUT )     ,
+        .EXINA ( EXINA3 )       , .din_exor ( P63EXOR )
+        ) ;
+
+     QPK0RBBNN001V1             portbit4 ( 
+        .PRDATA ( PRDATA4 )     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )    
+        ) ;
+
+     QPK0RBBNN001V1             portbit5 ( 
+        .PRDATA ( PRDATA5 )     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )    
+        ) ;
+
+     QPK0RBBNN001V1             portbit6 ( 
+        .PRDATA ( PRDATA6 )     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )    
+        ) ;
+
+     QPK0RBBNN001V1             portbit7 ( 
+        .PRDATA ( PRDATA7 )     , .RE_PORT ( RE_PORT )  , .SEL_PM ( SEL_PM )    
+        ) ;
+
+
+//	CTL	-------------------------------------------------------------------------------------------------------------
+
+    QPK0RCBB06V1		portctl	(
+	.PSEL ( PSEL )		, .PWRITE ( PWRITE )	, .PENABLE ( PENABLE )	 , .NSRESB ( NSRESB )     ,
+	.AD_PL ( AD_PL )	, .AD_PM ( AD_PM )	,
+	.SEL64P ( SEL64P )   	, .SEL52P ( SEL52P )   	, .SEL48P ( SEL48P )	 , .SEL44P ( SEL44P )     , .SEL40P ( SEL40P )   ,
+	.SEL38P ( SEL38P )   	, .SEL36P ( SEL36P )   	, .SEL32P ( SEL32P )   	 , .SEL30P ( SEL30P )     , .SEL24P ( SEL24P )   ,
+	.SEL20P ( SEL20P )      , .SEL08P ( SEL08P )   	,
+	.SEL64PI ( SEL64PI )  	, .SEL52PI ( SEL52PI )  , .SEL48PI ( SEL48PI )   , .SEL44PI ( SEL44PI )   , .SEL40PI ( SEL40PI ) ,
+	.SEL38PI ( SEL38PI )  	, .SEL36PI ( SEL36PI )  , .SEL32PI ( SEL32PI )   , .SEL30PI ( SEL30PI )   , .SEL24PI ( SEL24PI ) ,
+	.SEL20PI ( SEL20PI )    ,
+	.SEL_PL ( SEL_PL )	, .SEL_PM ( SEL_PM )	,
+	.WE_PL ( WE_PL )	, .WE_PM ( WE_PM )	,
+	.RE_PORT ( RE_PORT )	,
+	.OPEN_BUF0 (OPEN_BUF0)  , .OPEN_BUF1 (OPEN_BUF1), .OPEN_BUF2 (OPEN_BUF2) , .OPEN_BUF3(OPEN_BUF3 ) ,
+        .ICEENI ( ICEENI )
+	) ;
+
+
+//	DEC	-------------------------------------------------------------------------------------------------------------
+
+    QPK0RDB1V1			portdec	(
+	.PADDR6 ( PADDR6 )	, .PADDR5 ( PADDR5 )	, .PADDR4 ( PADDR4 )	,
+	.AD_PL ( AD_PL )	, .AD_PM ( AD_PM )
+	) ;
+
+
+endmodule
+

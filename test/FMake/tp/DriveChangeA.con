@@ -1,0 +1,7 @@
+# Original    : DriveChangeA.a -> DriveChangeB.a
+# DriveChange : DriveChangeA.a -> DriveChangeC.a
+#               DriveChangeC.b -> DriveChangeB.a
+
+a drive_change_c.a drive_change_c.b:drive
+
+#a DriveChangeC.a DriveChangeC.b:drive

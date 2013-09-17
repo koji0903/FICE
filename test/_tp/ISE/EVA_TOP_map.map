@@ -1,0 +1,1170 @@
+Release 12.3 Map M.70d (lin64)
+Xilinx Map Application Log File for Design 'EVA_TOP'
+
+Design Information
+------------------
+Command Line   : map -intstyle ise -p xc4vlx80-ff1148-11 -detail -w -t 1
+-global_opt off -timing -ol high -cm speed -pr b -power off -o EVA_TOP_map.ncd
+EVA_TOP.ngd EVA_TOP.pcf 
+Target Device  : xc4vlx80
+Target Package : ff1148
+Target Speed   : -11
+Mapper Version : virtex4 -- $Revision: 1.52 $
+Mapped Date    : Mon Nov 29 10:59:48 2010
+
+Mapping design into LUTs...
+WARNING:MapLib:42 - All members of TPTHRU group "thru_1648_0" have been
+   optimized out of the design.
+WARNING:MapLib:41 - All members of TNM group
+   "chiptop_chip_socket_modectl_modectl_top_modectl_main_test_trm_oti_p1" have
+   been optimized out of the design.
+WARNING:MapLib:49 - The timing specification "TS_1648_0" has been discarded
+   because the THRU group "thru_1648_0" has been optimized away.
+WARNING:LIT:176 - Clock buffer is designated to drive clock loads. BUFG symbol
+   "chiptop/chip/socket/csc/cg/hioscctl/fmain_sel/fih_p3_cts/root" (output
+   signal=chiptop/fih_p3_i) has a mix of clock and non-clock loads. The
+   non-clock loads are:
+   Pin I1 of
+   chiptop/chip/socket/csc/cg/hioscctl/fmain_sel/cksel_fih_p2/root/un1__H01_i
+WARNING:LIT:176 - Clock buffer is designated to drive clock loads. BUFG symbol
+   "chiptop/chip/socket/csc/cg/hioscctl/fmain_sel/fih_p1_cts/root" (output
+   signal=chiptop/chip/socket/csc/cg/fih_p1) has a mix of clock and non-clock
+   loads. The non-clock loads are:
+   Pin I1 of
+   chiptop/chip/socket/csc/cg/hioscctl/fmain_sel/maskctl/fih_gate/DLSFQ2_inst/LD
+   CPE_inst_RNIF0HK
+   Pin I0 of
+   chiptop/chip/socket/csc/cg/tbase/fmain_fsub_sel/cksel_fmain_fsub/root/un1__H0
+   1_i
+WARNING:LIT:175 - Clock buffer is designated to drive clock loads. BUFG symbol
+   "chiptop/chip/socket/csc/cg/tbase/fclk_cts/root" (output signal=FCLK_ICE) has
+   a mix of clock and non-clock loads. Some of the non-clock loads are (maximum
+   of 5 listed):
+   Pin I0 of
+   chiptop/chip/socket/csc/cg/pec/port_gate/DLSFQ2_inst/LDCPE_inst_RNIGBB9
+   Pin D of ice/timetagv2/sampbck
+   Pin I1 of ice/status/clk_in_1_1
+   Pin I1 of ice/trace/trace_cont/tmemclk0/tmemclk
+   Pin I2 of
+   physical_group_chiptop/chip/socket/ocd/main/uart/uart_int_edge/int_ed_reset_i
+   /chiptop/chip/socket/ocd/main/uart/uart_int_edge/int_ed_reg_RNO
+WARNING:LIT:176 - Clock buffer is designated to drive clock loads. BUFG symbol
+   "chiptop/chip/socket/csc/cg/tbase/stby/resbgen/nsresb_inferred_clock_cb"
+   (output signal=chiptop/chip/RESB_i) has a mix of clock and non-clock loads.
+   The non-clock loads are:
+   Pin RST of chiptop/chip/pllctl/pllc/bbclk_div/fclk_ds_divider
+WARNING:LIT:176 - Clock buffer is designated to drive clock loads. BUFG symbol
+   "chiptop/chip/socket/pclbuz/fmain_cts/root" (output
+   signal=chiptop/chip/socket/pclbuz/fmain_scck) has a mix of clock and
+   non-clock loads. The non-clock loads are:
+   Pin I0 of
+   chiptop/chip/socket/pclbuz/main/countm_gate/DLSFQ2_inst/LDCPE_inst_RNI17IB
+WARNING:LIT:176 - Clock buffer is designated to drive clock loads. BUFG symbol
+   "chiptop/chip/socket/pclbuz/fsub_cts/root" (output
+   signal=chiptop/chip/socket/fsub_scck_i) has a mix of clock and non-clock
+   loads. The non-clock loads are:
+   Pin I3 of
+   chiptop/chip/socket/csc/cg/tbase/fmain_fsub_sel/cksel_fsub0_fsub2/clk_gate/un
+   1__H01
+   Pin I0 of chiptop/chip/socket/porga/main/tisel/tin05o_2_am
+   Pin I2 of
+   physical_group_chiptop/chip/socket/pclbuz/main/pclsel0_3_am/chiptop/chip/sock
+   et/pclbuz/main/pclsel0_3_am
+   Pin I2 of
+   physical_group_chiptop/chip/socket/pclbuz/main/pclsel1_3_am/chiptop/chip/sock
+   et/pclbuz/main/pclsel1_3_am
+WARNING:LIT:178 - Clock buffer BUFG symbol "chiptop/oscsub/rtc_bufg" (output
+   signal=chiptop/RTCCLK) does not drive clock loads. Driving only non-clock
+   loads with a clock buffer will cause ALL of the dedicated clock routing
+   resources for this buffer to be wasted. The non-clock loads are:
+   Pin I0 of chiptop/chip/socket/rtc/main/cnt/clksel/RTC_SELCK
+WARNING:LIT:178 - Clock buffer BUFG symbol "chiptop/oscsub/sub_bufg" (output
+   signal=chiptop/OSCOUTS) does not drive clock loads. Driving only non-clock
+   loads with a clock buffer will cause ALL of the dedicated clock routing
+   resources for this buffer to be wasted. The non-clock loads are:
+   Pin D of chiptop/chip/socket/csc/cg/oscctl/root_oscouts/dly[0]
+   Pin I0 of chiptop/chip/socket/csc/cg/oscctl/root_oscouts/out_RNO
+WARNING:LIT:178 - Clock buffer BUFGCTRL symbol "ice/clockctl/sclkout/BUFGCTRL"
+   (output signal=CPUSCLK) does not drive clock loads. Driving only non-clock
+   loads with a clock buffer will cause ALL of the dedicated clock routing
+   resources for this buffer to be wasted. The non-clock loads are:
+   Pin D of ice/status/cpusclkst/clkm_p1
+   Pin I2 of physical_group_chiptop/oscsub/OSCOUTSp/chiptop/oscsub/OSCOUTSp
+   Pin I2 of physical_group_chiptop/oscsub/RTCCLKp/chiptop/oscsub/RTCCLKp
+WARNING:LIT:176 - Clock buffer is designated to drive clock loads. BUFGCTRL
+   symbol "ice/clockctl/ring3mux/BUFGCTRL" (output signal=CPURCLK3) has a mix of
+   clock and non-clock loads. The non-clock loads are:
+   Pin I1 of physical_group_chiptop/R15KOUT/chiptop/l_rosc/LOSCOUT
+WARNING:LIT:178 - Clock buffer BUFGCTRL symbol "ice/clockctl/mclkout/BUFGCTRL"
+   (output signal=CPUMCLK) does not drive clock loads. Driving only non-clock
+   loads with a clock buffer will cause ALL of the dedicated clock routing
+   resources for this buffer to be wasted. The non-clock loads are:
+   Pin I0 of chiptop/chip/socket/porga/main/tisel/tin05o_2_bm
+   Pin I0 of chiptop/oscmain/OSCOUTM_2_RNIN292
+   Pin I2 of
+   physical_group_chiptop/chip/pllctl/pllc/bbclkmp/chiptop/chip/socket/csc/cg/hi
+   oscctl/fmain_sel/cksel_fmx/root/un1__H01
+WARNING:LIT:176 - Clock buffer is designated to drive clock loads. BUFGCTRL
+   symbol "ice/clockctl/mclk4sel/BUFGCTRL" (output signal=ice/clockctl/main_clk)
+   has a mix of clock and non-clock loads. The non-clock loads are:
+   Pin I0 of ice/clockctl/mclk4sel_RNIVA1J1
+WARNING:LIT:176 - Clock buffer is designated to drive clock loads. BUFG symbol
+   "ice/clockctl/dcm5/CLKFX_BUFG_INST" (output signal=CLK60MHZ) has a mix of
+   clock and non-clock loads. The non-clock loads are:
+   Pin I0 of ice/clockctl/mclk1sel/un1_clkout
+   Pin I0 of ice/emem/rom/clksel/clkin0_gate
+WARNING:LIT:176 - Clock buffer is designated to drive clock loads. BUFG symbol
+   "ice/ice_other/buf30m" (output signal=CLK30MHZ_GB) has a mix of clock and
+   non-clock loads. The non-clock loads are:
+   Pin I0 of ice/trace/trace_cont/tmemclk0/tmemclk
+Running directed packing...
+Running delay-based LUT packing...
+Updating timing models...
+WARNING:Timing:3223 - Timing constraint TS_1090_1 = MAXDELAY FROM TIMEGRP
+   "chiptop_chip_pllctl_pllc_fclkds_rise" THRU TIMEGRP "thru_1090_0" THRU
+   TIMEGRP "thru_1090_1" TO TIMEGRP "chiptop_chip_pllctl_pllc_fclkds_rise" 29 ns
+   ignored during timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1090_3 = MAXDELAY FROM TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise" THRU TIMEGRP "thru_1090_0"
+   THRU TIMEGRP "thru_1090_1" TO TIMEGRP "chiptop_chip_pllctl_pllc_fclkds_rise"
+   29 ns ignored during timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1091_1 = MAXDELAY FROM TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise" THRU TIMEGRP "thru_1091_0"
+   THRU TIMEGRP "thru_1091_1" TO TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" 43.5 ns ignored during
+   timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1094_1 = MAXDELAY FROM TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise" THRU TIMEGRP "thru_1094_0"
+   THRU TIMEGRP "thru_1094_1" TO TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" 43.5 ns ignored during
+   timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1095_1 = MAXDELAY FROM TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise" THRU TIMEGRP "thru_1095_0"
+   THRU TIMEGRP "thru_1095_1" TO TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" 43.5 ns ignored during
+   timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1145_0 = MAXDELAY FROM TIMEGRP
+   "SynpAllSeqGrp_EVA_TOP" THRU TIMEGRP "thru_1145_0" TO TIMEGRP "to_1145_0" 29
+   ns ignored during timing analysis.
+WARNING:Timing - The Clock Modifying COMP, chiptop/pll/dcm64m/DCM_ADV_INST, has
+   the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists between
+   the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm4/DCM_ADV_INST, has
+   the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists between
+   the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm2/DCM_ADV_INST, has
+   the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists between
+   the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm3/DCM_ADV_INST, has
+   the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists between
+   the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, chiptop/h_rosc/dcm64m/DCM_ADV_INST,
+   has the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists
+   between the input and output clocks of this Clock Modifying COMP. Data paths
+   between these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, chiptop/h_rosc/dcm160m/DCM_ADV_INST,
+   has the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists
+   between the input and output clocks of this Clock Modifying COMP. Data paths
+   between these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, chiptop/h_rosc/dcm48m/DCM_ADV_INST,
+   has the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists
+   between the input and output clocks of this Clock Modifying COMP. Data paths
+   between these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/timetagv2/dcm240m/DCM_ADV_INST,
+   has the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists
+   between the input and output clocks of this Clock Modifying COMP. Data paths
+   between these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm5/DCM_ADV_INST, has
+   the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists between
+   the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm1/DCM_ADV_INST, has
+   the attribute CLK_FEEDBACK set to NONE.  No phase relationship exists between
+   the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+Running timing-driven placement...
+Total REAL time at the beginning of Placer: 10 hrs 16 mins 25 secs 
+Total CPU  time at the beginning of Placer: 10 hrs 16 mins 15 secs 
+
+Phase 1.1  Initial Placement Analysis
+Phase 1.1  Initial Placement Analysis (Checksum:607f2cba) REAL time: 10 hrs 18 mins 5 secs 
+
+Phase 2.7  Design Feasibility Check
+Phase 2.7  Design Feasibility Check (Checksum:607f2cba) REAL time: 10 hrs 18 mins 7 secs 
+
+Phase 3.31  Local Placement Optimization
+Phase 3.31  Local Placement Optimization (Checksum:874695e6) REAL time: 10 hrs 18 mins 7 secs 
+
+Phase 4.2  Initial Clock and IO Placement
+....
+Phase 4.2  Initial Clock and IO Placement (Checksum:8443351a) REAL time: 10 hrs 21 mins 39 secs 
+
+Phase 5.36  Local Placement Optimization
+Phase 5.36  Local Placement Optimization (Checksum:8443351a) REAL time: 10 hrs 21 mins 39 secs 
+
+....
+...........................
+........................................................................................................................
+Phase 6.30  Global Clock Region Assignment
+
+
+######################################################################################
+# GLOBAL CLOCK NET DISTRIBUTION UCF REPORT:
+#
+# Number of Global Clock Regions : 20
+# Number of Global Clock Networks: 31
+#
+# Clock Region Assignment: SUCCESSFUL
+
+# Location of Clock Components
+INST "chiptop/chip/socket/csc/cg/tbase/stby/resbgen/nsresb_inferred_clock_cb" LOC = "BUFGCTRL_X0Y15" ;
+INST "ice/emem/rom/clksel/clkout_cb" LOC = "BUFGCTRL_X0Y17" ;
+INST "chiptop/chip/pllctl/pllc/root/BUFGCTRL" LOC = "BUFGCTRL_X0Y2" ;
+INST "chiptop/chip/socket/csc/cg/mosccnt/fmx4_cts/root" LOC = "BUFGCTRL_X0Y14" ;
+INST "ice/trace/tradr/dmy1_cb" LOC = "BUFGCTRL_X0Y18" ;
+INST "ice/trace/tradr/dmy2_cb" LOC = "BUFGCTRL_X0Y13" ;
+INST "ice/clockctl/mclkout/BUFGCTRL" LOC = "BUFGCTRL_X0Y19" ;
+INST "ice/host_interface/usb2usbif/wait_count17_cb" LOC = "BUFGCTRL_X0Y12" ;
+INST "ice/trace/trdata/dmy1_cb" LOC = "BUFGCTRL_X0Y20" ;
+INST "ice/trace/trdata/dmy2_cb" LOC = "BUFGCTRL_X0Y11" ;
+INST "chiptop/chip/socket/csc/cg/hioscctl/fihsync/fih4_cts/root" LOC = "BUFGCTRL_X0Y21" ;
+INST "ice/emem/rom/dmy2_cb" LOC = "BUFGCTRL_X0Y10" ;
+INST "chiptop/chip/socket/ocd/main/uart/uart_bcounter/root/ocd_bufg" LOC = "BUFGCTRL_X0Y22" ;
+INST "chiptop/chip/socket/sdadly0/dly_50n/out_inferred_clock_cb" LOC = "BUFGCTRL_X0Y9" ;
+INST "chiptop/chip/socket/csc/cg/tbase/fclk_cts/root" LOC = "BUFGCTRL_X0Y8" ;
+INST "chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl0/bff3/out_inferred_clock_cb" LOC = "BUFGCTRL_X0Y23" ;
+INST "chiptop/chip/socket/pclbuz/fsub_cts/root" LOC = "BUFGCTRL_X0Y31" ;
+INST "ice/ice_other/buf30m" LOC = "BUFGCTRL_X0Y0" ;
+INST "chiptop/chip/socket/csc/cg/hioscctl/fmain_sel/fih_p1_cts/root" LOC = "BUFGCTRL_X0Y24" ;
+INST "ice/host_interface/usbif2ice/iceifaclk_d2_inferred_clock_cb" LOC = "BUFGCTRL_X0Y7" ;
+INST "chiptop/chip/socket/pclbuz/fmain_cts/root" LOC = "BUFGCTRL_X0Y25" ;
+INST "chiptop/chip/socket/csc/cg/hioscctl/fmain_sel/fih_p3_cts/root" LOC = "BUFGCTRL_X0Y6" ;
+INST "ice/clockctl/mclk4sel/BUFGCTRL" LOC = "BUFGCTRL_X0Y4" ;
+INST "ice/clockctl/ring3mux/BUFGCTRL" LOC = "BUFGCTRL_X0Y26" ;
+INST "ice/timetagv2/dcm240m/CLKFX_BUFG_INST" LOC = "BUFGCTRL_X0Y30" ;
+INST "ice/clockctl/sclkout/BUFGCTRL" LOC = "BUFGCTRL_X0Y5" ;
+INST "chiptop/chip/socket/rtc/main/cnt/clksel/RTC_SELCK_cb" LOC = "BUFGCTRL_X0Y27" ;
+INST "chiptop/oscsub/rtc_bufg" LOC = "BUFGCTRL_X0Y28" ;
+INST "EVAOSCMCLK_ibuf" LOC = "BUFGCTRL_X0Y3" ;
+INST "chiptop/oscsub/sub_bufg" LOC = "BUFGCTRL_X0Y29" ;
+INST "ice/clockctl/dcm5/CLKFX_BUFG_INST" LOC = "BUFGCTRL_X0Y1" ;
+INST "XIL_ML_UNUSED_DCM_1" LOC = "DCM_ADV_X0Y6" ;
+INST "XIL_ML_UNUSED_DCM_2" LOC = "DCM_ADV_X0Y11" ;
+INST "ice/clockctl/dcm3/DCM_ADV_INST" LOC = "DCM_ADV_X0Y7" ;
+INST "chiptop/h_rosc/dcm160m/DCM_ADV_INST" LOC = "DCM_ADV_X0Y5" ;
+INST "ice/clockctl/dcm2/DCM_ADV_INST" LOC = "DCM_ADV_X0Y10" ;
+INST "chiptop/h_rosc/dcm48m/DCM_ADV_INST" LOC = "DCM_ADV_X0Y4" ;
+INST "chiptop/h_rosc/dcm64m/DCM_ADV_INST" LOC = "DCM_ADV_X0Y0" ;
+INST "ice/timetagv2/dcm240m/DCM_ADV_INST" LOC = "DCM_ADV_X0Y9" ;
+INST "chiptop/pll/dcm64m/DCM_ADV_INST" LOC = "DCM_ADV_X0Y2" ;
+INST "ice/clockctl/dcm1/DCM_ADV_INST" LOC = "DCM_ADV_X0Y8" ;
+INST "ice/clockctl/dcm5/DCM_ADV_INST" LOC = "DCM_ADV_X0Y1" ;
+INST "ice/clockctl/dcm4/DCM_ADV_INST" LOC = "DCM_ADV_X0Y3" ;
+INST "CLK30MHZ" LOC = "AL18" ;
+INST "EVAOSCMCLK" LOC = "AM17" ;
+INST "chiptop/chip/pllctl/pllc/bbclk_div/fclk_ds_divider" LOC = "PMCD_X0Y0" ;
+
+# chiptop/chip/RESB_i driven by BUFGCTRL_X0Y15
+NET "chiptop/chip/RESB_i" TNM_NET = "TN_chiptop/chip/RESB_i" ;
+TIMEGRP "TN_chiptop/chip/RESB_i" AREA_GROUP = "CLKAG_chiptop/chip/RESB_i" ;
+AREA_GROUP "CLKAG_chiptop/chip/RESB_i" RANGE =   CLOCKREGION_X0Y2, CLOCKREGION_X1Y2, CLOCKREGION_X1Y3, CLOCKREGION_X1Y4 ;
+
+# ice/emem/rom/EROMCLK_c driven by BUFGCTRL_X0Y17
+NET "ice/emem/rom/EROMCLK_c" TNM_NET = "TN_ice/emem/rom/EROMCLK_c" ;
+TIMEGRP "TN_ice/emem/rom/EROMCLK_c" AREA_GROUP = "CLKAG_ice/emem/rom/EROMCLK_c" ;
+AREA_GROUP "CLKAG_ice/emem/rom/EROMCLK_c" RANGE =   CLOCKREGION_X0Y4, CLOCKREGION_X1Y4, CLOCKREGION_X0Y5, CLOCKREGION_X1Y5, CLOCKREGION_X0Y6, CLOCKREGION_X1Y6, CLOCKREGION_X1Y7 ;
+
+# chiptop/chip/fclkds driven by BUFGCTRL_X0Y2
+NET "chiptop/chip/fclkds" TNM_NET = "TN_chiptop/chip/fclkds" ;
+TIMEGRP "TN_chiptop/chip/fclkds" AREA_GROUP = "CLKAG_chiptop/chip/fclkds" ;
+AREA_GROUP "CLKAG_chiptop/chip/fclkds" RANGE =   CLOCKREGION_X0Y0, CLOCKREGION_X1Y0, CLOCKREGION_X0Y1, CLOCKREGION_X1Y1, CLOCKREGION_X0Y2, CLOCKREGION_X1Y2, CLOCKREGION_X0Y3, CLOCKREGION_X1Y3, CLOCKREGION_X0Y4 ;
+
+# chiptop/chip/socket/csc/cg/mosccnt/fmx4 driven by BUFGCTRL_X0Y14
+NET "chiptop/chip/socket/csc/cg/mosccnt/fmx4" TNM_NET = "TN_chiptop/chip/socket/csc/cg/mosccnt/fmx4" ;
+TIMEGRP "TN_chiptop/chip/socket/csc/cg/mosccnt/fmx4" AREA_GROUP = "CLKAG_chiptop/chip/socket/csc/cg/mosccnt/fmx4" ;
+AREA_GROUP "CLKAG_chiptop/chip/socket/csc/cg/mosccnt/fmx4" RANGE =   CLOCKREGION_X1Y3, CLOCKREGION_X1Y4 ;
+
+# ice/trace/tradr/dmy1_cb driven by BUFGCTRL_X0Y18
+NET "ice/trace/tradr/dmy1_cb" TNM_NET = "TN_ice/trace/tradr/dmy1_cb" ;
+TIMEGRP "TN_ice/trace/tradr/dmy1_cb" AREA_GROUP = "CLKAG_ice/trace/tradr/dmy1_cb" ;
+AREA_GROUP "CLKAG_ice/trace/tradr/dmy1_cb" RANGE =   CLOCKREGION_X1Y1, CLOCKREGION_X0Y2, CLOCKREGION_X1Y2, CLOCKREGION_X0Y3, CLOCKREGION_X1Y3, CLOCKREGION_X0Y4, CLOCKREGION_X1Y4, CLOCKREGION_X0Y5, CLOCKREGION_X1Y5 ;
+
+# ice/trace/tradr/dmy2_cb_0 driven by BUFGCTRL_X0Y13
+NET "ice/trace/tradr/dmy2_cb_0" TNM_NET = "TN_ice/trace/tradr/dmy2_cb_0" ;
+TIMEGRP "TN_ice/trace/tradr/dmy2_cb_0" AREA_GROUP = "CLKAG_ice/trace/tradr/dmy2_cb_0" ;
+AREA_GROUP "CLKAG_ice/trace/tradr/dmy2_cb_0" RANGE =   CLOCKREGION_X0Y2, CLOCKREGION_X1Y2, CLOCKREGION_X0Y3, CLOCKREGION_X1Y3, CLOCKREGION_X0Y4, CLOCKREGION_X1Y4, CLOCKREGION_X0Y5, CLOCKREGION_X1Y5 ;
+
+# CPUMCLK driven by BUFGCTRL_X0Y19
+NET "CPUMCLK" TNM_NET = "TN_CPUMCLK" ;
+TIMEGRP "TN_CPUMCLK" AREA_GROUP = "CLKAG_CPUMCLK" ;
+AREA_GROUP "CLKAG_CPUMCLK" RANGE =   CLOCKREGION_X1Y1, CLOCKREGION_X1Y3, CLOCKREGION_X1Y6 ;
+
+# ice/host_interface/wait_count17_cb driven by BUFGCTRL_X0Y12
+NET "ice/host_interface/wait_count17_cb" TNM_NET = "TN_ice/host_interface/wait_count17_cb" ;
+TIMEGRP "TN_ice/host_interface/wait_count17_cb" AREA_GROUP = "CLKAG_ice/host_interface/wait_count17_cb" ;
+AREA_GROUP "CLKAG_ice/host_interface/wait_count17_cb" RANGE =   CLOCKREGION_X0Y4, CLOCKREGION_X1Y4 ;
+
+# ice/trace/trdata/dmy1_cb_0 driven by BUFGCTRL_X0Y20
+NET "ice/trace/trdata/dmy1_cb_0" TNM_NET = "TN_ice/trace/trdata/dmy1_cb_0" ;
+TIMEGRP "TN_ice/trace/trdata/dmy1_cb_0" AREA_GROUP = "CLKAG_ice/trace/trdata/dmy1_cb_0" ;
+AREA_GROUP "CLKAG_ice/trace/trdata/dmy1_cb_0" RANGE =   CLOCKREGION_X0Y0, CLOCKREGION_X0Y1, CLOCKREGION_X1Y1, CLOCKREGION_X0Y2, CLOCKREGION_X1Y2, CLOCKREGION_X0Y3, CLOCKREGION_X0Y4, CLOCKREGION_X0Y5, CLOCKREGION_X1Y5, CLOCKREGION_X0Y6, CLOCKREGION_X1Y6 ;
+
+# ice/trace/trdata/dmy2_cb_1 driven by BUFGCTRL_X0Y11
+NET "ice/trace/trdata/dmy2_cb_1" TNM_NET = "TN_ice/trace/trdata/dmy2_cb_1" ;
+TIMEGRP "TN_ice/trace/trdata/dmy2_cb_1" AREA_GROUP = "CLKAG_ice/trace/trdata/dmy2_cb_1" ;
+AREA_GROUP "CLKAG_ice/trace/trdata/dmy2_cb_1" RANGE =   CLOCKREGION_X0Y2, CLOCKREGION_X1Y2, CLOCKREGION_X0Y3, CLOCKREGION_X0Y5, CLOCKREGION_X1Y5, CLOCKREGION_X0Y6 ;
+
+# chiptop/chip/socket/csc/cg/hioscctl/fihsync/fih4 driven by BUFGCTRL_X0Y21
+NET "chiptop/chip/socket/csc/cg/hioscctl/fihsync/fih4" TNM_NET = "TN_chiptop/chip/socket/csc/cg/hioscctl/fihsync/fih4" ;
+TIMEGRP "TN_chiptop/chip/socket/csc/cg/hioscctl/fihsync/fih4" AREA_GROUP = "CLKAG_chiptop/chip/socket/csc/cg/hioscctl/fihsync/fih4" ;
+AREA_GROUP "CLKAG_chiptop/chip/socket/csc/cg/hioscctl/fihsync/fih4" RANGE =   CLOCKREGION_X1Y5 ;
+
+# ice/dmy2_cb driven by BUFGCTRL_X0Y10
+NET "ice/dmy2_cb" TNM_NET = "TN_ice/dmy2_cb" ;
+TIMEGRP "TN_ice/dmy2_cb" AREA_GROUP = "CLKAG_ice/dmy2_cb" ;
+AREA_GROUP "CLKAG_ice/dmy2_cb" RANGE =   CLOCKREGION_X1Y1, CLOCKREGION_X0Y3, CLOCKREGION_X0Y5, CLOCKREGION_X0Y6, CLOCKREGION_X1Y6, CLOCKREGION_X0Y7, CLOCKREGION_X0Y8, CLOCKREGION_X0Y9 ;
+
+# chiptop/chip/socket/ocd/main/uart/sclock_16m driven by BUFGCTRL_X0Y22
+NET "chiptop/chip/socket/ocd/main/uart/sclock_16m" TNM_NET = "TN_chiptop/chip/socket/ocd/main/uart/sclock_16m" ;
+TIMEGRP "TN_chiptop/chip/socket/ocd/main/uart/sclock_16m" AREA_GROUP = "CLKAG_chiptop/chip/socket/ocd/main/uart/sclock_16m" ;
+AREA_GROUP "CLKAG_chiptop/chip/socket/ocd/main/uart/sclock_16m" RANGE =   CLOCKREGION_X1Y6 ;
+
+# chiptop/chip/socket/scl_dly driven by BUFGCTRL_X0Y9
+NET "chiptop/chip/socket/scl_dly" TNM_NET = "TN_chiptop/chip/socket/scl_dly" ;
+TIMEGRP "TN_chiptop/chip/socket/scl_dly" AREA_GROUP = "CLKAG_chiptop/chip/socket/scl_dly" ;
+AREA_GROUP "CLKAG_chiptop/chip/socket/scl_dly" RANGE =   CLOCKREGION_X1Y1 ;
+
+# FCLK_ICE driven by BUFGCTRL_X0Y8
+NET "FCLK_ICE" TNM_NET = "TN_FCLK_ICE" ;
+TIMEGRP "TN_FCLK_ICE" AREA_GROUP = "CLKAG_FCLK_ICE" ;
+AREA_GROUP "CLKAG_FCLK_ICE" RANGE =   CLOCKREGION_X0Y0, CLOCKREGION_X1Y0, CLOCKREGION_X0Y1, CLOCKREGION_X1Y1, CLOCKREGION_X0Y2, CLOCKREGION_X1Y2, CLOCKREGION_X0Y3, CLOCKREGION_X1Y3, CLOCKREGION_X0Y4, CLOCKREGION_X1Y4, CLOCKREGION_X0Y5, CLOCKREGION_X1Y5, CLOCKREGION_X0Y6, CLOCKREGION_X1Y6, CLOCKREGION_X0Y7, CLOCKREGION_X1Y7, CLOCKREGION_X0Y8, CLOCKREGION_X1Y8, CLOCKREGION_X0Y9, CLOCKREGION_X1Y9 ;
+
+# chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl0/IL_FIHFL4M driven by BUFGCTRL_X0Y23
+NET "chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl0/IL_FIHFL4M" TNM_NET = "TN_chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl0/IL_FIHFL4M" ;
+TIMEGRP "TN_chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl0/IL_FIHFL4M" AREA_GROUP = "CLKAG_chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl0/IL_FIHFL4M" ;
+AREA_GROUP "CLKAG_chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl0/IL_FIHFL4M" RANGE =   CLOCKREGION_X0Y6, CLOCKREGION_X0Y7 ;
+
+# chiptop/chip/socket/fsub_scck_i driven by BUFGCTRL_X0Y31
+NET "chiptop/chip/socket/fsub_scck_i" TNM_NET = "TN_chiptop/chip/socket/fsub_scck_i" ;
+TIMEGRP "TN_chiptop/chip/socket/fsub_scck_i" AREA_GROUP = "CLKAG_chiptop/chip/socket/fsub_scck_i" ;
+AREA_GROUP "CLKAG_chiptop/chip/socket/fsub_scck_i" RANGE =   CLOCKREGION_X1Y6 ;
+
+# CLK30MHZ_GB driven by BUFGCTRL_X0Y0
+NET "CLK30MHZ_GB" TNM_NET = "TN_CLK30MHZ_GB" ;
+TIMEGRP "TN_CLK30MHZ_GB" AREA_GROUP = "CLKAG_CLK30MHZ_GB" ;
+AREA_GROUP "CLKAG_CLK30MHZ_GB" RANGE =   CLOCKREGION_X0Y0, CLOCKREGION_X1Y0, CLOCKREGION_X0Y1, CLOCKREGION_X1Y1, CLOCKREGION_X0Y6, CLOCKREGION_X0Y7, CLOCKREGION_X0Y8, CLOCKREGION_X0Y9, CLOCKREGION_X1Y9 ;
+
+# chiptop/chip/socket/csc/cg/fih_p1 driven by BUFGCTRL_X0Y24
+NET "chiptop/chip/socket/csc/cg/fih_p1" TNM_NET = "TN_chiptop/chip/socket/csc/cg/fih_p1" ;
+TIMEGRP "TN_chiptop/chip/socket/csc/cg/fih_p1" AREA_GROUP = "CLKAG_chiptop/chip/socket/csc/cg/fih_p1" ;
+AREA_GROUP "CLKAG_chiptop/chip/socket/csc/cg/fih_p1" RANGE =   CLOCKREGION_X0Y0, CLOCKREGION_X1Y0, CLOCKREGION_X0Y1, CLOCKREGION_X0Y7, CLOCKREGION_X1Y7, CLOCKREGION_X0Y8, CLOCKREGION_X1Y8, CLOCKREGION_X0Y9, CLOCKREGION_X1Y9 ;
+
+# ice/host_interface/usbif2ice/iceifaclk_d2 driven by BUFGCTRL_X0Y7
+NET "ice/host_interface/usbif2ice/iceifaclk_d2" TNM_NET = "TN_ice/host_interface/usbif2ice/iceifaclk_d2" ;
+TIMEGRP "TN_ice/host_interface/usbif2ice/iceifaclk_d2" AREA_GROUP = "CLKAG_ice/host_interface/usbif2ice/iceifaclk_d2" ;
+AREA_GROUP "CLKAG_ice/host_interface/usbif2ice/iceifaclk_d2" RANGE =   CLOCKREGION_X0Y1, CLOCKREGION_X1Y7 ;
+
+# chiptop/chip/socket/pclbuz/fmain_scck driven by BUFGCTRL_X0Y25
+NET "chiptop/chip/socket/pclbuz/fmain_scck" TNM_NET = "TN_chiptop/chip/socket/pclbuz/fmain_scck" ;
+TIMEGRP "TN_chiptop/chip/socket/pclbuz/fmain_scck" AREA_GROUP = "CLKAG_chiptop/chip/socket/pclbuz/fmain_scck" ;
+AREA_GROUP "CLKAG_chiptop/chip/socket/pclbuz/fmain_scck" RANGE =   CLOCKREGION_X1Y7 ;
+
+# chiptop/fih_p3_i driven by BUFGCTRL_X0Y6
+NET "chiptop/fih_p3_i" TNM_NET = "TN_chiptop/fih_p3_i" ;
+TIMEGRP "TN_chiptop/fih_p3_i" AREA_GROUP = "CLKAG_chiptop/fih_p3_i" ;
+AREA_GROUP "CLKAG_chiptop/fih_p3_i" RANGE =   CLOCKREGION_X0Y0, CLOCKREGION_X1Y0, CLOCKREGION_X0Y1, CLOCKREGION_X0Y7, CLOCKREGION_X1Y7 ;
+
+# ice/clockctl/main_clk driven by BUFGCTRL_X0Y4
+NET "ice/clockctl/main_clk" TNM_NET = "TN_ice/clockctl/main_clk" ;
+TIMEGRP "TN_ice/clockctl/main_clk" AREA_GROUP = "CLKAG_ice/clockctl/main_clk" ;
+AREA_GROUP "CLKAG_ice/clockctl/main_clk" RANGE =   CLOCKREGION_X1Y7, CLOCKREGION_X1Y8, CLOCKREGION_X1Y9 ;
+
+# CPURCLK3 driven by BUFGCTRL_X0Y26
+NET "CPURCLK3" TNM_NET = "TN_CPURCLK3" ;
+TIMEGRP "TN_CPURCLK3" AREA_GROUP = "CLKAG_CPURCLK3" ;
+AREA_GROUP "CLKAG_CPURCLK3" RANGE =   CLOCKREGION_X0Y7 ;
+
+# ice/timetagv2/CLK240M driven by BUFGCTRL_X0Y30
+NET "ice/timetagv2/CLK240M" TNM_NET = "TN_ice/timetagv2/CLK240M" ;
+TIMEGRP "TN_ice/timetagv2/CLK240M" AREA_GROUP = "CLKAG_ice/timetagv2/CLK240M" ;
+AREA_GROUP "CLKAG_ice/timetagv2/CLK240M" RANGE =   CLOCKREGION_X0Y8, CLOCKREGION_X1Y8, CLOCKREGION_X0Y9, CLOCKREGION_X1Y9 ;
+
+# CPUSCLK driven by BUFGCTRL_X0Y5
+NET "CPUSCLK" TNM_NET = "TN_CPUSCLK" ;
+TIMEGRP "TN_CPUSCLK" AREA_GROUP = "CLKAG_CPUSCLK" ;
+AREA_GROUP "CLKAG_CPUSCLK" RANGE =   CLOCKREGION_X0Y8, CLOCKREGION_X1Y8, CLOCKREGION_X0Y9, CLOCKREGION_X1Y9 ;
+
+# chiptop/chip/socket/rtc/main/cnt/RTC_SELCK driven by BUFGCTRL_X0Y27
+NET "chiptop/chip/socket/rtc/main/cnt/RTC_SELCK" TNM_NET = "TN_chiptop/chip/socket/rtc/main/cnt/RTC_SELCK" ;
+TIMEGRP "TN_chiptop/chip/socket/rtc/main/cnt/RTC_SELCK" AREA_GROUP = "CLKAG_chiptop/chip/socket/rtc/main/cnt/RTC_SELCK" ;
+AREA_GROUP "CLKAG_chiptop/chip/socket/rtc/main/cnt/RTC_SELCK" RANGE =   CLOCKREGION_X0Y0, CLOCKREGION_X1Y0 ;
+
+# chiptop/RTCCLK driven by BUFGCTRL_X0Y28
+NET "chiptop/RTCCLK" TNM_NET = "TN_chiptop/RTCCLK" ;
+TIMEGRP "TN_chiptop/RTCCLK" AREA_GROUP = "CLKAG_chiptop/RTCCLK" ;
+AREA_GROUP "CLKAG_chiptop/RTCCLK" RANGE =   CLOCKREGION_X1Y8 ;
+
+# EVAOSCMCLK_c driven by BUFGCTRL_X0Y3
+NET "EVAOSCMCLK_c" TNM_NET = "TN_EVAOSCMCLK_c" ;
+TIMEGRP "TN_EVAOSCMCLK_c" AREA_GROUP = "CLKAG_EVAOSCMCLK_c" ;
+AREA_GROUP "CLKAG_EVAOSCMCLK_c" RANGE =   CLOCKREGION_X1Y0 ;
+
+# chiptop/OSCOUTS driven by BUFGCTRL_X0Y29
+NET "chiptop/OSCOUTS" TNM_NET = "TN_chiptop/OSCOUTS" ;
+TIMEGRP "TN_chiptop/OSCOUTS" AREA_GROUP = "CLKAG_chiptop/OSCOUTS" ;
+AREA_GROUP "CLKAG_chiptop/OSCOUTS" RANGE =   CLOCKREGION_X0Y8, CLOCKREGION_X1Y8, CLOCKREGION_X0Y9, CLOCKREGION_X1Y9 ;
+
+# CLK60MHZ driven by BUFGCTRL_X0Y1
+NET "CLK60MHZ" TNM_NET = "TN_CLK60MHZ" ;
+TIMEGRP "TN_CLK60MHZ" AREA_GROUP = "CLKAG_CLK60MHZ" ;
+AREA_GROUP "CLKAG_CLK60MHZ" RANGE =   CLOCKREGION_X0Y0, CLOCKREGION_X1Y0, CLOCKREGION_X0Y1, CLOCKREGION_X0Y2, CLOCKREGION_X1Y2, CLOCKREGION_X0Y3, CLOCKREGION_X1Y3, CLOCKREGION_X0Y4, CLOCKREGION_X1Y4, CLOCKREGION_X0Y5, CLOCKREGION_X1Y5, CLOCKREGION_X0Y6, CLOCKREGION_X1Y6, CLOCKREGION_X0Y7, CLOCKREGION_X1Y7, CLOCKREGION_X0Y8, CLOCKREGION_X1Y8, CLOCKREGION_X0Y9, CLOCKREGION_X1Y9 ;
+
+# NOTE: 
+# This report is provided to help reproduce successful clock-region 
+# assignments. The report provides range constraints for all global 
+# clock networks, in a format that is directly usable in ucf files. 
+#
+#END of Global Clock Net Distribution UCF Constraints
+######################################################################################
+
+
+######################################################################################
+GLOBAL CLOCK NET LOADS DISTRIBUTION REPORT:
+
+Number of Global Clock Regions : 20
+Number of Global Clock Networks: 31
+
+Clock Region Assignment: SUCCESSFUL
+
+Clock-Region: <CLOCKREGION_X0Y0> 
+ key resource utilizations (used/available): global-clocks - 2/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      2 |      0 |      0 |     32 |     32 |      8 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      2 |CLK30MHZ_GB
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    939 |chiptop/chip/fclkds
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    941 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y0> 
+ key resource utilizations (used/available): global-clocks - 3/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |CLK60MHZ
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    376 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     21 |chiptop/chip/fclkds
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    397 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X0Y1> 
+ key resource utilizations (used/available): global-clocks - 5/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      4 |      0 |      0 |     32 |     32 |      8 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      4 |CLK30MHZ_GB
+      5 |      1 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      6 |CLK60MHZ
+      5 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     86 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    676 |chiptop/chip/fclkds
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      1 |ice/trace/trdata/dmy1_cb_0
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     10 |      1 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    773 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y1> 
+ key resource utilizations (used/available): global-clocks - 5/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      4 |CLK30MHZ_GB
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    487 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      1 |chiptop/chip/fclkds
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      1 |ice/trace/tradr/dmy1_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      3 |ice/trace/trdata/dmy1_cb_0
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    496 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X0Y2> 
+ key resource utilizations (used/available): global-clocks - 8/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      4 |      0 |     48 |     48 |      8 |      0 |      0 |      0 |      2 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     15 |CLK60MHZ
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    354 |FCLK_ICE
+      0 |      0 |      1 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |chiptop/chip/RESB_i
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    101 |chiptop/chip/fclkds
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      3 |ice/trace/tradr/dmy1_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      2 |ice/trace/tradr/dmy2_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     13 |ice/trace/trdata/dmy1_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      5 |ice/trace/trdata/dmy2_cb_1
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      1 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    493 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y2> 
+ key resource utilizations (used/available): global-clocks - 8/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     27 |CLK60MHZ
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    438 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      4 |chiptop/chip/RESB_i
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      2 |chiptop/chip/fclkds
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      1 |ice/trace/tradr/dmy1_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      1 |ice/trace/tradr/dmy2_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     27 |ice/trace/trdata/dmy1_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     17 |ice/trace/trdata/dmy2_cb_1
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    517 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X0Y3> 
+ key resource utilizations (used/available): global-clocks - 8/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      0 |      0 |     64 |     64 |      8 |      0 |      0 |      0 |      2 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     14 |CLK60MHZ
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    397 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     57 |chiptop/chip/fclkds
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     16 |ice/dmy2_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      4 |ice/trace/tradr/dmy1_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      3 |ice/trace/tradr/dmy2_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     42 |ice/trace/trdata/dmy1_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     36 |ice/trace/trdata/dmy2_cb_1
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    569 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y3> 
+ key resource utilizations (used/available): global-clocks - 7/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     83 |CLK60MHZ
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    456 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     10 |chiptop/chip/RESB_i
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      5 |chiptop/chip/fclkds
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      9 |chiptop/chip/socket/csc/cg/mosccnt/fmx4
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      5 |ice/trace/tradr/dmy1_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      4 |ice/trace/tradr/dmy2_cb_0
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    572 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X0Y4> 
+ key resource utilizations (used/available): global-clocks - 8/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      0 |      0 |     48 |     48 |      8 |      0 |      0 |      0 |      2 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      8 |CLK60MHZ
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    555 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     18 |chiptop/chip/fclkds
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      3 |ice/emem/rom/EROMCLK_c
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      1 |ice/host_interface/wait_count17_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      2 |ice/trace/tradr/dmy1_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      4 |ice/trace/tradr/dmy2_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     54 |ice/trace/trdata/dmy1_cb_0
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    645 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y4> 
+ key resource utilizations (used/available): global-clocks - 8/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     61 |CLK60MHZ
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    439 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      5 |chiptop/chip/RESB_i
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      4 |chiptop/chip/socket/csc/cg/mosccnt/fmx4
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      1 |ice/emem/rom/EROMCLK_c
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     31 |ice/host_interface/wait_count17_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     16 |ice/trace/tradr/dmy1_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      9 |ice/trace/tradr/dmy2_cb_0
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    566 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X0Y5> 
+ key resource utilizations (used/available): global-clocks - 8/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      0 |      0 |     48 |     48 |      8 |      0 |      0 |      0 |      2 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     11 |CLK60MHZ
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    359 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     71 |ice/dmy2_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      2 |ice/emem/rom/EROMCLK_c
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      7 |ice/trace/tradr/dmy1_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      7 |ice/trace/tradr/dmy2_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     29 |ice/trace/trdata/dmy1_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     21 |ice/trace/trdata/dmy2_cb_1
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    507 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y5> 
+ key resource utilizations (used/available): global-clocks - 7/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     10 |CLK60MHZ
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    224 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     11 |ice/emem/rom/EROMCLK_c
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     12 |ice/trace/tradr/dmy1_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      4 |ice/trace/tradr/dmy2_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     27 |ice/trace/trdata/dmy1_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     22 |ice/trace/trdata/dmy2_cb_1
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    310 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X0Y6> 
+ key resource utilizations (used/available): global-clocks - 7/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      0 |      0 |     64 |     64 |      8 |      0 |      0 |      0 |      2 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     18 |CLK60MHZ
+      8 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    421 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     17 |chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl0/IL_FIHFL4M
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     62 |ice/dmy2_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      7 |ice/emem/rom/EROMCLK_c
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      6 |ice/trace/trdata/dmy1_cb_0
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      4 |ice/trace/trdata/dmy2_cb_1
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    535 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y6> 
+ key resource utilizations (used/available): global-clocks - 5/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      9 |CLK60MHZ
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    308 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      9 |ice/dmy2_cb
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     16 |ice/emem/rom/EROMCLK_c
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      3 |ice/trace/trdata/dmy1_cb_0
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    345 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X0Y7> 
+ key resource utilizations (used/available): global-clocks - 5/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      0 |      4 |      0 |     48 |     48 |      8 |      0 |      0 |      0 |      2 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      8 |CLK30MHZ_GB
+      7 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    155 |CLK60MHZ
+      7 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    288 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     10 |chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl0/IL_FIHFL4M
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      2 |ice/dmy2_cb
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     14 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    463 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y7> 
+ key resource utilizations (used/available): global-clocks - 3/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     85 |CLK60MHZ
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    478 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      1 |ice/emem/rom/EROMCLK_c
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    564 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X0Y8> 
+ key resource utilizations (used/available): global-clocks - 4/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      4 |      0 |      0 |     32 |     32 |      8 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      2 |CLK30MHZ_GB
+      7 |      3 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     92 |CLK60MHZ
+      7 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    287 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     17 |ice/dmy2_cb
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     14 |      3 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    398 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y8> 
+ key resource utilizations (used/available): global-clocks - 2/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    101 |CLK60MHZ
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    383 |FCLK_ICE
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    484 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X0Y9> 
+ key resource utilizations (used/available): global-clocks - 4/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     16 |      2 |      0 |      0 |     32 |     32 |      8 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     17 |CLK30MHZ_GB
+      4 |      1 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |     17 |CLK60MHZ
+      4 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    552 |FCLK_ICE
+      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    153 |ice/dmy2_cb
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+      8 |      1 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    739 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+
+Clock-Region: <CLOCKREGION_X1Y9> 
+ key resource utilizations (used/available): global-clocks - 2/8 ;
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+   BRAM |    DCM |   PMCD |     GT | ILOGIC | OLOGIC |   MULT |   EMAC |    PPC |   PCIE | IDLYCT | LUTRAM |     FF | <- (Types of Resources in this  Region)
+   FIFO |        |        |        |        |        |        |        |        |        |        |        |        |
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |     32 |     32 |      0 |      0 |      0 |      0 |      1 |   1792 |   3584 | <- (Available Resources in this Region)
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+        |        |        |        |        |        |        |        |        |        |        |        |        | <Global clock Net Name>
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |CLK60MHZ
+     12 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    292 |FCLK_ICE
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+     24 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |      0 |    292 | Total 
+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+----------------------------------------
+
+NOTE:
+The above detailed report is the initial placement of the logic after the clock region assignment. The final placement
+may be significantly different because of the various optimization steps which will follow. Specifically, logic blocks
+maybe moved to adjacent clock-regions as long as the "number of clocks per region" constraint is not violated.
+
+
+# END of Global Clock Net Loads Distribution Report:
+######################################################################################
+
+
+Phase 6.30  Global Clock Region Assignment (Checksum:8443351a) REAL time: 10 hrs 29 mins 8 secs 
+
+Phase 7.3  Local Placement Optimization
+....
+Phase 7.3  Local Placement Optimization (Checksum:21615bf7) REAL time: 10 hrs 29 mins 24 secs 
+
+Phase 8.5  Local Placement Optimization
+Phase 8.5  Local Placement Optimization (Checksum:21615bf7) REAL time: 10 hrs 29 mins 24 secs 
+
+Phase 9.8  Global Placement
+.......................
+.......................................................................................................................................
+..................................................
+.............................................................................................................................................................
+........................................................................
+...........................................................................................................
+.....................................
+........................
+Phase 9.8  Global Placement (Checksum:c1d8643f) REAL time: 12 hrs 10 mins 2 secs 
+
+Phase 10.5  Local Placement Optimization
+Phase 10.5  Local Placement Optimization (Checksum:c1d8643f) REAL time: 12 hrs 10 mins 2 secs 
+
+Phase 11.18  Placement Optimization
+Phase 11.18  Placement Optimization (Checksum:491093b3) REAL time: 13 hrs 6 mins 4 secs 
+
+Phase 12.5  Local Placement Optimization
+Phase 12.5  Local Placement Optimization (Checksum:491093b3) REAL time: 13 hrs 6 mins 5 secs 
+
+Phase 13.34  Placement Validation
+Phase 13.34  Placement Validation (Checksum:491093b3) REAL time: 13 hrs 6 mins 6 secs 
+
+Total REAL time to Placer completion: 13 hrs 7 mins 43 secs 
+Total CPU  time to Placer completion: 13 hrs 7 mins 30 secs 
+Running post-placement packing...
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ICEWR is sourced by a combinatorial pin. This is not good design
+   practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/csc/rg/resctl_main/resf_reg_wr/N_126743_i is
+   sourced by a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into
+   the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/dali/ch0/func/asclk is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net USBIFWR is sourced by a combinatorial pin. This is not good design
+   practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/clockctl/sclkmux/CPUTSCLK_iclk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net
+   chiptop/chip/socket/modectl/modectl_top/modectl_main/test_mode/RESINB_clk is sourced by a combinatorial pin. This is
+   not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/ICEWR_PRE_iclk is sourced by a combinatorial pin. This is not
+   good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/pllctl/pllc/bbclkrp is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk2_5 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk1_4 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/cksel32_y/un1_clk1_clk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk2_3 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk1_1 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/cksel24_y/un1_clk1_clk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/R15KOUT is sourced by a combinatorial pin. This is not good
+   design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/N_1904_i is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/N_1905_i is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/N_1906_i is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk1_0 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/OSCOUTM_iclk is sourced by a combinatorial pin. This is not
+   good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/N_3793_i is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/N_3794_i is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net
+   chiptop/chip/socket/csc/cg/tbase/fmain_fsub_sel/cksel_fmain_fsub/clk2_m_iclk is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/adcnt/ADRD_B_c_clk is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net
+   chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpl5/CPL5_ERDIS/N_126077_i is sourced by a combinatorial pin. This is
+   not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/csc/rg/lvictl/main/lvilv_set_i is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/cibc/fmop/main/trmlv/bgrt_clk/bgrt_ck_or is
+   sourced by a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into
+   the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/csc/rg/resctl_main/N_126741_i is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/csc/rg/lvictl/counter/fil15kin is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk1 is sourced by a combinatorial pin. This is
+   not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/host_interface/usbifrd is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/ICERD_i is sourced by a combinatorial pin. This is not good
+   design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/csc/rg/resctl_main/N_126739_i is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/BBINT13R is sourced by a combinatorial pin. This is
+   not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/porga/intctl/intp22mk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/porga/intctl/intp23mk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/host_interface/usb2usbif/hi_wr_i is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/N_3899_clk is sourced
+   by a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/csc/rg/resctl_main/N_126740_i is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa1/core/fch0/un6_async2_resz_iclk is sourced by
+   a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/BBINT2R is sourced by a combinatorial pin. This is not
+   good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpmd/DRDCLK_i is
+   sourced by a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into
+   the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa0/core/fch1/N_9_iclk is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk2_4 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/cksel2432/un1_clk1_clk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa1/core/fch0/N_9_iclk is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk2_6 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/cksel2432/un1_clk2_clk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/N_74 is sourced by a combinatorial pin. This is
+   not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa2/core/fch1/N_9_iclk is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net
+   chiptop/chip/socket/csc/cg/hioscctl/fmain_sel/cksel_fmain_p/clk2_m_iclk is sourced by a combinatorial pin. This is
+   not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpmd/RDCLK2_i is
+   sourced by a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into
+   the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa2/core/fch1/un6_async2_resz_iclk is sourced by
+   a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/csc/rg/resctl_main/N_126742_i is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa0/core/fch1/un6_async2_resz_iclk is sourced by
+   a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/INTIIC0 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/cksel2464/un1_clk1_clk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/BBINT3R is sourced by a combinatorial pin. This is not
+   good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/trace/trace_cont/N_1206_i is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net USBIFWR_i_iclk is sourced by a combinatorial pin. This is not good
+   design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/clockctl/evamclksel/main_out_iclk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/cibc/fmop/main/trmlv/bgrtc_clk/bgrt_ck_or is
+   sourced by a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into
+   the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/BBINT5R is sourced by a combinatorial pin. This is not
+   good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/BBINT1R is sourced by a combinatorial pin. This is not
+   good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa0/N_9 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa0/un6_async2_resz is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/csc/rg/lvictl/main/lvilv_exor_iclk is sourced
+   by a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/clockctl/un1_clk1 is sourced by a combinatorial pin. This is
+   not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/clockctl/un1_clk2 is sourced by a combinatorial pin. This is
+   not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/FIHOCD_i is sourced by a combinatorial pin. This is not
+   good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/FIHOCD is sourced by a combinatorial pin. This is not good
+   design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa2/core/fch0/N_9_iclk is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/sau0/ch0/func/asclk is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net CPUTMCLK is sourced by a combinatorial pin. This is not good design
+   practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/trace/trace_cont/N_1205_i is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/N_125896_i is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/pllctl/pllc/bbclkmp is sourced by a combinatorial pin.
+   This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/clockctl/evasclksel/sub_out_iclk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/flash_cp/QNSC3NCP1V2_CPIL/cpmd/RDCLK_iclk is
+   sourced by a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into
+   the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/int48/main/sfrreg/IFREG1/INTLVI_clk is sourced
+   by a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/INTP0 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa2/core/fch0/un6_async2_resz_iclk is sourced by
+   a combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/INTP3 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/FIHFL is sourced by a combinatorial pin. This is not good
+   design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/INTP4 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net ice/emem/rom/sel_cpu_romcksel_iclk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/INTP5 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/porga/intctl/intp20mk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa1/un6_async2_resz is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/porga/intctl/intp21mk is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk2 is sourced by a combinatorial pin. This is
+   not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk2_1 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk2_0 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/h_rosc/un1_clk2_2 is sourced by a combinatorial pin. This
+   is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/csc/rg/lvictl/main/C2_i is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/socket/sau0/wup/un1_ckp_1_iclk[0] is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/dali/wup/un1_ckp_1_iclk[0] is sourced by a
+   combinatorial pin. This is not good design practice. Use the CE pin to control the loading of data into the
+   flip-flop.
+WARNING:PhysDesignRules:372 - Gated clock. Clock net chiptop/chip/tmkbopa1/core/fch1/N_9 is sourced by a combinatorial
+   pin. This is not good design practice. Use the CE pin to control the loading of data into the flip-flop.
+WARNING:PhysDesignRules:1245 - Unexpected DCM_ADV configuration. The signal chiptop/h_rosc/CLK64M on the CLKIN pin of
+   DCM_ADV comp chiptop/h_rosc/dcm160m/DCM_ADV_INST is not driven by an IOB, BUFG or BUFGCTRL therefore the phase
+   relationship of output clocks to CLKIN cannot be guaranteed.
+WARNING:PhysDesignRules:1245 - Unexpected DCM_ADV configuration. The signal chiptop/h_rosc/CLK64M on the CLKIN pin of
+   DCM_ADV comp chiptop/h_rosc/dcm48m/DCM_ADV_INST is not driven by an IOB, BUFG or BUFGCTRL therefore the phase
+   relationship of output clocks to CLKIN cannot be guaranteed.
+
+Design Summary
+--------------
+
+Design Summary:
+Number of errors:      0
+Number of warnings:  133
+Logic Utilization:
+  Total Number Slice Registers:      15,000 out of  71,680   20%
+    Number used as Flip Flops:       13,862
+    Number used as Latches:           1,138
+  Number of 4 input LUTs:            37,683 out of  71,680   52%
+Logic Distribution:
+  Number of occupied Slices:         25,088 out of  35,840   70%
+    Number of Slices containing only related logic:  25,088 out of  25,088 100%
+    Number of Slices containing unrelated logic:          0 out of  25,088   0%
+      *See NOTES below for an explanation of the effects of unrelated logic.
+  Total Number of 4 input LUTs:      38,233 out of  71,680   53%
+    Number used as logic:            37,683
+    Number used as a route-thru:        550
+
+  The Slice Logic Distribution report is not meaningful if the design is
+  over-mapped for a non-slice resource or if Placement fails.
+  Number of bonded IOBs:                589 out of     768   76%
+    IOB Flip Flops:                       8
+  Number of BUFG/BUFGCTRLs:              31 out of      32   96%
+    Number used as BUFGs:                26
+    Number used as BUFGCTRLs:             5
+  Number of FIFO16/RAMB16s:             196 out of     200   98%
+    Number used as RAMB16s:             196
+  Number of DSP48s:                       2 out of      80    2%
+  Number of DCM_ADVs:                    10 out of      12   83%
+  Number of PMCDs:                        1 out of       8   12%
+
+Average Fanout of Non-Clock Nets:                3.69
+
+Peak Memory Usage:  1436 MB
+Total REAL time to MAP completion:  13 hrs 8 mins 18 secs 
+Total CPU time to MAP completion:   13 hrs 8 mins 5 secs 
+
+Mapping completed.
+See MAP report file "EVA_TOP_map.mrp" for details.

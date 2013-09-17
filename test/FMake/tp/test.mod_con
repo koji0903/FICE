@@ -1,0 +1,28 @@
+#
+# Test for MOD_CON
+#
+
+# other connect
+Port_OtherConnect MA.PA ## adfa
+Port_OtherConnect2 SOCKET.MA.PA 
+
+# pulldown
+Port_Pulldown PULLDOWN
+
+# pullup
+Port_PulllUP  PULLUP
+
+# Open
+Port_Open OPEN
+
+# Drive Change
+Port_DriveChange MB.PortChange ME.MBPortChange:drive
+Port_DriveChange2 SOCKET.MB.PortChange SOCKET.ME.MBPortChange:drive
+
+# Terminal( with name )
+Port_TerminalWithName TerA:terminal 
+
+
+# Terminal( without name )
+Port_TerminalWithoutName :terminal
+

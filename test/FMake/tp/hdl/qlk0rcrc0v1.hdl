@@ -1,0 +1,312 @@
+/***********************************************************************/
+/*  Module Name : QLK0RCRC0V1    	                               */
+/*  Author      : Siva                                                 */
+/*  Rev, Date   : 0.10 2010/03/17                                      */
+/***********************************************************************/
+//²þÄêÍúÎò
+//  0.10    2010/03/17  Siva  First Relese
+//	Functional + DFT Release
+/************************************************************************/
+//³¬ÁØ¹½Â¤
+//      QLK0RCRC0V1
+//        +--QLK0RCRC0V1_BI
+//        +--QLK0RCRC0V1_MAIN
+//
+/************************************************************************/
+
+module QLK0RCRC0V1 (
+	PWRITE,		
+        PSELCRC,
+       	PENABLE,
+        PWDATA15,
+	PWDATA14,
+       	PWDATA13,
+       	PWDATA12,
+       	PWDATA11,
+	PWDATA10,
+       	PWDATA9,
+       	PWDATA8,
+	PWDATA7,	
+       	PWDATA6,	
+       	PWDATA5,	
+       	PWDATA4,
+	PWDATA3,
+       	PWDATA2,
+       	PWDATA1,	
+       	PWDATA0,	
+	PRDATA15,	
+       	PRDATA14,	
+       	PRDATA13,
+       	PRDATA12,
+	PRDATA11,
+       	PRDATA10,
+       	PRDATA9,
+       	PRDATA8,
+	PRDATA7,
+       	PRDATA6,
+       	PRDATA5,	
+       	PRDATA4,
+	PRDATA3,
+       	PRDATA2,
+       	PRDATA1,	
+       	PRDATA0,
+	PADDR1,
+       	PADDR0,
+	BASECK,	
+       	RESB,	
+       	PCLKRW				
+);		
+
+input 	BASECK;		// CPU Base clock
+input	PCLKRW;		// CRCIN register read / write clock
+input 	RESB;		// Peripheral reset
+input 	PWRITE;		// Peripheral write status signal
+input 	PSELCRC;		// Chip select signal
+input 	PENABLE;	// Read / write enable signal
+input 	PWDATA15;	// Peripheral Write data bus
+input 	PWDATA14;	// Peripheral Write data bus
+input 	PWDATA13;	// Peripheral Write data bus
+input 	PWDATA12;	// Peripheral Write data bus
+input 	PWDATA11;	// Peripheral Write data bus
+input 	PWDATA10;	// Peripheral Write data bus
+input 	PWDATA9;	// Peripheral Write data bus
+input 	PWDATA8;	// Peripheral Write data bus
+input 	PWDATA7;	// Peripheral Write data bus
+input 	PWDATA6;	// Peripheral Write data bus
+input 	PWDATA5;	// Peripheral Write data bus
+input 	PWDATA4;	// Peripheral Write data bus
+input 	PWDATA3;	// Peripheral Write data bus
+input 	PWDATA2;	// Peripheral Write data bus
+input 	PWDATA1;	// Peripheral Write data bus
+input 	PWDATA0;	// Peripheral Write data bus
+input 	PADDR1;		// Peripheral Address bus
+input 	PADDR0;		// Peripheral Address bus
+
+output	PRDATA15;	// Peripheral Read data bus	
+output	PRDATA14;	// Peripheral Read data bus	
+output	PRDATA13;	// Peripheral Read data bus
+output	PRDATA12;	// Peripheral Read data bus
+output	PRDATA11;	// Peripheral Read data bus
+output	PRDATA10;	// Peripheral Read data bus
+output	PRDATA9;        // Peripheral Read data bus
+output	PRDATA8;        // Peripheral Read data bus
+output	PRDATA7;        // Peripheral Read data bus
+output	PRDATA6;        // Peripheral Read data bus
+output	PRDATA5;        // Peripheral Read data bus       
+output	PRDATA4;        // Peripheral Read data bus
+output	PRDATA3;        // Peripheral Read data bus
+output	PRDATA2;        // Peripheral Read data bus
+output	PRDATA1;        // Peripheral Read data bus       
+output	PRDATA0;        // Peripheral Read data bus
+
+
+wire	[15:0]	pwdata;		// Concatenated PWDATA bus
+wire	[15:0]	prdata;		// Concatenated PRDATA bus
+wire    [1:0]   paddr;		// Concatenated PADDR bus
+wire	[15:0]	din;	
+wire	[15:0]	dout;
+wire		we_crcd;
+wire		we_crcin;
+wire		re_crcd;
+wire		re_crcin;
+
+// assign	paddr = {PADDR1,PADDR0};
+assign	pwdata ={PWDATA15,PWDATA14,PWDATA13,PWDATA12,PWDATA11,PWDATA10,PWDATA9,PWDATA8,PWDATA7,PWDATA6,PWDATA5,PWDATA4,PWDATA3,PWDATA2,PWDATA1,PWDATA0};
+assign	{PRDATA15,PRDATA14,PRDATA13,PRDATA12,PRDATA11,PRDATA10,PRDATA9,PRDATA8,PRDATA7,PRDATA6,PRDATA5,PRDATA4,PRDATA3,PRDATA2,PRDATA1,PRDATA0}= prdata;
+	
+
+/********************************************************************/
+/*CPU/Perpheral Bus Interface QLK0RCRC0V1_BI                        */
+/*------------------------------------------------------------------*/
+/*  CRCIN,CRCD register access control logic                        */
+/********************************************************************/
+ QLK0RCRC0V1_BI bi (
+	.PADDR({PADDR1,PADDR0}),		// Peripheral address bus
+        .PWRITE(PWRITE), 	// Peripheral Write enable signal
+        .PSELCRC(PSELCRC),	// Chip select signal
+	.PENABLE(PENABLE),	// Register read write enable signal
+	.PRDATA(prdata),	// Peripheral Read Data bus
+	.PWDATA(pwdata),	// Peripheral Write Data  bus
+   	.din(din),		// Qualifed write data bus output
+   	.dout(dout),		// Multiplexed Read data bus input
+	.we_crcin(we_crcin),	// CRCIN register write enable signal
+   	.we_crcd(we_crcd),	// CRCD register Write enable signal 
+	.re_crcd(re_crcd),	// Read enable signal to select CRCD Register
+	.re_crcin(re_crcin)	// Read enable signal to select CRCIN Register
+	);
+
+/********************************************************************/
+/*CRC-CCITT Operation ô QLK0RCRC0V1_MN	                            */
+/*------------------------------------------------------------------*/
+/* CRC Error Code Generation logic  				    */
+/********************************************************************/
+
+ QLK0RCRC0V1_MAIN main (
+	.BASECK(BASECK),	// CPU Base Clock	
+	.PCLKRW(PCLKRW),	// CRCIN Register clock 
+	.RESB(RESB),		// Peripheral reset
+	.din(din),		// Qualified wirte data bus input
+	.dout(dout),		// Multiplexed read data bus output
+	.we_crcd(we_crcd),	// CRCD Register write enable signal
+	.we_crcin(we_crcin),	// CRCIN Register write enable signal
+	.re_crcd(re_crcd),	// Read enable signal to select CRCD Register
+	.re_crcin(re_crcin)	// Read enable signal to select CRCIN Register
+);
+
+endmodule
+
+/********************************************************************/
+/* Module Name : QLK0RCRC0V1_BI                                  */
+/********************************************************************/
+module QLK0RCRC0V1_BI (
+       		PWRITE, 	
+	        PSELCRC,		
+		PENABLE,	
+		PRDATA,		
+		PWDATA,		
+		PADDR,		
+   		din,		
+   		dout,		
+		we_crcin,	
+   		we_crcd,	
+		re_crcin,
+		re_crcd	
+);
+
+	input		PWRITE;		// Peripheral write enable signal
+	input		PSELCRC;		// Chip select signal
+	input		PENABLE;	// Register read write enable signal
+	input	[1:0]	PADDR;		// Peripheral Address bus
+	input   [15:0]  PWDATA;		// Peripheral Write Data  bus		
+        input   [15:0]  dout;		// Multiplexed Read data bus input		
+
+	output	[15:0]	PRDATA;		// Peripheral Read Data bus
+	output		we_crcin;	// CRCIN register write enable signal
+	output		we_crcd;	// CRCD register Write enable signal 
+	output		re_crcin;	// Read enable signal to select CRCIN Register
+	output		re_crcd;	// Read enable signal to select CRCD Register
+	output	[15:0]	din;		// Qualifed write data bus output
+
+	wire 		sel_crcd;	// Decoded signal to select CRCD
+	wire 		sel_crcin;	// Decoded signal to select CRCIN
+	wire		cs;		// Valid Chip select signal
+
+	// Valid Chip select signal generation
+
+	assign cs = PSELCRC & PENABLE;
+
+	// Address decoding Logic
+
+	assign sel_crcd  = PADDR[1] & cs;	// CRCD select if PADDR[1] is 1 during valid cs 
+ 	assign sel_crcin = !PADDR[1] & cs;	// CRCIN select if PADDR[1] is 0 during valid cs
+	   
+	// Write enable generation Logic
+
+	assign we_crcd = sel_crcd & PWRITE ;
+	assign we_crcin = sel_crcin & PWRITE ;
+
+	assign re_crcd  = sel_crcd  & !PWRITE;	// CRCD Read enable signal generation
+	assign re_crcin = sel_crcin & !PWRITE;	// CRCIN Read enable signal generation
+	assign din    = PWDATA;			// Assign write data to internal bus
+	assign PRDATA	= dout;			// Assign internal bus to read data
+
+endmodule
+
+
+/********************************************************************/
+/* Module Name : QLK0RCRC0V1_MAIN                             */
+/********************************************************************/
+module QLK0RCRC0V1_MAIN (
+		BASECK,		
+		PCLKRW,		
+		RESB,		
+		din,            
+		dout,           
+		we_crcd,        
+		we_crcin,       
+		re_crcd,
+		re_crcin
+);
+
+
+input		BASECK;		// CPU Base Clock	
+input		PCLKRW;	        // CRCIN Register clock 
+input		RESB;          // Peripheral reset
+input		we_crcd;        // CRCD Register write enable signal
+input		we_crcin;       // CRCIN Register write enable signal
+input		re_crcd;	// Read enable signal to select CRCD Register
+input		re_crcin;      // Read enable signal to select CRCIN Register
+input	[15:0]	din;            // Qualified write data bus input
+                                
+output  [15:0]  dout;		// Multiplexed read data bus output	
+
+reg	[7:0]	crcin;		// CRCIN Register
+reg 	[15:0]	crcd;		// CRCD Operation result 
+reg 		ld_crcd;	// CRC Operation result load enable 
+
+wire 	[15:0]	crcd_temp;	// CRC Calculation output
+	
+  /*** CRC Input Register Write logic ***/
+
+  // synopsys async_set_reset "RESB"
+  always@(posedge PCLKRW or negedge RESB)
+    begin
+      if (!RESB )
+        crcin  <= 8'h00 ;
+      else if (we_crcin)	// Write during CRCIN write enable	
+        crcin <= din[7:0] ; 	// Write Lower byte of Write data
+    end
+
+  /* CRC Calculation Logic (Old logic Retained) */
+
+  assign crcd_temp[15] = (crcd[7]^crcin[7])^(crcd[3]^crcin[3]);
+  assign crcd_temp[14] = (crcd[6]^crcin[6])^(crcd[2]^crcin[2]);
+  assign crcd_temp[13] = (crcd[1]^crcin[1])^(crcd[5]^crcin[5]);
+  assign crcd_temp[12] = (crcd[4]^crcin[4])^(crcd[0]^crcin[0]);
+  assign crcd_temp[11] = crcd[3]^crcin[3];
+  assign crcd_temp[10] = (crcd[2]^crcin[2])^(crcd[3]^crcin[3])^(crcd[7]^crcin[7]);
+  assign crcd_temp[9] = (crcd[1]^crcin[1])^(crcd[2]^crcin[2])^(crcd[6]^crcin[6]);
+  assign crcd_temp[8] = (crcd[0]^crcin[0])^(crcd[1]^crcin[1])^(crcd[5]^crcin[5]);
+  assign crcd_temp[7] = crcd[15]^(crcd[4]^crcin[4])^(crcd[0]^crcin[0]);
+  assign crcd_temp[6] = crcd[14]^(crcd[3]^crcin[3]);
+  assign crcd_temp[5] = crcd[13]^(crcd[2]^crcin[2]);
+  assign crcd_temp[4] = crcd[12]^(crcd[1]^crcin[1]);
+  assign crcd_temp[3] = crcd[11]^(crcd[0]^crcin[0])^(crcd[3]^crcin[3])^(crcd[7]^crcin[7]);
+  assign crcd_temp[2] = crcd[10]^(crcd[2]^crcin[2])^(crcd[6]^crcin[6]);
+  assign crcd_temp[1] = crcd[9]^(crcd[5]^crcin[5])^(crcd[1]^crcin[1]);
+  assign crcd_temp[0] = crcd[8]^(crcd[4]^crcin[4])^(crcd[0]^crcin[0]);
+
+ 
+  /*** CRC Operation result load enable generation ***/
+
+  // synopsys async_set_reset "RESB"
+  always@(posedge BASECK or negedge RESB )
+    begin
+      if (!RESB)
+          ld_crcd <= 1'b0 ;
+      else if(we_crcin) 	
+          ld_crcd <= 1'b1;	// set when we_crcin is valid
+      else 
+	  ld_crcd <= 1'b0;
+      end
+
+  /*** CRC Operation result Register ***/
+
+  // synopsys async_set_reset "RESB"
+  always@(posedge BASECK or negedge RESB )
+    begin
+      if (!RESB)
+        crcd <= 16'h0000 ;
+      else if(ld_crcd)
+        crcd <= crcd_temp;	// load CRC Operation result when ld_crcd is valid
+      else if(we_crcd)
+        crcd <= din[15:0] ;	// CPU write when we_crcd is valid
+      end
+
+  /*** Read data output multiplex logic ***/
+
+  assign dout = re_crcin?{8'b0,crcin[7:0]} : re_crcd? crcd : 16'h0; // CRCIN register Output on re_crcin
+		                				    // CRCD register Output on re_crcd
+								     // Else 0 
+endmodule
+

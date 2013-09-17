@@ -1,0 +1,970 @@
+// =======================================================================================================================
+//
+//  CIB for SS3rd
+//  Macro Name	: QLK0RCIBDM3SF1V1
+//  Version	: v1.00
+//  Date	: 2009.10.28 Wed
+//  Designe	: I.Uike
+// -----------------------------------------------------------------------------------------------------------------------
+//  Version     : v1.10
+//  Date        : 2010.08.19 Thu
+//  Designe     : S.Nakata
+//
+// 2010.09.10) M.Ouchiyama change DRDCLK selector
+// -----------------------------------------------------------------------------------------------------------------------
+//  Version     : v1.20
+//  Date        : 2010.10.15 Fri
+//  Designe     : M.Higashi
+//  Memo        : 1. revice "DCE=H"
+//  		: 2. Change Macro Internal Signal BASECK -> BASECKHS, New Add Port BASECK 
+// -----------------------------------------------------------------------------------------------------------------------
+
+module QLK0RCIBDM3SF1V1 (
+    PENABLE  ,PWRITE   ,PSEL1    ,                                                      // APB
+    PADDR1   ,                                                                          // APB
+    PWDATA7  ,                    PWDATA4  ,PWDATA3  ,                    PWDATA0  ,    // APB
+    PRDATA15 ,PRDATA14 ,PRDATA13 ,PRDATA12 ,PRDATA11 ,PRDATA10 ,PRDATA9  ,PRDATA8  ,    // APB
+    PRDATA7  ,PRDATA6  ,PRDATA5  ,PRDATA4  ,PRDATA3  ,PRDATA2  ,PRDATA1  ,PRDATA0  ,    // APB
+    BASECKHS ,RESETB   ,                                                                // Clock & Reset
+    SCANCLK  ,RESB     ,                                                                // Clock & Reset for v1.10
+    MA13     ,MA12     ,MA11     ,MA10     ,MA9      ,MA8      ,
+    MA7      ,MA6      ,MA5      ,MA4      ,MA3      ,MA2      ,MA1      ,MA0      ,
+    MDR15    ,MDR14    ,MDR13    ,MDR12    ,MDR11    ,MDR10    ,MDR9     ,MDR8     ,
+    MDR7     ,MDR6     ,MDR5     ,MDR4     ,MDR3     ,MDR2     ,MDR1     ,MDR0     ,
+    SLDFLASH ,                                                                          // CPU ¥Õ¥é¥Ã¥·¥åÁªÂò
+    FHLTST   ,FSTPST   ,  
+    SUB      ,
+    AF13     ,AF12     ,AF11     ,AF10     ,AF9      ,AF8      ,			// FCB Address
+    AF7      ,AF6      ,AF5      ,AF4      ,AF3      ,AF2      ,AF1      ,AF0      ,	// FCB Address
+    DFLRO11  ,DFLRO10  ,DFLRO9   ,DFLRO8   ,						// CIB->FCB ¥Ç¡¼¥¿
+    DFLRO7   ,DFLRO6   ,DFLRO5   ,DFLRO4   ,DFLRO3   ,DFLRO2   ,DFLRO1   ,DFLRO0   ,    // CIB->FCB ¥Ç¡¼¥¿
+    SACEEN   , 
+    DCE0     ,										// FLASH CHIP Enable
+    DA13     ,DA12     ,DA11     ,DA10     ,DA9      ,DA8      ,			// FLASH Address
+    DA7      ,DA6      ,DA5      ,DA4      ,DA3      ,DA2      ,DA1      ,DA0      ,	// FLASH Address
+    DRO011   ,DRO010   ,DRO09    ,DRO08    ,						// FLASH->CIB ¥Ç¡¼¥¿
+    DRO07    ,DRO06    ,DRO05    ,DRO04    ,DRO03    ,DRO02    ,DRO01    ,DRO00    ,	// FLASH->CIB ¥Ç¡¼¥¿
+    DCLKSEL1 ,
+    DSRCUT   ,DFLSTOP  ,
+    OPTMDUMP , 
+    TESTMOD  ,TMODDFT  ,
+    TESDBT   ,SCANMODE ,
+    TA13     ,TA12     ,TA11     ,TA10     ,TA9      ,TA8      ,
+    TA7      ,TA6      ,TA5      ,TA4      ,TA3      ,TA2      ,TA1      ,TA0      ,
+    // The following ports are added for SS3rd_CIB.
+    DECCE    ,										// SS3rd: 2009.09.25 Chg for FCB
+    EEEMD    ,
+    DFLEN    , DRDCLK   , DRDCLKC1 ,
+    ICENOECC ,
+    OPTDFL   , SELTADF  ,
+    SLECCOFF , DECCER   ,
+    STDWAIT  ,
+    TFLSTOPD , AisRSEQ  , RDSETUP ,
+    BASECK
+);
+
+
+
+
+
+input  PENABLE;    // APB¥¢¥¯¥»¥¹¥¤¥Í¡¼¥Ö¥ë
+input  PWRITE;     // APB¥é¥¤¥È¿®¹æ
+input  PSEL1;      // ÄÌ¾ï¥ì¥¸¥¹¥¿
+input  PADDR1;     // APB¥¢¥É¥ì¥¹
+input  PWDATA7;    // APB¥é¥¤¥È¥Ç¡¼¥¿
+input  PWDATA4;    // APB¥é¥¤¥È¥Ç¡¼¥¿
+input  PWDATA3;    // APB¥é¥¤¥È¥Ç¡¼¥¿
+input  PWDATA0;    // APB¥é¥¤¥È¥Ç¡¼¥¿
+output PRDATA15;   // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA14;   // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA13;   // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA12;   // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA11;   // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA10;   // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA9;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA8;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA7;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA6;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA5;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA4;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA3;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA2;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA1;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+output PRDATA0;    // APB¥ê¡¼¥É¥Ç¡¼¥¿
+
+input  BASECKHS;   // Æ°ºî¥¯¥í¥Ã¥¯
+input  RESETB;     // POC+Ã¼»Ò+WDT+LVI+¥½¥Õ¥È¥ê¥»¥Ã¥È¿®¹æ¡Ê¥í¥¦¥¢¥¯¥Æ¥£¥Ö¡Ë
+
+input  SCANCLK;    // for v1.10
+input  RESB;       // for v1.10
+
+input  MA13;       // CPU¥¢¥É¥ì¥¹
+input  MA12;       // CPU¥¢¥É¥ì¥¹
+input  MA11;       // CPU¥¢¥É¥ì¥¹
+input  MA10;       // CPU¥¢¥É¥ì¥¹
+input  MA9;        // CPU¥¢¥É¥ì¥¹
+input  MA8;        // CPU¥¢¥É¥ì¥¹
+input  MA7;        // CPU¥¢¥É¥ì¥¹
+input  MA6;        // CPU¥¢¥É¥ì¥¹
+input  MA5;        // CPU¥¢¥É¥ì¥¹
+input  MA4;        // CPU¥¢¥É¥ì¥¹
+input  MA3;        // CPU¥¢¥É¥ì¥¹
+input  MA2;        // CPU¥¢¥É¥ì¥¹
+input  MA1;        // CPU¥¢¥É¥ì¥¹
+input  MA0;        // CPU¥¢¥É¥ì¥¹
+
+output MDR15;      //
+output MDR14;      //
+output MDR13;      //
+output MDR12;      //
+output MDR11;      //
+output MDR10;      //
+output MDR9;       //
+output MDR8;       //
+output MDR7;       //
+output MDR6;       //
+output MDR5;       //
+output MDR4;       //
+output MDR3;       //
+output MDR2;       //
+output MDR1;       //
+output MDR0;       //
+
+input  SLDFLASH;   // CPU¥Õ¥é¥Ã¥·¥åÁªÂò¿®¹æ
+
+input  FHLTST;     //
+input  FSTPST;     //
+
+input  SUB;        //
+
+input  AF13;       // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF12;       // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF11;       // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF10;       // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF9;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF8;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF7;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF6;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF5;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF4;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF3;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF2;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF1;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+input  AF0;        // FCB¤Î¥Õ¥é¥Ã¥·¥å¥¢¥É¥ì¥¹
+
+output DFLRO11;    // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO10;    // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO9;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO8;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO7;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO6;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO5;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO4;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO3;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO2;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO1;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+output DFLRO0;     // FCB¤Ø¤ÎFLASH¥Ç¡¼¥¿½ÐÎÏ
+
+input  SACEEN;     // ¥ï¡¼¥ÉÀþÈóÁªÂò¾õÂÖ³ÎÇ§¥Æ¥¹¥È¿®¹æ
+
+
+output DCE0;       // FLASH ¥Á¥Ã¥×¥¤¥Í¡¼¥Ö¥ë
+output DA13;       // FLASH ¥¢¥É¥ì¥¹
+output DA12;       // FLASH ¥¢¥É¥ì¥¹
+output DA11;       // FLASH ¥¢¥É¥ì¥¹
+output DA10;       // FLASH ¥¢¥É¥ì¥¹
+output DA9;        // FLASH ¥¢¥É¥ì¥¹
+output DA8;        // FLASH ¥¢¥É¥ì¥¹
+output DA7;        // FLASH ¥¢¥É¥ì¥¹
+output DA6;        // FLASH ¥¢¥É¥ì¥¹
+output DA5;        // FLASH ¥¢¥É¥ì¥¹
+output DA4;        // FLASH ¥¢¥É¥ì¥¹
+output DA3;        // FLASH ¥¢¥É¥ì¥¹
+output DA2;        // FLASH ¥¢¥É¥ì¥¹
+output DA1;        // FLASH ¥¢¥É¥ì¥¹
+output DA0;        // FLASH ¥¢¥É¥ì¥¹
+input  DRO011;     // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO010;     // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO09;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO08;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO07;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO06;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO05;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO04;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO03;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO02;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO01;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+input  DRO00;      // FLASH¥Ç¡¼¥¿ÆþÎÏ¡ÊFLASH¤«¤é¤Î½ÐÎÏ¥Ç¡¼¥¿¡Ë
+
+output DCLKSEL1;   // ¥¯¥í¥Ã¥¯ÁªÂò¿®¹æ¡Ê1:C1=BASECKHS¡¢0:P1=FCB½ÐÎÏ¡Ë
+
+output DSRCUT;
+output DFLSTOP;
+
+input  OPTMDUMP;   //
+
+
+input  TESTMOD;    //
+input  TMODDFT;    //¥Æ¥¹¥È¥â¡¼¥É¿®¹æ¡ÊSCAN»þSCANRESZ¤Ë¤Ê¤ë¡Ë
+
+input  TESDBT ;    //
+input  SCANMODE;   // SCANMODEÃ¼»ÒÉü³è¡£FLSTOP¤òRESETB´ü´ÖÃæ(1)¤Ë¤¹¤ë¡£SCANMODE¤Ç¤ÏRESETB¤òÅÁÇÅ¤µ¤»¤Ê¤¤¡£
+
+input  TA13;
+input  TA12;
+input  TA11;
+input  TA10;
+input  TA9;
+input  TA8;
+input  TA7;
+input  TA6;
+input  TA5;
+input  TA4;
+input  TA3;
+input  TA2;
+input  TA1;
+input  TA0;
+
+// SS3rd:v1.00 ===== Add Input & Output Port ==============================================================
+input		DECCE ;		// from FCB
+input		EEEMD ;		// from FCB
+output		DFLEN;		// for CPU
+input		DRDCLK;		// from CPU
+output		DRDCLKC1;	// 
+input		ICENOECC;	// from ICE
+input		OPTDFL;		// from modectl
+input		SELTADF;	// from modectl
+input		SLECCOFF;	// from modectl
+output		DECCER;		// for modectl
+input		STDWAIT;	// from FCB
+input		TFLSTOPD;	// from modectl
+input		AisRSEQ;	// from CIBC
+input		RDSETUP;	// from FLASH
+input		BASECK;
+// SS3rd:v1.00 ===== Add END ==============================================================================
+
+wire	tdpscen;
+wire	TDSRCUT;
+wire	TDFLSTOP;
+
+/////////////////////////////////output-bus///////////////////////////////////////////////DFLRO-BUS
+wire [11:0] dflro ;
+wire        DFLRO11 ,DFLRO10 ,DFLRO9  ,DFLRO8  ,
+            DFLRO7  ,DFLRO6  ,DFLRO5  ,DFLRO4  ,DFLRO3  ,DFLRO2  ,DFLRO1  ,DFLRO0  ;
+assign     {DFLRO11 ,DFLRO10 ,DFLRO9  ,DFLRO8  ,
+            DFLRO7  ,DFLRO6  ,DFLRO5  ,DFLRO4  ,DFLRO3  ,DFLRO2  ,DFLRO1  ,DFLRO0} = dflro[11:0] ;
+/////////////////////////////////output-bus///////////////////////////////////////////////PRDATA-BUS
+wire [15:0] prdata;
+wire        PRDATA15 ,PRDATA14 ,PRDATA13 ,PRDATA12 ,
+            PRDATA11 ,PRDATA10 ,PRDATA9  ,PRDATA8  ,
+            PRDATA7  ,PRDATA6  ,PRDATA5  ,PRDATA4  ,
+            PRDATA3  ,PRDATA2  ,PRDATA1  ,PRDATA0  ;
+assign     {PRDATA15 ,PRDATA14 ,PRDATA13 ,PRDATA12 ,
+            PRDATA11 ,PRDATA10 ,PRDATA9  ,PRDATA8  ,
+            PRDATA7  ,PRDATA6  ,PRDATA5  ,PRDATA4  ,
+            PRDATA3  ,PRDATA2  ,PRDATA1  ,PRDATA0} = prdata[15:0] ;
+/////////////////////////////////output-bus///////////////////////////////////////////////DA-BUS
+wire [13:0] da;
+wire        DA13 ,DA12 ,DA11 ,DA10 ,DA9  ,DA8  ,
+            DA7  ,DA6  ,DA5  ,DA4  ,DA3  ,DA2  ,DA1  ,DA0  ;
+assign     {DA13 ,DA12 ,DA11 ,DA10 ,DA9  ,DA8  ,
+            DA7  ,DA6  ,DA5  ,DA4  ,DA3  ,DA2  ,DA1  ,DA0} = da;
+
+
+
+
+
+/////////////////////////////////input_bus////////////////////////////////////////////////DRO0-BUS
+wire [11:0] dro0;
+wire        DRO011 ,DRO010 ,DRO09  ,DRO08  ,
+            DRO07  ,DRO06  ,DRO05  ,DRO04  ,DRO03  ,DRO02  ,DRO01  ,DRO00  ;
+assign      dro0 = {DRO011 ,DRO010 ,DRO09  ,DRO08  ,
+                    DRO07  ,DRO06  ,DRO05  ,DRO04  ,DRO03  ,DRO02  ,DRO01  ,DRO00};
+/////////////////////////////////input_bus////////////////////////////////////////////////FLA-BUS
+wire [13:0] fla;
+wire        AF13 ,AF12 ,AF11 ,AF10 ,AF9  ,AF8  ,
+            AF7  ,AF6  ,AF5  ,AF4  ,AF3  ,AF2  ,AF1  ,AF0  ;
+
+assign      fla = {AF13 ,AF12 ,AF11 ,AF10 ,AF9  ,AF8  ,
+                   AF7  ,AF6  ,AF5  ,AF4  ,AF3  ,AF2  ,AF1  ,AF0};
+
+wire  tmod_dft = TMODDFT ;
+
+
+/////////////////////////////////input_bus////////////////////////////////////////////////TA-BUS
+wire [13:0] ta;
+wire        TA13 ,TA12 ,TA11 ,TA10 ,TA9  ,TA8  ,
+            TA7  ,TA6  ,TA5  ,TA4  ,TA3  ,TA2  ,TA1  ,TA0  ;
+assign      ta = {TA13 ,TA12 ,TA11 ,TA10 ,TA9  ,TA8  ,
+                  TA7  ,TA6  ,TA5  ,TA4  ,TA3  ,TA2  ,TA1  ,TA0};
+
+
+/////////////////////////////////input_bus////////////////////////////////////////////////MA-BUS
+wire [13:0] ma;
+wire        MA13 ,MA12 ,MA11 ,MA10 ,MA9  ,MA8  ,
+            MA7  ,MA6  ,MA5  ,MA4  ,MA3  ,MA2  ,MA1  ,MA0  ;
+assign      ma = {MA13 ,MA12 ,MA11 ,MA10 ,MA9  ,MA8  ,
+                  MA7  ,MA6  ,MA5  ,MA4  ,MA3  ,MA2  ,MA1  ,MA0};
+/////////////////////////////////output-bus///////////////////////////////////////////////DFLRO-BUS
+wire [15:0] mdr;
+wire        MDR15 ,MDR14 ,MDR13 ,MDR12 ,MDR11 ,MDR10 ,MDR9  ,MDR8  ,
+            MDR7  ,MDR6  ,MDR5  ,MDR4  ,MDR3  ,MDR2  ,MDR1  ,MDR0  ;
+assign     {MDR15 ,MDR14 ,MDR13 ,MDR12 ,MDR11 ,MDR10 ,MDR9  ,MDR8  ,
+            MDR7  ,MDR6  ,MDR5  ,MDR4  ,MDR3  ,MDR2  ,MDR1  ,MDR0} = mdr[15:0] ;
+
+
+QLK0RCIBDM3SF1V1_BI bi(
+    .TESTMOD(TESTMOD)                       ,.tmod_dft(tmod_dft)                     ,.RESETB(RESETB)                         ,
+    .PSEL1(PSEL1)                           ,.BASECKHS(BASECKHS)                       ,
+    .PWRITE(PWRITE)                         ,.PENABLE(PENABLE)                       ,
+    .PWDATA7(PWDATA7)                       ,.PWDATA4(PWDATA4)                       ,.PWDATA3(PWDATA3)                       ,
+    .PWDATA0(PWDATA0)                       ,
+    .PADDR1(PADDR1)                         ,.prdata(prdata)                         ,
+    .tdpscen(tdpscen)                       ,.TDSRCUT(TDSRCUT)                       ,.TDFLSTOP(TDFLSTOP)                     ,
+    .DFLEN(DFLEN)
+);
+
+
+
+QLK0RCIBDM3SF1V1_CIB cib(
+    .ma(ma)                                 ,.mdr(mdr)                               ,
+    .BASECKHS(BASECKHS)                       ,.RESETB(RESETB)                         ,.SCANMODE(SCANMODE)                     ,
+    .SUB(SUB)                               ,
+    .FHLTST(FHLTST)                         ,.FSTPST(FSTPST)                         ,.SACEEN(SACEEN)                         ,
+    .OPTMDUMP(OPTMDUMP)                     ,
+    .DCLKSEL1(DCLKSEL1)                     ,
+    .DCE0(DCE0)                             ,
+    .dro0(dro0)                             ,.dflro(dflro)                           ,
+    .da(da)                                 ,.fla(fla)                               ,
+    .ta(ta)                                 ,.TESDBT(TESDBT)                         ,
+    .SLDFLASH(SLDFLASH)                     ,
+    .DECCE(DECCE)                           ,
+    .EEEMD(EEEMD)                           ,
+    .DRDCLK(DRDCLK)                         ,.DRDCLKC1(DRDCLKC1)                     ,
+    .tdpscen(tdpscen)                       ,.TDSRCUT(TDSRCUT)                       ,.TDFLSTOP(TDFLSTOP)                     ,
+    .DSRCUT(DSRCUT)                         ,.DFLSTOP(DFLSTOP)                       ,
+    .DFLEN(DFLEN)                           ,
+    .ICENOECC(ICENOECC)                     ,
+    .OPTDFL(OPTDFL)                         ,.SELTADF(SELTADF)                       ,
+    .SLECCOFF(SLECCOFF)                     ,.DECCER(DECCER)                         ,
+    .STDWAIT(STDWAIT)                       ,
+    .TFLSTOPD(TFLSTOPD)                     ,.AisRSEQ(AisRSEQ)                       ,.RDSETUP(RDSETUP)			      ,
+    .RESB(RESB)				    ,.BASECK(BASECK)
+);
+
+  wire     da0_m = ( SCANMODE ) ?  DA0 : 1'b0 ;
+  wire     da1_m = ( SCANMODE ) ?  DA1 : 1'b0 ;
+  wire     da2_m = ( SCANMODE ) ?  DA2 : 1'b0 ;
+  wire     da3_m = ( SCANMODE ) ?  DA3 : 1'b0 ;
+  wire     da4_m = ( SCANMODE ) ?  DA4 : 1'b0 ;
+  wire     da5_m = ( SCANMODE ) ?  DA5 : 1'b0 ;
+  wire     da6_m = ( SCANMODE ) ?  DA6 : 1'b0 ;
+  wire     da7_m = ( SCANMODE ) ?  DA7 : 1'b0 ;
+  wire     da8_m = ( SCANMODE ) ?  DA8 : 1'b0 ;
+  wire     da9_m = ( SCANMODE ) ?  DA9 : 1'b0 ;
+  wire    da10_m = ( SCANMODE ) ? DA10 : 1'b0 ;
+  wire    da11_m = ( SCANMODE ) ? DA11 : 1'b0 ;
+  wire    da12_m = ( SCANMODE ) ? DA12 : 1'b0 ;
+  wire    da13_m = ( SCANMODE ) ? DA13 : 1'b0 ;
+
+QLK0RCIBDM3SF1V1_MONI moni(
+    .da0_m(da0_m) , .da1_m(da1_m) , .da2_m(da2_m) , .da3_m(da3_m)  , .da4_m(da4_m)  , .da5_m(da5_m)  , .da6_m(da6_m)  ,
+    .da7_m(da7_m) , .da8_m(da8_m) , .da9_m(da9_m) , .da10_m(da10_m), .da11_m(da11_m), .da12_m(da12_m), .da13_m(da13_m),
+    .DCE0(DCE0)	  , .DCLKSEL1(DCLKSEL1)	, .DFLSTOP(DFLSTOP)	, .DSRCUT(DSRCUT)	,
+    .SCANCLK(SCANCLK)	, .RESB(RESB)
+);
+
+
+endmodule // QLK0RCIBDM3SF1V1
+
+
+
+
+
+
+
+// === Each Sub Modules ============================================================
+
+module QLK0RCIBDM3SF1V1_BI( TESTMOD       , tmod_dft     , RESETB       ,
+                            PSEL1         , BASECKHS       ,
+                            PWRITE        , PENABLE      ,
+                            PWDATA7       , PWDATA4      , PWDATA3      , PWDATA0      ,
+                            PADDR1        , prdata       ,
+                            tdpscen       , TDSRCUT      , TDFLSTOP     ,
+                            DFLEN
+                          );
+
+input           TESTMOD;       // ¥Æ¥¹¥È¥â¡¼¥É¿®¹æ¡ÊPSEL2·²¤Î¥¢¥¯¥»¥¹µö²Ä¤Ë»ÈÍÑ¡Ë
+input           tmod_dft;      // ¥Æ¥¹¥È¥â¡¼¥É¿®¹æ¡Ê¥Æ¥¹¥È¥â¡¼¥É»þ¤ÏSCANRESZ¤Ë¤Ê¤ë)
+input           RESETB;        // ¥ê¥»¥Ã¥È
+input           PSEL1;         // APB Peripheral SELect¿®¹æ£
+input           BASECKHS;        // Clock
+input           PWRITE;        // APB¥é¥¤¥È¿®¹æ
+input           PENABLE;       // APB¥¢¥¯¥»¥¹¥¤¥Í¡¼¥Ö¥ë
+input           PWDATA7;       // APB¥é¥¤¥È¥Ç¡¼¥¿7
+input           PWDATA4;       // APB¥é¥¤¥È¥Ç¡¼¥¿4
+input           PWDATA3;       // APB¥é¥¤¥È¥Ç¡¼¥¿3
+input           PWDATA0;       // APB¥é¥¤¥È¥Ç¡¼¥¿0
+input           PADDR1;
+output [15:0]   prdata;
+output          tdpscen;       // TDPSCTL¤Îtdpscen¥Ó¥Ã¥ÈËÜÂÎ
+output          TDSRCUT;       // TDPSCTL¤ÎTDSRCUT¥Ó¥Ã¥ÈËÜÂÎ
+output          TDFLSTOP;      // TDPSCTL¤ÎTDFLSTOP¥Ó¥Ã¥ÈËÜÂÎ
+output          DFLEN;         //
+
+wire		DFLEN;
+wire		tdpscen;
+wire		TDSRCUT;
+wire		TDFLSTOP;
+wire		sel_dflctl;
+wire		sel_tdpsctl;
+
+QLK0RCIBDM3SF1V1_ADDEC addec(
+    .TESTMOD(TESTMOD)                       ,.PSEL1(PSEL1)                           ,
+    .PADDR1(PADDR1)                         ,.sel_dflctl(sel_dflctl)                 ,.sel_tdpsctl(sel_tdpsctl)
+);
+
+
+QLK0RCIBDM3SF1V1_CNTDEC cntdec(
+    .BASECKHS(BASECKHS)                         ,.tmod_dft(tmod_dft)                     ,
+    .RESETB(RESETB)                         ,.PWRITE(PWRITE)                         ,.PENABLE(PENABLE)                       ,
+    .PWDATA7(PWDATA7)                       ,.PWDATA4(PWDATA4)                       ,.PWDATA3(PWDATA3)                       ,
+    .PWDATA0(PWDATA0)                       ,
+    .sel_dflctl(sel_dflctl)                 ,.sel_tdpsctl(sel_tdpsctl)               ,
+    .DFLEN(DFLEN)                           ,.tdpscen(tdpscen)                       ,.TDSRCUT(TDSRCUT)                       ,
+    .TDFLSTOP(TDFLSTOP)
+);
+
+
+QLK0RCIBDM3SF1V1_RDCNT rdcnt(
+    .PWRITE(PWRITE)                         ,.PENABLE(PENABLE)                       ,
+    .prdata(prdata)                         ,.sel_dflctl(sel_dflctl)                 ,.sel_tdpsctl(sel_tdpsctl)               ,
+    .DFLEN(DFLEN)                           ,.tdpscen(tdpscen)                       ,.TDSRCUT(TDSRCUT)                       ,
+    .TDFLSTOP(TDFLSTOP)
+);
+
+endmodule	// QLK0RCIBDM3SF1V1_BI
+
+//QLK0RCIBDM3SF1V1 APB address map
+//                                    ----accessµö²Ä-----
+//PSEL1--------H- -----L-  --- -size-  ÄÌ¾ï  ¥»¥ë¥Õ  ¥Æ¥¹¥È RESET¾ò·ï
+//                 DFLCTL   0H   8bit   R/W   R/W     R/W   RESETB
+//                TDPSCTL   2H   8bit   -/-   -/-     R/W   TESTMODE&RESETB
+
+module QLK0RCIBDM3SF1V1_ADDEC( TESTMOD    , PSEL1       , PADDR1     ,
+                              sel_dflctl  , sel_tdpsctl
+                            );
+
+input		TESTMOD;
+input		PSEL1;
+input		PADDR1;
+output		sel_dflctl;
+output		sel_tdpsctl;
+
+reg		sel_dflctl;
+reg		sel_tdpsctl;
+
+// AddDec for PSEL1
+        always @ ( TESTMOD or PSEL1 or PADDR1 ) begin
+                { sel_dflctl ,sel_tdpsctl } = 2'b0;
+                case( {TESTMOD, PSEL1, PADDR1} )
+                        3'b0_1_0 : sel_dflctl    = 1'b1;
+                        3'b1_1_0 : sel_dflctl    = 1'b1;
+                        3'b1_1_1 : sel_tdpsctl   = 1'b1;
+                        default  : sel_dflctl    = 1'b0;
+                endcase
+        end
+
+endmodule	// QLK0RCIBDM3SF1V1_ADDEC
+
+
+module QLK0RCIBDM3SF1V1_CNTDEC( BASECKHS      , tmod_dft  ,
+                               RESETB    ,
+                               PWRITE      , PENABLE      ,
+                               PWDATA7     , PWDATA4    , PWDATA3     , PWDATA0     ,
+                               sel_dflctl  , sel_tdpsctl  ,
+                               DFLEN       , tdpscen    , TDSRCUT    , TDFLSTOP
+                             );
+
+input         BASECKHS;             // Æ°ºî¥¯¥í¥Ã¥¯
+input         tmod_dft;           // ¥Æ¥¹¥È¥â¡¼¥É¿®¹æ¡ÊSCAN»þ¤ËSCANRESZ¤Ë¤Ê¤ë¡Ë
+input         RESETB;             // ¥ê¥»¥Ã¥È¿®¹æ
+input         PWRITE;             // APB¥é¥¤¥È¿®¹æ
+input         PENABLE;            // APB¥¢¥¯¥»¥¹¥¤¥Í¡¼¥Ö¥ë
+input         PWDATA7;            // APB¥é¥¤¥È¥Ç¡¼¥¿7
+input         PWDATA4;            // APB¥é¥¤¥È¥Ç¡¼¥¿4
+input         PWDATA3;            // APB¥é¥¤¥È¥Ç¡¼¥¿3
+input         PWDATA0;            // APB¥é¥¤¥È¥Ç¡¼¥¿0
+input         sel_dflctl;         // PSEL1&PADDR1=1'b0
+input         sel_tdpsctl;        // PSEL1&PADDR1=1'b1
+
+output        DFLEN;              //
+output        tdpscen;            // TDPSCTL¤Îtdpscen¥Ó¥Ã¥ÈËÜÂÎ
+output        TDSRCUT;            // TDPSCTL¤ÎTDSRCUT¥Ó¥Ã¥ÈËÜÂÎ
+output        TDFLSTOP;           // TDPSCTL¤ÎTDFLSTOP¥Ó¥Ã¥ÈËÜÂÎ
+
+//output        b_trmlv1_vtrim_en  ; // BI¤«¤é¤Î½ñ¤­¹þ¤ßµö²Ä(trmlv1_vtrim)
+
+reg           DFLEN;
+reg           tdpscen;
+reg           TDSRCUT;
+reg           TDFLSTOP;
+
+
+wire          write_en     = PWRITE & PENABLE ;
+
+wire          wen_dflctl   = sel_dflctl   & write_en; // ¥æ¡¼¥¶¥â¡¼¥É¤Ç,sel_xxxx¤ÏÊÑ²½¤¹¤ë¡£
+wire          wen_tdpsctl  = sel_tdpsctl  & write_en; // ¥æ¡¼¥¶¥â¡¼¥É¤Ç¤Ïsel_xxxx¤¬ÊÑ²½¤·¤Ê¤¤
+
+wire          treg_res = RESETB & tmod_dft ;
+////////////////////////////////////////////////DFLCTL
+always @ ( posedge BASECKHS or negedge RESETB )
+  if( !RESETB )
+    DFLEN <= 1'b0;
+  else if( wen_dflctl )
+    DFLEN <= PWDATA0;
+
+////////////////////////////////////////////////TDPSCTL
+always @ ( posedge BASECKHS or negedge treg_res )
+  if( !treg_res )
+    {tdpscen,TDSRCUT,TDFLSTOP} <= 3'b000;
+  else if( wen_tdpsctl )
+    {tdpscen,TDSRCUT,TDFLSTOP} <= {PWDATA7,PWDATA4,PWDATA3};
+
+endmodule	// QLK0RCIBDM3SF1V1_CNTDEC
+
+
+module QLK0RCIBDM3SF1V1_RDCNT( PWRITE     , PENABLE     ,
+                              prdata      ,
+                              sel_dflctl  , sel_tdpsctl ,
+                              DFLEN       ,
+                              tdpscen     , TDSRCUT     , TDFLSTOP
+                            );
+
+input         PWRITE;             // APB¥é¥¤¥È¥¹¥Æ¡¼¥¿¥¹
+input         PENABLE;            // APB¥¢¥¯¥»¥¹¥¤¥Í¡¼¥Ö¥ë
+output [15:0] prdata;             // APB¥ê¡¼¥É¥Ç¡¼¥¿¥Ð¥¹
+reg    [15:0] prdata;
+
+input         sel_dflctl;         // PSEL1&PADDR1=1'b0
+input         sel_tdpsctl;        // PSEL1&PADDR1=1'b1
+input         DFLEN              ;
+input         tdpscen            ;
+input         TDSRCUT            ;
+input         TDFLSTOP           ;
+
+wire          read_en      = !PWRITE  & PENABLE ;
+
+wire          ren_dflctl   = read_en  & sel_dflctl;
+wire          ren_tdpsctl  = read_en  & sel_tdpsctl;
+
+// ====================== APB Read BUS ==================================================
+always @ ( ren_dflctl        or DFLEN             or
+           ren_tdpsctl       or tdpscen           or TDSRCUT           or TDFLSTOP
+         )
+  case( 1'b1 )
+    ren_dflctl        : prdata = {8'b0, {7'b0, DFLEN} };
+    ren_tdpsctl       : prdata = {8'b0, {tdpscen, 2'b0, TDSRCUT, TDFLSTOP, 3'b0} };
+    default           : prdata = 16'h0000;
+  endcase
+endmodule       // QLK0RCIBDM3SF1V1_RDCNT
+
+
+
+
+module QLK0RCIBDM3SF1V1_CIB( ma       , mdr      ,
+			     BASECKHS   , RESETB   , SCANMODE ,
+                             SUB      ,
+                             FHLTST   , FSTPST   ,
+                             SACEEN   ,
+                             OPTMDUMP ,
+                             DCLKSEL1 ,
+                             DCE0     ,
+                             dro0     , dflro    , 
+                             da       , fla      ,
+                             ta       , TESDBT   ,
+                             SLDFLASH , 
+			     DECCE    ,
+			     EEEMD    ,
+                             DRDCLK   , DRDCLKC1 ,
+                             tdpscen  , TDSRCUT  , TDFLSTOP ,
+                             DSRCUT   , DFLSTOP  ,
+                             DFLEN    ,
+                             ICENOECC ,
+                             OPTDFL   , SELTADF  ,
+                             SLECCOFF , DECCER   ,
+                             STDWAIT  ,
+                             TFLSTOPD , AisRSEQ  , RDSETUP ,
+			     RESB     , BASECK
+                          );
+
+input  [13:0]  ma;
+output [15:0]  mdr;
+
+input   BASECKHS  ;  //
+input   RESETB  ;  //
+input   SCANMODE;  // SCANMODEÃ¼»ÒÉü³è¡£FLSTOP¤òRESETB´ü´ÖÃæ(1)¤Ë¤¹¤ë¡£SCANMODE¤Ç¤ÏRESETB¤òÅÁÇÅ¤µ¤»¤Ê¤¤¡£
+input   SUB     ;  //
+input   FHLTST  ;  // CPU-HALT¥¹¥Æ¡¼¥¿¥¹
+input   FSTPST  ;  // CHIP-STOP¥â¡¼¥É¥¹¥Æ¡¼¥¿¥¹
+input   SACEEN  ;  // FCB      shimo
+input   OPTMDUMP;  // Dumprom¥â¡¼¥É
+
+input   RESB;
+
+output  DCLKSEL1 ; //
+
+
+output DCE0;
+
+input  [11:0]  dro0;
+output [11:0]  dflro;
+output [13:0]  da;    // FLASH¥Þ¥¯¥í¤Ø¤Î¥¢¥É¥ì¥¹
+input  [13:0]  fla;   // FCB¤«¤é¤Î¥¢¥É¥ì¥¹
+input  [13:0]  ta;    // MODECTL¤«¤é¤Î¥¢¥É¥ì¥¹
+input  TESDBT ;
+
+input  SLDFLASH;
+// SS2nd: ===== Add End ===================================================================================
+
+// SS3rd:v1.00 ===== Add Input Port =======================================================================
+input		DECCE ;
+input		EEEMD ;
+input		DRDCLK ;
+output		DRDCLKC1 ;
+input		tdpscen ;
+input		TDFLSTOP ;
+input		TDSRCUT ;
+output		DFLSTOP ;
+output		DSRCUT ;
+input		DFLEN ;
+input		ICENOECC ;
+input		OPTDFL ;
+input		SELTADF ;
+input		SLECCOFF ;
+output		DECCER ;
+input		STDWAIT;
+input		TFLSTOPD;
+input		AisRSEQ;
+input		RDSETUP;
+input 		BASECK;
+// SS3rd:v1.00 ===== Add END ==============================================================================
+
+wire  DCLKSEL1 ;
+
+
+///////FCBÀ©¸æ
+wire [13:0] da ;
+wire [13:0] fla ;
+
+
+QLK0RCIBDM3SF1V1_MEMIF memif(
+    .ma(ma)                                 ,
+    .mdr(mdr)                               ,
+    .OPTMDUMP(OPTMDUMP)                     ,
+    .SCANMODE(SCANMODE)                     ,.BASECKHS(BASECKHS)                         ,.RESETB(RESETB)                         ,
+    .FHLTST(FHLTST)                         ,.FSTPST(FSTPST)                         ,.SUB(SUB)                               ,
+    .SACEEN(SACEEN)                         ,
+    .DCLKSEL1(DCLKSEL1)                     ,
+    .DCE0(DCE0)                             ,
+    .dro0(dro0)                             ,
+    .dflro(dflro)                           ,.da(da)                                 ,
+    .fla(fla)                               ,
+    .ta(ta)                                 ,.TESDBT(TESDBT)                         ,
+    .SLDFLASH(SLDFLASH)                     ,
+    
+    .DECCE(DECCE)                           ,
+    .EEEMD(EEEMD)                           ,
+    .DRDCLK(DRDCLK)                         ,.DRDCLKC1(DRDCLKC1)                     ,
+    .tdpscen(tdpscen)                       ,.TDSRCUT(TDSRCUT)                       ,.TDFLSTOP(TDFLSTOP)                     ,
+    .DSRCUT(DSRCUT)                         ,.DFLSTOP(DFLSTOP)                       ,
+    .DFLEN(DFLEN)                           ,
+    .ICENOECC(ICENOECC)                     ,
+    .OPTDFL(OPTDFL)                         ,.SELTADF(SELTADF)                       ,
+    .SLECCOFF(SLECCOFF)                     ,.DECCER(DECCER)                         ,
+    .STDWAIT(STDWAIT)                       ,
+    .TFLSTOPD(TFLSTOPD)                     ,.AisRSEQ(AisRSEQ)                       ,.RDSETUP(RDSETUP)			     ,
+    .RESB(RESB)				    ,.BASECK(BASECK)
+);
+
+
+endmodule	// QLK0RCIBDM3SF1V1_CIB
+
+
+module QLK0RCIBDM3SF1V1_MEMIF(
+		ma,
+		mdr,
+                               OPTMDUMP , SCANMODE ,
+                               BASECKHS   , RESETB   ,
+                               FHLTST   , FSTPST   , SUB      ,
+                               SACEEN   ,
+                               DCLKSEL1 ,
+                               DCE0     ,
+                               dro0     , dflro    ,
+                               da       , fla      ,
+                               ta       , TESDBT   ,
+                               SLDFLASH , 
+			       DECCE    ,
+			       EEEMD    ,
+			       DRDCLK   , DRDCLKC1 ,
+			       tdpscen  , TDSRCUT  , TDFLSTOP ,
+			       DSRCUT   , DFLSTOP  ,
+                               DFLEN    ,
+                               ICENOECC ,
+                               OPTDFL   , SELTADF  ,
+                               SLECCOFF , DECCER   ,
+                               STDWAIT  ,
+                               TFLSTOPD , AisRSEQ  , RDSETUP  ,
+			       RESB	, BASECK
+                            );
+
+input	[13:0]	ma;
+
+output	[15:0]	mdr;
+
+input  OPTMDUMP;    // DumpROM¥â¡¼¥É¡ÊOPTFLMEM&DumpROM ¤ÇCLKSEL=1¡Ë
+input  SCANMODE;    // SCANMODEÃ¼»ÒÉü³è¡£FLSTOP¤òRESETB´ü´ÖÃæ(1)¤Ë¤¹¤ë¡£SCANMODE¤Ç¤ÏRESETB¤òÅÁÇÅ¤µ¤»¤Ê¤¤¡£
+input  BASECKHS;
+input  RESETB;
+input  FHLTST;      // CPU-HALT¥¹¥Æ¡¼¥¿¥¹
+input  FSTPST;      // CHIP-STOP¥â¡¼¥É¥¹¥Æ¡¼¥¿¥¹
+input  SUB;         //
+input  SACEEN;      // FCB      shimo
+output DCLKSEL1;    // 0:P1(P1¤ÏFCB¢ªFLASH¥À¥¤¥ì¥¯¥ÈÀÜÂ³)¡¢0:C1         ¥ê¥»¥Ã¥È¥·¡¼¥±¥ó¥¹¤Î¤ß¥¤¥ó¥×¥êshimo
+output DCE0;
+
+input  RESB;
+
+input	[11:0]   dro0 ;
+output	[11:0]   dflro;
+output	[13:0]   da  ; // FLASH¥Þ¥¯¥í¤Ø¤Î¥¢¥É¥ì¥¹
+input	[13:0]   fla ; // FCB¤«¤é¤Î¥¢¥É¥ì¥¹
+input	[13:0]   ta  ; // MODECTL¤«¤é¤Î¥¢¥É¥ì¥¹
+
+input  SLDFLASH;    // CPU¤«¤é¤ÎFLASHÁªÂò¿®¹æ
+
+input  TESDBT;
+
+// SS3rd: ===== Add Input & Output Port ===================================================================
+input		DECCE ;
+input		EEEMD ;
+input		DRDCLK ;
+output		DRDCLKC1 ;
+input		tdpscen ;
+input		TDFLSTOP ;
+input		TDSRCUT ;
+output		DFLSTOP ;
+output		DSRCUT ;
+input		DFLEN ;
+input		ICENOECC ;
+input		OPTDFL ;
+input		SELTADF ;
+input		SLECCOFF ;
+output		DECCER ;
+input		STDWAIT;
+input		TFLSTOPD;
+input		AisRSEQ;
+input		RDSETUP;
+input 		BASECK;
+// SS3rd: ===== Add END ===================================================================================
+
+//wire  [11:0]    dro0,dflro;
+wire  [11:0]    dro0 ;
+wire  [13:0]    da ;
+wire  [13:0]    TAorFLA;
+wire  [19:2]    select_addr ; // CIB(RSEQ)¡¢FLA¡¢PA¥»¥ì¥¯¥È¸å¤Î¥¢¥É¥ì¥¹
+
+
+///////////////////////////////////////////////////////////////////////
+/////////////////////////  F1000H <= DFLASH <= F4FFFH /////////////////
+///////////////////////////////////////////////////////////////////////
+
+// SS2nd: ===== FLASH Control SIGNALS =====================================================================
+
+  wire	DFLMOD = EEEMD | OPTDFL ;
+
+  wire	[13:0]	ad_dfl0 ;
+  assign ad_dfl0  = { (ma[13:12] - 2'b01), ma[11:0] };
+
+  wire	AisTA = TESDBT | SELTADF ;
+  wire	AisMA = !AisTA & !DFLMOD & !SCANMODE ;
+
+  assign TAorFLA = ( AisTA ) ? ta[13:0] : fla[13:0] ;
+  assign da      = ( AisMA  ) ? ad_dfl0[13:0] : TAorFLA ;
+
+
+//  wire	DCLKSEL1 = ( OPTMDUMP ) ? 1'b1 : !DFLMOD ; 
+  wire	DCLKSEL1 = ( AisRSEQ ) ? RDSETUP : ( OPTMDUMP ) ? 1'b1 : !DFLMOD ; 
+
+//wire	DRDCLKC1 = ( OPTMDUMP | SCANMODE ) ? BASECKHS : DRDCLK ;			// SS3rd: 2010.01.13 Mod
+// 2010.09.10) Change
+  TBINVX1  u_baseck_inv ( .N01(BASECKHS_inv) ,.H01(BASECKHS) ) ;
+  TBMUX2X4 scanclksel   ( .N01(BASECKHS_dft) ,.H01(BASECKHS) ,.H02(BASECKHS_inv) ,.H03(SCANMODE) );
+//wire	DRDCLKC1 = ( OPTMDUMP | SCANMODE ) ? BASECKHS_dft : DRDCLK ;
+
+// 2010.10.15) Change Start
+reg DCE0_reg1;
+reg DCE0_reg2;
+
+always @(posedge BASECK or negedge RESB) begin
+	if(!RESB)
+		DCE0_reg1 <= 1'b0;
+	else
+		DCE0_reg1 <= DCE0;
+end
+
+
+always @(posedge BASECK or negedge RESB) begin
+	if(!RESB)
+		DCE0_reg2 <= 1'b0;
+	else if(DCE0)
+		DCE0_reg2 <= 1'b0;
+	else
+		DCE0_reg2 <= DCE0_reg1;
+end
+
+  wire	DRDCLKC1 = ( OPTMDUMP | SCANMODE ) ? BASECKHS_dft : (DRDCLK & (DCE0 | ~DCE0_reg2)) ;
+// 2010.10.15) Change End
+
+  wire	DFLSTOP_pre = ( !RESETB & !SCANMODE ) | ( SUB & FHLTST ) | FSTPST ;
+  wire	DFLSTOP     = ( TESDBT   ) ? 1'b0     :
+                      ( SCANMODE ) ? 1'b1     :
+                      ( TFLSTOPD ) ? 1'b1     :
+                      ( tdpscen  ) ? TDFLSTOP : ( DFLEN ) ? DFLSTOP_pre : 1'b1 ;
+
+//  wire	DSRCUT   = ( tdpscen )? TDSRCUT: ( FHLTST & ~EEEMD ) ;
+  wire	DSRCUT   = ( tdpscen )? TDSRCUT: ( FHLTST & ~STDWAIT ) ;		// SS3rd: 2010.01.26 Mod
+
+// ====== CE Generate =====================================================================================
+
+//wire	DCE0_pre = ( AisMA ) ? SLDFLASH :
+//		   ( TESDBT ) ? 1'b1 : OPTDFL ;
+  wire	DCE0_pre = ( AisMA ) ? SLDFLASH :
+		   ( AisTA ) ? 1'b1 :
+		   ( DFLMOD ) ? 1'b1 : 1'b0 ;
+
+assign  DCE0    = DCE0_pre & SACEEN ;
+
+
+// ========== ECC¥Ç¥³¡¼¥ÀÆþÎÏ¿®¹æ¥»¥ì¥¯¥¿ ===================================================================
+
+//	wire	[11:0]	eccdec_in = ( eccdts ) ? { dro0[11:0] } : { dflro[11:0] };
+	wire	[11:0]	eccdec_in = dro0[11:0] ;
+
+// ========== ECC¥Ç¥³¡¼¥À ===================================================================================
+
+	wire	p_eccer;
+
+	wire	[7:0]	eccdec_out ;
+
+//	wire	ecce	= FLSPM | OPTFLMEM & !AisRSEQ | DECCE ;
+
+`ifdef FPGA_ICE
+	wire	ecce	= ~ICENOECC ;
+`else
+	wire	ecce	= DCLKSEL1 | DECCE | ICENOECC ;
+`endif
+
+
+	QLK0RCIBDM3SF1V1_ECCD eccd ( .eco( eccdec_out[7:0] ), .ecf( p_eccer ), .dout( eccdec_in[7:0] ),
+				     .eout( eccdec_in[11:8] ), .ecce( ecce ));
+
+	wire	DECCER	= p_eccer & ecce ;
+
+//	wire	[11:0]	dflro	= { eccdec_in[11:8], eccdec_out[7:0] };
+	wire	[7:0]	p_dflro	= ( SLECCOFF ) ? eccdec_in[7:0] : eccdec_out[7:0] ;
+	wire	[11:0]	dflro	= { eccdec_in[11:8], p_dflro[7:0] };
+
+	wire	[7:0]	iromo	= dflro [7:0] ;
+
+//	reg	rddata_en;
+//
+//	//===== rddata_en =====
+//	always @(posedge BASECKHS or negedge RESETB)
+//		if (!RESETB)
+//			rddata_en <= 1'b0;
+//		else if (~rddata_en && DRDCLK)
+//			rddata_en <= 1'b1;
+//		else if (rddata_en)
+//			rddata_en <= 1'b0;
+
+	wire	[15:0]	mdr_pre ;
+	assign	mdr_pre[15:0] = da[0] ? {iromo[7:0], 8'h00} : {8'h00, iromo[7:0]};
+//	assign	mdr[15:0] = {16{rddata_en}} & mdr_pre[15:0];
+	assign	mdr[15:0] = {16{SLDFLASH}} & mdr_pre[15:0];			// SS3rd: 2010.02.04 Mod
+
+endmodule	// QLK0RCIBDM3SF1V1_MEMIF
+
+
+module QLK0RCIBDM3SF1V1_ECCD (eco, ecf, dout, eout, ecce);
+
+  input  [7:0]	dout;
+  input  [3:0]	eout;
+  input  	ecce;
+
+  output [7:0]	eco;
+  output 	ecf;
+
+  wire   [3:0]  syd;
+  wire   [3:0]  sydz;
+  wire   [7:0]  d;
+
+  /* ÄûÀµ¸¡½Ð¿®¹æ¤ÎÀ¸À® */
+  assign ecf =  ( syd[0] | syd[1] | syd[2] | syd[3] )  ;
+
+  /* ¥·¥ó¥É¥í¡¼¥à¥Ç¡¼¥¿¤ÎÀ¸À® */
+  assign  syd[3] = (~dout[2])^(~dout[3])^(~dout[5])^(~dout[6])^(~dout[7])^(~eout[3]) ;
+  assign  syd[2] = (~dout[1])^(~dout[2])^(~dout[4])^(~dout[5])^(~dout[6])^(~eout[2]) ;
+  assign  syd[1] = (~dout[0])^(~dout[1])^(~dout[4])^(~dout[5])^(~dout[7])^(~eout[1]) ;
+  assign  syd[0] = (~dout[0])^(~dout[3])^(~dout[4])^(~dout[6])^(~dout[7])^(~eout[0]) ;
+
+  assign  sydz[3] = ~syd[3] ;
+  assign  sydz[2] = ~syd[2] ;
+  assign  sydz[1] = ~syd[1] ;
+  assign  sydz[0] = ~syd[0] ;
+
+  /* ÄûÀµ¸å¤Î¥Ç¡¼¥¿À¸À® */
+  assign  d[7] = ~((~dout[7])^(  syd[0]&  syd[1]& sydz[2]&  syd[3] ));
+  assign  d[6] = ~((~dout[6])^(  syd[0]& sydz[1]&  syd[2]&  syd[3] ));
+  assign  d[5] = ~((~dout[5])^( sydz[0]&  syd[1]&  syd[2]&  syd[3] ));
+  assign  d[4] = ~((~dout[4])^(  syd[0]&  syd[1]&  syd[2]& sydz[3] ));
+  assign  d[3] = ~((~dout[3])^(  syd[0]& sydz[1]& sydz[2]&  syd[3] ));
+  assign  d[2] = ~((~dout[2])^( sydz[0]& sydz[1]&  syd[2]&  syd[3] ));
+  assign  d[1] = ~((~dout[1])^( sydz[0]&  syd[1]&  syd[2]& sydz[3] ));
+  assign  d[0] = ~((~dout[0])^(  syd[0]&  syd[1]& sydz[2]& sydz[3] ));
+
+  /* ÄûÀµ¸å¤Î¥Ç¡¼¥¿¤ÈÄûÀµÁ°¥Ç¡¼¥¿(ecc or flash)¤Î¤É¤Á¤é¤ò½ÐÎÏ¤¹¤ë¤«¤òÁªÂò */
+//  assign  eco[7:0] = (ecce) ? dout[7:0] : d[7:0] ;
+  assign  eco[7:0] = (ecce) ? d[7:0] : dout[7:0] ;		// SS3rd: 2009.10.30 Mod
+
+endmodule
+
+module QLK0RCIBDM3SF1V1_MONI (
+    da0_m   , da1_m   , da2_m   , da3_m   , da4_m   , da5_m   , da6_m   ,
+    da7_m   , da8_m   , da9_m   , da10_m  , da11_m  , da12_m  , da13_m  ,
+    DCE0    , DCLKSEL1, DFLSTOP , DSRCUT  ,
+
+    SCANCLK , RESB
+);
+
+  input   da0_m   , da1_m   , da2_m   , da3_m   , da4_m   , da5_m   , da6_m   ;
+  input   da7_m   , da8_m   , da9_m   , da10_m  , da11_m  , da12_m  , da13_m  ;
+
+  input   DCE0    , DCLKSEL1, DFLSTOP , DSRCUT  ;
+
+  input   SCANCLK , RESB    ;
+
+  reg     CIBDEXOR;
+
+//       --------------------------------------------------------------------------------------------------------------------
+
+         always@ ( posedge SCANCLK or negedge RESB ) begin
+             if ( ! RESB )
+                 CIBDEXOR <= 1'b0 ;
+             else
+                 CIBDEXOR <= da0_m ^ da1_m ^ da2_m ^ da3_m ^ da4_m ^ da5_m ^ da6_m ^ da7_m ^ da8_m ^ da9_m ^ da10_m ^ da11_m ^ da12_m ^ da13_m ^
+                             DCE0 ^ DCLKSEL1 ^ DFLSTOP ^ DSRCUT ;
+         end
+
+endmodule
+

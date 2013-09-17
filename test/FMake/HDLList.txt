@@ -1,0 +1,46 @@
+
+################################
+# MODULE NAME : VERILOG HDL Path
+################################
+
+D78F2048QID03005          : NONE,
+KX4_NF                    : NONE,
+OWSRAM152W2048B13C4       : NONE,
+QAHAD21SW24V1             : NONE,
+QAHAD21SW25V1             : NONE,
+QAHAD21SW26V1             : NONE,
+QAHAD21SW27V1             : NONE,
+QAHAD21SWL1V1             : NONE,
+QAHADA21HN0V1             : NONE,
+QAHIOS0BN32MV2            : NONE,
+QAHIOS1BN15KV1            : NONE,
+QAHMOS0HNV1               : NONE,
+QAHNFI4BN300NV1           : NONE,
+QAHRES0CV1                : NONE,
+QAHSOS1HNV1               : NONE,
+QICTRAHAH5                : NONE,
+QIVG0005ZBL               : NONE,
+QNSA3N128K0V2_test        : NONE,
+QNSB3N004K0V2             : NONE,
+QNSC3NCP1V2               : NONE,
+QNSC3NCPDC0V1             : NONE,
+QNSC3NREG1V2              : NONE,
+andclk_cell_pf            : NONE,
+bufclk_cell_pf            : NONE,
+crl78fcspf00_f14m         : ./tp/crl78fcspf00_f14m.v,66ef4956e2f9876cc6e556170cdc5807
+crl78fpericore_f14m       : ./tp/crl78fpericore_f14m.v,496d8f676b25f9564235fcd1f6ea995d
+crl78gmc200_f14m          : NONE,
+crl78gmp200_f14m          : NONE,
+crl78hcanram_wrap1        : NONE,
+crl78hcapckgate           : ./tp/crl78hcapckgate.v,f32b82de26ea26dc0c94eefff4b6dfa0
+crl78hcapcore_f14m        : ./tp/crl78hcapcore_f14m.v,2db800783a290c3306e8547ebc05f04f
+crl78hpgcsc_f14mid        : NONE,
+crl78hportiotop_f14m      : NONE,
+dly50_cell_pf             : NONE,
+pulldown_cell_pf          : NONE,
+pullup_cell_pf            : NONE,
+umf30QAHCMP2              : NONE,
+umf30QAHMIX3DRV           : NONE,
+umf30QAHMIX3MAIN          : NONE,
+umf30hdac023              : NONE,
+

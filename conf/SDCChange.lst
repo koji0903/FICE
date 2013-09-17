@@ -1,0 +1,37 @@
+##############################################################
+# 
+# Namme Change list for mksdc
+#
+##############################################################
+
+#
+# REMOVE
+#  D,DeleteName
+#
+D,SCANCLK
+D,BBSCANCLK
+D,BBSCANCLK2
+D,BBMOSC           # [#193] Suplied by PLL
+D,BBHIOSC          # [#194] Same as R32MOUT
+D,BBFCLK           # [#197] Same as BBFCLK
+
+#
+# CHANGE
+#  C,OldName,NewName
+#
+C,define_multicycle_path -through { n:chiptop.chip.cpu.HLTST } -through { n:chiptop.chip.modectl.SELTAF } -through { n:chiptop.chip.cibc.SELTAF } { 2 },define_multicycle_path -through { n:chiptop.chip.cpu.HLTST } -through { n:chiptop.chip.SELTAF } { 2 }
+C,define_multicycle_path -through { n:chiptop.chip.socket.cpu.HLTST } -through { n:chiptop.chip.socket.modectl.SELTAF } -through { n:chiptop.chip.socket.cibc.SELTAF } { 2 },define_multicycle_path -through { n:chiptop.chip.socket.cpu.HLTST } -through { n:chiptop.chip.socket.SELTAF } { 2 }
+
+#
+# Custom Change ( using "--mode" == CUSTOM )
+#  CC,[Category],CustomDeleteName
+#    Category : sentence - match sentence completely
+#               keyword  - match keyword
+#
+CC,sentence,define_max_delay -from { i:chiptop.chip.socket.BBSELSFR2OR } -to { i:chiptop.chip.socket.BBPRDATA* } { 11 }
+CC,sentence,define_max_delay -from { i:chiptop.chip.socket.BBPWRITEOR } -to { i:chiptop.chip.socket.BBPRDATA* } { 11 }
+CC,sentence,define_max_delay -from { i:chiptop.chip.socket.BBMA* } -to { i:chiptop.chip.socket.BBPRDATA* } { 11 }
+CC,sentence,define_max_delay -from { i:chiptop.chip.socket.BBPENABLEOR } -to { i:chiptop.chip.socket.BBPRDATA* } { 11 }
+CC,keyword,DMAMA
+CC,keyword,DMA_read
+CC,keyword,DMA_write

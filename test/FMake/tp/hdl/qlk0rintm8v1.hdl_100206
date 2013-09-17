@@ -1,0 +1,464 @@
+
+/*====================================================================*/
+/*                                                                    */
+/* 78K0R(MF3) series INTM  macro                                      */
+/*                                                                    */
+/*    Module   : QLK0RINTM8V1                                         */
+/*    Date     : 2009/09/21                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : M.Ouchiyama                                          */
+/*    Note     : 新規作成                                             */
+/*                                                                    */
+/*====================================================================*/
+/*[MF3 改訂履歴]                                                      */
+/*    MF3 v1.00: 2009/09/21 BASECK -> PCLKRW                          */
+/*                                                                    */
+/*    DF2.0 2010/01/09                                                */
+/*          added for ICE common usage:TDBLY                          */
+/*          added PORT: ICECK60M                                      */
+/*          added module: ICEDLY50N                                   */
+/*                                                                    */
+/*          2010/01/13                                                */
+/*          modify for ICE: else sentens added                        */
+/*                                                                    */
+/*    DF3.0 2010/02/06						      */
+/*          Change analog dly: TBDLY50N -> TBFILTER1X2                */
+/*                                                                    */
+/*====================================================================*/
+
+/*====================================================================*/
+/*                                                                    */
+/* 78K0R series INTM  macro                                           */
+/*                                                                    */
+/*    Module   : QLK0RINTM8V1                                         */
+/*    Date     : 2005/09/01                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : K.Kawai                                              */
+/*    Note     : 新規作成                                             */
+/*                                                                    */
+/*====================================================================*/
+/*[10K改訂履歴]                                                       */
+/*    Ver1.10  2005/08/04  kenji.yamaguchi                            */
+/*       modify egin7_fs - egin0_fs for scanmode                      */
+/*[K0R改訂履歴]                                                       */
+/*    Ver1.00a 2005/09/01  kazuyoshi.kawai                            */
+/*        K0R用にQLK0RTINTM8V1を流用                                  */
+/*        MDWとdinをBIを介さずに直結                                  */
+/*    Ver1.00b 2005/09/26  kazuyoshi.kawai                            */
+/*        SVMOD信号がアクティブ中はエッジ検出機能を停止               */
+/*    Ver1.00d 2005/10/03  kazuyoshi.kawai                            */
+/*        PSELINTM8をPSELINTMに８文字以内に変更                       */
+/*====================================================================*/
+/*                                                                    */
+/*  QLK0RINTM8V1 : SoftMacro Top module                               */
+/*    |--- QLK0RINTM8V1_BI                                            */
+/*    |                                                               */
+/*    |--- QLK0RINTM8V1_MAIN                                          */
+/*             |---QLK0RINTM8V1_EDGE_DETECT(x8)                       */
+/*                                                                    */
+/*====================================================================*/
+
+
+module QLK0RINTM8V1(
+        MDR15 , MDR14 , MDR13 , MDR12 , MDR11 , MDR10  , MDR9   , MDR8   ,
+        MDR7  , MDR6  , MDR5  , MDR4  , MDR3  , MDR2   , MDR1   , MDR0   ,
+        MDW15 , MDW14 , MDW13 , MDW12 , MDW11 , MDW10  , MDW9   , MDW8   ,
+        MDW7  , MDW6  , MDW5  , MDW4  , MDW3  , MDW2   , MDW1   , MDW0   ,
+        MA0  ,
+        PCLKRW , PSELINTM , CPURD  , CPUWR  , RESB    ,
+        INTP7  , INTP6  , INTP5  , INTP4  , INTP3  , INTP2   , INTP1   , INTP0   ,
+        EGIN7  , EGIN6  , EGIN5  , EGIN4  , EGIN3  , EGIN2   , EGIN1   , EGIN0   ,
+        SVMOD , SCANMODE
+
+	,ICECK60M
+);
+
+    input       PCLKRW, PSELINTM, CPURD, CPUWR, RESB, SVMOD, SCANMODE ;
+    input       MDW15, MDW14, MDW13, MDW12, MDW11, MDW10, MDW9, MDW8,
+                MDW7,  MDW6,  MDW5,  MDW4,  MDW3,  MDW2,  MDW1, MDW0 ;
+    input       MA0 ;
+    input       EGIN7, EGIN6, EGIN5, EGIN4, EGIN3, EGIN2, EGIN1, EGIN0 ;
+
+    output      MDR15, MDR14, MDR13, MDR12, MDR11, MDR10, MDR9, MDR8,
+                MDR7,  MDR6,  MDR5,  MDR4,  MDR3,  MDR2,  MDR1, MDR0 ;
+    output      INTP7, INTP6, INTP5, INTP4, INTP3, INTP2, INTP1, INTP0 ;
+
+    input	ICECK60M ;
+
+    wire    [15:0]   dout ;
+    wire        we_egp, we_egn ;
+
+    //MDWとdinはBIの中ではフィードスルーになるので、RTL上はBIを介さずに直結する。
+
+  QLK0RINTM8V1_MAIN main (
+        .baseck(PCLKRW), .dout(dout[15:0]), .resb(RESB),
+        .din({ MDW15, MDW14, MDW13, MDW12, MDW11, MDW10, MDW9, MDW8, MDW7, MDW6, MDW5, MDW4, MDW3, MDW2, MDW1, MDW0 }),
+        .we_egp(we_egp), .we_egn(we_egn),
+        .egin7(EGIN7), .egin6(EGIN6), .egin5(EGIN5), .egin4(EGIN4),
+        .egin3(EGIN3), .egin2(EGIN2), .egin1(EGIN1), .egin0(EGIN0),
+        .intp7(INTP7), .intp6(INTP6), .intp5(INTP5), .intp4(INTP4),
+        .intp3(INTP3), .intp2(INTP2), .intp1(INTP1), .intp0(INTP0),
+        .svmod(SVMOD), .scanmode(SCANMODE)
+	,.ICECK60M(ICECK60M) ) ;
+
+
+  QLK0RINTM8V1_BI bi (
+        .mdr({ MDR15, MDR14, MDR13, MDR12, MDR11, MDR10, MDR9, MDR8, MDR7, MDR6, MDR5, MDR4, MDR3, MDR2, MDR1, MDR0 }),
+        //.mdw({ MDW15, MDW14, MDW13, MDW12, MDW11, MDW10, MDW9, MDW8, MDW7, MDW6, MDW5, MDW4, MDW3, MDW2, MDW1, MDW0 }),
+        .ma( MA0 ),
+        .pselintm8(PSELINTM), .cpurd(CPURD), .cpuwr(CPUWR),
+        //.din(din[15:0]), 
+        .dout(dout[15:0]),
+        .we_egp(we_egp), .we_egn(we_egn) ) ;
+
+endmodule
+
+//=============================================================================================
+//   INTM8 MAIN BLOCK
+//=============================================================================================
+module  QLK0RINTM8V1_MAIN   (
+            baseck, resb,
+            din, dout, we_egp, we_egn, 
+            egin7, egin6, egin5, egin4, egin3, egin2, egin1, egin0,
+            intp7, intp6, intp5, intp4, intp3, intp2, intp1, intp0,
+            svmod, scanmode
+
+	,ICECK60M
+) ;
+
+    input       baseck,resb;
+    input [15:0] din ;
+    output [15:0] dout ;
+    input       we_egp, we_egn ;
+    input       egin7, egin6, egin5, egin4, egin3, egin2, egin1, egin0 ;
+    output      intp7, intp6, intp5, intp4, intp3, intp2, intp1, intp0 ;
+    input       svmod, scanmode ;
+
+    input	ICECK60M ;
+
+    reg [7:0]   egp, egn ;
+
+    wire        egin7_f, egin6_f, egin5_f, egin4_f, egin3_f, egin2_f, egin1_f, egin0_f ;
+    wire        egin7_fs, egin6_fs, egin5_fs, egin4_fs, egin3_fs, egin2_fs, egin1_fs, egin0_fs ;
+
+    wire        intp0_sv, intp1_sv, intp2_sv, intp3_sv, intp4_sv, intp5_sv, intp6_sv, intp7_sv ;
+//=========  register write access  ===========================================================
+
+    //synopsys async_set_reset "resb"
+    always @(posedge baseck or negedge resb) begin
+        if ( !resb ) begin
+            egp <= 8'h00 ;
+        end else if( we_egp ) begin
+            egp <= din[7:0] ;
+        end
+    end
+
+    //synopsys async_set_reset "resb"
+    always @(posedge baseck or negedge resb) begin
+        if ( !resb ) begin
+            egn <= 8'h00 ;
+        end else if( we_egn ) begin
+            egn <= din[15:8] ;
+        end
+    end
+
+    
+
+//=========  register read access  =============================================================
+    
+    assign dout = { egn , egp } ;
+
+
+//=========  intp function  ======================================================================
+
+    //合成時にset_dont_touchを適用する事。
+    QLK0RINTM8V1_DLYFIL_LVX   intp7_dfil ( .N01(egin7_f) , .H01(egin7) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_DLYFIL_LVX   intp6_dfil ( .N01(egin6_f) , .H01(egin6) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_DLYFIL_LVX   intp5_dfil ( .N01(egin5_f) , .H01(egin5) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_DLYFIL_LVX   intp4_dfil ( .N01(egin4_f) , .H01(egin4) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_DLYFIL_LVX   intp3_dfil ( .N01(egin3_f) , .H01(egin3) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_DLYFIL_LVX   intp2_dfil ( .N01(egin2_f) , .H01(egin2) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_DLYFIL_LVX   intp1_dfil ( .N01(egin1_f) , .H01(egin1) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_DLYFIL_LVX   intp0_dfil ( .N01(egin0_f) , .H01(egin0) ,.ICECK60M(ICECK60M) ) ;
+
+
+    assign egin7_fs = ( scanmode )?  egin7 : egin7_f ;
+    assign egin6_fs = ( scanmode )?  egin6 : egin6_f ;
+    assign egin5_fs = ( scanmode )?  egin5 : egin5_f ;
+    assign egin4_fs = ( scanmode )?  egin4 : egin4_f ;
+    assign egin3_fs = ( scanmode )?  egin3 : egin3_f ;
+    assign egin2_fs = ( scanmode )?  egin2 : egin2_f ;
+    assign egin1_fs = ( scanmode )?  egin1 : egin1_f ;
+    assign egin0_fs = ( scanmode )?  egin0 : egin0_f ;
+
+    //合成時にset_dont_touchを適用する事。
+    QLK0RINTM8V1_EDGE_DETECT  intp7_edge ( .intp(intp7_sv), .egin(egin7_fs), .egpin(egp[7]), 
+                                           .egnin(egn[7]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_EDGE_DETECT  intp6_edge ( .intp(intp6_sv), .egin(egin6_fs), .egpin(egp[6]),
+                                           .egnin(egn[6]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_EDGE_DETECT  intp5_edge ( .intp(intp5_sv), .egin(egin5_fs), .egpin(egp[5]),
+                                           .egnin(egn[5]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_EDGE_DETECT  intp4_edge ( .intp(intp4_sv), .egin(egin4_fs), .egpin(egp[4]),
+                                           .egnin(egn[4]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_EDGE_DETECT  intp3_edge ( .intp(intp3_sv), .egin(egin3_fs), .egpin(egp[3]),
+                                           .egnin(egn[3]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_EDGE_DETECT  intp2_edge ( .intp(intp2_sv), .egin(egin2_fs), .egpin(egp[2]),
+                                           .egnin(egn[2]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_EDGE_DETECT  intp1_edge ( .intp(intp1_sv), .egin(egin1_fs), .egpin(egp[1]),
+                                           .egnin(egn[1]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+    QLK0RINTM8V1_EDGE_DETECT  intp0_edge ( .intp(intp0_sv), .egin(egin0_fs), .egpin(egp[0]), 
+                                           .egnin(egn[0]), .scanmode(scanmode) ,.ICECK60M(ICECK60M) ) ;
+
+    //SVMODがアクティブの時はエッジ検出機能を停止する
+    assign intp0 = intp0_sv & ~svmod;
+    assign intp1 = intp1_sv & ~svmod;
+    assign intp2 = intp2_sv & ~svmod;
+    assign intp3 = intp3_sv & ~svmod;
+    assign intp4 = intp4_sv & ~svmod;
+    assign intp5 = intp5_sv & ~svmod;
+    assign intp6 = intp6_sv & ~svmod;
+    assign intp7 = intp7_sv & ~svmod;
+
+endmodule
+
+//=============================================================================================
+//   EXTERNAL INTERRUPT DETECT
+//   合成時にset_dont_touchを適用する事。
+//=============================================================================================
+
+module  QLK0RINTM8V1_EDGE_DETECT( intp , egin , egpin , egnin , scanmode ,ICECK60M ) ;
+
+    output  intp ;
+    input   egin , egpin , egnin , scanmode ;
+
+    input   ICECK60M ;
+
+    wire    egin_d1, egin_d2, egin_d3, egin_d4, egin_d5 ; 
+    wire    egin_b , egin_d_b , egp_int , egn_int ;
+    wire    egin_dsp, egin_dsn ;
+                        
+        // This analog delay is MF2 process ( TBDLY3X2 MIN:1.69NS*5=8.45NS )
+
+`ifndef FPGA_ICE
+        QLK0RINTM8V1_DLYEDG_LVX    ptin_delay1 ( .N01(egin_d1) , .H01(egin) ) ;
+        QLK0RINTM8V1_DLYEDG_LVX    ptin_delay2 ( .N01(egin_d2) , .H01(egin_d1) ) ;
+        QLK0RINTM8V1_DLYEDG_LVX    ptin_delay3 ( .N01(egin_d3) , .H01(egin_d2) ) ;
+        QLK0RINTM8V1_DLYEDG_LVX    ptin_delay4 ( .N01(egin_d4) , .H01(egin_d3) ) ;
+        QLK0RINTM8V1_DLYEDG_LVX    ptin_delay5 ( .N01(egin_d5) , .H01(egin_d4) ) ;
+`else
+        QLK0RINTM8V1_DLYEDG_LVX    ptin_delay1 ( .N01(egin_d5) , .H01(egin)  ,.ICECK60M(ICECK60M) ) ;
+`endif
+
+    /*--------------------------------------*/
+    /* scanmode egin_d5 | egin_dsp egin_dsn */
+    /*------------------+-------------------*/
+    /*    0        0    | egin_d5   egin_d5 */
+    /*    0        1    | egin_d5   egin_d5 */
+    /*    1        0    |    0        1     */
+    /*    1        1    |    0        1     */
+    /*--------------------------------------*/
+    assign  egin_dsp = egin_d5 & ~scanmode ;
+    assign  egin_dsn = egin_d5 | scanmode ;
+
+        //      edge find logic
+
+    assign  egin_b = ~egin ;
+    assign  egin_d_b = ~egin_dsp ;
+
+    /*ゲート呼び出しによる記述*/
+    //ゲート段数とタイミングを固定したいのでゲートで呼び出しを使用。
+    QLK0RINTM8V1_3AND_LVX   egp_and ( .N01(egp_int) , .H01(egpin) , .H02(egin) , .H03(egin_d_b) ) ;
+    QLK0RINTM8V1_3AND_LVX   egn_and ( .N01(egn_int) , .H01(egnin) , .H02(egin_b) , .H03(egin_dsn) ) ;
+    QLK0RINTM8V1_2OR_LVX    intp_or ( .N01(intp) , .H01(egp_int) , .H02(egn_int) ) ;
+
+    /*演算子による記述*/
+    //assign egp_int = egin & egin_d_b & egpin ;
+    //assign egn_int = egin_b & egin_dsn & egnin ;
+    //assign intp = egp_int | egn_int;
+
+endmodule
+
+
+//====================================================================================================
+//   INTM8 BI BLOCK
+//====================================================================================================
+//MDWとdinはBIの中ではフィードスルーになるので、RTL上はBIを介さずに直結する。
+
+module  QLK0RINTM8V1_BI (
+            mdr, ma, pselintm8, cpurd, cpuwr,
+            //mdw, din,
+            dout, we_egp, we_egn
+) ;
+
+    input       pselintm8, ma, cpurd, cpuwr ;
+    input [15:0] dout ;
+    //input [15:0] mdw ;
+
+    output      we_egp, we_egn ;
+    output [15:0] mdr ;
+    //output [15:0] din ;
+
+    wire        rd_en ;
+    wire        sel_egp, sel_egn;
+
+//========== address decode ========================================================================
+
+    assign  sel_egp = pselintm8 & ~ma ;
+    assign  sel_egn = pselintm8 & ma ;
+    
+//========== write enable ==========================================================================
+
+    assign  we_egp = sel_egp & cpuwr;
+    assign  we_egn = sel_egn & cpuwr;
+
+//  mdrbus Read/Write control
+
+    assign rd_en = cpurd & ( sel_egp | sel_egn ) ;
+
+        assign mdr[0] = dout[0] & rd_en  ; 
+        assign mdr[1] = dout[1] & rd_en  ; 
+        assign mdr[2] = dout[2] & rd_en  ; 
+        assign mdr[3] = dout[3] & rd_en  ; 
+        assign mdr[4] = dout[4] & rd_en  ; 
+        assign mdr[5] = dout[5] & rd_en  ; 
+        assign mdr[6] = dout[6] & rd_en  ; 
+        assign mdr[7] = dout[7] & rd_en  ; 
+        assign mdr[8] = dout[8] & rd_en  ; 
+        assign mdr[9] = dout[9] & rd_en  ; 
+        assign mdr[10] = dout[10] & rd_en  ; 
+        assign mdr[11] = dout[11] & rd_en  ; 
+        assign mdr[12] = dout[12] & rd_en  ; 
+        assign mdr[13] = dout[13] & rd_en  ; 
+        assign mdr[14] = dout[14] & rd_en  ; 
+        assign mdr[15] = dout[15] & rd_en  ; 
+
+      //  assign din = mdw ;
+
+endmodule
+
+
+//===================================================================================================================
+//   INTM8 EDGE DETECT MODULE (dont touch)
+//===================================================================================================================
+// MF3 Added: TBDLY50N は ICEのdlyと置き換えられるように 階層化する。
+// ICE 使用時にはモジュール宣言を削除することでICEのDLYと置き換える
+
+`ifndef FPGA_ICE
+module QLK0RINTM8V1_DLYEDG_LVX ( N01 , H01 ) ;
+  input  H01 ;
+  output N01 ;
+
+//input	ICECK60M ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch delay1 true
+  // synopsys dc_script_end
+
+  TBDLY3X2 delay1 ( .H01(H01) , .N01(N01) ) ;
+
+endmodule
+`else
+module QLK0RINTM8V1_DLYEDG_LVX ( N01 , H01 ,ICECK60M ) ;
+  input  H01 ;
+  output N01 ;
+
+  input	ICECK60M ;
+
+  reg [1:0]	in_dly ;
+
+  always @ ( posedge ICECK60M ) begin
+	in_dly <= { in_dly[0], H01} ;
+  end
+
+  assign N01 = in_dly[1] ;
+
+endmodule
+`endif
+
+//==================================================================================================================
+//   INTM8 ノイズフィルタ
+//   合成時にset_dont_touchを適用する事。
+//==================================================================================================================
+module QLK0RINTM8V1_DLYFIL_LVX ( N01 , H01 , ICECK60M ) ;
+  input  H01 ;
+  output N01 ;
+
+input	ICECK60M ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch delay1 true
+  // synopsys dc_script_end
+
+  /*TBDLY50Nはアナログディレイ＋RSラッチを含みノイズフィルタとして機能する*/
+//TBDLY50N delay1 ( .H01(H01) , .N01(N01) ) ;
+  QLK0RINTM8V1_ICEDLYMIN50N delay1 ( .dlyin(H01) , .dlyo(N01) ,.ICECK60M(ICECK60M) ) ;
+
+endmodule
+
+// MF3 Added: TBDLY50N は ICEのdlyと置き換えられるように 階層化する。
+// ICE 使用時にはモジュール宣言を削除することでICEのDLYと置き換える
+`ifndef FPGA_ICE
+module QLK0RINTM8V1_ICEDLYMIN50N ( dlyin ,dlyo , ICECK60M ) ;
+input	dlyin ;
+output	dlyo ;
+input	ICECK60M ;
+
+  TBFILTER1X2 tbdly50n ( .H01(dlyin) , .N01(dlyo) ) ;
+
+endmodule
+`else
+/****************************************************************/
+/* 50ns Digital Noise Filter by 60mhz clock.			*/
+/* Min50ns ( 50.000ns <= delay <= 66.666ns )			*/
+/****************************************************************/
+module QLK0RINTM8V1_ICEDLYMIN50N ( dlyin ,dlyo , ICECK60M ) ;
+	input	dlyin ;
+	output	dlyo ;
+	input	ICECK60M ;
+	
+	wire	in = dlyin;
+	wire	clk60mhz = ICECK60M;
+	
+	reg [2:0] dly;
+	reg N01;
+	always @( posedge clk60mhz ) begin
+		dly <= {dly[1:0], in};
+		if ((dly[0]==in)&&(dly[1]==in)&&(dly[2]==in)) begin
+			N01 <= dly[2];
+		end
+	end
+
+	assign dlyo = N01 ;
+
+endmodule
+`endif
+
+
+
+module QLK0RINTM8V1_3AND_LVX ( N01 , H01 , H02 , H03 ) ;
+  input  H01 , H02 , H03  ;
+  output N01 ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch gate true
+  // synopsys dc_script_end
+
+  TBAD3X1 gate ( .H01(H01) , .H02(H02) , .H03(H03) , .N01(N01) ) ;
+
+endmodule
+
+module QLK0RINTM8V1_2OR_LVX ( N01 , H01 , H02 ) ;
+  input  H01 , H02 ;
+  output N01 ;
+
+  // synopsys dc_script_begin
+  // set_dont_touch gate true
+  // synopsys dc_script_end
+
+  TBOR2X1 gate ( .H01(H01) , .H02(H02) , .N01(N01) ) ;
+
+endmodule
+
+
+
+

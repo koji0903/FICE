@@ -1,0 +1,18 @@
+#
+# Connect File for ADD_Module
+#
+# Test for : terminla/pullup/pulldown/open/connect
+#            DriveChange - no need because there is no original connection in Add Macro
+#
+
+In_A1 :terminal
+In_A2 SubMod.c
+In_A3 PULLDOWN
+In_A4 PULLUP
+Out_B1 :terminal
+Out_B2 SubMod.b      # [bus]ADD_MODULE.Out_B2 => SubMod.b
+Out_B3 SubMod.aaa      # [single]ADD_MODULE.Out_B3 => SubMod.c
+Out_B4 OPEN
+Inout_C1 :terminal
+Inout_C2 :terminal
+

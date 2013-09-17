@@ -1,0 +1,9 @@
+rst rst:terminal
+D   D:terminal
+Q3  cspf_Q3:terminal
+clk ice_top.clk_out
+FixedPin_Single PULLDOWN
+FixedPin_Bus PULLUP
+CLK60M add_ff.CLK60MHZ
+fpga_pio		fpga_pio:terminal
+PTTL			PTTL06:terminal

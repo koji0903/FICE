@@ -1,0 +1,29 @@
+/****************************************************************/
+/* Date		: 2008/04/26					*/
+/* Revision	: 1.00						*/
+/* Designer	: T.Tsunoda					*/
+/* Note		: OCDのMacro共通化ICE部				*/
+/****************************************************************/
+//$Id$
+
+module  QLK0ROCD1V1_UART_BUF ( clk_out , clk_in ) ;
+
+  input         clk_in ;
+  output        clk_out ;
+
+  BUFG ocd_bufg ( .O(clk_out), .I(clk_in) );
+
+//  reg           clk_out ;
+//
+//  function      gclkfunc2 ;
+//  // synopsys map_to_module TBBUFCLX4
+//  // synopsys return_port_name N01
+//  input H01;
+//  gclkfunc2 = H01 ;
+//  endfunction
+//
+//  always @(clk_in)
+//        clk_out = gclkfunc2(clk_in);
+//
+endmodule
+

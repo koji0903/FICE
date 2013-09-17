@@ -1,0 +1,1731 @@
+Release 12.3 par M.70d (lin64)
+Copyright (c) 1995-2010 Xilinx, Inc.  All rights reserved.
+
+cfipc85::  Tue Nov 30 00:08:12 2010
+
+par -w -intstyle ise -ol high -t 1 EVA_TOP_map.ncd EVA_TOP.ncd EVA_TOP.pcf 
+
+
+Constraints file: EVA_TOP.pcf.
+Loading device for application Rf_Device from file '4vlx80.nph' in environment
+/home/tools13/eda_tools/Linux_RHEL5/xilinx/ise/12.3/ISE_DS/ISE/:/eda_tools/xilinx/ise/12.3.
+   "EVA_TOP" is an NCD, version 3.2, device xc4vlx80, package ff1148, speed -11
+This design is using the default stepping level (major silicon revision) for this device (1). Unless your design is
+targeted at devices of this stepping level, it is recommended that you explicitly specify the stepping level of the
+parts you will be using. This will allow the tools to take advantage of any available performance and functional
+enhancements for this device. The latest stepping level for this device is '2'. Additional information on "stepping
+level" is available at support.xilinx.com.
+WARNING:ConstraintSystem:123 - Constraint '<TIMEGRP chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise = RISING TIMEGRP     
+      "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE";> [EVA_TOP.pcf(368655)]' includes bel
+   'chiptop/chip/pllctl/pllc/root/BUFGCTRL' which has multiple clock pins.  Any timing calculations for this constraint
+   will apply to all RISING clock pins on that bel.
+
+
+Initializing temperature to 85.000 Celsius. (default - Range: 0.000 to 85.000 Celsius)
+Initializing voltage to 1.140 Volts. (default - Range: 1.140 to 1.260 Volts)
+
+
+Device speed data version:  "PRODUCTION 1.69 2010-09-15".
+
+
+
+Device Utilization Summary:
+
+   Number of BUFGs                          26 out of 32     81%
+   Number of BUFGCTRLs                       5 out of 32     15%
+   Number of DCM_ADVs                       10 out of 12     83%
+   Number of DSP48s                          2 out of 80      2%
+   Number of ILOGICs                         8 out of 768     1%
+   Number of External IOBs                 589 out of 768    76%
+      Number of LOCed IOBs                   0 out of 589     0%
+
+   Number of PMCDs                           1 out of 8      12%
+   Number of RAMB16s                       196 out of 200    98%
+   Number of Slices                      25088 out of 35840  70%
+      Number of SLICEMs                     44 out of 17920   1%
+
+
+
+Overall effort level (-ol):   High 
+Router effort level (-rl):    High 
+
+WARNING:Timing:3223 - Timing constraint TS_1090_1 = MAXDELAY FROM TIMEGRP "chiptop_chip_pllctl_pllc_fclkds_rise" THRU   
+       TIMEGRP "thru_1090_0" THRU TIMEGRP "thru_1090_1" TO TIMEGRP        "chiptop_chip_pllctl_pllc_fclkds_rise" 29 ns;
+   ignored during timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1090_3 = MAXDELAY FROM TIMEGRP       
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise" THRU TIMEGRP        "thru_1090_0" THRU TIMEGRP "thru_1090_1" TO
+   TIMEGRP        "chiptop_chip_pllctl_pllc_fclkds_rise" 29 ns; ignored during timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1091_1 = MAXDELAY FROM TIMEGRP       
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise" THRU TIMEGRP        "thru_1091_0" THRU TIMEGRP "thru_1091_1" TO
+   TIMEGRP        "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" 43.5 ns; ignored during timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1094_1 = MAXDELAY FROM TIMEGRP       
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise" THRU TIMEGRP        "thru_1094_0" THRU TIMEGRP "thru_1094_1" TO
+   TIMEGRP        "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" 43.5 ns; ignored during timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1095_1 = MAXDELAY FROM TIMEGRP       
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise" THRU TIMEGRP        "thru_1095_0" THRU TIMEGRP "thru_1095_1" TO
+   TIMEGRP        "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" 43.5 ns; ignored during timing analysis.
+WARNING:Timing:3223 - Timing constraint TS_1145_0 = MAXDELAY FROM TIMEGRP "SynpAllSeqGrp_EVA_TOP" THRU TIMEGRP       
+   "thru_1145_0" TO TIMEGRP "to_1145_0" 29 ns; ignored during timing analysis.
+INFO:Timing:3386 - Intersecting Constraints found and resolved.  For more information, see the TSI report.  Please
+   consult the Xilinx Command Line Tools User Guide for information on generating a TSI report.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm4/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to NONE. 
+   No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm3/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to NONE. 
+   No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm2/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to NONE. 
+   No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, chiptop/pll/dcm64m/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to NONE. 
+   No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/timetagv2/dcm240m/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to
+   NONE.  No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths
+   between these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, chiptop/h_rosc/dcm64m/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to
+   NONE.  No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths
+   between these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, chiptop/h_rosc/dcm160m/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to
+   NONE.  No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths
+   between these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, chiptop/h_rosc/dcm48m/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to
+   NONE.  No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths
+   between these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm1/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to NONE. 
+   No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+WARNING:Timing - The Clock Modifying COMP, ice/clockctl/dcm5/DCM_ADV_INST, has the attribute CLK_FEEDBACK set to NONE. 
+   No phase relationship exists between the input and output clocks of this Clock Modifying COMP. Data paths between
+   these clock domains must be constrained using FROM/TO constraints.
+Starting initial Timing Analysis.  REAL time: 9 hrs 32 mins 23 secs 
+Finished initial Timing Analysis.  REAL time: 9 hrs 33 mins 58 secs 
+
+Starting Router
+
+
+Phase  1  : 188890 unrouted;      REAL time: 9 hrs 34 mins 2 secs 
+
+Phase  2  : 175992 unrouted;      REAL time: 9 hrs 34 mins 4 secs 
+
+Phase  3  : 79178 unrouted;      REAL time: 9 hrs 36 mins 6 secs 
+
+Phase  4  : 80338 unrouted; (Setup:14035, Hold:17690, Component Switching Limit:0)     REAL time: 10 hrs 39 mins 40 secs 
+  Intermediate status: 58 unrouted;       REAL time: 11 hrs 9 mins 48 secs 
+
+  Intermediate status: 8 unrouted;       REAL time: 11 hrs 42 mins 27 secs 
+
+
+Updating file: EVA_TOP.ncd with current fully routed design.
+
+Phase  5  : 0 unrouted; (Setup:15209, Hold:17134, Component Switching Limit:0)     REAL time: 11 hrs 52 mins 13 secs 
+  Intermediate status: 60 unrouted;       REAL time: 15 hrs 52 mins 21 secs 
+
+  Intermediate status: 2 unrouted;       REAL time: 16 hrs 23 mins 34 secs 
+
+  Intermediate status: 42 unrouted;       REAL time: 19 hrs 10 mins 38 secs 
+
+
+Phase  6  : 0 unrouted; (Setup:15209, Hold:17134, Component Switching Limit:0)     REAL time: 19 hrs 38 mins 39 secs 
+
+Phase  7  : 0 unrouted; (Setup:14908, Hold:17134, Component Switching Limit:0)     REAL time: 21 hrs 11 mins 53 secs 
+
+Updating file: EVA_TOP.ncd with current fully routed design.
+
+Phase  8  : 0 unrouted; (Setup:14908, Hold:17134, Component Switching Limit:0)     REAL time: 1 days 2 hrs 11 mins 34 secs 
+
+Phase  9  : 0 unrouted; (Setup:14908, Hold:15036, Component Switching Limit:0)     REAL time: 1 days 2 hrs 13 mins 8 secs 
+
+Phase 10  : 0 unrouted; (Setup:14908, Hold:15036, Component Switching Limit:0)     REAL time: 1 days 2 hrs 14 mins 51 secs 
+Total REAL time to Router completion: 1 days 2 hrs 14 mins 51 secs 
+Total CPU time to Router completion: 1 days 2 hrs 14 mins 37 secs 
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+Generating "PAR" statistics.
+
+**************************
+Generating Clock Report
+**************************
+
++---------------------+--------------+------+------+------------+-------------+
+|        Clock Net    |   Resource   |Locked|Fanout|Net Skew(ns)|Max Delay(ns)|
++---------------------+--------------+------+------+------------+-------------+
+|         ice/dmy2_cb |BUFGCTRL_X0Y10| No   |  364 |  0.437     |  2.815      |
++---------------------+--------------+------+------+------------+-------------+
+|            FCLK_ICE | BUFGCTRL_X0Y8| No   | 6673 |  0.631     |  2.928      |
++---------------------+--------------+------+------+------------+-------------+
+| chiptop/chip/fclkds | BUFGCTRL_X0Y2| No   | 1400 |  0.415     |  2.770      |
++---------------------+--------------+------+------+------------+-------------+
+|            CLK60MHZ | BUFGCTRL_X0Y1| No   |  815 |  0.585     |  2.841      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/trace/trdata/dmy |              |      |      |            |             |
+|              1_cb_0 |BUFGCTRL_X0Y20| No   |  308 |  0.474     |  2.753      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/trace/trdata/dmy |              |      |      |            |             |
+|              2_cb_1 |BUFGCTRL_X0Y11| No   |  211 |  0.355     |  2.667      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/timetagv2/CLK240 |              |      |      |            |             |
+|                   M |BUFGCTRL_X0Y30| No   |   62 |  0.148     |  2.566      |
++---------------------+--------------+------+------+------------+-------------+
+|         CLK30MHZ_GB | BUFGCTRL_X0Y0| No   |   77 |  0.315     |  2.745      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|flash_cp/QNSC3NCP1V2 |              |      |      |            |             |
+|_CPIL/cpl0/IL_FIHFL4 |              |      |      |            |             |
+|                   M |BUFGCTRL_X0Y23| No   |   24 |  0.093     |  2.618      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/RTC_SEL |              |      |      |            |             |
+|                  CK |BUFGCTRL_X0Y27| No   |   59 |  0.250     |  2.715      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|       csc/cg/fih_p1 |BUFGCTRL_X0Y24| No   |   16 |  0.176     |  2.662      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/emem/rom/EROMCLK |              |      |      |            |             |
+|                  _c |BUFGCTRL_X0Y17| No   |   40 |  0.199     |  2.455      |
++---------------------+--------------+------+------+------------+-------------+
+|    chiptop/fih_p3_i | BUFGCTRL_X0Y6| No   |   34 |  0.262     |  2.672      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             scl_dly | BUFGCTRL_X0Y9| No   |   15 |  0.042     |  2.552      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|ocd/main/uart/sclock |              |      |      |            |             |
+|                _16m |BUFGCTRL_X0Y22| No   |   32 |  0.103     |  2.420      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|         fsub_scck_i |BUFGCTRL_X0Y31| No   |   12 |  0.014     |  2.398      |
++---------------------+--------------+------+------+------------+-------------+
+|            CPURCLK3 |BUFGCTRL_X0Y26| No   |    3 |  0.003     |  2.561      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/main_cl |              |      |      |            |             |
+|                   k | BUFGCTRL_X0Y4| No   |   14 |  0.044     |  2.482      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+| csc/cg/mosccnt/fmx4 |BUFGCTRL_X0Y14| No   |   16 |  0.074     |  2.324      |
++---------------------+--------------+------+------+------------+-------------+
+| chiptop/chip/RESB_i |BUFGCTRL_X0Y15| No   |   20 |  0.214     |  2.493      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/trace/tradr/dmy1 |              |      |      |            |             |
+|                 _cb |BUFGCTRL_X0Y18| No   |   50 |  0.411     |  2.661      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/host_interface/u |              |      |      |            |             |
+|sbif2ice/iceifaclk_d |              |      |      |            |             |
+|                   2 | BUFGCTRL_X0Y7| No   |   25 |  0.098     |  2.547      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|   pclbuz/fmain_scck |BUFGCTRL_X0Y25| No   |   10 |  0.026     |  2.461      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/trace/tradr/dmy2 |              |      |      |            |             |
+|               _cb_0 |BUFGCTRL_X0Y13| No   |   34 |  0.308     |  2.566      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/host_interface/w |              |      |      |            |             |
+|      ait_count17_cb |BUFGCTRL_X0Y12| No   |   17 |  0.117     |  2.418      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/hioscctl/fihs |              |      |      |            |             |
+|            ync/fih4 |BUFGCTRL_X0Y21| No   |    3 |  0.001     |  2.270      |
++---------------------+--------------+------+------+------------+-------------+
+|        EVAOSCMCLK_c | BUFGCTRL_X0Y3| No   |    1 |  0.000     |  2.447      |
++---------------------+--------------+------+------+------------+-------------+
+|               ICEWR |         Local|      | 2790 |  4.970     |  5.420      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/resctl_main/r |              |      |      |            |             |
+|esf_reg_wr/wdtres_in |              |      |      |            |             |
+|                _dly |         Local|      |    1 |  0.000     |  0.821      |
++---------------------+--------------+------+------+------------+-------------+
+| ice/trace/pcwaitf_l |         Local|      |    8 |  0.518     |  3.463      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             pclsel0 |         Local|      |    3 |  0.000     |  1.109      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTDMA0 |         Local|      |    1 |  0.000     |  1.390      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+| pclbuz/main/pclsel1 |         Local|      |    2 |  0.001     |  0.963      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTDMA1 |         Local|      |    1 |  0.000     |  1.732      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/resctl_main/r |              |      |      |            |             |
+|esf_reg_wr/N_126743_ |              |      |      |            |             |
+|                   i |         Local|      |    1 |  0.000     |  0.820      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/dali/ch |              |      |      |            |             |
+|        0/func/asclk |         Local|      |   16 |  0.845     |  1.438      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[0] |              |      |      |            |             |
+|                     |         Local|      |    3 |  0.000     |  1.143      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[1] |              |      |      |            |             |
+|                     |         Local|      |    3 |  0.000     |  0.470      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[2] |              |      |      |            |             |
+|                     |         Local|      |    3 |  0.000     |  0.607      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[3] |              |      |      |            |             |
+|                     |         Local|      |    3 |  0.000     |  0.424      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[8] |              |      |      |            |             |
+|                     |         Local|      |    9 |  0.000     |  0.705      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[6] |              |      |      |            |             |
+|                     |         Local|      |   11 |  0.000     |  0.457      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[7] |              |      |      |            |             |
+|                     |         Local|      |   10 |  0.000     |  0.661      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[4] |              |      |      |            |             |
+|                     |         Local|      |    8 |  0.000     |  0.493      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[5] |              |      |      |            |             |
+|                     |         Local|      |    9 |  0.000     |  0.626      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[9] |              |      |      |            |             |
+|                     |         Local|      |    9 |  0.000     |  0.538      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[11 |              |      |      |            |             |
+|                   ] |         Local|      |    8 |  0.000     |  0.745      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[12 |              |      |      |            |             |
+|                   ] |         Local|      |    7 |  0.000     |  0.657      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[13 |              |      |      |            |             |
+|                   ] |         Local|      |    7 |  0.000     |  0.779      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[15 |              |      |      |            |             |
+|                   ] |         Local|      |    4 |  0.000     |  0.907      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[14 |              |      |      |            |             |
+|                   ] |         Local|      |    6 |  0.000     |  0.579      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|wwdt/main/counter[10 |              |      |      |            |             |
+|                   ] |         Local|      |    6 |  0.000     |  0.470      |
++---------------------+--------------+------+------+------------+-------------+
+|             USBIFWR |         Local|      |   11 |  1.626     |  2.061      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/lock1 |              |      |      |            |             |
+|            60posneg |         Local|      |    2 |  0.000     |  2.227      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/CLK64 |              |      |      |            |             |
+|                   M |         Local|      |   12 |  0.907     |  1.743      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/sclkmux |              |      |      |            |             |
+|      /CPUTSCLK_iclk |         Local|      |    1 |  0.000     |  0.756      |
++---------------------+--------------+------+------+------------+-------------+
+|       chiptop/ADCLK |         Local|      |   12 |  2.085     |  2.911      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|modectl/modectl_top/ |              |      |      |            |             |
+|modectl_main/test_mo |              |      |      |            |             |
+|       de/RESINB_clk |         Local|      |    1 |  0.000     |  1.343      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTSRE2 |         Local|      |    2 |  0.000     |  2.096      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTTM05 |         Local|      |    2 |  0.000     |  2.830      |
++---------------------+--------------+------+------+------------+-------------+
+|  ice/ICEWR_PRE_iclk |         Local|      |    2 |  0.457     |  1.611      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/pllctl/ |              |      |      |            |             |
+|        pllc/bbclkrp |         Local|      |    4 |  0.322     |  1.111      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk2_5 |         Local|      |    3 |  0.000     |  0.758      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk1_4 |         Local|      |    3 |  0.000     |  0.558      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/CLK32 |              |      |      |            |             |
+|                   M |         Local|      |   10 |  1.097     |  1.821      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt32 |              |      |      |            |             |
+|                 [0] |         Local|      |    9 |  0.292     |  1.101      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cksel |              |      |      |            |             |
+|   32_y/un1_clk1_clk |         Local|      |    1 |  0.000     |  0.582      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk2_3 |         Local|      |    3 |  0.000     |  0.606      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk1_1 |         Local|      |    3 |  0.000     |  0.261      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/CLK24 |              |      |      |            |             |
+|                   M |         Local|      |   10 |  2.106     |  2.757      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt24 |              |      |      |            |             |
+|                 [0] |         Local|      |    9 |  0.041     |  0.854      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cksel |              |      |      |            |             |
+|   24_y/un1_clk1_clk |         Local|      |    1 |  0.000     |  0.547      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|               INTAD |         Local|      |    7 |  0.000     |  1.896      |
++---------------------+--------------+------+------+------------+-------------+
+|     chiptop/R15KOUT |         Local|      |    9 |  2.348     |  4.368      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            N_1904_i |         Local|      |    1 |  0.000     |  1.363      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            N_1905_i |         Local|      |    1 |  0.000     |  1.288      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            N_1906_i |         Local|      |    1 |  0.000     |  1.075      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTTM07 |         Local|      |    3 |  0.000     |  2.517      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk1_0 |         Local|      |    1 |  0.000     |  0.398      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/OSCOUTM_iclk |              |      |      |            |             |
+|                     |         Local|      |    2 |  0.169     |  0.942      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            N_3793_i |         Local|      |    1 |  0.000     |  1.524      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            N_3794_i |         Local|      |    1 |  0.000     |  1.728      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/tbase/fmain_f |              |      |      |            |             |
+|sub_sel/cksel_fmain_ |              |      |      |            |             |
+|    fsub/clk2_m_iclk |         Local|      |    2 |  0.853     |  1.224      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/adcnt/ADRD_B |              |      |      |            |             |
+|              _c_clk |         Local|      |   10 |  2.354     |  3.111      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|flash_cp/QNSC3NCP1V2 |              |      |      |            |             |
+|_CPIL/cpl5/CPL5_ERDI |              |      |      |            |             |
+|        S/N_126077_i |         Local|      |    1 |  0.000     |  0.589      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|              /prs16 |         Local|      |    2 |  0.000     |  0.750      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/trace/trace_cont |              |      |      |            |             |
+|           /monitrc1 |         Local|      |    9 |  0.185     |  0.824      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/lvictl/main/l |              |      |      |            |             |
+|          vilv_set_i |         Local|      |    2 |  0.000     |  0.605      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTTM06 |         Local|      |    2 |  0.000     |  3.404      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|  csc/cg/tbase/fsub2 |         Local|      |    3 |  0.000     |  0.438      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|cibc/fmop/main/trmlv |              |      |      |            |             |
+|/bgrt_clk/bgrt_ck_or |              |      |      |            |             |
+|                     |         Local|      |    6 |  0.620     |  1.072      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/resctl_main/N |              |      |      |            |             |
+|           _126741_i |         Local|      |    1 |  0.000     |  1.642      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTTM00 |         Local|      |    4 |  0.000     |  2.601      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/lvictl/counte |              |      |      |            |             |
+|          r/fil15kin |         Local|      |    8 |  0.326     |  1.116      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|                 lk1 |         Local|      |    4 |  0.000     |  0.636      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/oscouts_nf_p_ |              |      |      |            |             |
+|                   i |         Local|      |    4 |  0.415     |  2.496      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/host_interface/u |              |      |      |            |             |
+|              sbifrd |         Local|      |   17 |  1.278     |  1.897      |
++---------------------+--------------+------+------+------------+-------------+
+|         ice/ICERD_i |         Local|      |    1 |  0.000     |  0.422      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|               INTMD |         Local|      |    2 |  0.000     |  2.157      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/resctl_main/N |              |      |      |            |             |
+|           _126739_i |         Local|      |    1 |  0.000     |  0.876      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|              /prs10 |         Local|      |    2 |  0.000     |  0.728      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|               /prs9 |         Local|      |    2 |  0.000     |  0.423      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTTM01 |         Local|      |    5 |  0.000     |  3.101      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            INTSAU00 |         Local|      |    4 |  0.000     |  2.784      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|              /prs11 |         Local|      |    2 |  0.000     |  0.425      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|              /prs12 |         Local|      |    2 |  0.000     |  0.566      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/BBINT13 |              |      |      |            |             |
+|                   R |         Local|      |    3 |  0.000     |  1.812      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|              /prs13 |         Local|      |    2 |  0.000     |  0.795      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/porga/i |              |      |      |            |             |
+|      ntctl/intp22mk |         Local|      |    1 |  0.000     |  0.388      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/porga/i |              |      |      |            |             |
+|      ntctl/intp23mk |         Local|      |    1 |  0.000     |  0.622      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|              /prs14 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/host_interface/u |              |      |      |            |             |
+|    sb2usbif/hi_wr_i |         Local|      |   15 |  0.777     |  1.412      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|ocd/main/uart/int_pr |              |      |      |            |             |
+|                   e |         Local|      |    1 |  0.000     |  0.764      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|              /prs15 |         Local|      |    2 |  0.000     |  0.815      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|flash_cp/QNSC3NCP1V2 |              |      |      |            |             |
+|    _CPIL/N_3899_clk |         Local|      |    2 |  0.170     |  0.580      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|              /prs16 |         Local|      |    2 |  0.000     |  0.423      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/resctl_main/N |              |      |      |            |             |
+|           _126740_i |         Local|      |    1 |  0.000     |  1.219      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|            ce/prs10 |         Local|      |    2 |  0.000     |  0.738      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|             ce/prs9 |         Local|      |    2 |  0.000     |  0.408      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|1/core/fch0/un6_asyn |              |      |      |            |             |
+|        c2_resz_iclk |         Local|      |    1 |  0.000     |  0.414      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/BBINT2R |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  1.459      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTTM02 |         Local|      |    4 |  0.000     |  2.928      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            INTSAU01 |         Local|      |    4 |  0.000     |  1.993      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|            ce/prs11 |         Local|      |    2 |  0.000     |  0.448      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|            ce/prs12 |         Local|      |    2 |  0.000     |  0.760      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/hioscctl/fihs |              |      |      |            |             |
+|           ync/cnt_2 |         Local|      |    6 |  0.000     |  0.603      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/hioscctl/fihs |              |      |      |            |             |
+|           ync/cnt_0 |         Local|      |    9 |  0.000     |  2.364      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|            ce/prs13 |         Local|      |    2 |  0.000     |  0.780      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/hioscctl/fihs |              |      |      |            |             |
+|           ync/cnt_3 |         Local|      |    9 |  0.000     |  0.847      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|flash_cp/QNSC3NCP1V2 |              |      |      |            |             |
+| _CPIL/cpmd/DRDCLK_i |         Local|      |    1 |  0.000     |  0.404      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|            ce/prs14 |         Local|      |    2 |  0.000     |  1.128      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|            ce/prs15 |         Local|      |    2 |  0.000     |  0.885      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            SDAI1DLY |         Local|      |    6 |  0.771     |  1.769      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|0/core/fch1/N_9_iclk |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  0.388      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk2_4 |         Local|      |    3 |  0.000     |  0.630      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cksel |              |      |      |            |             |
+|   2432/un1_clk1_clk |         Local|      |    1 |  0.000     |  0.442      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|1/core/fch0/N_9_iclk |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  0.581      |
++---------------------+--------------+------+------+------------+-------------+
+|       chiptop/ADS1W |         Local|      |    4 |  1.085     |  2.045      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTTM04 |         Local|      |    2 |  0.000     |  3.368      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTTM03 |         Local|      |    4 |  0.000     |  3.406      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk2_6 |         Local|      |    3 |  0.000     |  0.584      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cksel |              |      |      |            |             |
+|   2432/un1_clk2_clk |         Local|      |    1 |  0.000     |  0.719      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intctrt |              |      |      |            |             |
+|      c/INTRTC_ALARM |         Local|      |    2 |  0.000     |  2.265      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intctrt |              |      |      |            |             |
+|            c/int_ct |         Local|      |    2 |  0.000     |  1.115      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|                N_74 |         Local|      |    2 |  0.000     |  1.993      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                   1 |         Local|      |    2 |  0.000     |  0.425      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|2/core/fch1/N_9_iclk |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  0.768      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            INTSAU02 |         Local|      |    4 |  0.000     |  2.566      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                   2 |         Local|      |    2 |  0.000     |  0.813      |
++---------------------+--------------+------+------+------------+-------------+
+|  chiptop/pll/lock64 |         Local|      |    2 |  0.000     |  1.009      |
++---------------------+--------------+------+------+------------+-------------+
+|    ice/CLK60MHZLOCK |         Local|      |   14 |  0.543     |  3.543      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                   3 |         Local|      |    2 |  0.000     |  0.662      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                   4 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                   5 |         Local|      |    2 |  0.000     |  0.425      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|    bc_sub0/SUBC[10] |         Local|      |    3 |  0.000     |  0.597      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[9] |         Local|      |    3 |  0.000     |  0.780      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                   6 |         Local|      |    2 |  0.000     |  0.432      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                   7 |         Local|      |    2 |  0.000     |  0.775      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/pllctl/ |              |      |      |            |             |
+|pllc/bbclk_div/fclk_ |              |      |      |            |             |
+|                 ds2 |         Local|      |    2 |  0.000     |  0.854      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/pllctl/ |              |      |      |            |             |
+|pllc/bbclk_div/fclk_ |              |      |      |            |             |
+|                 ds4 |         Local|      |    2 |  0.000     |  0.691      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/hioscctl/fmai |              |      |      |            |             |
+|n_sel/cksel_fmain_p/ |              |      |      |            |             |
+|         clk2_m_iclk |         Local|      |    2 |  0.156     |  1.687      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|    bc_sub0/SUBC[11] |         Local|      |    3 |  0.000     |  0.624      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                   8 |         Local|      |    2 |  0.000     |  0.429      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|flash_cp/QNSC3NCP1V2 |              |      |      |            |             |
+| _CPIL/cpmd/RDCLK2_i |         Local|      |    3 |  0.472     |  0.918      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                   9 |         Local|      |    2 |  0.000     |  0.677      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|2/core/fch1/un6_asyn |              |      |      |            |             |
+|        c2_resz_iclk |         Local|      |    1 |  0.000     |  0.381      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/lock4 |              |      |      |            |             |
+|                   8 |         Local|      |    2 |  0.000     |  0.709      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/lock4 |              |      |      |            |             |
+|             8posneg |         Local|      |    2 |  0.000     |  2.637      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/lock6 |              |      |      |            |             |
+|                   4 |         Local|      |    3 |  0.000     |  1.454      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/lock6 |              |      |      |            |             |
+|             4posneg |         Local|      |    2 |  0.000     |  2.173      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|    bc_sub0/SUBC[12] |         Local|      |    3 |  0.000     |  0.629      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|    bc_sub0/SUBC[13] |         Local|      |    3 |  0.000     |  0.746      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/resctl_main/N |              |      |      |            |             |
+|           _126742_i |         Local|      |    1 |  0.000     |  1.185      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/TKBTINT |              |      |      |            |             |
+|                   0 |         Local|      |    1 |  0.000     |  1.037      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            INTSAU03 |         Local|      |    4 |  0.000     |  1.555      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|0/core/fch1/un6_asyn |              |      |      |            |             |
+|        c2_resz_iclk |         Local|      |    1 |  0.000     |  0.403      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTIIC0 |         Local|      |    1 |  0.000     |  0.606      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|             INTRTCI |         Local|      |    3 |  0.000     |  1.214      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/timetagv2/lock24 |              |      |      |            |             |
+|             0posneg |         Local|      |    2 |  0.000     |  2.280      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/TKBTINT |              |      |      |            |             |
+|                   1 |         Local|      |    1 |  0.000     |  1.142      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cksel |              |      |      |            |             |
+|   2464/un1_clk1_clk |         Local|      |    1 |  0.000     |  0.403      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/hioscctl/fihs |              |      |      |            |             |
+|           ync/cnt_1 |         Local|      |    7 |  0.000     |  0.633      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/TKBTINT |              |      |      |            |             |
+|                   2 |         Local|      |    1 |  0.000     |  1.193      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/BBINT3R |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  1.402      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|               INTKR |         Local|      |    1 |  0.000     |  1.899      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/trace/trace_cont |              |      |      |            |             |
+|           /N_1206_i |         Local|      |    9 |  2.506     |  3.110      |
++---------------------+--------------+------+------+------------+-------------+
+|      USBIFWR_i_iclk |         Local|      |    8 |  2.257     |  3.069      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/evamclk |              |      |      |            |             |
+|   sel/main_out_iclk |         Local|      |    1 |  0.000     |  0.736      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|          ITMCNT[10] |         Local|      |    3 |  0.000     |  0.945      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[9] |         Local|      |    3 |  0.000     |  0.643      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/TKCTINT |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  0.835      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/INTCMP1 |              |      |      |            |             |
+|                     |         Local|      |    2 |  0.000     |  1.418      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/INTSTDL |              |      |      |            |             |
+|                   0 |         Local|      |    2 |  0.000     |  1.168      |
++---------------------+--------------+------+------+------------+-------------+
+| ice/clockctl/clk112 |         Local|      |   20 |  2.387     |  3.332      |
++---------------------+--------------+------+------+------------+-------------+
+|  chiptop/pll/CLK64M |         Local|      |    4 |  0.303     |  1.164      |
++---------------------+--------------+------+------+------------+-------------+
+|   chiptop/pll/CLK1M |         Local|      |    2 |  0.000     |  0.591      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/CLKFX_OUT_de |              |      |      |            |             |
+|rived_clock_RNIDSP21 |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  1.208      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|cibc/fmop/main/trmlv |              |      |      |            |             |
+|/bgrtc_clk/bgrt_ck_o |              |      |      |            |             |
+|                   r |         Local|      |    4 |  0.328     |  0.740      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/BBINT5R |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  1.190      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/BBINT1R |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  1.328      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/lock1po |              |      |      |            |             |
+|                sneg |         Local|      |    2 |  0.000     |  0.944      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/lock2po |              |      |      |            |             |
+|                sneg |         Local|      |    2 |  0.000     |  2.464      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/lock3po |              |      |      |            |             |
+|                sneg |         Local|      |    2 |  0.000     |  1.113      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  27 |         Local|      |    2 |  0.000     |  0.634      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/lock4po |              |      |      |            |             |
+|                sneg |         Local|      |    2 |  0.000     |  2.592      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|               0/N_9 |         Local|      |    2 |  0.000     |  0.589      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|   0/un6_async2_resz |         Local|      |    4 |  0.000     |  0.424      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/lvictl/main/l |              |      |      |            |             |
+|      vilv_exor_iclk |         Local|      |    1 |  0.000     |  0.392      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt32 |              |      |      |            |             |
+|                 [2] |         Local|      |    7 |  0.378     |  0.819      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt32 |              |      |      |            |             |
+|                 [1] |         Local|      |    8 |  0.658     |  1.095      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt24 |              |      |      |            |             |
+|                 [2] |         Local|      |    7 |  0.055     |  0.813      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt24 |              |      |      |            |             |
+|                 [1] |         Local|      |    8 |  0.172     |  0.996      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/un1_clk |              |      |      |            |             |
+|                   1 |         Local|      |    2 |  0.000     |  0.404      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/un1_clk |              |      |      |            |             |
+|                   2 |         Local|      |    2 |  0.000     |  0.400      |
++---------------------+--------------+------+------+------------+-------------+
+| ice/clockctl/clk142 |         Local|      |    2 |  0.000     |  2.333      |
++---------------------+--------------+------+------+------------+-------------+
+| ice/clockctl/clk147 |         Local|      |    2 |  0.000     |  1.357      |
++---------------------+--------------+------+------+------------+-------------+
+|    chiptop/FIHOCD_i |         Local|      |    2 |  0.001     |  0.404      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|               /prs1 |         Local|      |    2 |  0.000     |  0.408      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|               /prs2 |         Local|      |    2 |  0.000     |  0.424      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/CLK48 |              |      |      |            |             |
+|                   M |         Local|      |    5 |  1.056     |  1.952      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/CLK16 |              |      |      |            |             |
+|                  0M |         Local|      |    3 |  0.336     |  1.031      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|               /prs3 |         Local|      |    2 |  0.000     |  0.425      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|               /prs4 |         Local|      |    2 |  0.000     |  0.562      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|               /prs5 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|               /prs6 |         Local|      |    2 |  0.000     |  0.613      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|               /prs7 |         Local|      |    2 |  0.000     |  0.422      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|               /prs8 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|               /prs9 |         Local|      |    2 |  0.000     |  0.760      |
++---------------------+--------------+------+------+------------+-------------+
+|      chiptop/FIHOCD |         Local|      |    3 |  0.115     |  0.735      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            TMDENCLK |         Local|      |    3 |  0.000     |  2.009      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|2/core/fch0/N_9_iclk |              |      |      |            |             |
+|                     |         Local|      |    1 |  0.000     |  0.400      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+| sau0/ch0/func/asclk |         Local|      |   14 |  0.415     |  0.842      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            INTSAU11 |         Local|      |    4 |  0.000     |  1.998      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/lock1 |              |      |      |            |             |
+|                  60 |         Local|      |    2 |  0.000     |  1.052      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|flash_cp/QNSC3NCP1V2 |              |      |      |            |             |
+| _CPIL/cpl0/FIHFL16M |         Local|      |    3 |  0.172     |  0.602      |
++---------------------+--------------+------+------+------------+-------------+
+|               PROGI |         Local|      |    6 |  0.000     |  1.991      |
++---------------------+--------------+------+------+------------+-------------+
+|            CPUTMCLK |         Local|      |    3 |  0.000     |  0.435      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/trace/trace_cont |              |      |      |            |             |
+|           /N_1205_i |         Local|      |    6 |  0.906     |  1.688      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|            INTSAU10 |         Local|      |    4 |  0.000     |  2.941      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|          N_125896_i |         Local|      |    1 |  0.000     |  1.865      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[9] |         Local|      |    3 |  0.000     |  0.925      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                   1 |         Local|      |    2 |  0.000     |  0.417      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                   2 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                   3 |         Local|      |    2 |  0.000     |  0.621      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|               /prs1 |         Local|      |    2 |  0.000     |  0.589      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                   4 |         Local|      |    2 |  0.000     |  0.422      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|               /prs2 |         Local|      |    2 |  0.000     |  0.566      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                   5 |         Local|      |    2 |  0.000     |  0.424      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|               /prs3 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                   6 |         Local|      |    2 |  0.000     |  0.910      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|               /prs4 |         Local|      |    2 |  0.000     |  0.566      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                   7 |         Local|      |    2 |  0.000     |  0.425      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|               /prs5 |         Local|      |    2 |  0.000     |  0.439      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                   8 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|               /prs6 |         Local|      |    2 |  0.000     |  0.574      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                   9 |         Local|      |    2 |  0.000     |  0.912      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|               /prs7 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpumclkst |              |      |      |            |             |
+|               /prs8 |         Local|      |    2 |  0.000     |  0.605      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt32 |              |      |      |            |             |
+|                 [4] |         Local|      |    3 |  0.000     |  0.607      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt32 |              |      |      |            |             |
+|                 [3] |         Local|      |    6 |  0.017     |  0.662      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt24 |              |      |      |            |             |
+|                 [4] |         Local|      |    3 |  0.000     |  0.617      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/cnt24 |              |      |      |            |             |
+|                 [3] |         Local|      |    6 |  0.011     |  0.662      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[0] |         Local|      |    2 |  0.000     |  1.020      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[8] |         Local|      |    2 |  0.000     |  0.467      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[1] |         Local|      |    2 |  0.000     |  0.609      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|            /prs[10] |         Local|      |    2 |  0.000     |  0.442      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[2] |         Local|      |    2 |  0.000     |  0.741      |
++---------------------+--------------+------+------+------------+-------------+
+|    chiptop/pll/sclk |         Local|      |    5 |  0.307     |  0.765      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[3] |         Local|      |    2 |  0.000     |  0.763      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[4] |         Local|      |    2 |  0.000     |  0.425      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[0] |         Local|      |    3 |  0.000     |  1.378      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[1] |         Local|      |    3 |  0.000     |  1.102      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[2] |         Local|      |    3 |  0.000     |  0.582      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[3] |         Local|      |    3 |  0.000     |  0.431      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[4] |         Local|      |    3 |  0.000     |  0.750      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[5] |         Local|      |    3 |  0.000     |  0.777      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[6] |         Local|      |    3 |  0.000     |  0.578      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[7] |         Local|      |    3 |  0.000     |  0.422      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/intvlc/ |              |      |      |            |             |
+|           ITMCNT[8] |         Local|      |    3 |  0.000     |  0.746      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[5] |         Local|      |    2 |  0.000     |  0.566      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[6] |         Local|      |    2 |  0.000     |  0.566      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/pll/cmeasure |              |      |      |            |             |
+|             /prs[7] |         Local|      |    2 |  0.000     |  0.600      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[0] |         Local|      |    3 |  0.000     |  0.738      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[1] |         Local|      |    3 |  0.000     |  0.431      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[2] |         Local|      |    3 |  0.000     |  0.448      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[3] |         Local|      |    3 |  0.000     |  0.468      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[4] |         Local|      |    3 |  0.000     |  0.911      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[5] |         Local|      |    3 |  0.000     |  0.459      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[6] |         Local|      |    3 |  0.000     |  0.450      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[7] |         Local|      |    3 |  0.000     |  0.432      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|rtc/main/cnt/subc/su |              |      |      |            |             |
+|     bc_sub0/SUBC[8] |         Local|      |    3 |  0.000     |  0.431      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/pllctl/ |              |      |      |            |             |
+|        pllc/bbclkmp |         Local|      |    2 |  0.154     |  0.789      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  10 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  11 |         Local|      |    2 |  0.000     |  0.738      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  20 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  19 |         Local|      |    2 |  0.000     |  0.417      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  12 |         Local|      |    2 |  0.000     |  0.562      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  21 |         Local|      |    2 |  0.000     |  0.760      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  13 |         Local|      |    2 |  0.000     |  0.658      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  22 |         Local|      |    2 |  0.000     |  0.591      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  14 |         Local|      |    2 |  0.000     |  1.051      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  23 |         Local|      |    2 |  0.000     |  0.761      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  15 |         Local|      |    2 |  0.000     |  0.562      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  24 |         Local|      |    2 |  0.000     |  0.768      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  16 |         Local|      |    2 |  0.000     |  0.738      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  25 |         Local|      |    2 |  0.000     |  0.618      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  17 |         Local|      |    2 |  0.000     |  0.610      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  26 |         Local|      |    2 |  0.000     |  0.937      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  18 |         Local|      |    2 |  0.000     |  1.059      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/stpst/prs |              |      |      |            |             |
+|                  27 |         Local|      |    2 |  0.000     |  1.162      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|              /prs10 |         Local|      |    2 |  0.000     |  0.926      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|              /prs11 |         Local|      |    2 |  0.000     |  0.454      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|              /prs12 |         Local|      |    2 |  0.000     |  0.582      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|              /prs13 |         Local|      |    2 |  0.000     |  0.656      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/mosccnt/count |              |      |      |            |             |
+|            5/count1 |         Local|      |    2 |  0.000     |  0.784      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/mosccnt/count |              |      |      |            |             |
+|            5/count0 |         Local|      |    2 |  0.000     |  0.591      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/mosccnt/count |              |      |      |            |             |
+|            5/count2 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/cg/mosccnt/count |              |      |      |            |             |
+|            5/count3 |         Local|      |    2 |  0.000     |  0.409      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|              /prs14 |         Local|      |    2 |  0.000     |  0.712      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/cpusclkst |              |      |      |            |             |
+|              /prs15 |         Local|      |    2 |  0.000     |  0.636      |
++---------------------+--------------+------+------+------------+-------------+
+|            USBCLK_c |         Local|      |    2 |  0.366     |  2.366      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/clockctl/evasclk |              |      |      |            |             |
+|    sel/sub_out_iclk |         Local|      |    1 |  0.000     |  0.928      |
++---------------------+--------------+------+------+------------+-------------+
+|  ice/clockctl/lock3 |         Local|      |    2 |  0.000     |  1.024      |
++---------------------+--------------+------+------+------------+-------------+
+|  ice/clockctl/lock2 |         Local|      |    2 |  0.314     |  1.535      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/timetagv2/lock24 |              |      |      |            |             |
+|                   0 |         Local|      |    2 |  0.000     |  1.017      |
++---------------------+--------------+------+------+------------+-------------+
+|  ice/clockctl/lock1 |         Local|      |    2 |  0.000     |  1.055      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|flash_cp/QNSC3NCP1V2 |              |      |      |            |             |
+|_CPIL/cpmd/RDCLK_icl |              |      |      |            |             |
+|                   k |         Local|      |    1 |  0.000     |  0.412      |
++---------------------+--------------+------+------+------------+-------------+
+|  ice/clockctl/lock4 |         Local|      |    2 |  0.000     |  1.193      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|  adctl/core/wup_trg |         Local|      |    2 |  0.000     |  1.163      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|int48/main/sfrreg/IF |              |      |      |            |             |
+|     REG1/INTLVI_clk |         Local|      |    1 |  0.000     |  2.379      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  10 |         Local|      |    2 |  0.000     |  0.442      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  11 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  20 |         Local|      |    2 |  0.000     |  0.422      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  19 |         Local|      |    2 |  0.000     |  0.448      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  12 |         Local|      |    2 |  0.000     |  0.424      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  21 |         Local|      |    2 |  0.000     |  0.889      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  13 |         Local|      |    2 |  0.000     |  0.901      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  22 |         Local|      |    2 |  0.000     |  0.635      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  14 |         Local|      |    2 |  0.000     |  0.439      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  23 |         Local|      |    2 |  0.000     |  1.133      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  15 |         Local|      |    2 |  0.000     |  0.439      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  24 |         Local|      |    2 |  0.000     |  0.836      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  16 |         Local|      |    2 |  0.000     |  0.625      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  25 |         Local|      |    2 |  0.000     |  0.581      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  17 |         Local|      |    2 |  0.000     |  0.408      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|               INTP0 |         Local|      |    1 |  0.000     |  1.284      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  26 |         Local|      |    2 |  0.000     |  0.408      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/hltst/prs |              |      |      |            |             |
+|                  18 |         Local|      |    2 |  0.000     |  0.735      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|             ce/prs1 |         Local|      |    2 |  0.000     |  0.814      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|             ce/prs2 |         Local|      |    2 |  0.000     |  0.432      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|             ce/prs3 |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|             ce/prs4 |         Local|      |    2 |  0.000     |  0.592      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|             ce/prs5 |         Local|      |    2 |  0.000     |  0.930      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|             ce/prs6 |         Local|      |    2 |  0.000     |  0.452      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|             ce/prs7 |         Local|      |    2 |  0.000     |  0.422      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/status/clock_sen |              |      |      |            |             |
+|             ce/prs8 |         Local|      |    2 |  0.000     |  0.732      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|2/core/fch0/un6_asyn |              |      |      |            |             |
+|        c2_resz_iclk |         Local|      |    1 |  0.000     |  0.569      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|               INTP3 |         Local|      |    1 |  0.000     |  0.984      |
++---------------------+--------------+------+------+------------+-------------+
+|       chiptop/FIHFL |         Local|      |    1 |  0.000     |  0.735      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|               INTP4 |         Local|      |    1 |  0.000     |  1.958      |
++---------------------+--------------+------+------+------------+-------------+
+|ice/emem/rom/sel_cpu |              |      |      |            |             |
+|      _romcksel_iclk |         Local|      |    1 |  0.000     |  0.398      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|               INTP5 |         Local|      |    1 |  0.000     |  1.345      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/porga/i |              |      |      |            |             |
+|      ntctl/intp20mk |         Local|      |    1 |  0.000     |  0.245      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|   1/un6_async2_resz |         Local|      |    4 |  0.000     |  0.594      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/porga/i |              |      |      |            |             |
+|      ntctl/intp21mk |         Local|      |    1 |  0.000     |  0.898      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|                 lk2 |         Local|      |    2 |  0.000     |  0.586      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk2_1 |         Local|      |    2 |  0.000     |  0.717      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk2_0 |         Local|      |    2 |  0.000     |  0.590      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/h_rosc/un1_c |              |      |      |            |             |
+|               lk2_2 |         Local|      |    2 |  0.000     |  0.565      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|               INTFL |         Local|      |    1 |  0.000     |  2.302      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|csc/rg/lvictl/main/C |              |      |      |            |             |
+|                 2_i |         Local|      |    1 |  0.000     |  0.969      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|sau0/wup/un1_ckp_1_i |              |      |      |            |             |
+|              clk[0] |         Local|      |    2 |  0.000     |  0.396      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/dali/wu |              |      |      |            |             |
+| p/un1_ckp_1_iclk[0] |         Local|      |    2 |  0.000     |  0.396      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|flash_cp/QNSC3NCP1V2 |              |      |      |            |             |
+|  _CPIL/cpl0/FIHFL8M |         Local|      |    3 |  0.000     |  0.754      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/tmkbopa |              |      |      |            |             |
+|     1/core/fch1/N_9 |         Local|      |    2 |  0.000     |  0.396      |
++---------------------+--------------+------+------+------------+-------------+
+|chiptop/chip/socket/ |              |      |      |            |             |
+|ocd/main/uart/uart_w |              |      |      |            |             |
+|  etx2/we_txs_baseck |         Local|      |    2 |  0.000     |  0.415      |
++---------------------+--------------+------+------+------------+-------------+
+
+* Net Skew is the difference between the minimum and maximum routing
+only delays for the net. Note this is different from Clock Skew which
+is reported in TRCE timing report. Clock Skew is the difference between
+the minimum and maximum path delays which includes logic delays.
+
+Timing Score: 29944 (Setup: 14908, Hold: 15036, Component Switching Limit: 0)
+
+WARNING:Par:468 - Your design did not meet timing.  The following are some suggestions to assist you to meet timing in
+   your design.
+
+   Review the timing report using Timing Analyzer (In ISE select "Post-Place &
+   Route Static Timing Report"). Go to the failing constraint(s) and evaluate the failing paths for each constraint.
+
+   Try the Design Goal and Strategies for Timing Performance(In ISE select Project -> Design Goals & Strategies) to
+   ensure the best options are set in the tools for timing closure.
+
+   Use the Xilinx "SmartXplorer" script to try special combinations of
+   options known to produce very good results.
+
+   Visit the Xilinx technical support web at http://support.xilinx.com and go to
+   either "Troubleshoot->Tech Tips->Timing & Constraints" or "
+   TechXclusives->Timing Closure" for tips and suggestions for meeting timing
+   in your design.
+
+Number of Timing Constraints that were not applied: 9
+
+Asterisk (*) preceding a constraint indicates it was not met.
+   This may be due to a setup or hold violation.
+
+----------------------------------------------------------------------------------------------------------
+  Constraint                                |    Check    | Worst Case |  Best Case | Timing |   Timing   
+                                            |             |    Slack   | Achievable | Errors |    Score   
+----------------------------------------------------------------------------------------------------------
+* TS_CLK60MHZ = PERIOD TIMEGRP "CLK60MHZ_gr | SETUP       |    -6.949ns|    30.565ns|       2|       13896
+  p" 16.667 ns HIGH 50%                     | HOLD        |    -7.531ns|            |       2|       15036
+----------------------------------------------------------------------------------------------------------
+* TS_1085_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    -0.396ns|    29.396ns|       3|         651
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1085_ |             |            |            |        |            
+  0" TO TIMEGRP "chiptop_chip_pllctl_pllc_f |             |            |            |        |            
+  clkds_rise" 29 ns                         |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+* TS_1098_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    -0.218ns|    29.218ns|       2|         361
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1098_ |             |            |            |        |            
+  0" TO TIMEGRP "chiptop_chip_pllctl_pllc_f |             |            |            |        |            
+  clkds_rise" 29 ns                         |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1136_0 = MAXDELAY FROM TIMEGRP "from_1 | SETUP       |     0.027ns|     2.973ns|       0|           0
+  136_0" TO TIMEGRP "to_1136_0" 3 ns        |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1137_0 = MAXDELAY FROM TIMEGRP "from_1 | SETUP       |     0.305ns|     2.695ns|       0|           0
+  137_0" TO TIMEGRP "to_1137_0" 3 ns        |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1092_0 = MAXDELAY FROM TIMEGRP         | SETUP       |     1.256ns|    27.744ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1092_ |             |            |            |        |            
+  0" TO TIMEGRP "chiptop_chip_pllctl_pllc_f |             |            |            |        |            
+  clkds_rise" 29 ns                         |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_CLK240M = PERIOD TIMEGRP "CLK240M_grp" | SETUP       |     2.626ns|     1.541ns|       0|           0
+   4.167 ns HIGH 50%                        | HOLD        |     0.462ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_CLK160M = PERIOD TIMEGRP "CLK160M_grp" | SETUP       |     3.896ns|     2.354ns|       0|           0
+   6.25 ns HIGH 50%                         | HOLD        |     0.457ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_chiptop_chip_socket_csc_cg_tbase_FCLK_ | MAXDELAY    |     4.965ns|    24.035ns|       0|           0
+  ICE_fall_chiptop_chip_pllctl_pllc_fclkds_ |             |            |            |        |            
+  fall         = MAXDELAY FROM TIMEGRP      |             |            |            |        |            
+      "chiptop_chip_socket_csc_cg_tbase_FCL |             |            |            |        |            
+  K_ICE_fall" TO TIMEGRP         "chiptop_c |             |            |            |        |            
+  hip_pllctl_pllc_fclkds_fall" 29 ns        |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1084_0 = MAXDELAY FROM TIMEGRP         | SETUP       |     6.823ns|    22.177ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1084_ |             |            |            |        |            
+  0" TO TIMEGRP "chiptop_chip_pllctl_pllc_f |             |            |            |        |            
+  clkds_rise" 29 ns                         |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1086_0 = MAXDELAY FROM TIMEGRP         | SETUP       |     7.791ns|    21.209ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1086_ |             |            |            |        |            
+  0" TO TIMEGRP "chiptop_chip_pllctl_pllc_f |             |            |            |        |            
+  clkds_rise" 29 ns                         |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1150_0 = MAXDELAY FROM TIMEGRP "SynpAl | SETUP       |     7.834ns|    21.166ns|       0|           0
+  lSeqGrp_EVA_TOP" THRU TIMEGRP         "th |             |            |            |        |            
+  ru_1150_0" TO TIMEGRP "to_1150_0" 29 ns   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1144_0 = MAXDELAY FROM TIMEGRP "SynpAl | SETUP       |     8.387ns|    20.613ns|       0|           0
+  lSeqGrp_EVA_TOP" THRU TIMEGRP         "th |             |            |            |        |            
+  ru_1144_0" TO TIMEGRP "to_1144_0" 29 ns   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1149_0 = MAXDELAY FROM TIMEGRP "SynpAl | SETUP       |     8.680ns|    20.320ns|       0|           0
+  lSeqGrp_EVA_TOP" THRU TIMEGRP         "th |             |            |            |        |            
+  ru_1149_0" TO TIMEGRP "to_1149_0" 29 ns   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1148_0 = MAXDELAY FROM TIMEGRP "SynpAl | SETUP       |     9.251ns|    19.749ns|       0|           0
+  lSeqGrp_EVA_TOP" THRU TIMEGRP         "th |             |            |            |        |            
+  ru_1148_0" TO TIMEGRP "to_1148_0" 29 ns   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1630_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    10.411ns|    47.589ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1630_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1630_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_socket_csc_cg_tbase |             |            |            |        |            
+  _FCLK_ICE_rise" 58 ns                     |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1094_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    11.010ns|    46.990ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1094_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1094_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_socket_csc_cg_tbase |             |            |            |        |            
+  _FCLK_ICE_rise" 58 ns                     |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1088_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    12.608ns|    16.392ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1088_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1088_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_pllctl_pllc_fclkds_ |             |            |            |        |            
+  rise" 29 ns                               |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1097_0 = MAXDELAY FROM TIMEGRP "chipto | SETUP       |    13.266ns|    30.234ns|       0|           0
+  p_chip_pllctl_pllc_fclkds_rise" THRU      |             |            |            |        |            
+      TIMEGRP "thru_1097_0" TO TIMEGRP      |             |            |            |        |            
+      "chiptop_chip_socket_csc_cg_tbase_FCL |             |            |            |        |            
+  K_ICE_rise" 43.5 ns                       |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1105_0 = MAXDELAY FROM TIMEGRP "chipto | SETUP       |    13.330ns|    30.170ns|       0|           0
+  p_chip_pllctl_pllc_fclkds_rise" THRU      |             |            |            |        |            
+      TIMEGRP "thru_1105_0" TO TIMEGRP      |             |            |            |        |            
+      "chiptop_chip_socket_csc_cg_tbase_FCL |             |            |            |        |            
+  K_ICE_rise" 43.5 ns                       |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1096_0 = MAXDELAY FROM TIMEGRP "chipto | SETUP       |    13.578ns|    29.922ns|       0|           0
+  p_chip_pllctl_pllc_fclkds_rise" THRU      |             |            |            |        |            
+      TIMEGRP "thru_1096_0" TO TIMEGRP      |             |            |            |        |            
+      "chiptop_chip_socket_csc_cg_tbase_FCL |             |            |            |        |            
+  K_ICE_rise" 43.5 ns                       |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_CLK30MHZ_GB = PERIOD TIMEGRP "CLK30MHZ | SETUP       |    14.267ns|     6.088ns|       0|           0
+  _GB_grp" 33.333 ns HIGH 50%               | HOLD        |     0.441ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_1103_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    15.363ns|    13.637ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1103_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1103_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_pllctl_pllc_fclkds_ |             |            |            |        |            
+  rise" 29 ns                               |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1083_0 = MAXDELAY FROM TIMEGRP "chipto | SETUP       |    16.105ns|    27.395ns|       0|           0
+  p_chip_pllctl_pllc_fclkds_rise" THRU      |             |            |            |        |            
+      TIMEGRP "thru_1083_0" TO TIMEGRP      |             |            |            |        |            
+      "chiptop_chip_socket_csc_cg_tbase_FCL |             |            |            |        |            
+  K_ICE_rise" 43.5 ns                       |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1091_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    16.577ns|    41.423ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1091_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1091_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_socket_csc_cg_tbase |             |            |            |        |            
+  _FCLK_ICE_rise" 58 ns                     |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_BBFCLKDS = PERIOD TIMEGRP "BBFCLKDS_gr | SETUP       |    16.859ns|    18.128ns|       0|           0
+  p" 50 ns HIGH 40%                         | HOLD        |     0.419ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_1095_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    17.545ns|    40.455ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1095_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1095_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_socket_csc_cg_tbase |             |            |            |        |            
+  _FCLK_ICE_rise" 58 ns                     |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1100_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    20.446ns|     8.554ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1100_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1100_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_pllctl_pllc_fclkds_ |             |            |            |        |            
+  rise" 29 ns                               |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1093_0 = MAXDELAY FROM TIMEGRP "chipto | SETUP       |    20.447ns|    23.053ns|       0|           0
+  p_chip_pllctl_pllc_fclkds_rise" THRU      |             |            |            |        |            
+      TIMEGRP "thru_1093_0" TO TIMEGRP      |             |            |            |        |            
+      "chiptop_chip_socket_csc_cg_tbase_FCL |             |            |            |        |            
+  K_ICE_rise" 43.5 ns                       |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1146_0 = MAXDELAY FROM TIMEGRP "SynpAl | SETUP       |    24.709ns|     4.291ns|       0|           0
+  lSeqGrp_EVA_TOP" THRU TIMEGRP         "th |             |            |            |        |            
+  ru_1146_0" TO TIMEGRP "to_1146_0" 29 ns   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1151_0 = MAXDELAY FROM TIMEGRP "SynpAl | SETUP       |    26.467ns|     2.533ns|       0|           0
+  lSeqGrp_EVA_TOP" THRU TIMEGRP         "th |             |            |            |        |            
+  ru_1151_0" TO TIMEGRP "to_1151_0" 29 ns   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1147_0 = MAXDELAY FROM TIMEGRP "SynpAl | SETUP       |    27.737ns|     1.263ns|       0|           0
+  lSeqGrp_EVA_TOP" THRU TIMEGRP         "th |             |            |            |        |            
+  ru_1147_0" TO TIMEGRP "to_1147_0" 29 ns   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_FIH_LVI = PERIOD TIMEGRP "FIH_LVI_grp" | MINLOWPULSE |    27.838ns|     1.162ns|       0|           0
+   29 ns HIGH 50%                           |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_FIHFL = PERIOD TIMEGRP "FIHFL_grp" 29  | MINLOWPULSE |    27.838ns|     1.162ns|       0|           0
+  ns HIGH 50%                               |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1629_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    27.939ns|    30.061ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1629_ |             |            |            |        |            
+  0" TO TIMEGRP         "chiptop_chip_socke |             |            |            |        |            
+  t_csc_cg_tbase_FCLK_ICE_rise" 58 ns       |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1090_2 = MAXDELAY FROM TIMEGRP         | SETUP       |    29.027ns|    28.973ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1090_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1090_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_socket_csc_cg_tbase |             |            |            |        |            
+  _FCLK_ICE_rise" 58 ns                     |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_R32MCLK = PERIOD TIMEGRP "R32MCLK_grp" | SETUP       |    30.888ns|    22.780ns|       0|           0
+   100 ns HIGH 40%                          | HOLD        |     0.450ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_OCDCLK = PERIOD TIMEGRP "OCDCLK_grp" 1 | SETUP       |    39.012ns|     5.141ns|       0|           0
+  00 ns HIGH 40%                            | HOLD        |     0.421ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_1102_0 = MAXDELAY FROM TIMEGRP         | SETUP       |    40.574ns|    17.426ns|       0|           0
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1102_ |             |            |            |        |            
+  0" TO TIMEGRP "chiptop_chip_pllctl_pllc_f |             |            |            |        |            
+  clkds_rise" 58 ns                         |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_FIL = PERIOD TIMEGRP "FIL_grp" 100 ns  | SETUP       |    42.507ns|    14.986ns|       0|           0
+  HIGH 50%                                  | HOLD        |     0.135ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_USBCLK = PERIOD TIMEGRP "USBCLK_grp" 5 | SETUP       |    47.774ns|     2.226ns|       0|           0
+  0 ns HIGH 50%                             | HOLD        |     0.594ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_FMAIN_PCLBUZ = PERIOD TIMEGRP "FMAIN_P | SETUP       |    97.537ns|     2.463ns|       0|           0
+  CLBUZ_grp" 100 ns HIGH 40%                | HOLD        |     0.614ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_FSUB_PCLBUZ = PERIOD TIMEGRP "FSUB_PCL | SETUP       |    98.223ns|     1.777ns|       0|           0
+  BUZ_grp" 100 ns HIGH 40%                  | HOLD        |     0.457ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_ICEWR = PERIOD TIMEGRP "ICEWR_grp" 500 | SETUP       |   245.518ns|     8.964ns|       0|           0
+   ns HIGH 50%                              | HOLD        |     0.433ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_FMX4 = PERIOD TIMEGRP "FMX4_grp" 300 n | SETUP       |   296.286ns|     3.714ns|       0|           0
+  s HIGH 50%                                | HOLD        |     0.660ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  TS_USBIFWR = PERIOD TIMEGRP "USBIFWR_grp" | SETUP       |   495.153ns|     4.847ns|       0|           0
+   500 ns HIGH 50%                          | HOLD        |     1.604ns|            |       0|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1156_0_path" TIG                 | SETUP       |         N/A|    35.186ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1154_0_path" TIG                 | SETUP       |         N/A|    31.388ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1153_0_path" TIG                 | SETUP       |         N/A|    28.000ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1152_0_path" TIG                 | SETUP       |         N/A|    31.800ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1159_0_path" TIG                 | MAXDELAY    |         N/A|    38.861ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1162_0_path" TIG                 | SETUP       |         N/A|    28.063ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1160_0_path" TIG                 | MAXDELAY    |         N/A|    39.056ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  TS_1145_0 = MAXDELAY FROM TIMEGRP "SynpAl | N/A         |         N/A|         N/A|     N/A|         N/A
+  lSeqGrp_EVA_TOP" THRU TIMEGRP         "th |             |            |            |        |            
+  ru_1145_0" TO TIMEGRP "to_1145_0" 29 ns   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1143_0_path" TIG                 | SETUP       |         N/A|    54.385ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1142_0_path" TIG                 | SETUP       |         N/A|    60.117ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1161_0_path" TIG                 | SETUP       |         N/A|    28.580ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  TS_1090_1 = MAXDELAY FROM TIMEGRP "chipto | N/A         |         N/A|         N/A|     N/A|         N/A
+  p_chip_pllctl_pllc_fclkds_rise" THRU      |             |            |            |        |            
+      TIMEGRP "thru_1090_0" THRU TIMEGRP "t |             |            |            |        |            
+  hru_1090_1" TO TIMEGRP         "chiptop_c |             |            |            |        |            
+  hip_pllctl_pllc_fclkds_rise" 29 ns        |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1090_3 = MAXDELAY FROM TIMEGRP         | N/A         |         N/A|         N/A|     N/A|         N/A
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1090_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1090_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_pllctl_pllc_fclkds_ |             |            |            |        |            
+  rise" 29 ns                               |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1091_1 = MAXDELAY FROM TIMEGRP         | N/A         |         N/A|         N/A|     N/A|         N/A
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1091_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1091_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_socket_csc_cg_tbase |             |            |            |        |            
+  _FCLK_ICE_fall" 43.5 ns                   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1094_1 = MAXDELAY FROM TIMEGRP         | N/A         |         N/A|         N/A|     N/A|         N/A
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1094_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1094_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_socket_csc_cg_tbase |             |            |            |        |            
+  _FCLK_ICE_fall" 43.5 ns                   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1095_1 = MAXDELAY FROM TIMEGRP         | N/A         |         N/A|         N/A|     N/A|         N/A
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_I |             |            |            |        |            
+  CE_rise" THRU TIMEGRP         "thru_1095_ |             |            |            |        |            
+  0" THRU TIMEGRP "thru_1095_1" TO TIMEGRP  |             |            |            |        |            
+          "chiptop_chip_socket_csc_cg_tbase |             |            |            |        |            
+  _FCLK_ICE_fall" 43.5 ns                   |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  TS_1090_0 = MAXDELAY FROM TIMEGRP "chipto | N/A         |         N/A|         N/A|     N/A|         N/A
+  p_chip_pllctl_pllc_fclkds_rise" THRU      |             |            |            |        |            
+      TIMEGRP "thru_1090_0" THRU TIMEGRP "t |             |            |            |        |            
+  hru_1090_1" TO TIMEGRP         "chiptop_c |             |            |            |        |            
+  hip_socket_csc_cg_tbase_FCLK_ICE_rise" 43 |             |            |            |        |            
+  .5 ns                                     |             |            |            |        |            
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1106_0_path" TIG                 | SETUP       |         N/A|    29.549ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1108_0_path" TIG                 | SETUP       |         N/A|    29.604ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1117_0_path" TIG                 | SETUP       |         N/A|    49.913ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1118_0_path" TIG                 | MAXDELAY    |         N/A|     8.656ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1119_0_path" TIG                 | MAXDELAY    |         N/A|     4.767ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1120_0_path" TIG                 | SETUP       |         N/A|     5.747ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1121_0_path" TIG                 | MAXDELAY    |         N/A|    34.069ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1122_0_path" TIG                 | SETUP       |         N/A|    44.038ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1123_0_path" TIG                 | SETUP       |         N/A|    44.824ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1125_0_path" TIG                 | MAXDELAY    |         N/A|    34.147ns|     N/A|           0
+                                            | SETUP       |         N/A|    11.844ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1126_0_path" TIG                 | SETUP       |         N/A|    23.847ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1127_0_path" TIG                 | MAXDELAY    |         N/A|    34.143ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1133_0_path" TIG                 | MAXDELAY    |         N/A|    42.065ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+  PATH "TS_1135_0_path" TIG                 | SETUP       |         N/A|    44.986ns|     N/A|           0
+----------------------------------------------------------------------------------------------------------
+
+
+3 constraints not met.
+INFO:Timing:2761 - N/A entries in the Constraints List may indicate that the 
+   constraint is not analyzed due to the following: No paths covered by this 
+   constraint; Other constraints intersect with this constraint; or This 
+   constraint was disabled by a Path Tracing Control. Please run the Timespec 
+   Interaction Report (TSI) via command line (trce tsi) or Timing Analyzer GUI.
+
+
+Generating Pad Report.
+
+All signals are completely routed.
+
+Total REAL time to PAR completion: 1 days 2 hrs 16 mins 52 secs 
+Total CPU time to PAR completion: 1 days 2 hrs 16 mins 37 secs 
+
+Peak Memory Usage:  1410 MB
+
+Placer: Placement generated during map.
+Routing: Completed - No errors found.
+Timing: Completed - 9 errors found.
+
+Number of error messages: 0
+Number of warning messages: 18
+Number of info messages: 1
+
+Writing design to file EVA_TOP.ncd
+
+
+
+PAR done!

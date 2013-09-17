@@ -1,0 +1,195 @@
+/**********************************************************************/
+/*                                                                    */
+/* K0R series PORT bit macro                                          */
+/*                                                                    */
+/*   [ port bit : 入出力ポート ]                                      */
+/*                                                                    */
+/*    PL,PM,PU,PIM あり                                               */
+/*    兼用出力機能 あり                                               */
+/*    兼用入力機能 あり                                               */
+/*                                                                    */
+/*    Module   : QPK0RBDBB002V1                                       */
+/*    Date     : 2010/07/01                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : H.Ono                                                */
+/*    Note     :                                                      */
+/*                                                                    */
+/**********************************************************************/
+/*                                                                    */
+/* <<入力信号>>                                         <<接続先>>    */
+/* PCLKRW      : 周辺マクロ用 BASECLK                   CG            */
+/* PRESETZ     : 周辺マクロ用リセット信号               RESETCTL      */
+/* PWDATA      : 入力データバス                         APB Bridge    */
+/* RE_PORT     : PORTリードイネーブル信号               port control  */
+/* WE_PL       : PLレジスタライトイネーブル信号         port control  */
+/* WE_PM       : PMレジスタライトイネーブル信号         port control  */
+/* WE_PU       : PUレジスタライトイネーブル信号         port control  */
+/* WE_PIM      : PIMレジスタライトイネーブル信号        port control  */
+/* SEL_PL      : PL Register select 信号                port control  */
+/* SEL_PM      : PM Register select 信号                port control  */
+/* SEL_PU      : PU Register select 信号                port control  */
+/* SEL_PIM     : PIM Register select 信号               port control  */
+/* OPEN_BUF    : 入力バッファイネーブル信号             port control  */
+/* DIN         : ポートレベル入力信号                   buffer        */
+/* EXOUTA      : 兼用機能出力信号                                     */
+/* EXOUTB      : 兼用機能出力信号                                     */
+/* EXOUTC      : 兼用機能出力信号                                     */
+/*                                                                    */
+/* SCANMODE    : SCANテストモード信号                   MODECTL       */
+/* TESDBT      : BTモード信号                           MODECTL       */
+/* OPTOPLRD    : OPTOPLRDモード信号                     MODECTL       */
+/*                                                                    */
+/* <<出力信号>>                                         <<接続先>>    */
+/* PRDATA      : 出力データバス                         APB Bridge    */
+/* PUON        : プルアップ抵抗制御信号                 buffer        */
+/* ENO         : 出力イネーブル信号                     buffer        */
+/* ENI         : 入力イネーブル信号                     buffer        */
+/* DOUT        : 出力データ信号                         buffer        */
+/* SELIN       : 入力バッファ選択信号                   buffer        */
+/* EXINA       : 兼用機能入力信号                                     */
+/*                                                                    */
+/*                                                                    */
+/**********************************************************************/
+
+module QPK0RBDBB002V1 ( PCLKRW   , PRESETZ  , PWDATA   , RE_PORT  ,
+                        WE_PL    , WE_PM    , WE_PU    , WE_PIM   , 
+			SEL_PL   , SEL_PM   , SEL_PU   , SEL_PIM  , SEL_PMC  ,
+                        OPEN_BUF , DIN      , EXOUTA   , EXOUTB   , EXOUTC   ,
+			SCANMODE , TESDBT   , OPTOPLRD ,
+                        PRDATA   , PUON     , ENO      , ENI      , DOUT     ,
+			SELIN    , EXINA    , din_exor ) ;
+
+
+	input		PCLKRW   , PRESETZ  , PWDATA   , RE_PORT  ;
+	input		WE_PL    , WE_PM    , WE_PU    , WE_PIM   ;
+	input		SEL_PL   , SEL_PM   , SEL_PU   , SEL_PIM  , SEL_PMC  ;
+	input		OPEN_BUF , DIN      , EXOUTA   , EXOUTB   , EXOUTC   ;
+	input		SCANMODE , TESDBT   , OPTOPLRD ;
+
+	output		PRDATA   , PUON     , ENO      , ENI      , DOUT     ;
+	output		SELIN    , EXINA    ;
+        output          din_exor ;
+
+	reg		PL       , PM       , PU       , PIM      , READ_DATA ;
+	reg		ENO      , PUON     , ENI      , DIN_s    , RDPT     ;
+
+	wire		PUON_pre , ENI_pre  , ENO_pre  ;
+        wire            ANDOUT   ;
+	wire		PRDATA   ;
+	wire		DOUT     , SELIN    , EXINA    , DIN      ;
+        wire            din_exor ;
+
+//=====  port register write access  =====
+
+        //      synopsys async_set_reset "PRESETZ"
+	always @ ( posedge PCLKRW or negedge PRESETZ ) begin
+	    if ( ! PRESETZ )
+                PL <= 1'b0 ;
+	    else if ( WE_PL )
+                PL <= PWDATA ;
+            else
+                PL <= PL ;
+        end
+
+        //      synopsys async_set_reset "PRESETZ"
+	always @ ( posedge PCLKRW or negedge PRESETZ ) begin
+	    if ( ! PRESETZ ) 
+                PM <= 1'b1 ;
+	    else if ( WE_PM )
+                PM <= PWDATA ;
+            else
+                PM <= PM ;
+        end
+
+        //      synopsys async_set_reset "PRESETZ"
+	always @ ( posedge PCLKRW or negedge PRESETZ ) begin
+	    if ( ! PRESETZ ) 
+                PU <= 1'b0 ;
+	    else if ( WE_PU )
+                PU <= PWDATA ;
+            else
+                PU <= PU ;
+        end
+
+        //      synopsys async_set_reset "PRESETZ"
+	always @ ( posedge PCLKRW or negedge PRESETZ ) begin
+	    if ( ! PRESETZ ) 
+                PIM <= 1'b0 ;
+	    else if ( WE_PIM )
+                PIM <= PWDATA ;
+            else
+                PIM <= PIM ;
+        end
+
+//=====  port register read access  =====
+
+        always @ ( PM or OPTOPLRD or DIN_s or PL ) begin
+            case ( { PM , OPTOPLRD } )  // synopsys parallel_case
+                2'b00   : RDPT  =  PL ;         // port output mode
+                2'b10   : RDPT  =  DIN_s ;      // port input mode
+                2'b01   : RDPT  =  DIN_s ;      // optoplrd mode
+                2'b11   : RDPT  =  DIN_s ;      // optoplrd mode
+            endcase
+        end
+
+	always @ ( SEL_PIM or SEL_PL or SEL_PM or SEL_PU or SEL_PMC or RDPT or PM or PU or PIM ) begin
+	    case ( { SEL_PIM , SEL_PL , SEL_PM , SEL_PU , SEL_PMC } )	// synopsys parallel_case
+		5'b00001  : READ_DATA = 1'b1 ;
+		5'b00010  : READ_DATA = PU ;
+		5'b00100  : READ_DATA = PM ;
+		5'b01000  : READ_DATA = RDPT ;
+		5'b10000  : READ_DATA = PIM ;
+		default   : READ_DATA = 1'b0 ;
+	    endcase
+	end
+
+	assign PRDATA = READ_DATA & RE_PORT ;
+
+//=====  port function  =====
+
+        assign ANDOUT   = PL & EXOUTA ;
+        assign DOUT     = ANDOUT | EXOUTB | EXOUTC ;
+
+        assign ENO_pre	= ~PM ;
+        assign ENI_pre	= OPEN_BUF ;
+	assign PUON_pre	= PU & PM ;
+	assign SELIN	= PIM & ~SCANMODE ;	
+	assign EXINA	= DIN_s ;
+
+	assign din_exor = PUON_pre ^ ENO_pre ^ DOUT ;
+
+        always@ ( SCANMODE or TESDBT or ENO_pre ) begin
+            case ( { SCANMODE, TESDBT } )       // synopsys parallel_case
+                2'b00   : ENO = ENO_pre ;       // user mode
+                2'b10   : ENO = 1'b0 ;          // scan mode
+                2'b11   : ENO = 1'b1 ;          // bt mode
+                default : ENO = ENO_pre ;
+            endcase
+        end
+
+        always@ ( SCANMODE or TESDBT or ENI_pre ) begin
+            case ( { SCANMODE, TESDBT } )       // synopsys parallel_case
+                2'b00   : ENI = ENI_pre ;       // user mode
+                2'b10   : ENI = 1'b0 ;          // scan mode
+                2'b11   : ENI = 1'b1 ;          // bt mode
+                default : ENI = ENI_pre ;
+            endcase
+        end
+
+        always@ ( SCANMODE or PUON_pre ) begin
+            case ( SCANMODE )			// synopsys parallel_case
+                1'b0    : PUON = PUON_pre ;     // user mode
+                1'b1    : PUON = 1'b0 ;         // scan/bt mode
+            endcase
+        end
+
+        always@ ( SCANMODE or TESDBT or DIN or din_exor ) begin
+            case ( { SCANMODE, TESDBT } )       // synopsys parallel_case
+                2'b00   : DIN_s = DIN ;         // user mode
+                2'b10   : DIN_s = din_exor ;    // scan mode
+                2'b11   : DIN_s = DIN ;         // bt mode
+                default : DIN_s = DIN ;
+            endcase
+        end
+
+endmodule

@@ -1,0 +1,74 @@
+// [NEC Electronics Group CONFIDENTIAL]
+// (C) Copyright NEC Electronics Corporation 2009
+// All Rights Reserved. Do not duplicate without prior written
+// consent of NEC Electronics Corporation.
+// ==============================================================//
+//                                                               //
+// 78K0R series intor Macro                                      //
+//                                                               //
+//  Module   : KX4_INTOR                                         //
+//  Date     : 2010/2/2                                          //
+//  Revision : 0.01                                              //
+//  Designer : MURATOMI (ryouta.muratomi@cnt.nms.necel.com)      //
+//                                                               //
+// ------------------------------------------------------------- //
+//  Date     : 2008/02/18                                        //
+//  Note     : copy from ix3, and modified                       //
+// ------------------------------------------------------------- //
+//  Date     : 2008/03/12                                        //
+//  Note     : BBモード時の割込み制御の追加                      //
+// ------------------------------------------------------------- //
+//  Date     : 2008/03/31                                        //
+//  Note     : DF1.2仕様変更                                     //
+// ------------------------------------------------------------- //
+//  Date     : 2009/11/24                                        //
+//  Note     : copy from ix3, and modiried                       //
+// ------------------------------------------------------------- //
+//  Date     : 2009/12/10                                        //
+//  Note     : copy from kx4_inten, and rename                   //
+// ==============================================================//
+//  Date     : 2010/07/01                                        //
+//  Note     : v1.00 -> v2.00                                    //
+// ==============================================================//
+//  Date     : 2010/12/07                                        //
+//  Note     : add pin INTWWDT,INTSRO,INTAS04                    //
+// ==============================================================//
+
+module  KX4_INTOR ( 
+			 INTSRE0,  INTTM01H, INTSRE1,  INTTM03H, 
+			 INTP6,    INTP7,    INTP8,    INTP9,    INTP10,   INTP11,
+			 BBINT3,   BBINT4,   BBINT5,   BBINT6,   BBINT7,   BBINT8,
+			 INTAS22,  INTAS28,  INTAS4A,  INTAS4C,  INTAS4E, 
+                         INTAS50,  INTAS52,  INTAS54,
+			 INTWWDT,  INTSRO,   INTAS04 
+                        );
+
+ 	input	      	 INTSRE0,  INTTM01H, INTSRE1,  INTTM03H,
+			 INTP6,    INTP7,    INTP8,    INTP9,    INTP10,   INTP11,
+			 BBINT3,   BBINT4,   BBINT5,   BBINT6,   BBINT7,   BBINT8,
+			 INTWWDT,  INTSRO;
+
+	output		 INTAS22,  INTAS28,  INTAS4A,  INTAS4C,  INTAS4E,  
+			 INTAS50,  INTAS52,  INTAS54,
+			 INTAS04;
+
+	wire		 INTAS22,  INTAS28,  INTAS4A,  INTAS4C,  INTAS4E,  
+			 INTAS50,  INTAS52,  INTAS54,
+			 INTAS04;
+
+
+			
+//INTASXX    非同期割り込み 
+
+	assign INTAS22 = INTSRE0 | INTTM01H ;
+	assign INTAS28 = INTSRE1 | INTTM03H ;
+        assign INTAS4A = INTP6   | BBINT3;
+        assign INTAS4C = INTP7   | BBINT4;
+        assign INTAS4E = INTP8   | BBINT5;
+        assign INTAS50 = INTP9   | BBINT6;
+        assign INTAS52 = INTP10  | BBINT7;
+        assign INTAS54 = INTP11  | BBINT8;
+        assign INTAS04 = INTWWDT | INTSRO;
+
+endmodule
+

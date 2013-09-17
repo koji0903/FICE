@@ -1,0 +1,289 @@
+/************************************************************************/
+/*	Module Name	: RL78G13ADC10664CNT											*/
+/*	Author		: T.Uemura									    		*/
+/*	Rev, Date	: 1.00 2010/11/17										*/
+/*    8bit/10bit 32ch "ANI0-31" */
+/*    BGR output , TEMP SENSER, CHARGE/DISCHRAGE,                       */
+/************************************************************************/
+//改訂履暦
+//	1.0	2010/11/17 	T.Uemura	First Relese 暫定版 1.10から流用
+//  1.1 2010/11/26      T.Uemura        Modify Syntax Error:missing case"x" ";"
+//  1.2 2010/12/13      T.Uemura        Modify Syntax Error:case stmt> default: "adca=adca"  
+//  1.3 2010/12/13      T.Uemura        ANI19_Lのデコードミス、変換中のADSAR値"200H"が取れていない点を修正。                                         
+/************************************************************************/
+ 
+module RL78G13ADC10664CNT(
+	//ADC10664 side
+	ADCS_B,
+	ADRD_B,
+	ADSH_B,
+	
+	AD_DB9, AD_DB8, AD_DB7, AD_DB6, AD_DB5, AD_DB4, AD_DB3, AD_DB2, AD_DB1, AD_DB0,
+	ADINT_B,
+
+	AD_A4,	AD_A3, AD_A2, AD_A1, AD_A0,
+
+	//QLK0RADAA32V1 soft_top side
+	ADCHSEL4,ADCHSEL3, ADCHSEL2, ADCHSEL1, ADCHSEL0,
+	ADS1,
+    ADSAR9, ADSAR8, ADSAR7, ADSAR6, ADSAR5, ADSAR4, ADSAR3, ADSAR2, ADSAR1, ADSAR0,
+	ADCLK,PERESADCZ,
+	ADEOCB,
+	reg_adtyp,
+	BG2ADEN, BG2ADSEL,
+	ADTESMOD2,ADTESMOD1,ADTESMOD0,
+
+	//etc
+	CLK30MHZ, PONRESB, 
+	
+	SEL100PI, SEL128PI
+);
+
+//ADC10664 side
+	//INPUT from ADC10664
+	input ADINT_B;
+	input AD_DB9, AD_DB8, AD_DB7, AD_DB6, AD_DB5, AD_DB4, AD_DB3, AD_DB2, AD_DB1, AD_DB0;
+	
+	//OUTPUT to ADC10664
+	output ADCS_B;
+	output ADRD_B;
+	output ADSH_B;
+
+	//OUTPUT to ANI Ch SELECTOR
+ 	output AD_A4, AD_A3, AD_A2, AD_A1, AD_A0;
+
+
+//QLK0RADA32V1 soft_top side
+	//INPUT from
+	// AD Channel Select
+	input 	ADCHSEL4, ADCHSEL3, ADCHSEL2, ADCHSEL1, ADCHSEL0;
+	// CONVERT TRIG
+	input ADS1;
+	// Macro Clock
+	input ADCLK;
+	//Macro reset
+	input PERESADCZ;
+	//10bit<->8bit select
+	input reg_adtyp;
+	//BGR enable selct
+	input BG2ADEN, BG2ADSEL; //not use
+	//For charge,discharge
+	input ADTESMOD2,ADTESMOD1,ADTESMOD0;
+					
+	//OUTPUT to QLK0RADA32V1
+    output ADSAR9, ADSAR8, ADSAR7, ADSAR6, ADSAR5, ADSAR4, ADSAR3, ADSAR2, ADSAR1, ADSAR0;
+    //CONVERT END
+    output ADEOCB;
+  
+//etc
+	input CLK30MHZ, PONRESB; 
+
+    input SEL100PI, SEL128PI;
+
+
+//------ ADEOCB output------------------
+	wire reg_adtyp; //0:10bit 1:8bit
+	reg [11:0] ad_cnt_ff;
+	wire PONRESB;
+	wire cnt_res;
+	reg st_trig;
+
+//start_triger
+	always @ (posedge ADS1 or negedge PONRESB) begin
+	     if(!PONRESB)
+		st_trig <= 1'b1;
+	     else
+		st_trig <= 1'b0;
+	end 
+	
+	assign cnt_res = ADS1 | st_trig;
+      always @(posedge ADCLK or posedge cnt_res) begin
+              if (cnt_res)
+                      ad_cnt_ff <= 12'hfff;
+              else
+                      ad_cnt_ff <= {ad_cnt_ff[10:0], ADS1};
+      end
+
+
+	wire reg_eocb8;
+	wire reg_eocb10;
+	
+	assign reg_eocb8 = ad_cnt_ff[8] | ~ad_cnt_ff[9];
+	assign reg_eocb10 = ad_cnt_ff[10] | ~ad_cnt_ff[11];
+
+	reg ADEOCB;
+	always @(reg_adtyp or PERESADCZ or reg_eocb10 or reg_eocb8) begin
+		case (reg_adtyp)
+		1'b0 : ADEOCB = reg_eocb10;
+		1'b1 : ADEOCB = reg_eocb8;
+		endcase
+	end
+
+
+
+//-----ANI CH SELECT Control  ----------------------------------------------
+	wire [5:0] adchsel;
+	reg [4:0] adca;
+
+
+	wire SEL100PI;
+	wire SEL128PI;
+	
+	wire selpi;
+
+	assign selpi = SEL100PI | SEL128PI;
+	
+	assign adchsel = {ADCHSEL4, ADCHSEL3, ADCHSEL2, ADCHSEL1, ADCHSEL0,selpi};
+	assign {AD_A4,AD_A3,AD_A2,AD_A1,AD_A0} = adca;
+
+
+always @(adchsel) begin
+		casex(adchsel)               
+		6'b00000x:		adca = 5'b00000; //ANI0
+		6'b00001x:		adca = 5'b00001; //ANI1
+		6'b00010x:		adca = 5'b00010; //ANI2
+		6'b00011x:		adca = 5'b00011; //ANI3
+		6'b00100x:		adca = 5'b00100; //ANI4
+		6'b00101x:		adca = 5'b00101; //ANI5
+		6'b00110x:		adca = 5'b00110; //ANI6
+		6'b00111x:		adca = 5'b00111; //ANI7
+		6'b01000x:		adca = 5'b01000; //ANI8
+		6'b01001x:		adca = 5'b01001; //ANI9
+		6'b01010x:		adca = 5'b01010; //ANI10
+		6'b01011x:		adca = 5'b01011; //ANI11
+		6'b01100x:		adca = 5'b01100; //ANI12
+		6'b01101x:		adca = 5'b01101; //ANI13
+		6'b01110x:		adca = 5'b01110; //ANI14
+		6'b01111x:		adca = 5'b01111; //未使用GND
+		6'b10000x:		adca = 5'b10000; //ANI16
+		6'b10001x:		adca = 5'b10001; //ANI17
+		6'b10010x:		adca = 5'b10010; //ANI18
+		6'b100110:		adca = 5'b10011; //ANI19
+		6'b10100x:		adca = 5'b10100; //ANI20
+		6'b10101x:		adca = 5'b10101; //ANI21
+		6'b10110x:		adca = 5'b10110; //ANI22
+		6'b10111x:		adca = 5'b10111; //ANI23
+		6'b11000x:		adca = 5'b11000; //ANI24
+		6'b11001x:		adca = 5'b11001; //ANI25
+		6'b11010x:		adca = 5'b11010; //ANI26
+		6'b11011x:		adca = 5'b11011; //PGAOUT G13では未使用
+		6'b11100x:		adca = 5'b11100; //未使用GND
+		6'b11101x:		adca = 5'b11101; //未使用GND
+		6'b11110x:		adca = 5'b11101; //未使用GND
+		6'b100111:		adca = 5'b11110; //ANI19_L
+		6'b11111x:		adca = 5'b11111; //温度センサ/BGR1
+		endcase     
+	end             
+
+
+//----- Control for ADC10664 -----
+//
+//************** Vin0 select of ADC10664 ************
+	wire ADCLK, ADINT_B, PERESADCZ;
+	
+//************** START CS_B S/H and Conversion of ADC10664 *****
+	wire ADCS_B;
+    assign ADCS_B = 1'b0;
+  
+// ***** start triger of ADC10664  *****
+	wire ADSH_B;	
+	wire ADRD_B;
+
+	wire CLK30MHZ;
+
+	wire shffresb;
+	reg [2:0] trig_ff;
+    always@(posedge CLK30MHZ or negedge PONRESB) begin
+    	if(!PONRESB) trig_ff <= 3'b111;
+    	else trig_ff <= {trig_ff[1:0],ADS1};
+    end
+    assign shffresb = trig_ff[2] | ~trig_ff[1];
+
+	
+	reg [6:0] sh_ff;
+    always@(posedge CLK30MHZ or negedge shffresb) begin
+    	if(!shffresb) sh_ff <= 7'h7F;
+    	else sh_ff <= {sh_ff[5:0],1'b0};
+    end
+    
+// wait OPA4354,ADG732 settlingtime and thruogh rate time
+//  132ns 
+//ADSH_B
+    	assign ADSH_B = sh_ff[1] | ~sh_ff[6];
+
+//************** get convert result  *************
+//
+//	reg ADSAR9,ADSAR8,ADSAR7,ADSAR6,ADSAR5,ADSAR4,ADSAR3,ADSAR2,ADSAR1,ADSAR0;
+	reg [9:0] ad_dbpre;
+	reg [2:0] int_ff;
+	//for metastable and hold time
+	
+	always@(posedge ADCLK or negedge PONRESB) begin
+		if (!PONRESB)  int_ff <= 3'b111; 
+		else int_ff <= {int_ff[1], int_ff[0], ADINT_B};
+	end
+	
+//ADRD_B
+    wire adrd_pre;
+	assign adrd_pre = ~int_ff[2] | int_ff[1];
+    assign ADRD_B = adrd_pre & shffresb;
+ 
+//AD_DB Latch
+	always@(posedge ADRD_B or negedge PERESADCZ) begin
+		if(!PERESADCZ) begin
+			ad_dbpre[9] <= 1'b0;
+			ad_dbpre[8] <= 1'b1;
+			ad_dbpre[7] <= 1'b0;
+			ad_dbpre[6] <= 1'b0;
+			ad_dbpre[5] <= 1'b0;
+			ad_dbpre[4] <= 1'b0;
+			ad_dbpre[3] <= 1'b0;
+			ad_dbpre[2] <= 1'b0;
+			ad_dbpre[1]<= 1'b0;
+			ad_dbpre[0] <= 1'b0;
+		end		
+		else  begin
+			ad_dbpre[9] <= AD_DB9;
+			ad_dbpre[8] <= AD_DB8;
+			ad_dbpre[7] <= AD_DB7;
+			ad_dbpre[6] <= AD_DB6;
+			ad_dbpre[5] <= AD_DB5;
+			ad_dbpre[4] <= AD_DB4;
+			ad_dbpre[3] <= AD_DB3;
+			ad_dbpre[2] <= AD_DB2;
+			ad_dbpre[1] <= AD_DB1;
+			ad_dbpre[0] <= AD_DB0;
+		end
+	end
+//--------- ADSAR latch ---------------------------------------------------
+
+//	wire ADTESMOD[2:0];
+
+
+	reg def_sar;
+			
+    always@(posedge ADS1 or negedge ADEOCB) begin
+    	if(!ADEOCB & !ADS1)  def_sar <= 1'b0;
+    	else  def_sar <= 1'b1;
+    end
+
+	wire [3:0] sel_adsar;
+	assign sel_adsar = {def_sar, ADTESMOD2, ADTESMOD1, ADTESMOD0};
+
+
+	reg [9:0] adsar_pre;
+	
+	assign {ADSAR9,ADSAR8,ADSAR7,ADSAR6,ADSAR5,ADSAR4,ADSAR3,ADSAR2,ADSAR1,ADSAR0} = adsar_pre;
+	
+	always @(sel_adsar or ad_dbpre) begin
+		casex(sel_adsar)
+		 4'b1xxx : adsar_pre = 10'h200;
+		 4'b0010 : adsar_pre = 10'h000;
+		 4'b0011 : adsar_pre = 10'h3FF;
+		 4'b0000 : adsar_pre = ad_dbpre;
+		  default  : adsar_pre = ad_dbpre;
+		 
+		 endcase
+	end
+ 
+endmodule

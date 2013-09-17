@@ -1,0 +1,952 @@
+//------------------------------------------------------------------------------//
+// CHIP parameter file for Kx4 (d78f1070)					//
+//------------------------------------------------------------------------------//
+
+//==============================================================================//
+// 09.08.13: for Kx4-Trial							//
+//	(Local)									//
+//		APBBR: using HAISEN-SAKUGEN: 090515_MF3_MDWonly			//
+//		FLTOP: using HAISEN-SAKUGEN: 090511_MF3				//
+//	(Other)									//
+//		DMY  :delete							//
+//	(SOFT)									//
+//		delete: sau1, cec, remocon					//
+//	(HARD)									//
+//		delete: pll, cap1, cap2, ckd, ram1				//
+//	(PORT)									//
+//		all bit delete: port*_iobuf was del.				//
+//			P0, P3, P8, P9, P11, P13, P14				//
+//		port4_iobuf was changed.					//
+//			P47-P44 delete						//
+//										//
+// 09.08.14: TAU4 delete							//
+//	(SOFT)	delete: tau1							//
+// 09.08.14: Dir Change)							//
+//	(port)	port_iobuf's directory was changed				//
+//------------------------------------------------------------------------------//
+// 09.08.21									//
+//	(HARD) 									//
+//		Delete	:pocdis, ad						//
+//		Delete	:regdrv							//
+//		Delete	:dmy_osc32kdly0						//
+//	(IOBUF)									//
+//		Add	:P0, P8, P130, P11					//
+//										//
+//kokokara DF3------------------------------------------------------------------//
+// 09.12.01	UPDATE MACRO QNSA3N064K0V1					//
+// 09.12.01	UPDATE MACRO QLK0ROCD1V1					//
+// 09.12.03	UPDATE MACRO QNSB3N004K0V1					//
+//		UPDATE MACRO QNSC3NCP0V1					//
+// 09.12.04	UPDATE MACRO QLK0RCPU0V3					//
+// 09.12.08	UPDATE MACRO QLK0RFCBM3SF1V1					//
+//		UPDATE MACRO ADC						//
+//		UPDATE MACRO modectl						//
+// 09.12.10	RELEASE PORT °ì¼°						//
+//              ADSW								//
+// 09.12.11	UPDATE INT48 							//
+// 		UPDATE MAW 							//
+// 		UPDATE BBR 							//
+// 		UPDATE OCD 							//
+// 		UPDATE RAMIF							//
+// 		RELEASE PORGA , DELETE PROCONF					//
+// 		UPDATE TAU							//
+// 		UPDATE IICA							//
+// 		UPDATE RTC							//
+// 		UPDATE WWDT							//
+// 		UPDATE ADCTL							//
+// 		UPDATE INTOR(INTEN)						//
+// 09.12.14	UPDATE CPU(For ICE)						//
+// 		UPDATE CIBD MRDÉÔÄêÂÐ±þ						//
+// 09.12.19	UPDATE ALL PORT							//
+// 		UPDATE BBR							//
+// 		UPDATE PORGA							//
+// 		CHANGE MACRO NAME CLKSEL -> CKDIST 				//
+// 		UPDATE RAM							//
+// 		UPDATE MAINOSC							//
+// 		UPDATE SUBOSC							//
+// 		UPDATE L_ROSC							//
+// 		RELEASE QAHREGOHNDRVV1,QAHREGOHNMAINV1				//
+//		-> poclvi,regc,bgr						//
+// 09.12.21	UPDATE CIBD/CIBC						//
+// 		UPDATE FCB							//
+// 09.12.22	UPDATE CPU							//
+// 		UPDATE ALLPORT 							//
+// 09.12.25	UPDATE SAU0/SAU1(CF)						//
+//		WWDT,RTC SOFT -> HARD						//
+//		UPDATE H_ROSC							//
+// 09.12.28	UPDATE FLASH							//
+// 10.01.04	UPDATE ADHARD							//
+//		UPDATE REGM/REGD						//
+// 10.01.04	for SCAN NET(Grid Control:Target 323KGrid)			//
+//		CIB_C added for DMY						//
+// 10.01.04	ADSW changed							//
+//		adcon delete							//
+// 10.01.05	port13_iobuf Change(P130: QO200KAL -> QO200KALZ)		//
+// 10.01.07	UPDATE CSC							//
+//		UPDATE PORT0,1,2,3,4,5,6,7,12,13,14				//
+//		CHANGE MODECTL PATH						//
+// 10.01.08	UPDATE MODECTL							//
+// 		UPDATE FCB							//
+// 		UPDATE OCD							//
+// 		UPDATE BBR							//
+// 		UPDATE PORGA							//
+// 		UPDATE CIBC,CIBD						//
+// 10.01.12	UPDATE CIBC							//
+// 10.01.14	UPDATE IOBUF, L_ROSC, REGM, REGD, AD, RTC, WWDT			//
+// 		RELEASE QICTRBG5A (corner)					//
+//		CHANGE MOSC,SOSC local nodelay model				//
+//		UPDATE PORGA							//
+//		UPDATE INTM4, INTM8						//
+//		UPDATE CPU							//
+//		UPDATE PORT							//
+//		UPDATE CSC							//
+//		UPDATE PCLBUZ							//
+//		UPDATE RAMIF							//
+// 		UPDATE CIBC,CIBD						//
+//		UPDATE MODECTL							//
+//		RELEASE NF, SDADLY, IICADLY					//
+// 10.01.18	<DF4.1>								//
+//		UPDATE MODECTL(10.01.16 Rel)					//
+//		UPDATE MAW,SCON(10.01.16 Rel)					//
+//		UPDATE PORT(10.01.15 Rel)					//
+// 10.01.19	<DF4.2>								//
+//		UPDATE CSC, PCLBUZ						//
+//		UPDATE BBR							//
+//		UPDATE L_ROSC, H_ROSC, IOBUF					//
+// 10.01.20	<DF4.2>								//
+//		UPDATE CSC							//
+//		UPDATE PORT2,PORT4						//
+// 10.01.20	<DF4.3>								//
+//		UPDATE CSC, BBR, PORGA, OCD					//
+// 10.01.22	<DF4.4>								//
+//		UPDATE CSC, CPU, MODECTL, PORT, CIBC, CIBD, RAMIF		//
+// 10.01.23	<DF4.5>								//
+//		UPDATE MULDIV, RAMIF, DUMMY					//
+//		Add New IAW							//
+//		UPDATE WDT, RTC, SOSC, IOBUF					//
+// 10.01.27	<DF4.6>								//
+//		UPDATE CSC, CIBC, MODECTL, PORT, FCB, TAU, BBR, PORGA		//
+//		RELEASE PIOR							//
+// 10.01.28	<DF4.6> UPDATE							//
+//		UPDATE BBR, CSC, MODECTL, CIBC, CIBD, PORT4_IOBUF		//
+// 10.02.03	<DF4.7> 							//
+//		UPDATE MULDIV, IICA, ADCTL, IAW, PORT, CIBC, CIBD, INT48, BBR,	//
+//		       RAMIF, CKDIST, PORGA, MODECTL, CPU, INTOR, OCD, CAPBUF,	//
+//		       CSC							//
+//		UPDATE IOBUF, H_ROSC, L_ROSC, RAM, AD, FLASH			//
+//		Add New MONSIG							//
+// 10.02.04	<DF4.8> 							//
+//		UPDATE MAW, PORT, PIOR, CAPBUF, NF, MODECTL, BBR,		//
+//		       CPU, CIBC, CIBD, CSC, PIOR				//
+//		UPDATE L_ROSC							//
+// 10.02.05	<DF4.8> UPDATE 							//
+//		UPDATE PORT							//
+// 10.02.06	<DF4.9>								//
+//		UPDATE CPU, ADCTL, BBR, PORGA, PORT, CSC, CIBC, CIBD, INTM4,	//
+//		       INTM8, DMY, NF, MODECTL					//
+//		UPDATE H_ROSC, N/F, IOBUF					//
+// 10.02.06	<DF4.91>							//
+//		UPDATE CIBC							//
+//		UPDATE REGM, REGD						//
+// 10.02.08	<DF5.0>								//
+//		UPDATE IICA, CSC, CIBC, CIBD					//
+// 10.02.09	<DF5.1>								//
+//		UPDATE CSC							//
+// 10.02.10	<DF5.2>								//
+//		UPDATE PORT, PCLBUZ, MODECTL, CIBC, CIBD, CPU, CSC		//
+//		UPDATE TBFILTER1X2						//
+// 10.02.11	<DF5.3>								//
+//		UPDATE CIBC, CSC						//
+//		UPDATE AD, IOBUF, RTC, WWDT					//
+// 10.02.18	<DF5.4>								//
+//		UPDATE DFLASH, CFLASH, CP, IOBUF, REGM, REGD, H_ROSC, L_ROSC,	//
+//		       OSCMAIN, OSCSUB, WWDT, 50N/300NFILTER			//
+//		UPDATE CSC, CIBC, MODECTL, ADCTL, PORT, SDADLY			//
+// 10.02.18	<DF5.5>								//
+//		UPDATE CIBC, PIOR						//
+// 10.02.22	<DF5.6>								//
+//		UPDATE CSC							//
+// 10.02.24	<DF5.7>								//
+//		UPDATE CSC							//
+//										//
+//==============================================================================//
+//------------------------------------------------------------------------------//
+// <History>									//
+//------------------------------------------------------------------------------//
+// 09.10.02: for Kx4 DF1.0							//
+// 09.11.04: for Kx4 DF2.0							//
+// 09.11.25 -> 09.12.14: for Kx4 DF3.0						//
+// 09.12.21: for Kx4 DF3.1							//
+// 09.12.28: for Kx4 DF3.2							//
+// 10.01.07: for Kx4 DF3.3							//
+// 10.01.08: for Kx4 DF3.4							//
+// 10.01.12: for Kx4 DF3.5							//
+// 10.01.14: for Kx4 DF4.0							//
+// 10.01.18: for Kx4 DF4.1							//
+// 10.01.19: for Kx4 DF4.2							//
+// 10.01.20: for Kx4 DF4.3							//
+// 10.01.22: for Kx4 DF4.4							//
+// 10.01.23: for Kx4 DF4.5 for LAYOUT trial					//
+// 10.01.27: for Kx4 DF4.6							//
+// 10.01.28: for Kx4 DF4.6 UPDATE						//
+// 10.02.03: for Kx4 DF4.7							//
+// 10.02.04: for Kx4 DF4.8							//
+// 10.02.05: for Kx4 DF4.8 UPDATE						//
+// 10.02.06: for Kx4 DF4.9							//
+// 10.02.06: for Kx4 DF4.91							//
+// 10.02.08: for Kx4 DF5.0							//
+// 10.02.09: for Kx4 DF5.1							//
+// 10.02.10: for Kx4 DF5.2							//
+// 10.02.11: for Kx4 DF5.3							//
+// 10.02.18: for Kx4 DF5.4							//
+// 10.02.18: for Kx4 DF5.5							//
+// 10.02.22: for Kx4 DF5.6							//
+// 10.02.24: for Kx4 DF5.7							//
+//										//
+//==============================================================================//
+
+
+INCLUDE_FILE: MF3 0.04
+
+//==============================================================================//
+// CPU Sub-System = Start ======================================================
+//==============================================================================//
+
+// Inside MEGA-Macro ===================================================================
+// -----------------------------------------------------------
+// 1. CPU
+// -----------------------------------------------------------
+// cpu
+       INS: cpu QLK0RCPUEVA0V3 TYPE SOFT
+//___v INS: cpu QLK0RCPU0V3 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rcpu0v3_mf3_v3.00/_library/100210/qlk0rcpueva0v3.hdl
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rcpu0v3_mf3_v3.00/_library/100210/09_qlk0rcpu0v3_mf3_opt.v
+END_INS:
+
+// -----------------------------------------------------------
+// 3. Depend on CPU
+// K0R Local Bus I/F macro
+// -----------------------------------------------------------
+
+// int48
+INS: int48 QLK0RINT48V2 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rint48v2_mf3_v2.00/_library/100128_df3.1/qlk0rint48v2.hdl
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rint48v2_mf3_v2.00/_library/100128_df3.1/qlk0rint48v2_mf3_opt.v
+END_INS:
+
+// dmac
+INS: dmac QLK0RDMAC0V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rdmac0v1_mf3_v1.20/_library/091210_df2.0/qlk0rdmac0v1.hdl
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rdmac0v1_mf3_v1.20/_library/091210_df2.0/qlk0rdmac0v1_mf3_opt.v
+END_INS:
+
+// muldiv
+INS: muldiv QLK0RMULDIV1V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rmuldiv1v1_mf3_v1.00/_library/100129/qlk0rmuldiv1v1.hdl
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rmuldiv1v1_mf3_v1.00/_library/100129/qlk0rmuldiv1v1_mf3_opt_01.v
+END_INS:
+
+// ocd
+INS: ocd QLK0ROCD1V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rocd1v1_mf3_v1.00/_library/100202/qlk0rocd1v1.hdl
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rocd1v1_mf3_v1.00/_library/100202/qlk0rocd1v1_mf3_opt.v
+END_INS:
+
+// iaw
+INS: iaw QLK0RIAW0V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0riaw0v1_mf3_v1.00/_library/100201/qlk0riaw0v1.hdl
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0riaw0v1_mf3_v1.00/_library/100201/qlk0riaw0v1_mf3_opt_01.v
+END_INS:
+
+// -----------------------------------------------------------
+// 3. Depend on CPU
+// K0R APB Bus I/F Macro
+// -----------------------------------------------------------
+// csc
+INS: csc QLK0RCSC1V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rcsc1v1_mf3_v1.00/_library/100224/qlk0rcsc1v1.hdl
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rcsc1v1_mf3_v1.00/_library/100224/qlk0rcsc1v1_mf3_opt.v
+END_INS:
+
+// pclbuz
+INS: pclbuz QLK0RPCLBUZ1V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rpclbuz1v1_mf3_v1.00/_library/100210/qlk0rpclbuz1v1.hdl
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rpclbuz1v1_mf3_v1.00/_library/100210/qlk0rpclbuz1v1_mf3_opt.v
+END_INS:
+
+// cibc
+INS: cibc QLK0RCIBCM3SF1V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rcibcm3sf1v1_mf3_1.00/_library/100218_2/qlk0rcibcevam3sf1v1.hdl_100218
+       MACRO: VERILOG_LIB ${SMACRO_PATH}/qlk0rcibcm3sf1v1_mf3_1.00/_library/100218_2/qlk0rcibcm3sf1v1_NVMCHK.hdl_100209
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rcibcm3sf1v1_mf3_1.00/_library/100218_2/qlk0rcibcm3sf1v1_mf3_opt.v
+END_INS:
+
+// cibd
+INS: cibd QLK0RCIBDM3SF1V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rcibdm3sf1v1_mf3_1.00/_library/100210/qlk0rcibdm3sf1v1.hdl_100210
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rcibdm3sf1v1_mf3_1.00/_library/100210/qlk0rcibdm3sf1v1_mf3_opt.v
+END_INS:
+
+// fcb
+INS: fcb QLK0RFCBM3SF1V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rfcbm3sf1v1_rtl_v1.00/_misc/QLK0RFCBM3SF1V1.v
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rfcbm3sf1v1_rtl_v1.00/_misc/QLK0RFCBM3SF1V1.mf3.v
+END_INS:
+
+// wwdt
+INS: wwdt QLK0RWWDT1V2 TYPE HARD
+       MACRO: VERILOG_NET ${HMACRO_PATH}/qlk0rwwdt1v2_mf3_v0.15/_library/QLK0RWWDT1V2.v
+//___v MACRO: VERILOG_LIB ${HMACRO_PATH}/qlk0rwwdt1v2_mf3_v0.15/_library/QLK0RWWDT1V2.specify
+//___v MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qlk0rwwdt1v2_mf3_v0.15/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QLK0RWWDT1V2.db
+END_INS:
+
+// rtc
+INS: rtc QLK0RRTC0V3 TYPE HARD
+       MACRO: VERILOG_NET ${HMACRO_PATH}/qlk0rrtc0v3_mf3_v0.06/_library/QLK0RRTC0V3.v
+//___v MACRO: VERILOG_LIB ${HMACRO_PATH}/qlk0rrtc0v3_mf3_v0.06/_library/QLK0RRTC0V3.specify
+//___v MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qlk0rrtc0v3_mf3_v0.06/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QLK0RRTC0V3.db
+END_INS:
+
+
+// -----------------------------------------------------------
+// 4. Special Function
+// K0R Local Bus I/F macro
+// -----------------------------------------------------------
+
+// maw0
+INS: maw0 QLK0RMAW0V1 TYPE SOFT
+       MACRO: VERILOG_NET ${S_SMACRO_PATH}/qlk0rmaw0v1_mf3_v1.00/_library/100203/qlk0rmaw0v1_nosec.hdl
+//___v MACRO: VERILOG_NET ${S_SMACRO_PATH}/qlk0rmaw0v1_mf3_v1.00/_library/100203/qlk0rmaw0v1_mf3_opt.v
+END_INS:
+
+// -----------------------------------------------------------
+// 4. Special Function
+// K0R APB Bus I/F Macro
+// -----------------------------------------------------------
+
+// modectl
+INS: modectl QLK0RMODECTL2V1 TYPE SOFT
+       MACRO: VERILOG_NET ${S_SMACRO_PATH}/qlk0rmodectl2v1_mf3_v1.10/_library/100218/qlk0rmodectl2v1.hdl_nosec
+//___v MACRO: VERILOG_NET ${S_SMACRO_PATH}/qlk0rmodectl2v1_mf3_v1.10/_library/100218/qlk0rmodectl2v1_mf3_opt.v
+END_INS:
+
+// scon
+INS: scon QLK0RSCON1V1 TYPE SOFT
+       MACRO: VERILOG_NET ${S_SMACRO_PATH}/qlk0rscon1v1_mf3_v1.00/_library/091102/qlk0rscon1v1.hdl
+//___v MACRO: VERILOG_NET ${S_SMACRO_PATH}/qlk0rscon1v1_mf3_v1.00/_library/100116_df4.1/qlk0rscon1v1_mf3_opt.v
+END_INS:
+
+
+// -----------------------------------------------------------
+// 5. General Macro
+// K0R Local Bus I/F macro
+// -----------------------------------------------------------
+
+// nf
+// RESETINB(400NS), POCREL(400NS), LVIOUTZ(400NS)
+INS: nf KX4_NF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_nf_mf3_v1.00/_library/100206/kx4_nf_mf3_map.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qahnfi4bn300nv1_mf3_v1.10/_misc/lib/MF3/cmos1_2.1V/verilog/QAHNFI4BN300NV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahnfi4bn300nv1_mf3_v1.10/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHNFI4BN300NV1.db
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/verilog/TBFILTER1X2.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_TBFILTER1X2.db
+END_INS:
+
+// -----------------------------------------------------------
+// 6. Hard Macro
+// -----------------------------------------------------------
+//	regm    K0R HARD
+//      regd    K0R HARD
+//      h_rosc  K0R HARD
+//	l_rosc  K0R HARD
+//      oscmain K0R HARD
+//      oscsub  K0R HARD
+
+// regm
+INS: regm QAHREGOHNMAINV1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qahregohnpoclviv1_mf3_v0.30/_misc/lib/MF3/cmos1_2.1V/verilog/QAHREGOHNMAINV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahregohnpoclviv1_mf3_v0.30/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHREGOHNMAINV1.db
+END_INS:
+
+// regd
+INS: regd QAHREGOHNDRVV1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qahregohnpoclviv1_mf3_v0.30/_misc/lib/MF3/cmos1_2.1V/verilog/QAHREGOHNDRVV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahregohnpoclviv1_mf3_v0.30/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHREGOHNDRVV1.db
+END_INS:
+
+
+// h-rosc
+INS: h_rosc QAHIOS0BN32MV1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qahios0bn32mv1_mf3_v1.00_LR1.7.07_20100212/_misc/lib/MF3/cmos1_2.1V/verilog/QAHIOS0BN32MV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahios0bn32mv1_mf3_v1.00_LR1.7.07_20100212/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHIOS0BN32MV1.db
+END_INS:
+
+// l-rosc
+INS: l_rosc QAHIOS1BN15KV1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qahios1bn15kv1_mf3_v0.70/_misc/lib/MF3/cmos1_2.1V/verilog/QAHIOS1BN15KV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahios1bn15kv1_mf3_v0.70/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHIOS1BN15KV1.db
+END_INS:
+
+// oscmain
+INS: oscmain QAHMOS0HNV1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qahmos0hnv1_mf3_v0.50/_misc/lib/MF3/cmos1_2.1V/verilog/QAHMOS0HNV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahmos0hnv1_mf3_v0.50/_misc/lib/MF3/cmos1_2.1V/liberty_db/50vm/MF3_cmos1_2.1V_MIN_QAHMOS0HNV1_50VM.db
+END_INS:
+
+// oscsub
+INS: oscsub QAHSOS1HNV1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qahsos1hnv1_mf3_v0.51/_misc/lib/MF3/cmos1_2.1V/verilog/QAHSOS1HNV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahsos1hnv1_mf3_v0.51/_misc/lib/MF3/cmos1_2.1V/liberty_db/50vm/MF3_cmos1_2.1V_MIN_QAHSOS1HNV1_50VM.db
+//MACRO: VERILOG_LIB ${HMACRO_PATH}/qahsos1hnv1_mf3_v0.33/QAHSOS1HNV1.nodelay
+//MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahsos1hnv1_mf3_v0.33/library_v0.31_20100125/cmos1_2.1V/liberty/MF3_cmos1_2.1V_MIN_QAHSOS1HNV1.db
+//MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahsos1hnv1_mf3_v0.33/_trial_masakio/MF3_cmos1_2.1V_MIN_QAHSOS1HNV1.db
+END_INS:
+
+//===ADD 08.03.15 =========================
+// ----------------------------------------------------------
+// PAD
+// ----------------------------------------------------------
+// reset buf
+INS: resetb QID04005 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QID04005.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+//===ADD END===============================
+
+//<<<<<<<<<<<<<<< INSIDE END >>>>>>>>>>>>>>>>>>>
+
+
+//==============================================================================//
+// CPU Sub-System = End ========================================================
+//==============================================================================//
+
+
+//==============================================================================//
+// Soft Macro ==================================================================
+//==============================================================================//
+
+
+//<<<<<<<<<<<<<<< OUTSIDE >>>>>>>>>>>>>>>>>>>>>>
+//
+// -----------------------------------------------------------
+// 2. Memory
+// -----------------------------------------------------------
+
+// ramif
+INS: ramif QLK0RRAMIF04KV1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rramif04kv1_mf3_v1.00/_library/_df5.1_100203/qlk0rramif04kv1.hdl
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rramif04kv1_mf3_v1.00/_library/_df5.1_100203/qlk0rramif04kv1_mf3_opt.v
+END_INS:
+
+// flash
+INS: flash_code QNSA3N064K0V1 TYPE HARD
+//MACRO: VERILOG_LIB ${HMACRO_PATH}/qnsa3n064k0v1_DF4.1_100215/_misc/lib/MF3/cmos1_2.1V/verilog/QNSA3N064K0V1.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qnsa3n064k0v1_DF4.1_100215/_misc/lib/MF3/cmos1_2.1V/verilog/QNSA3N064K0V1.v_pin
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qnsa3n064k0v1_DF4.1_100215/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_CMOS1_2.1V_MIN_QNSA3N064K0V1.db
+END_INS:
+
+INS: flash_data QNSB3N004K0V1 TYPE HARD
+//MACRO: VERILOG_LIB ${HMACRO_PATH}/qnsb3n004k0v1_DF4.1_100215/_misc/lib/MF3/cmos1_2.1V/verilog/QNSB3N004K0V1.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qnsb3n004k0v1_DF4.1_100215/_misc/lib/MF3/cmos1_2.1V/verilog/QNSB3N004K0V1.v_pin
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qnsb3n004k0v1_DF4.1_100215/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_CMOS1_2.1V_MIN_QNSB3N004K0V1.db
+END_INS:
+
+// flash_cp
+INS: flash_cp QNSC3NCP0V1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qnsc3ncp0v1_DF4.1_100215/_misc/lib/MF3/cmos1_2.1V/verilog/QNSC3NCP0V1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qnsc3ncp0v1_DF4.1_100215/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_CMOS1_2.1V_MIN_QNSC3NCP0V1.db
+END_INS:
+
+// ram0
+// INS: ram0 QMK0RRA004K02V1 TYPE HARD
+INS: ram0 OWSRAM130W2048B18C4B9 TYPE HARD
+//MACRO: VERILOG_LIB ${HMACRO_PATH}/OWSRAM130W2048B18C4B9_mf3_1.00/_misc/lib/MF3/cmos1_2.1V/verilog/OWSRAM130W2048B18C4B9.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/OWSRAM130W2048B18C4B9_mf3_1.00/_misc/lib/MF3/cmos1_2.1V/verilog/OWSRAM130W2048B18C4B9.v_pin
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/OWSRAM130W2048B18C4B9_mf3_1.00/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_OWSRAM130W2048B18C4B9.db
+END_INS:
+
+// -----------------------------------------------------------
+// 3. Product Local
+// -----------------------------------------------------------
+//	bbr
+//	porga
+//	intor
+//	ckdist
+// K0R/Kx4 Individual-Macro ============================================================
+
+// bbr
+INS: bbr KX4_BUSBRIDGE TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_busbridge_mf3_v1.00/_library/100205/kx4_busbridge.hdl
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_busbridge_mf3_v1.00/_library/100205/kx4_busbridge_mf3_map.v
+END_INS:
+
+// porga
+INS: porga KX4_PORGA TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_porga_mf3_v1.00/_library/100205/kx4_porga.hdl
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_porga_mf3_v1.00/_library/100205/kx4_porga_mf3_opt.v
+END_INS:
+
+// intor
+INS: intor KX4_INTOR TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_intor_mf3_v1.00/_library/100202/kx4_intor.hdl
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_intor_mf3_v1.00/_library/100202/kx4_intor_mf3_map.v
+END_INS:
+
+// ckdist
+INS: ckdist KX4_CKDIST TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_ckdist_mf3_v1.00/_library/100130/kx4_ckdist.hdl
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_ckdist_mf3_v1.00/_library/100130/kx4_ckdist_mf3_map.v
+END_INS:
+
+// monsig
+INS: monsig KX4_MONSIG TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_monsig_mf3_v1.00/_library/100202/kx4_monsig.hdl
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_monsig_mf3_v1.00/_library/100202/kx4_monsig_mf3_map.v
+END_INS:
+
+// -----------------------------------------------------------
+// 5. Interrupt
+// -----------------------------------------------------------
+//      intm8   Local Bus
+//	intm4	Local Bus
+
+// -- INTERRUPT --
+// SS2nd Macro ==================================================================
+
+// intm4
+INS: intm4 QLK0RINTM4V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rintm4v1_mf3_v1.00/_library/_df3.0_100206/qlk0rintm4v1.hdl_100206
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rintm4v1_mf3_v1.00/_library/_df3.0_100206/qlk0rintm4v1_mf3_opt.v
+END_INS:
+
+// intm8
+INS: intm8 QLK0RINTM8V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rintm8v1_mf3_v1.00/_library/_df3.0_100206/qlk0rintm8v1.hdl_100206
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rintm8v1_mf3_v1.00/_library/_df3.0_100206/qlk0rintm8v1_mf3_opt.v
+END_INS:
+
+
+// -----------------------------------------------------------
+// 6. Filter for IICA/SAU
+// -----------------------------------------------------------
+//      sdadly0 Local
+//      sdadly1 Local
+//      sdadly2 Local
+//	sdadly3 Local
+
+// == IICA.SDAI1,SCLI1===================================
+// sda_dely0: for iica.SCLI1
+INS: sdadly0 KX4_IICASCLDLY TYPE SOFT
+        MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_iicascldly_mf3_v1.00/_library/100206/kx4_iicascldly.hdl
+//___v  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_iicascldly_mf3_v1.00/_library/100206/kx4_iicascldly_mf3_map.v
+//___v  MACRO: VERILOG_LIB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/verilog/TBFILTER1X2.v
+//___v  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_TBFILTER1X2.db
+END_INS:
+// sda_dely1: for iica.SDAI1
+INS: sdadly1 KX4_IICASDADLY TYPE SOFT
+        MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_iicasdadly_mf3_v1.00/_library/100206/kx4_iicasdadly.hdl
+//___v  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_iicasdadly_mf3_v1.00/_library/100206/kx4_iicasdadly_mf3_map.v
+//___v  MACRO: VERILOG_LIB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/verilog/TBFILTER1X2.v
+//___v  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_TBFILTER1X2.db
+END_INS:
+
+// == SAU.SDAO======================================
+// sda_dely2: for sau0.SOUT12
+INS: sdadly2 KX4_SDADLY TYPE SOFT
+        MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_sdadly_mf3_v1.00/_library/100218/kx4_sdadly.hdl
+//___v  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_sdadly_mf3_v1.00/_library/100218/kx4_sdadly_mf3_map.v
+//___v  MACRO: VERILOG_LIB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/verilog/TBFILTER1X2.v
+//___v  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_TBFILTER1X2.db
+END_INS:
+// sda_dely3: for sau1.SOUT10
+INS: sdadly3 KX4_SDADLY TYPE SOFT
+        MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_sdadly_mf3_v1.00/_library/100218/kx4_sdadly.hdl
+//___v  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_sdadly_mf3_v1.00/_library/100218/kx4_sdadly_mf3_map.v
+//___v  MACRO: VERILOG_LIB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/verilog/TBFILTER1X2.v
+//___v  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_TBFILTER1X2.db
+END_INS:
+
+
+// CAPBUF
+INS: capbuf KX4_CAPBUFF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_capbuff_mf3_v1.00/_library/100204/kx4_capbuff.v
+END_INS:
+
+
+// -----------------------------------------------------------
+// 7. Timer / Serial
+// -----------------------------------------------------------
+//      iica    APB
+//      sau0    APB
+//      sau1    APB
+//	tau0	APB	(TAU 8ch)
+//
+// iica
+INS: iica QLK0RIICAV2 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0riicav2_mf3_v2.00/_library/QLK0RIICAV2.v
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0riicav2_mf3_v2.00/_library/QLK0RIICAV2.mf3.v
+END_INS:
+
+// sau0
+INS: sau0 QLK0RSAU04R2V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rsau04r2v1_mf3_v1.00/_library/QLK0RSAU04R2V1.v
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rsau04r2v1_mf3_v1.00/_library/QLK0RSAU04R2V1.mf3.v
+END_INS:
+
+// sau1
+INS: sau1 QLK0RSAU02R2V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rsau02r2v1_mf3_v1.00/_library/QLK0RSAU02R2V1.v
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rsau02r2v1_mf3_v1.00/_library/QLK0RSAU02R2V1.mf3.v
+END_INS:
+
+// tau8
+INS: tau0 QLK0RTAU08R2V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rtau08r2v1_mf3_v1.00/_library/QLK0RTAU08R2V1.v
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0rtau08r2v1_mf3_v1.00/_library/QLK0RTAU08R2V1.mf3.v
+END_INS:
+
+
+
+// ----------------------------------------------------------------------------------------------------
+// 8. PORT Macro
+// ----------------------------------------------------------------------------------------------------
+// port0
+INS: port0 KX4_PORT0V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port0v1_mf3_v1.00/_library/100218/kx4_port0v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port0v1_mf3_v1.00/_library/100218/kx4_port0v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port0v1_mf3_v1.00/_library/100218/kx4_port0v1_mf3_opt.v
+END_INS:
+
+INS: port0_iobuf KX4_PORT0_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port0v1_mf3_v1.00/_library/100218/kx4_port0v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB204KASA.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB20EKASA.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port1
+INS: port1 KX4_PORT1V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port1v1_mf3_v1.00/_library/100218/kx4_port1v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port1v1_mf3_v1.00/_library/100218/kx4_port1v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port1v1_mf3_v1.00/_library/100218/kx4_port1v1_mf3_opt.v
+END_INS:
+
+INS: port1_iobuf KX4_PORT1_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port1v1_mf3_v1.00/_library/100218/kx4_port1v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB204KASA.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB20EKASA.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port2
+INS: port2 KX4_PORT2V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port2v1_mf3_v1.00/_library/100218/kx4_port2v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port2v1_mf3_v1.00/_library/100218/kx4_port2v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port2v1_mf3_v1.00/_library/100218/kx4_port2v1_mf3_opt.v
+END_INS:
+
+INS: port2_iobuf KX4_PORT2_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port2v1_mf3_v1.00/_library/100218/kx4_port2v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAB2007HNV1.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAB2006HNV1.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAB2005HNV1.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAB2004HNV1.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAB2003HNV1.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAB2002HNV1.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAB2001HNV1.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAB2000HNV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port3
+INS: port3 KX4_PORT3V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port3v1_mf3_v1.00/_library/100218/kx4_port3v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port3v1_mf3_v1.00/_library/100218/kx4_port3v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port3v1_mf3_v1.00/_library/100218/kx4_port3v1_mf3_opt.v
+END_INS:
+
+INS: port3_iobuf KX4_PORT3_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port3v1_mf3_v1.00/_library/100218/kx4_port3v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB204KASA.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port4
+INS: port4 KX4_PORT4V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port4v1_mf3_v1.00/_library/100218/kx4_port4v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port4v1_mf3_v1.00/_library/100218/kx4_port4v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port4v1_mf3_v1.00/_library/100218/kx4_port4v1_mf3_opt.v
+END_INS:
+
+INS: port4_iobuf KX4_PORT4_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port4v1_mf3_v1.00/_library/100218/kx4_port4v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB204KASA.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port5
+INS: port5 KX4_PORT5V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port5v1_mf3_v1.00/_library/100218/kx4_port5v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port5v1_mf3_v1.00/_library/100218/kx4_port5v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port5v1_mf3_v1.00/_library/100218/kx4_port5v1_mf3_opt.v
+END_INS:
+
+INS: port5_iobuf KX4_PORT5_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port5v1_mf3_v1.00/_library/100218/kx4_port5v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB204KASA.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port6
+INS: port6 KX4_PORT6V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port6v1_mf3_v1.00/_library/100218/kx4_port6v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port6v1_mf3_v1.00/_library/100218/kx4_port6v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port6v1_mf3_v1.00/_library/100218/kx4_port6v1_mf3_opt.v
+END_INS:
+
+INS: port6_iobuf KX4_PORT6_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port6v1_mf3_v1.00/_library/100218/kx4_port6v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB003F0.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port7
+INS: port7 KX4_PORT7V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port7v1_mf3_v1.00/_library/100218/kx4_port7v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port7v1_mf3_v1.00/_library/100218/kx4_port7v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port7v1_mf3_v1.00/_library/100218/kx4_port7v1_mf3_opt.v
+END_INS:
+
+INS: port7_iobuf KX4_PORT7_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port7v1_mf3_v1.00/_library/100218/kx4_port7v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB204KASA.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port12
+INS: port12 KX4_PORT12V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port12v1_mf3_v1.00/_library/100218/kx4_port12v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port12v1_mf3_v1.00/_library/100218/kx4_port12v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port12v1_mf3_v1.00/_library/100218/kx4_port12v1_mf3_opt.v
+END_INS:
+
+INS: port12_iobuf KX4_PORT12_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port12v1_mf3_v1.00/_library/100218/kx4_port12v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB204KASA.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port13
+INS: port13 KX4_PORT13V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port13v1_mf3_v1.00/_library/100218/kx4_port13v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port13v1_mf3_v1.00/_library/100218/kx4_port13v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port13v1_mf3_v1.00/_library/100218/kx4_port13v1_mf3_opt.v
+END_INS:
+
+INS: port13_iobuf KX4_PORT13_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port13v1_mf3_v1.00/_library/100218/kx4_port13v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QO200KALZ.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QIFLVPP15.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// port14
+INS: port14 KX4_PORT14V1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port14v1_mf3_v1.00/_library/100218/kx4_port14v1.hdl
+       MACRO: VERILOG_LIB ${LMACRO_PATH}/kx4_port14v1_mf3_v1.00/_library/100218/kx4_port14v1.include
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port14v1_mf3_v1.00/_library/100218/kx4_port14v1_mf3_opt.v
+END_INS:
+
+INS: port14_iobuf KX4_PORT14_IOBUF TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_port14v1_mf3_v1.00/_library/100218/kx4_port14v1_iobuf.v
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QB204KASA.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+// ----------------------------------------------------------------------------------------------------
+// pior
+INS: pior KX4_PIORV1 TYPE SOFT
+       MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_pior_mf3_v1.00/_library/100218/kx4_piorv1.hdl
+//___v MACRO: VERILOG_NET ${LMACRO_PATH}/kx4_pior_mf3_v1.00/_library/100218/kx4_piorv1_mf3_opt.v
+END_INS:
+
+
+// ----------------------------------------------------------------------------------------------------
+
+//==============================================================================//
+// 6. Hard Macro
+//==============================================================================//
+//      pll     SS2nd HARD
+//	cap1	SS2nd HARD
+//	cap2	SS2nd HARD
+
+// 09.08.13 del MF3#)	// pll 
+// 09.08.13 del MF3#)	// INS: pll QAHPLL1BNV1 TYPE HARD
+// 09.08.13 del MF3#)	  // DF1.2¤«¤é¥Þ¥¯¥íÌ¾¤¬ÊÑ¤ï¤ë
+// 09.08.13 del MF3#)	INS: pll QAHPLL1BNV2 TYPE HARD
+// 09.08.13 del MF3#)	  MACRO: VERILOG_LIB ${HMACRO_PATH}/_df3.0/qahpll1bnv2_mf2_v1.00/_library/qahpll1bnv2_mf2.specify	// df2.2
+// 09.08.13 del MF3#)	  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/_df3.0/qahpll1bnv2_mf2_v1.00/_library/qahpll1bnv2_mf2_25vl_min.db	// df2.2
+// 09.08.13 del MF3#)	END_INS:
+
+// 09.08.13 del MF3#)	// cap
+// 09.08.13 del MF3#)	INS: cap1 QMK0RCAP2V1 TYPE HARD
+// 09.08.13 del MF3#)	  MACRO: VERILOG_LIB ${HMACRO_PATH}/_df3.0/qmk0rcap2v1_mf2_v1.00/_library/qmk0rcap2v1_mf2.specify	// for df1.5
+// 09.08.13 del MF3#)	  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/_df3.0/qmk0rcap2v1_mf2_v1.00/_library/qmk0rcap2v1_mf2_25vl_min.db	// for df1.5
+// 09.08.13 del MF3#)	END_INS:
+// 09.08.13 del MF3#)	
+// 09.08.13 del MF3#)	INS: cap2 QMK0RCAP3V1 TYPE HARD
+// 09.08.13 del MF3#)	  MACRO: VERILOG_LIB ${HMACRO_PATH}/_df3.0/qmk0rcap3v1_mf2_v1.00/_library/qmk0rcap3v1_mf2.specify	// for df1.5
+// 09.08.13 del MF3#)	  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/_df3.0/qmk0rcap3v1_mf2_v1.00/_library/qmk0rcap3v1_mf2_25vl_min.db	// for df1.5
+// 09.08.13 del MF3#)	END_INS:
+
+//==============================================================================//
+// ---AD----
+//==============================================================================//
+
+// adctl
+INS: adctl QLK0RADAA32V1 TYPE SOFT
+       MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0radaa32v1_mf3_v1.10/_library/qlk0radaa32v1.v
+//___v MACRO: VERILOG_NET ${SMACRO_PATH}/qlk0radaa32v1_mf3_v1.10/_library/qlk0radaa32v1_mf3.v
+END_INS:
+
+// ad_hard
+INS: adhard QAHADA20HN0V1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/verilog/QAHADA20HN0V1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHADA20HN0V1.db
+END_INS:
+
+INS: adswcap1 QAHAD20SWL1V1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAD20SWL1V1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHAD20SWL1V1.db
+END_INS:
+
+INS: adsw16 QAHAD20SW16V1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAD20SWxxV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHAD20SWxxV1.db
+END_INS:
+
+INS: adsw17 QAHAD20SW17V1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAD20SWxxV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHAD20SWxxV1.db
+END_INS:
+
+INS: adsw18 QAHAD20SW18V1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAD20SWxxV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHAD20SWxxV1.db
+END_INS:
+
+INS: adsw19 QAHAD20SW19V1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/verilog/QAHAD20SWxxV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qatada20hn032v1_mf3_v0.80/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHAD20SWxxV1.db
+END_INS:
+
+INS: adcorner QICTRBG5A TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QICTRBG5A.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+
+//==============================================================================//
+// Power & Other PAD MACRO =====================================================//
+//==============================================================================//
+
+// --- power ---
+INS: power QIVG0005 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/verilog/QIVG0005.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/HMG_IOBUF_SS3_KX4_mf3_v1.00_LR4.2.12/_misc/lib/MF3/cmos1_2.1V/liberty/50vm/MF3_cmos1_2.1V_MIN_HMG_IOBUF_SS3_KX4_50vm.db
+END_INS:
+
+
+//==============================================================================//
+// DMY DLY Macro ===============================================================//
+//==============================================================================//
+
+//==============================================================================//
+//= DMY ========================================================================//
+//==============================================================================//
+//== DMYA ==
+// 10.01.25 DMYA¤ÏKx3-C ¤ÈÆ±¤¸¡ ¡§ 6¸Ä
+INS: dmya DMYA TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmya.v
+END_INS:
+
+INS: dmyb DMYA TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmya.v
+END_INS:
+
+INS: dmyc DMYA TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmya.v
+END_INS:
+
+INS: dmyd DMYA TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmya.v
+END_INS:
+
+INS: dmye DMYA TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmya.v
+END_INS:
+
+INS: dmyf DMYA TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmya.v
+END_INS:
+
+//== DMYX ==
+// 10.01.25 DMYX¤ÏKx3-C ¤ÈÆ±¤¸¡ ¡§ 6¸Ä
+INS: dmy0 DMYX TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmyx.v
+END_INS:
+
+INS: dmy1 DMYX TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmyx.v
+END_INS:
+
+INS: dmy2 DMYX TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmyx.v
+END_INS:
+
+INS: dmy3 DMYX TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmyx.v
+END_INS:
+
+INS: dmy4 DMYX TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmyx.v
+END_INS:
+
+INS: dmy5 DMYX TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmyx.v
+END_INS:
+
+//== DMYCAP ==
+// CAP¥Þ¥¯¥í¤Î¤«¤ï¤ê¤ËÅëºÜ¡£
+INS: dmycap DMYCAP TYPE SOFT
+  MACRO: VERILOG_NET ${LMACRO_PATH}/_kx4_dmy/dmycap.v
+END_INS:
+
+
+//== TBDLY50N ==
+// 10.01.25 TBDLY50N¤Ï¡ ¡§ 6
+INS: dmydly50n TBFILTER1X2 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/verilog/TBFILTER1X2.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/tbfilter1x2_mf3_v1.00/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_TBFILTER1X2.db
+END_INS:
+
+INS: dmydly300n QAHNFI4BN300NV1 TYPE HARD
+  MACRO: VERILOG_LIB ${HMACRO_PATH}/qahnfi4bn300nv1_mf3_v1.10/_misc/lib/MF3/cmos1_2.1V/verilog/QAHNFI4BN300NV1.v
+  MACRO: SYNOPSYS_DB ${HMACRO_PATH}/qahnfi4bn300nv1_mf3_v1.10/_misc/lib/MF3/cmos1_2.1V/liberty_db/MF3_cmos1_2.1V_MIN_QAHNFI4BN300NV1.db
+END_INS:
+
+
+END_INCLUDE_FILE:
+

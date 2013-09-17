@@ -1,0 +1,60 @@
+/**********************************************************************/
+/*                                                                    */
+/* K0R series PORT dec macro                                          */
+/*                                                                    */
+/*   [ port offset decoder ] , 5 address ( PL , PM , PU , PIM , POM ) */
+/*                                                                    */
+/*    Module   : QPK0RDG1V1                                           */
+/*    Date     : 2010/02/05                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : S.Nakata                                             */
+/*    Note     :                                                      */
+/*                                                                    */
+/**********************************************************************/
+/*                                                                    */
+/* <<入力信号>>                                         <<接続先>>    */
+/* PADDR6      : APBアドレス信号                        APB Bridge    */
+/* PADDR5      : APBアドレス信号                        APB Bridge    */
+/* PADDR4      : APBアドレス信号                        APB Bridge    */
+/*                                                                    */
+/* <<出力信号>>                                         <<接続先>>    */
+/* AD_PL       : PLアドレス選択信号                     port control  */
+/* AD_PM       : PMアドレス選択信号                     port control  */
+/* AD_PU       : PUアドレス選択信号                     port control  */
+/* AD_POM      : POMアドレス選択信号                    port control  */
+/*                                                                    */
+/**********************************************************************/
+
+module	QPK0RDG1V1 ( PADDR6 , PADDR5 , PADDR4 ,
+		     AD_PL  , AD_PM  , AD_PU  , AD_POM ) ;
+
+        input           PADDR6  , PADDR5  , PADDR4 ;
+	output		AD_PL , AD_PM , AD_PU , AD_POM ;
+
+        parameter       PL_DEC = 3'b000 ;
+        parameter       PM_DEC = 3'b010 ;
+        parameter       PU_DEC = 3'b011 ;
+        parameter       POM_DEC = 3'b101 ;
+
+	reg		AD_PL , AD_PM , AD_PU , AD_POM ;
+
+//	always @ ( PADDR6 or PADDR5 or PADDR4 ) begin
+//	    casex ( { PADDR6 , PADDR5 , PADDR4 } )    // synopsys parallel_case
+//		PL_DEC  : { AD_PL , AD_PM , AD_PU } <=  3'b100 ;
+//		PM_DEC  : { AD_PL , AD_PM , AD_PU } <=  3'b010 ;
+//		PU_DEC  : { AD_PL , AD_PM , AD_PU } <=  3'b001 ;
+//		default : { AD_PL , AD_PM , AD_PU } <=  3'b000 ;
+//	    endcase
+//	end
+
+	always @ ( PADDR6 or PADDR5 or PADDR4 ) begin
+            casex ( { PADDR6 , PADDR5 , PADDR4 } )    // synopsys parallel_case
+		PL_DEC   : { AD_PL , AD_PM , AD_PU , AD_POM } =  4'b1000 ;
+		PM_DEC   : { AD_PL , AD_PM , AD_PU , AD_POM } =  4'b0100 ;
+		PU_DEC   : { AD_PL , AD_PM , AD_PU , AD_POM } =  4'b0010 ;
+		POM_DEC  : { AD_PL , AD_PM , AD_PU , AD_POM } =  4'b0001 ;
+		default  : { AD_PL , AD_PM , AD_PU , AD_POM } =  4'b0000 ;
+	    endcase
+	end
+
+endmodule

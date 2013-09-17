@@ -1,0 +1,963 @@
+//************************************************************************
+// 2010.09.10: CHANGE for ICE HDL
+//		add read&clear's BUF for ICE
+//		QLK0RMAW0V1_BUF
+//		add ICECK60M input port
+//************************************************************************
+
+//************************************************************************
+//
+//  Module Name : QLK0RMAW0V1
+//  Rev.        : 1.00
+//  Date        : 2007/10/02
+//
+//************************************************************************
+
+module QLK0RMAW0V1 (
+		PENABLE, PWRITE, PSEL,
+		PADDR2, PADDR1, PADDR0,
+		PWDATA15, PWDATA14, PWDATA13, PWDATA12, PWDATA11, PWDATA10, PWDATA9, PWDATA8,
+		PWDATA7 ,
+		BASECK, RESB, SYSRESB,
+		PC19, PC18, PC17, PC16, PC15, PC14, PC13, PC12, PC11, PC10,
+		PC9,  PC8,  PC7,  PC6,  PC5,  PC4,  PC3,  PC2,  PC1,  PC0,
+		PA19, PA18, PA17, PA16, PA15, PA14, PA13, PA12, PA11, PA10,
+		PA9,  PA8,  PA7,  PA6,  PA5,  PA4,  PA3,  PA2,
+		MA15, MA14, MA13, MA12, MA11, MA10, MA9, MA8,
+		MA7,  MA6,  MA5,  MA4,  MA3,  MA2,  MA1, MA0,
+		CPURD, CPUWR, SLFLASH, SLMEM, FLREAD, FCHRAM,
+		FLSIZE3, FLSIZE2, FLSIZE1, FLSIZE0,
+		RAMSIZE7, RAMSIZE6, RAMSIZE5, RAMSIZE4, RAMSIZE3, RAMSIZE2, RAMSIZE1, RAMSIZE0,
+		BFSIZE3, BFSIZE2, BFSIZE1, BFSIZE0,
+		BMSIZE3, BMSIZE2, BMSIZE1, BMSIZE0,
+		DMARD, DMAWR,
+		PBFA,
+		CFNSD9, CFNSD8, CFNSD7, CFNSD6, CFNSD5, CFNSD4, CFNSD3, CFNSD2, CFNSD1, CFNSD0,
+		FSWS8 , FSWS7 , FSWS6 , FSWS5 , FSWS4 , FSWS3 , FSWS2 , FSWS1 , FSWS0 ,
+		FSWE9 , FSWE8 , FSWE7 , FSWE6 , FSWE5 , FSWE4 , FSWE3 , FSWE2 , FSWE1 , FSWE0 ,
+		CSPDTFLG,
+		PBRAMEN,
+		SCANMODE, SCANRESZ,
+		PRDATA15, PRDATA14, PRDATA13, PRDATA12, PRDATA11, PRDATA10, PRDATA9, PRDATA8,
+		PRDATA7 , PRDATA6 , PRDATA5 , PRDATA4 , PRDATA3 , PRDATA2 , PRDATA1, PRDATA0,
+		DETECT,
+		ICESVSTOP, ICEFETCHFLT, ICEDATAFLT, ICEDMAFLT
+		,ICECK60M
+		);
+ 
+  input		ICECK60M ;
+//---------------------------------------------------------------------------- from apbbr
+  input		PENABLE, PWRITE, PSEL ;
+  input		PADDR2, PADDR1, PADDR0 ;
+  input		PWDATA15, PWDATA14, PWDATA13, PWDATA12, PWDATA11, PWDATA10, PWDATA9, PWDATA8,
+		PWDATA7 ;
+
+//---------------------------------------------------------------------------- from csc
+  input		BASECK, RESB, SYSRESB ;
+
+//---------------------------------------------------------------------------- from cpu
+  input		PC19, PC18, PC17, PC16, PC15, PC14, PC13, PC12, PC11, PC10,
+		PC9,  PC8,  PC7,  PC6,  PC5,  PC4,  PC3,  PC2,  PC1,  PC0 ;
+  input		PA19, PA18, PA17, PA16, PA15, PA14, PA13, PA12, PA11, PA10,
+		PA9,  PA8,  PA7,  PA6,  PA5,  PA4,  PA3,  PA2 ;
+  input		MA15, MA14, MA13, MA12, MA11, MA10, MA9, MA8,
+		MA7,  MA6,  MA5,  MA4,  MA3,  MA2,  MA1, MA0 ;
+  input		CPURD, CPUWR, SLFLASH, SLMEM, FLREAD, FCHRAM ;
+
+//---------------------------------------------------------------------------- from procnf
+  input		FLSIZE3, FLSIZE2, FLSIZE1, FLSIZE0 ;
+  input		RAMSIZE7, RAMSIZE6, RAMSIZE5, RAMSIZE4, RAMSIZE3, RAMSIZE2, RAMSIZE1, RAMSIZE0 ;
+
+//---------------------------------------------------------------------------- from clump cell
+  input		BFSIZE3, BFSIZE2, BFSIZE1, BFSIZE0 ;
+  input		BMSIZE3, BMSIZE2, BMSIZE1, BMSIZE0 ;
+
+//---------------------------------------------------------------------------- from dmac
+  input		DMARD, DMAWR ;
+
+//---------------------------------------------------------------------------- from cib
+  input		FSWS8 , FSWS7 , FSWS6 , FSWS5 , FSWS4 , FSWS3 , FSWS2 , FSWS1 , FSWS0 ;
+  input		FSWE9 , FSWE8 , FSWE7 , FSWE6 , FSWE5 , FSWE4 , FSWE3 , FSWE2 , FSWE1 , FSWE0  ;
+  input		CFNSD9, CFNSD8, CFNSD7, CFNSD6, CFNSD5, CFNSD4, CFNSD3, CFNSD2, CFNSD1, CFNSD0 ;
+  input		CSPDTFLG ;
+
+//---------------------------------------------------------------------------- from fcb
+  input		PBFA, PBRAMEN ;
+
+
+//---------------------------------------------------------------------------- from modectl
+  input		SCANMODE, SCANRESZ ;
+
+//---------------------------------------------------------------------------- from ice
+  input		ICESVSTOP, ICEFETCHFLT, ICEDATAFLT, ICEDMAFLT ;
+
+//---------------------------------------------------------------------------- to apbbr
+  output	PRDATA15, PRDATA14, PRDATA13, PRDATA12, PRDATA11, PRDATA10, PRDATA9, PRDATA8,
+		PRDATA7 , PRDATA6 , PRDATA5 , PRDATA4 , PRDATA3 , PRDATA2 , PRDATA1, PRDATA0 ;
+
+//---------------------------------------------------------------------------- to seccon
+  output	DETECT ;
+
+
+  wire		we_rnscstart, we_rnsdstart, we_rsdstart ;
+  wire		re_memfault, re_rnscstart, re_rnsdstart, re_rsdstart ;
+
+//
+// for leda
+//
+  wire	[19:0]	pc ;
+  wire	[19:2]	pa ;
+  wire	[15:0]	ma ;
+
+  assign pc = { PC19, PC18, PC17, PC16, PC15, PC14, PC13, PC12, PC11, PC10,
+	        PC9,  PC8,  PC7,  PC6,  PC5,  PC4,  PC3,  PC2,  PC1,  PC0 } ;
+
+  assign pa = { PA19, PA18, PA17, PA16, PA15, PA14, PA13, PA12, PA11, PA10,
+		PA9,  PA8,  PA7,  PA6,  PA5,  PA4,  PA3,  PA2 } ;
+
+  assign ma = { MA15, MA14, MA13, MA12, MA11, MA10, MA9, MA8,
+		MA7,  MA6,  MA5,  MA4,  MA3,  MA2,  MA1, MA0 } ;
+
+  QLK0RMAW0V1_APBBI apbbi (
+		.paddr2(PADDR2), .paddr1(PADDR1), .paddr0(PADDR0),
+		.penable(PENABLE), .pwrite(PWRITE), .psel(PSEL),
+		.we_rnscstart(we_rnscstart), .we_rnsdstart(we_rnsdstart),
+		.we_rsdstart(we_rsdstart),
+		.re_memfault(re_memfault), .re_rnscstart(re_rnscstart), .re_rnsdstart(re_rnsdstart),
+		.re_rsdstart(re_rsdstart),
+		.secpdtflg(CSPDTFLG) );
+
+  QLK0RMAW0V1_MAIN main (
+		.baseck(BASECK), .resb(RESB), .sysresb(SYSRESB), .scanmode(SCANMODE),
+		.scanresz(SCANRESZ), .svstop(ICESVSTOP), .bfa(PBFA), .bramen(PBRAMEN),
+		.slflash(SLFLASH), .flread(FLREAD), .slmem(SLMEM), .fchram(FCHRAM),
+		.cpurd(CPURD), .cpuwr(CPUWR),
+		.cfsws({ FSWS8 , FSWS7 , FSWS6 , FSWS5 , FSWS4 , FSWS3 , FSWS2 , FSWS1 , FSWS0 }),
+		.cfswe({ FSWE9 , FSWE8 , FSWE7 , FSWE6 , FSWE5 , FSWE4 , FSWE3 , FSWE2 , FSWE1 , FSWE0  }),
+		.cfnsd({ CFNSD9, CFNSD8, CFNSD7, CFNSD6, CFNSD5, CFNSD4, CFNSD3, CFNSD2, CFNSD1, CFNSD0 }),
+		.flsize({ FLSIZE3, FLSIZE2, FLSIZE1, FLSIZE0 }),
+		.bfsize({ BFSIZE3, BFSIZE2, BFSIZE1, BFSIZE0 }),
+		.bmsize({ BMSIZE3, BMSIZE2, BMSIZE1, BMSIZE0 }),
+		.ramsize({ RAMSIZE7, RAMSIZE6, RAMSIZE5, RAMSIZE4, RAMSIZE3, RAMSIZE2, RAMSIZE1, RAMSIZE0 }),
+		.pc(pc[19:0]),
+		.pa(pa[19:2]),
+		.ma(ma[15:0]),
+		.dmard(DMARD), .dmawr(DMAWR), .secpdtflg(CSPDTFLG),
+		.re_memfault(re_memfault), .re_rnscstart(re_rnscstart),
+		.re_rnsdstart(re_rnsdstart), .re_rsdstart(re_rsdstart),
+		.we_rnscstart(we_rnscstart), .we_rnsdstart(we_rnsdstart),
+		.we_rsdstart(we_rsdstart),
+		.din({  PWDATA15, PWDATA14, PWDATA13, PWDATA12, PWDATA11, PWDATA10, PWDATA9, PWDATA8,
+               	        PWDATA7 }),
+		.dout({ PRDATA15, PRDATA14, PRDATA13, PRDATA12, PRDATA11, PRDATA10, PRDATA9, PRDATA8 ,
+                        PRDATA7 , PRDATA6 , PRDATA5 , PRDATA4 , PRDATA3 , PRDATA2 , PRDATA1, PRDATA0 }),
+		.detect(DETECT),
+		.ice_fetchflt(ICEFETCHFLT), .ice_dataflt(ICEDATAFLT), .ice_dmaflt(ICEDMAFLT)
+		,.ICECK60M(ICECK60M)
+		);
+
+endmodule
+
+
+//------------------------------------------------------------------------------------
+//  Bus interface
+//
+//------------------------------------------------------------------------------------
+module  QLK0RMAW0V1_APBBI (
+                paddr2, paddr1, paddr0, penable, pwrite, psel,
+                we_rnscstart, we_rnsdstart, we_rsdstart,
+                re_memfault, re_rnscstart, re_rnsdstart, re_rsdstart,
+		secpdtflg
+                ) ;
+
+  input         paddr2, paddr1, paddr0, penable, pwrite, psel ;
+  input		secpdtflg ;
+
+  output        we_rnscstart, we_rnsdstart, we_rsdstart ;
+  output        re_memfault, re_rnscstart, re_rnsdstart, re_rsdstart ;
+
+  reg		ad_memfault, ad_rnscstart, ad_rnsdstart, ad_rsdstart ;
+
+
+//===== address decoder =====
+
+  parameter ADDR_MEMFAULT  = 3'b000;
+  parameter ADDR_RNSCSTRAT = 3'b010 ;
+  parameter ADDR_RNSDSTRAT = 3'b100 ;
+  parameter ADDR_RSDSTART  = 3'b110 ;
+ 
+  always@ ( paddr2 or paddr1 or paddr0 ) begin
+     case ( { paddr2 , paddr1 , paddr0 } )      // synopsys parallel_case
+        ADDR_MEMFAULT  : { ad_rsdstart, ad_rnsdstart, ad_rnscstart, ad_memfault } = 4'b0001 ;
+        ADDR_RNSCSTRAT : { ad_rsdstart, ad_rnsdstart, ad_rnscstart, ad_memfault } = 4'b0010 ;
+        ADDR_RNSDSTRAT : { ad_rsdstart, ad_rnsdstart, ad_rnscstart, ad_memfault } = 4'b0100 ;
+        ADDR_RSDSTART  : { ad_rsdstart, ad_rnsdstart, ad_rnscstart, ad_memfault } = 4'b1000 ;
+        default        : { ad_rsdstart, ad_rnsdstart, ad_rnscstart, ad_memfault } = 4'b0000 ;
+     endcase
+  end
+
+//===== register read/write strobe =====
+
+  assign we_rnscstart = ad_rnscstart & penable & psel & pwrite & secpdtflg ;
+  assign we_rnsdstart = ad_rnsdstart & penable & psel & pwrite & secpdtflg ;
+  assign we_rsdstart  = ad_rsdstart  & penable & psel & pwrite & secpdtflg ;
+
+  assign re_memfault  = ad_memfault  & penable & psel & ~pwrite & secpdtflg ;
+  assign re_rnscstart = ad_rnscstart & penable & psel & ~pwrite & secpdtflg ;
+  assign re_rnsdstart = ad_rnsdstart & penable & psel & ~pwrite & secpdtflg ;
+  assign re_rsdstart  = ad_rsdstart  & penable & psel & ~pwrite & secpdtflg ;
+
+endmodule
+
+
+//------------------------------------------------------------------------------------
+// QLK0RMAW0V1_MAIN
+//
+//------------------------------------------------------------------------------------
+module QLK0RMAW0V1_MAIN (
+		baseck, resb, sysresb, scanmode, scanresz, svstop,
+		cpurd, cpuwr, secpdtflg,
+		bfa, bramen, slflash, flread, slmem, fchram,
+		cfsws, cfnsd, cfswe, flsize, bfsize, bmsize, ramsize,
+		pc, pa, ma, dmard, dmawr,
+		re_memfault, re_rnscstart, re_rnsdstart, re_rsdstart,
+		we_rnscstart, we_rnsdstart, we_rsdstart,
+		din, dout,
+		detect,
+		ice_fetchflt, ice_dataflt, ice_dmaflt
+		,ICECK60M
+		);
+
+  input		ICECK60M ;
+
+  input	[15:7]	din ;
+  input	[8:0]	cfsws ;
+  input	[9:0]	cfnsd, cfswe ;
+  input	[3:0]	flsize, bfsize, bmsize ;
+  input	[7:0]	ramsize ;
+
+  input	[19:0]	pc ;
+  input	[19:2]	pa ;
+  input	[15:0]	ma ;
+
+  input		baseck, resb, sysresb, scanmode, scanresz, svstop ;
+  input		bfa, bramen ;
+  input		slflash, flread, slmem, fchram ;
+  input		cpurd, cpuwr ;
+  input		dmard, dmawr ;
+  input		re_memfault, re_rnscstart, re_rnsdstart, re_rsdstart,
+		we_rnscstart, we_rnsdstart, we_rsdstart ;
+  input		secpdtflg ;
+
+  input		ice_fetchflt, ice_dataflt, ice_dmaflt ;
+
+  output[15:0]	dout ;
+  output	detect ;
+
+  wire	[15:7]	rnsc_start, rnsd_start, rsd_start ;
+  wire		fetchflt, dataflt, dmaflt ;
+  wire		dev_fetchflt, dev_dataflt, dev_dmaflt ;
+  wire		secur_code_area ;
+
+// ICE用信号とORする
+  assign fetchflt = ( dev_fetchflt | ice_fetchflt ) & ~svstop ;
+  assign dataflt  = ( dev_dataflt  | ice_dataflt )  & ~svstop ;
+  assign dmaflt   = ( dev_dmaflt   | ice_dmaflt )   & ~svstop ;
+
+
+  QLK0RMAW0V1_IOREG ioreg (
+		.baseck(baseck), .resb(resb), .sysresb(sysresb),
+		.scanmode(scanmode), .scanresz(scanresz), .svstop(svstop),
+		.re_memfault(re_memfault), .re_rnscstart(re_rnscstart),
+		.re_rnsdstart(re_rnsdstart), .re_rsdstart(re_rsdstart),
+		.we_rnscstart(we_rnscstart), .we_rnsdstart(we_rnsdstart),
+		.we_rsdstart(we_rsdstart),
+		.secur_code_area(secur_code_area), .secpdtflg(secpdtflg),
+		.fetchflt(fetchflt), .dataflt(dataflt), .dmaflt(dmaflt),
+		.rnsc_start(rnsc_start[15:7]), .rnsd_start(rnsd_start[15:7]),
+		.rsd_start(rsd_start[15:7]),
+		.din(din[15:7]),
+		.dout(dout[15:0])
+		,.ICECK60M(ICECK60M)
+		) ;
+
+
+  QLK0RMAW0V1_ACCES_WATCH access_watch (
+		.baseck(baseck), .resb(resb), .bfa(bfa), .bramen(bramen),
+		.slflash(slflash), .flread(flread), .slmem(slmem), .fchram(fchram),
+		.cpurd(cpurd), .cpuwr(cpuwr),
+		.cfsws(cfsws[8:0]), .cfnsd(cfnsd[9:0]), .cfswe(cfswe[9:0]),
+		.flsize(flsize[3:0]), .bfsize(bfsize[3:0]), .bmsize(bmsize[3:0]),
+		.ramsize(ramsize[7:0]), .rnsc_start(rnsc_start[15:7]),
+		.rnsd_start(rnsd_start[15:7]), .rsd_start(rsd_start[15:7]),
+		.pc(pc[19:0]), .pa(pa[19:2]), .ma(ma[15:0]),
+		.dmard(dmard), .dmawr(dmawr),
+		.secur_code_area(secur_code_area), .secpdtflg(secpdtflg),
+		.fetchflt(dev_fetchflt), .dataflt(dev_dataflt), .dmaflt(dev_dmaflt) ) ;
+
+
+  QLK0RMAW0V1_ERROR_DETECT error_detect (
+		.baseck(baseck), .resb(resb),
+		.fetchflt(fetchflt), .dataflt(dataflt), .dmaflt(dmaflt),
+		.detect(detect), .secpdtflg(secpdtflg) ) ;
+
+endmodule
+
+
+//------------------------------------------------------------------------------------
+// QLK0RMAW0V1_IOREG
+//  
+//  各種レジスタ設定ブロック
+//  RNSCSTART,RNSDSTART,RSDSTARTの各レジスタは、セキュアな領域からのみR/W可能。
+//
+//  非セキュア・コード領域からのREADは0000Hが読み出され、WRITEは無視される。
+//
+//------------------------------------------------------------------------------------
+module QLK0RMAW0V1_IOREG (
+		baseck, resb, sysresb, scanmode, scanresz, svstop,
+		re_memfault, re_rnscstart, re_rnsdstart, re_rsdstart,
+		we_rnscstart, we_rnsdstart, we_rsdstart,
+		fetchflt, dataflt, dmaflt,
+		secur_code_area, secpdtflg,
+		rnsc_start, rnsd_start, rsd_start,
+		din, dout
+		,ICECK60M
+		);
+
+  input		ICECK60M ;
+
+  input	[15:7]	din ;
+
+  input		baseck, resb, sysresb, scanmode, scanresz, svstop ;
+  input		re_memfault, re_rnscstart, re_rnsdstart, re_rsdstart,
+		we_rnscstart, we_rnsdstart, we_rsdstart ;
+
+  input		fetchflt, dataflt, dmaflt ;
+  input		secur_code_area ;
+  input		secpdtflg ;
+
+  output[15:0]	dout ;
+  output[15:7]	rnsc_start, rnsd_start, rsd_start ;
+
+  reg	[15:7]	rnsc_start, rnsd_start, rsd_start ;
+  reg		memfault_clr_p ;
+
+  reg		memfault_bit2, memfault_bit1, memfault_bit0 ;
+
+  wire	[2:0]	memfault ;
+  wire		memfault_clrb ;
+
+  wire		memfault_clr, memfault_clr_p_dly ;
+
+//========================================================
+// RAM非セキュア・コード領域スタート・アドレス設定レジスタ
+//========================================================
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+	if (!resb)			          rnsc_start[15:7] <= 9'b0 ;
+	else if (we_rnscstart & secur_code_area)  rnsc_start[15:7] <= din[15:7] ;
+  end
+
+//========================================================
+// RAM非セキュア・データ領域スタート・アドレス設定レジスタ
+//========================================================
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+	if (!resb)			          rnsd_start[15:7] <= 9'b0 ;
+	else if (we_rnsdstart & secur_code_area)  rnsd_start[15:7] <= din[15:7] ;
+  end
+
+
+//========================================================
+// RAMセキュア・データ領域スタート・アドレス設定レジスタ
+//========================================================
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+	if (!resb)			         rsd_start[15:7] <= 9'b0 ;
+	else if (we_rsdstart & secur_code_area)  rsd_start[15:7] <= din[15:7] ;
+  end
+
+
+//========================================================
+// メモリアクセス違反レジスタ
+//  ※READでクリア。ただしデバッガのREADはクリアされない
+//    re_memfaultを一度ラッチする。ヒゲ対策。
+//========================================================
+
+  // synopsys async_set_reset "resb"
+  always @ ( posedge baseck or negedge resb) begin
+	if (!resb)		memfault_clr_p <= 1'b0 ;
+	else if ( secpdtflg )	memfault_clr_p <= ( re_memfault & ~svstop ) ;
+  end
+
+//QLK0RMAW0V1_BUF  clr_buf  ( .clk_out ( memfault_clr_p_dly ) , .clk_in ( memfault_clr_p ) ) ;
+  QLK0RMAW0V1_BUF  clr_buf  ( .clk_out ( memfault_clr_p_dly ) , .clk_in ( memfault_clr_p ) ,.iceclk(ICECK60M) ) ;
+  assign memfault_clr  = ~memfault_clr_p & memfault_clr_p_dly ; 
+
+
+  assign memfault_clrb = ( scanmode ) ? scanresz : ( sysresb & ~memfault_clr ) ;
+
+  // synopsys async_set_reset "memfault_clrb"
+  always @ ( posedge baseck or negedge memfault_clrb ) begin
+	if (!memfault_clrb) begin
+		memfault_bit0 <= 1'b0 ;
+		memfault_bit1 <= 1'b0 ;
+		memfault_bit2 <= 1'b0 ;
+	end
+	else if ( secpdtflg ) begin
+		memfault_bit0 <= ( fetchflt | memfault_bit0 ) ;
+		memfault_bit1 <= ( dataflt  | memfault_bit1 ) ;
+		memfault_bit2 <= ( dmaflt   | memfault_bit2 ) ;
+	end
+  end
+
+  assign memfault = { memfault_bit2, memfault_bit1, memfault_bit0 } ;
+
+
+// DATA READ -----
+
+  assign dout = (re_memfault) ? { 8'b0, 5'b0, memfault[2:0] }
+			: (re_rnscstart & secur_code_area ) ? { rnsc_start[15:7] , 7'b0 }
+			: (re_rnsdstart & secur_code_area ) ? { rnsd_start[15:7] , 7'b0 }
+			: (re_rsdstart  & secur_code_area ) ? { rsd_start[15:7] , 7'b0 }
+			: 16'b0 ;
+
+endmodule
+
+// 2010.09.10 added) ICE's reset_pulse gen
+`ifndef FPGA_ICE
+module  QLK0RMAW0V1_BUF ( clk_out , clk_in ,iceclk ) ;
+
+        input   clk_in  ;
+        output  clk_out ;
+	input	iceclk ;
+
+        wire    clk_a , clk_b ;
+
+        TBDLY3X2 delay1 ( .H01( clk_in ) , .N01( clk_a ) ); 
+        TBDLY3X2 delay2 ( .H01( clk_a )  , .N01( clk_b ) ); 
+        TBDLY2X2 delay3 ( .H01( clk_b )  , .N01( clk_out ) );
+
+endmodule
+`else
+module QLK0RMAW0V1_BUF ( clk_out , clk_in , iceclk ) ;
+        input   clk_in  ;
+        output  clk_out ;
+        input   iceclk ;
+
+        reg [1:0]  in_dly;
+        always @( posedge iceclk ) begin
+                in_dly <= {in_dly[0], clk_in};
+        end
+        assign clk_out = in_dly[1];
+
+endmodule
+`endif
+
+
+//------------------------------------------------------------------------------------
+// QLK0RMAW0V1_ERROR_DETECT
+//
+// 全てのエラー要因の論理和をとり、エラー検出信号"DETECT"を出力。
+// baseckの1clock分"H"を出力する。
+//
+//
+// エラーアクセス要因フラグレジスタ（MEMFAULT)でのラッチを、
+// baseck↑にするため、SECCONに渡すDETCT信号を１クロックずらす。
+//
+// ここでラッチしてずらさないと、フラグレジスタのクロックをbaseckに出来ない。
+// →DETCTでリセットがかかってしまうので。
+//
+// ※正常動作するかはSIMで確認する必要がある。
+// 　 検証次第で、旧RGのRESFフラグと同じmaster->slave構成にする。
+//
+//
+//  SVATOP="H"の時はDETECT信号をアクティブにしない。←仕様書2版で追加
+//
+//------------------------------------------------------------------------------------
+module QLK0RMAW0V1_ERROR_DETECT (
+		baseck, resb,
+		fetchflt, dataflt, dmaflt,
+		detect, secpdtflg
+		) ;
+
+  input		baseck, resb ;
+  input		fetchflt, dataflt, dmaflt ;
+  input		secpdtflg ;
+
+  output	detect ;
+
+  reg		detect ;
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+	if (!resb)	    detect <= 1'b0 ;
+	else if (secpdtflg) detect <= fetchflt | dataflt | dmaflt ;
+  end
+
+endmodule
+
+
+//------------------------------------------------------------------------------------
+// QLK0RMAW0V1_ACCES_WATCH
+//
+//
+// 各空間のスタートアドレス、エンドアドレス
+//
+// fnsc_start[19:0] = { 1'b0, cfsws[8:0], 10'b0 } ;  -> flash non seure CODE start address
+// fnsd_start[19:0] = {       cfnsd[9:0], 10'b0 } ;  -> flash non seure DATA start address
+// fsd_start[19:2]  = {       cfswe[9:0], 8'b0  } ;  -> flash seure DATA start address
+// flashend[19:0]   = { flsize[3:0], 16'hffff };     -> flash end address
+//
+// bfa_start[19:0]  = { 4'hE, 2'b11, bfsize[3:0], 10'b0 };  -> BFA start address
+//
+// ram_start[19:0]  = { 4'hF, ramsize[7:0],     8'b0 };  -> RAM start address
+// rnsc_start[19:0] = { 4'hF, rnsc_start[15:7], 7'b0 };  -> RAM non seure CODE start address
+// rnsd_start[19:0] = { 4'hF, rnsd_start[15:7], 7'b0 };  -> RAM non seure DATA start address
+// rsd_start[15:0]  = {       rsd_start[15:7],  7'b0 };  -> RAM seure DATA start address
+//
+// bramend[19:0]    = { 4'hF, 3'b0, bmsize[3:0], 9'b0 } ; -> BRAM end address(+1)
+//
+//------------------------------------------------------------------------------------
+module QLK0RMAW0V1_ACCES_WATCH (
+		baseck, resb, bfa, bramen,
+		slflash, flread, slmem, fchram,
+		cpurd, cpuwr,
+		cfsws, cfnsd, cfswe, flsize, bfsize, bmsize, ramsize,
+		rnsc_start, rnsd_start, rsd_start, pc, pa, ma, dmard, dmawr,
+		secur_code_area,
+		fetchflt, dataflt, dmaflt,
+		secpdtflg
+                );
+
+  input	[8:0]	cfsws ;
+  input	[9:0]	cfnsd, cfswe ;
+  input	[3:0]	flsize, bfsize, bmsize ;
+  input	[7:0]	ramsize ;
+  input	[15:7]	rnsc_start, rnsd_start, rsd_start ;
+  input	[19:0]	pc ;
+  input	[19:2]	pa ;
+  input	[15:0]	ma ;
+
+  input		baseck, resb, bfa, bramen ;
+  input		slflash, flread, slmem, fchram ;
+  input		cpurd, cpuwr ;
+  input		dmard, dmawr ;
+
+  input		secpdtflg ;
+
+  output	fetchflt, dataflt, dmaflt ;
+  output	secur_code_area ;
+
+  wire	[18:10]	fnsc_start ;
+  wire	[19:10]	fnsd_start, fsd_start ;
+  wire	[19:16]	flashend ;
+  wire	[13:10]	bfa_start ;
+  wire	[15:8]	ram_start ;
+  wire	[12:9]	bramend ;
+
+  wire		pc_fl_seccode, pc_bfa, pc_ram_seccode, pc_bram ;
+
+
+//
+// rename
+//
+  assign fnsc_start[18:10] = cfsws[8:0] ;       // flash non seure CODE start address
+  assign fnsd_start[19:10] = cfnsd[9:0] ;       // flash non seure DATA start address
+  assign fsd_start[19:10]  = cfswe[9:0] ;       // flash seure DATA start address
+  assign flashend[19:16]   = flsize[3:0] ;      // flash end address
+  assign bfa_start[13:10]  = bfsize[3:0] ;      // BFA start address
+  assign ram_start[15:8]   = ramsize[7:0] ;     // RAM start address
+  assign bramend[12:9]     = bmsize[3:0] ;      // BRAM end address(+1)
+
+
+  QLK0RMAW0V1_CODE_ACCESS code_access (
+                .baseck(baseck), .resb(resb), .bfa(bfa), .bramen(bramen),
+                .pc(pc[19:0]), .fnsc_start(fnsc_start[18:10]), .fnsd_start(fnsd_start[19:10]),
+		.bfa_start(bfa_start[13:10]), .ram_start(ram_start[15:8]),
+		.rnsc_start(rnsc_start[15:7]), .rnsd_start(rnsd_start[15:7]),
+                .bramend(bramend[12:9]), .flashend(flashend[19:16]),
+		.pc_fl_seccode(pc_fl_seccode), .pc_bfa(pc_bfa),
+		.pc_ram_seccode(pc_ram_seccode), .pc_bram(pc_bram),
+		.secur_code_area(secur_code_area),
+		.fetchflt(fetchflt), .secpdtflg(secpdtflg) ) ;
+
+  QLK0RMAW0V1_DATA_ACCESS data_access (
+		.baseck(baseck), .resb(resb), .bfa(bfa), .bramen(bramen),
+		.slflash(slflash), .flread(flread), .slmem(slmem), .fchram(fchram),
+		.cpurd(cpurd), .cpuwr(cpuwr),
+                .pa(pa[19:2]), .fnsc_start(fnsc_start[18:10]), .fsd_start(fsd_start[19:10]),
+		.flashend(flashend[19:16]), .bfa_start(bfa_start[13:10]),
+		.ma(ma[15:0]), .ram_start(ram_start[15:8]), .rnsc_start(rnsc_start[15:7]),
+		.rsd_start(rsd_start[15:7]), .bramend(bramend[12:9]),
+                .pc_fl_seccode(pc_fl_seccode), .pc_bfa(pc_bfa), .pc_ram_seccode(pc_ram_seccode),
+		.pc_bram(pc_bram),
+		.dataflt(dataflt), .secpdtflg(secpdtflg) );
+
+  QLK0RMAW0V1_DMA_ACCESS dma_access (
+		.baseck(baseck), .resb(resb),
+		.ma(ma[15:7]), .dmard(dmard), .dmawr(dmawr),
+		.rnsd_start(rnsd_start[15:7]), .rsd_start(rsd_start[15:7]),
+		.dmaflt(dmaflt), .secpdtflg(secpdtflg) );
+
+endmodule
+
+
+//------------------------------------------------------------------------------------
+// QLK0RMAW0V1_CODE_ACCESS
+//
+// 命令実行アドレスの監視
+//   ・許可されていない領域からの命令実行を監視し、エラーフラグ"fetchflt"を出力する。
+//
+// 　　  1.Flashデータ領域からの命令実行
+// 　　  2.RAMデータ領域からの命令実行
+//       3.RAM/Flash以外の実行禁止領域からの命令実行
+//            -> SFRからの命令実行
+//               ブランクからの命令実行
+//               BRAMEN="0"の時のBRAMからの命令実行
+//               BFA="0"の時のBFAからの命令実行
+//
+//------------------------------------------------------------------------------------
+module QLK0RMAW0V1_CODE_ACCESS (
+                baseck, resb, bfa, bramen, pc,
+		fnsc_start, fnsd_start, bfa_start, ram_start,
+		rnsc_start, rnsd_start, bramend, flashend,
+		pc_fl_seccode, pc_bfa, pc_ram_seccode, pc_bram,
+		secur_code_area,
+		fetchflt, secpdtflg
+                );
+
+  input	[19:0]	pc ;
+  input	[18:10]	fnsc_start ;
+  input	[19:10]	fnsd_start ;
+  input	[19:16]	flashend ;
+  input	[13:10]	bfa_start ;
+  input	[15:8]	ram_start ;
+  input	[15:7]	rnsc_start, rnsd_start ;
+  input	[12:9]	bramend ;
+
+  input		baseck, resb, bfa, bramen ;
+  input		secpdtflg ;
+
+  output	fetchflt ;
+  output	pc_fl_seccode, pc_bfa, pc_ram_seccode, pc_bram ;
+  output	secur_code_area ;
+
+  reg		fetchflt_pp, fetchflt_p ;
+
+  wire		fch_permit ;
+  wire		data_area_fl, data_area_ram ;
+  
+  wire		pc_ram_no_seccode, pc_fl_no_seccode ;
+
+  reg		pc_ram_seccode_p, pc_bram_p ;
+  wire		pc_ram_seccode_pp, pc_bram_pp ;
+//
+// 命令実行アドレス監視信号生成
+//
+  assign pc_fl_seccode      = (                                                       (pc[19:0] < { 1'b0, fnsc_start[18:10], 10'b0}));
+  assign pc_fl_no_seccode   = (({      1'b0, fnsc_start[18:10], 10'b0} <= pc[19:0]) & (pc[19:0] < {       fnsd_start[19:10], 10'b0}));
+  assign pc_bfa             = (({4'hE, 2'b11, bfa_start[13:10], 10'b0} <= pc[19:0]) & (pc[19:0] < 20'hF0000  )) & bfa ;
+  assign pc_ram_seccode_pp  = (({4'hF,        ram_start[15:8],   8'b0} <= pc[19:0]) & (pc[19:0] < {4'hF, rnsc_start[15:7], 7'b0}) & (pc[19:0] < 20'hFFEE0));
+  assign pc_ram_no_seccode  = (({4'hF,        rnsc_start[15:7],  7'b0} <= pc[19:0]) & (pc[19:0] < {4'hF, rnsd_start[15:7], 7'b0}) & (pc[19:0] < 20'hFFEE0));
+  assign pc_bram_pp         = (( 20'hF0800                             <= pc[19:0]) & (pc[19:0] < { 4'hF, 3'b0, bramend[12:9], 9'b0 })) & bramen ;
+
+
+// 2006.06.26 
+//
+// RAMからFlashへのRET命令で、PCの切り替わりとSLMEM、CPURDの立下りが
+// １クロックずれているため、セキュアなRAMからノンセキュアなコード領域に
+// 移った時にデータアクセスエラーが発生する。
+// このため、pc_xxxを1clkのばす。
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)            pc_ram_seccode_p <= 1'b0 ;
+        else if (secpdtflg)   pc_ram_seccode_p <= pc_ram_seccode_pp ;
+  end
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)            pc_bram_p <= 1'b0 ;
+        else if (secpdtflg)   pc_bram_p <= pc_bram_pp ;
+  end
+
+  assign pc_ram_seccode = pc_ram_seccode_pp | pc_ram_seccode_p ;
+  assign pc_bram        = pc_bram_pp        | pc_bram_p ;
+
+
+
+
+// 命令フェッチ許可領域
+  assign fch_permit  = ( pc_fl_seccode | pc_fl_no_seccode | pc_bfa | pc_ram_seccode | pc_ram_no_seccode | pc_bram );
+
+
+// セキュア・コード領域
+  assign secur_code_area = ( pc_fl_seccode | pc_bfa | pc_ram_seccode | pc_bram );
+
+
+//
+// Flash/RAM データ領域信号生成
+//
+  assign data_area_fl  = (( {       fnsd_start[19:10], 10'b0 } <= pc[19:0]) & (pc[19:0] <= { flashend[19:16], 16'hffff }  )); // Flash
+  assign data_area_ram = (( { 4'hF, rnsd_start[15:7], 7'b0 }   <= pc[19:0]) & (pc[19:0] <  20'hFFEE0 )); // RAM
+
+//
+// アクセス違反信号生成
+//
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)    		          fetchflt_pp <= 1'b0 ;
+	else if (fch_permit & secpdtflg)  fetchflt_pp <= 1'b0 ;
+	else if (secpdtflg)		  fetchflt_pp <= ( data_area_fl | data_area_ram );
+  end
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)                        fetchflt_p <= 1'b0 ;
+        else if (secpdtflg)               fetchflt_p <= fetchflt_pp ;
+  end
+
+  assign fetchflt = fetchflt_pp & ~fetchflt_p ;
+
+endmodule
+
+
+//------------------------------------------------------------------------------------
+// QLK0RMAW0V1_DATA_ACCESS
+//
+// セキュア領域（コード/データ）へのデータアクセスの監視
+// 　->Flashのセキュア領域へのデータアクセスが許可されるのは、
+// 　　  　1.Flashセキュアコード領域
+// 　　　　2.RAMセキュアコード領域
+//       　3.BFA="H"の時のBFA
+// 　　　　4.BRAMEN="1"の時のBRAM
+// 　　 の4つ。
+//
+// 上記4領域以外からのアクセスでエラーフラグ"dataflt"を出力する。
+//
+//------------------------------------------------------------------------------------
+module QLK0RMAW0V1_DATA_ACCESS (
+		baseck, resb, cpurd, cpuwr,
+		bfa, bramen, slflash, flread, slmem, fchram,
+		pa, fnsc_start, fsd_start, flashend, bfa_start,
+		ma, ram_start, rnsc_start, rsd_start, bramend,
+		pc_fl_seccode, pc_bfa, pc_ram_seccode, pc_bram,
+		dataflt, secpdtflg
+                );
+
+  input	[19:2]	pa ;
+  input	[18:10]	fnsc_start ;
+  input	[19:10]	fsd_start ;
+  input	[19:16]	flashend ;
+  input	[13:10]	bfa_start ;
+
+  input	[15:0]	ma ;
+  input	[15:8]	ram_start ;
+  input	[15:7]	rnsc_start, rsd_start ;
+  input	[12:9]	bramend ;
+
+  input		baseck, resb, cpurd, cpuwr ;
+  input		bfa, bramen, slflash, flread, slmem, fchram ;
+  input		pc_fl_seccode, pc_bfa, pc_ram_seccode, pc_bram ;
+  input		secpdtflg ;
+
+  output	dataflt ;
+
+  reg		flread_p ;
+  reg		dataflt_pp, dataflt_p  ;
+
+  wire		dat_fl_seccode, dat_fl_secdata, dat_bfa ;
+  wire		dat_ram_seccode, dat_ram_secdata, dat_bram ;
+  wire		sec_area_access ;
+  wire		secure_data_flag ;
+  wire		ram_access ;
+
+  wire		pa_fl_seccode, pa_fl_secdata, pa_bfa ;
+  wire		ma_ram_seccode, ma_ram_secdata, ma_bram ;
+  wire		flread_1clk ;
+
+//
+// セキュアな領域からの命令であることを示す信号
+//
+  assign sec_area_access = pc_fl_seccode | pc_bfa | pc_ram_seccode | pc_bram ;
+
+
+//
+// Flashデータアクセス監視信号生成
+//
+  assign pa_fl_seccode = (                                                      (pa[19:2] <  {1'b0, fnsc_start[18:10], 8'b0}));
+  assign pa_fl_secdata = (({             fsd_start[19:10], 8'b0} <= pa[19:2]) & (pa[19:2] <= {flashend[19:16], 12'hFFF, 2'b11}));
+  assign pa_bfa        = (({4'hE, 2'b11, bfa_start[13:10], 8'b0} <= pa[19:2]) & (pa[19:2] <  18'h3C000  )); // 20'hf0000
+
+//
+// FLREADが2CLK出てるので、1CLK削る。
+//
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)            flread_p <= 1'b0 ;
+        else if (secpdtflg)   flread_p <= flread ;
+  end
+
+  assign flread_1clk = flread & ~flread_p ;
+
+  assign dat_fl_seccode = slflash & flread_1clk & pa_fl_seccode ;
+  assign dat_fl_secdata = slflash & flread_1clk & pa_fl_secdata ;
+  assign dat_bfa        = slflash & flread_1clk & pa_bfa & bfa ;
+
+
+//
+// RAMデータアクセス監視信号生成
+//
+  assign ma_ram_seccode = (({ram_start[15:8], 8'b0}  <= ma[15:0]) & (ma[15:0] < {rnsc_start[15:7], 7'b0}) & (ma[15:0] < 16'hFEE0  ));
+  assign ma_ram_secdata = (({rsd_start[15:7], 7'b0}  <= ma[15:0]) & (ma[15:0] < 16'hFEE0   ));
+  assign ma_bram        = (( 16'h0800                <= ma[15:0]) & (ma[15:0] < {3'b0, bramend[12:9], 9'b0})) ;
+
+
+  assign ram_access = ( cpurd | cpuwr ) & ~fchram ;
+
+  assign dat_ram_seccode = slmem & ram_access & ma_ram_seccode ;
+  assign dat_ram_secdata = slmem & ram_access & ma_ram_secdata ;
+  assign dat_bram        = slmem & ram_access & ma_bram  & bramen ;
+
+
+  assign secure_data_flag = ( dat_fl_seccode | dat_bfa | dat_fl_secdata ) | ( dat_ram_seccode | dat_bram | dat_ram_secdata ) ;
+
+
+//
+// flag
+//
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)			       dataflt_pp <= 1'b0 ;
+        else if (sec_area_access & secpdtflg)  dataflt_pp <= 1'b0 ;
+	else if (secpdtflg)		       dataflt_pp <= secure_data_flag ;
+  end
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)            dataflt_p <= 1'b0 ;
+        else if (secpdtflg)   dataflt_p <= dataflt_pp ;
+  end
+
+  assign dataflt = dataflt_pp & ~dataflt_p ;
+
+endmodule
+
+
+//------------------------------------------------------------------------------------
+// QLK0RMAW0V1_DMA_ACCESS
+//
+// DMAデータアクセスの監視
+// 　SFR <==> 非セキュア・データ領域の転送のみを許可
+//
+//------------------------------------------------------------------------------------
+module QLK0RMAW0V1_DMA_ACCESS (
+                baseck, resb,
+                dmard, dmawr, ma,
+		rnsd_start, rsd_start,
+		dmaflt, secpdtflg
+                );
+
+  input	[15:7]	ma ;
+  input	[15:7]	rnsd_start, rsd_start ;
+  input		dmard, dmawr ;
+  input		baseck, resb ;
+  input		secpdtflg ;
+
+  output	dmaflt ;
+
+  reg	[15:7]	source_address, distination_address ;
+  reg		dmaflt_pp, dmaflt_p ;
+  reg		dmard_judge, dmawr_judge ;
+
+  wire		source_sfr, source_ram, distinaion_sfr, distinaion_ram ;
+  reg		error_access_rd, error_access_wr ;
+
+//
+// Sourceアドレスをラッチ
+//
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)      	     source_address <= 9'b0 ;
+        else if (dmard & secpdtflg)  source_address <= ma ;
+  end
+
+
+//
+// Distinationアドレスをラッチ
+//
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)      	     distination_address <= 9'b0 ;
+        else if (dmawr & secpdtflg)  distination_address <= ma ;
+  end
+
+
+  assign source_sfr      = (  source_address[15:8] == 8'hff );
+  assign source_ram      = (( rnsd_start[15:7] <= source_address[15:7]) & (source_address[15:7] < rsd_start[15:7] ));
+
+  assign distinaion_sfr  = (  distination_address[15:8] ==  8'hff );
+  assign distinaion_ram  = (( rnsd_start[15:7] <= distination_address[15:7]) & (distination_address[15:7] < rsd_start[15:7] ));
+
+
+//
+// Source,Distinationの両方のアドレスを監視し、
+// SFRアドレスでないほうが、RAMの非セキュアデータ領域をさしていることを比較。
+//
+  always @ ( source_sfr or source_ram ) begin
+     case ({ source_sfr , source_ram })
+	2'b10  : error_access_rd = 1'b0 ;
+	2'b01  : error_access_rd = 1'b0 ;
+	default: error_access_rd = 1'b1 ;
+     endcase
+  end
+
+  always @ ( source_sfr or source_ram or distinaion_sfr or distinaion_ram ) begin
+     case ({ source_sfr , source_ram , distinaion_sfr, distinaion_ram })
+        4'b1001  : error_access_wr = 1'b0 ;
+        4'b0110  : error_access_wr = 1'b0 ;
+        default  : error_access_wr = 1'b1 ;
+     endcase
+  end
+
+
+//
+// 判定タイミングを作る
+//
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)           dmard_judge <= 1'b0 ;
+        else if (secpdtflg)  dmard_judge <= dmard ;
+  end
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)           dmawr_judge <= 1'b0 ;
+        else if (secpdtflg)  dmawr_judge <= dmawr ;
+  end           
+
+
+//
+// 判定
+//
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)		           dmaflt_pp <= 1'b0 ;
+        else if (dmard_judge & secpdtflg)  dmaflt_pp <= error_access_rd ;
+        else if (dmawr_judge & secpdtflg)  dmaflt_pp <= error_access_wr ;
+	else if (secpdtflg)                dmaflt_pp <= 1'b0 ;
+  end
+
+  // synopsys async_set_reset "resb"
+  always @ (posedge baseck or negedge resb) begin
+        if (!resb)            dmaflt_p <= 1'b0 ;
+        else if (secpdtflg)   dmaflt_p <= dmaflt_pp ;
+  end
+
+  assign dmaflt = dmaflt_pp & ~dmaflt_p ;
+
+endmodule

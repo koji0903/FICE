@@ -1,0 +1,1889 @@
+//  file name   ... /proj/78k0r_11/78k0r_kx4/_ice/_make_chip/_chiptop/_library/chiptop_058.v
+//  top module  ... /proj/78k0r_11/78k0r_kx4/_ice/_make_chip/_chiptop/_library/chiptop_058.v chiptop
+//  version     ... 1.00
+//  designer    ... T.Tsunoda
+//  refer to    ... make_chip.para
+
+module chiptop (
+  MDRRAM15 ,MDRRAM14 ,MDRRAM13 ,MDRRAM12 ,MDRRAM11 ,MDRRAM10 ,MDRRAM9 ,MDRRAM8 ,MDRRAM7 ,MDRRAM6 ,MDRRAM5
+ ,MDRRAM4 ,MDRRAM3 ,MDRRAM2 ,MDRRAM1 ,MDRRAM0 ,A19 ,A18 ,A17 ,A16 ,A15
+ ,A14 ,A13 ,A12 ,A11 ,A10 ,A9 ,A8 ,A7 ,A6 ,A5
+ ,A4 ,A3 ,A2 ,CE0 ,DA4 ,AF6 ,CE1 ,DA5 ,AF7 ,SELRO1
+ ,CLKSEL1 ,EXA ,BFA ,ICETMSPMD ,ICETMBTSEL ,BRSAM ,PID31 ,PID23 ,PID15 ,RO111
+ ,RO031 ,RO023 ,RO015 ,PID30 ,PID22 ,PID14 ,RO110 ,RO030 ,RO022 ,RO014
+ ,PID29 ,RO133 ,RO125 ,RO117 ,RO037 ,RO029 ,PID28 ,RO132 ,RO124 ,RO116
+ ,RO036 ,RO028 ,PID27 ,PID19 ,RO131 ,RO123 ,RO115 ,RO035 ,RO027 ,RO019
+ ,PID26 ,PID18 ,RO130 ,RO122 ,RO114 ,RO034 ,RO026 ,RO018 ,PID25 ,PID17
+ ,RO121 ,RO113 ,RO033 ,RO025 ,RO017 ,PID24 ,PID16 ,RO120 ,RO112 ,RO032
+ ,RO024 ,RO016 ,PID21 ,PID13 ,RO021 ,RO013 ,PID20 ,PID12 ,RO020 ,RO012
+ ,CPURD ,PID11 ,RO011 ,PID10 ,RO010 ,PID9 ,RO17 ,RO09 ,PID8 ,RO16
+ ,RO08 ,PID7 ,RO15 ,RO07 ,PID6 ,RO14 ,RO06 ,PID5 ,RO13 ,RO05
+ ,PID4 ,RO12 ,RO04 ,PID3 ,RO11 ,RO03 ,MDW9 ,PID2 ,RO10 ,RO02
+ ,MDW8 ,PID1 ,RO01 ,MDW7 ,PID0 ,RO00 ,MDW6 ,RO137 ,RO129 ,EXMA3
+ ,FLSPM ,RO136 ,RO128 ,EXMA2 ,RO135 ,RO127 ,RO119 ,EXMA1 ,RO134 ,RO126
+ ,RO118 ,EXMA0 ,RO19 ,RO18 ,DCE0 ,DCLKSEL1 ,DRDCLKC1 ,DA13 ,AF17 ,DA12
+ ,AF16 ,DA11 ,AF15 ,DA10 ,AF14 ,DA9 ,DA8 ,DA7 ,AF9 ,DA6
+ ,AF8 ,DA3 ,AF5 ,DA2 ,AF4 ,DA1 ,AF3 ,DA0 ,AF2 ,DRO00
+ ,DRO01 ,DRO02 ,DRO03 ,DRO04 ,DRO05 ,DRO06 ,DRO07 ,DRO08 ,DRO09 ,DRO010
+ ,DRO011 ,SLFLASH ,WAITFL2 ,SVI ,SVVCOUT7 ,SVVCOUT6 ,SVVCOUT5 ,SVVCOUT4 ,SVVCOUT3 ,SVVCOUT2
+ ,SVVCOUT1 ,SVVCOUT0 ,SVINTACK ,SOFTBRK ,ICEMSKNMI ,ICEMSKDBG ,STAGEADR1 ,STAGEADR0 ,PREFIX ,SKIPEXE
+ ,PCWAITF ,CPUMASK ,CPUPID1 ,CPUMISAL ,FLREAD ,IMDR10 ,FLREADB3 ,FLREADB2 ,FLREADB1 ,FLREADB0
+ ,FCHRAM ,SLMEM ,SLEXM ,SLBMEM ,SPDEC ,SPINC ,SPREL ,IDPOP ,MDW10 ,IMDR2
+ ,CPUWR ,WDOP ,ICEWAITMEM ,DMAACK ,HLTST ,STPST ,INTACK ,OCDWAIT ,SVMOD ,SVMODF
+ ,ALT1 ,DW21 ,DW13 ,DRDCLK ,SLDFLASH ,ICECSGREGU ,ICEIFA4 ,ICEIFA3 ,ICEIFA2 ,ICEDO31
+ ,ICEDO23 ,ICEDO15 ,ICEDO30 ,ICEDO22 ,ICEDO14 ,ICEDO29 ,ICEDO28 ,ICEDO27 ,ICEDO19 ,ICEDO26
+ ,ICEDO18 ,ICEDO25 ,ICEDO17 ,ICEDO24 ,ICEDO16 ,ICEDO21 ,ICEDO13 ,ICEDO20 ,ICEDO12 ,P74PUON
+ ,ICEDO11 ,ICEDO10 ,ICEDO9 ,ICEDO8 ,ICEDO7 ,ICEDO6 ,ICEDO5 ,ICEDO4 ,ICEDO3 ,ICEDO2
+ ,ICEDO1 ,ICEDO0 ,PA19 ,PC11 ,PA18 ,PC10 ,PA17 ,PA16 ,PA15 ,PA14
+ ,PA13 ,DW37 ,DW29 ,PA12 ,DW36 ,DW28 ,PA11 ,DW35 ,DW27 ,DW19
+ ,PA10 ,DW34 ,DW26 ,DW18 ,PA9 ,PC5 ,PA8 ,PC4 ,PA7 ,PC3
+ ,PA6 ,PC2 ,PA5 ,PC1 ,DW9 ,PA4 ,PC0 ,DW8 ,PA3 ,DW7
+ ,DIS ,PA2 ,DW6 ,PC19 ,PC18 ,PC17 ,PC16 ,PC15 ,PC14 ,PC13
+ ,PC12 ,PC9 ,PC8 ,PC7 ,PC6 ,IDADR31 ,IDADR23 ,IDADR15 ,ICEDI19 ,ICEDI27
+ ,IDADR30 ,IDADR22 ,IDADR14 ,ICEDI18 ,ICEDI26 ,IDADR29 ,IDADR28 ,IDADR27 ,IDADR19 ,IDADR26
+ ,IDADR18 ,IDADR25 ,IDADR17 ,ICEDI29 ,IDADR24 ,IDADR16 ,ICEDI28 ,P73PUON ,IDADR21 ,IDADR13
+ ,ICEDI17 ,ICEDI25 ,IDADR20 ,IDADR12 ,ICEDI16 ,ICEDI24 ,IDADR11 ,ICEDI15 ,ICEDI23 ,ICEDI31
+ ,IDADR10 ,ICEDI14 ,ICEDI22 ,ICEDI30 ,IDADR9 ,IDADR8 ,IDADR7 ,ICEDI9 ,IDADR6 ,ICEDI8
+ ,IDADR5 ,ICEDI7 ,IDADR4 ,ICEDI6 ,IDADR3 ,ICEDI5 ,IDADR2 ,ICEDI4 ,IDADR1 ,ICEDI3
+ ,IDADR0 ,ICEDI2 ,MA15 ,MA14 ,MA13 ,MA12 ,BEU2 ,MA11 ,BEU1 ,MA10
+ ,BEU0 ,MA9 ,DW1 ,MA8 ,DW0 ,MA7 ,MA6 ,MA5 ,MA4 ,MA3
+ ,MA2 ,CER ,MA1 ,MA0 ,MDW15 ,IMDR7 ,MDW14 ,IMDR6 ,MDW13 ,IMDR5
+ ,MDW12 ,IMDR4 ,MDW11 ,IMDR3 ,MDW5 ,MDW4 ,MDW3 ,MDW2 ,MDW1 ,MDW0
+ ,EXCH ,IMDR15 ,IMDR14 ,IMDR13 ,IMDR12 ,IMDR11 ,IMDR9 ,IMDR8 ,IMDR1 ,IMDR0
+ ,CPUPID31 ,CPUPID23 ,CPUPID15 ,CPUPID30 ,CPUPID22 ,CPUPID14 ,CPUPID29 ,CPUPID28 ,CPUPID27 ,CPUPID19
+ ,CPUPID26 ,CPUPID18 ,CPUPID25 ,CPUPID17 ,CPUPID24 ,CPUPID16 ,CPUPID21 ,CPUPID13 ,CPUPID20 ,CPUPID12
+ ,CPUPID11 ,CPUPID10 ,CPUPID9 ,CPUPID8 ,CPUPID7 ,CPUPID6 ,CPUPID5 ,CPUPID4 ,CPUPID3 ,CPUPID2
+ ,CPUPID0 ,FLSIZE3 ,FLSIZE2 ,FLSIZE1 ,FLSIZE0 ,RAMSIZE7 ,RAMSIZE6 ,RAMSIZE5 ,RAMSIZE4 ,RAMSIZE3
+ ,RAMSIZE2 ,RAMSIZE1 ,RAMSIZE0 ,BFSIZE3 ,BFSIZE2 ,BFSIZE1 ,BFSIZE0 ,BMSIZE3 ,BMSIZE2 ,BMSIZE1
+ ,BMSIZE0 ,DFSIZE1 ,DFSIZE0 ,ICEMKLVI ,ICEMKWDT ,RESETB ,RESB ,FCLKRT ,EMEMRAMCLK ,FCLK1
+ ,FCLK2 ,DW33 ,DW25 ,DW17 ,DDIS ,DW32 ,DW24 ,DW16 ,DW31 ,DW23
+ ,DW15 ,DW30 ,DW22 ,DW14 ,DW20 ,DW12 ,DW11 ,DW10 ,DW5 ,DW4
+ ,DW3 ,DW2 ,TMSPMD ,TMBTSEL ,BTFLG ,READ ,RDCLKP1 ,SER ,WED ,WWR
+ ,MRG00 ,MRG01 ,MRG10 ,MRG11 ,MRG12 ,PROGI ,ICEFLERR ,ICENOECC ,DCER ,DSER
+ ,DWWR ,DWED ,DMRG00 ,DMRG01 ,DMRG10 ,DMRG11 ,DMRG12 ,DREAD ,AF19 ,AF18
+ ,AF13 ,AF12 ,AF11 ,AF10 ,AF1 ,AF0 ,OCDMOD ,CLK60MHZ ,CLK30MHZ_GB ,GDRAMWR
+ ,PSEUDOON10 ,PERISVIB ,PSEUDOON1 ,SVMODI ,SVMODIPERI1 ,SVMODIPERI2 ,STBRELESV ,CLK30MHZ ,LOCK48FAIL ,LOCK64FAIL
+ ,LOCKHROSCFAIL ,PONRESB ,CPUPRCLK3 ,CPURCLK3 ,P121 ,P122 ,CPUTMCLK ,CPUMCLK ,CPUTSCLK ,CPUSCLK
+ ,P123 ,P124 ,POCRESB ,VDDLEV0 ,VDDLEV1 ,VDDLEV2 ,VDDLEV3 ,VDDLEV4 ,VDDLEV5 ,VDDLEV6
+ ,VDDLEV7 ,USBIFWR ,PSEUDOON0 ,PSEUDOON8 ,RESINB ,RESFB5V ,ICEDATAFLT ,ICEDMAFLT ,ICEFETCHFLT ,PSEUDOTIIDER
+ ,ICEMSKCKSMER ,PSEUDOCKSMER ,SYSRSOUTB ,ICEWR ,ICEIFA0 ,ICEIFA1 ,ICEIFA5 ,ICEIFA6 ,ICEIFA7 ,ICEIFA8
+ ,ICEIFA9 ,ICEIFA10 ,ICEIFA11 ,ICEIFA12 ,ICEIFA20 ,ICEIFA13 ,ICEIFA21 ,ICEIFA14 ,ICEIFA22 ,ICEIFA30
+ ,ICEIFA15 ,ICEIFA23 ,ICEIFA31 ,ICEIFA16 ,ICEIFA24 ,ICEIFA17 ,ICEIFA25 ,ICEIFA18 ,ICEIFA26 ,ICEIFA19
+ ,ICEIFA27 ,ICEIFA28 ,ICEIFA29 ,ICEDI0 ,ICEDI1 ,ICEDI10 ,ICEDI11 ,ICEDI12 ,ICEDI20 ,ICEDI13
+ ,ICEDI21 ,ICEDOP0 ,ICEDOP1 ,ICEDOP2 ,ICEDOP3 ,ICEDOP4 ,ICEDOP5 ,ICEDOP6 ,ICEDOP7 ,ICEDOP8
+ ,ICEDOP9 ,ICEDOP10 ,ICEDOP11 ,ICEDOP12 ,ICEDOP20 ,ICEDOP13 ,ICEDOP21 ,ICEDOP14 ,ICEDOP22 ,ICEDOP30
+ ,ICEDOP15 ,ICEDOP23 ,ICEDOP31 ,ICEDOP16 ,ICEDOP24 ,ICEDOP17 ,ICEDOP25 ,ICEDOP18 ,ICEDOP26 ,ICEDOP19
+ ,ICEDOP27 ,ICEDOP28 ,ICEDOP29 ,CLK240M ,LOCK240FAIL ,CLK60MHZLOCK ,CLK120M ,SELRAMMA ,SELDFADMA ,SVMODOPBRK
+ ,ICEMODE ,STOPZ ,P00ENO ,P01ENO ,P02ENO ,P10ENO ,P03ENO ,P11ENO ,P04ENO ,P12ENO
+ ,P20ENO ,P05ENO ,P13ENO ,P21ENO ,P06ENO ,P14ENO ,P22ENO ,P30ENO ,P00DOUT ,P01DOUT
+ ,P02DOUT ,P10DOUT ,P03DOUT ,P11DOUT ,P04DOUT ,P12DOUT ,P20DOUT ,P05DOUT ,P13DOUT ,P21DOUT
+ ,P06DOUT ,P14DOUT ,P22DOUT ,P30DOUT ,P00ENI ,P01ENI ,P02ENI ,P10ENI ,P03ENI ,P11ENI
+ ,P04ENI ,P12ENI ,P20ENI ,P05ENI ,P13ENI ,P21ENI ,P06ENI ,P14ENI ,P22ENI ,P30ENI
+ ,P00DIN ,P01DIN ,P02DIN ,P10DIN ,P03DIN ,P11DIN ,P04DIN ,P12DIN ,P20DIN ,P05DIN
+ ,P13DIN ,P21DIN ,P06DIN ,P14DIN ,P22DIN ,P30DIN ,P01SELIN ,P03SELIN ,P11SELIN ,P04SELIN
+ ,P15ENO ,P23ENO ,P31ENO ,P16ENO ,P24ENO ,P40ENO ,P17ENO ,P25ENO ,P41ENO ,P15DOUT
+ ,P23DOUT ,P31DOUT ,P16DOUT ,P24DOUT ,P40DOUT ,P17DOUT ,P25DOUT ,P41DOUT ,P15ENI ,P23ENI
+ ,P31ENI ,P16ENI ,P24ENI ,P40ENI ,P17ENI ,P25ENI ,P41ENI ,P15DIN ,P23DIN ,P31DIN
+ ,P16DIN ,P24DIN ,P40DIN ,P17DIN ,P25DIN ,P41DIN ,P10SELIN ,P13SELIN ,P14SELIN ,P15SELIN
+ ,P16SELIN ,P17SELIN ,P26ENO ,P42ENO ,P50ENO ,P27ENO ,P43ENO ,P51ENO ,P26DOUT ,P42DOUT
+ ,P50DOUT ,P27DOUT ,P43DOUT ,P51DOUT ,P26ENI ,P42ENI ,P50ENI ,P27ENI ,P43ENI ,P51ENI
+ ,P26DIN ,P42DIN ,P50DIN ,P27DIN ,P43DIN ,P51DIN ,P52ENO ,P60ENO ,P53ENO ,P61ENO
+ ,DGEN07 ,P54ENO ,P62ENO ,P70ENO ,P55ENO ,P63ENO ,P71ENO ,P52DOUT ,P60DOUT ,P53DOUT
+ ,P61DOUT ,P54DOUT ,P62DOUT ,P70DOUT ,P55DOUT ,P63DOUT ,P71DOUT ,P52ENI ,P60ENI ,P53ENI
+ ,P61ENI ,DGEN01 ,P54ENI ,P62ENI ,P70ENI ,P55ENI ,P63ENI ,P71ENI ,P52DIN ,P60DIN
+ ,P53DIN ,P61DIN ,P54DIN ,P62DIN ,P70DIN ,DGEN00 ,P55DIN ,P63DIN ,P71DIN ,P55SELIN
+ ,P72ENO ,P73ENO ,P74ENO ,P75ENO ,P76ENO ,AD_DB3 ,P77ENO ,P72DOUT ,P73DOUT ,P74DOUT
+ ,P75DOUT ,P76DOUT ,P77DOUT ,P72ENI ,P73ENI ,P74ENI ,P75ENI ,P76ENI ,P77ENI ,AD_DB5
+ ,P72DIN ,P73DIN ,P74DIN ,ADRD_B ,P75DIN ,P76DIN ,P77DIN ,ADSH_B ,P120ENO ,P120DOUT
+ ,P120ENI ,P120DIN ,P130ENO ,P130DOUT ,P137ENI ,P137DIN ,P140ENO ,P141ENO ,P146ENO ,P147ENO
+ ,P140DOUT ,P141DOUT ,P146DOUT ,P147DOUT ,P140ENI ,P141ENI ,P146ENI ,P147ENI ,P140DIN ,P141DIN
+ ,P146DIN ,P147DIN ,P00PUON ,P01PUON ,P02PUON ,P10PUON ,P03PUON ,P11PUON ,P04PUON ,P12PUON
+ ,P05PUON ,P13PUON ,ADINT_B ,P06PUON ,P14PUON ,P30PUON ,P15PUON ,P31PUON ,P16PUON ,P40PUON
+ ,P17PUON ,P41PUON ,P42PUON ,P50PUON ,P43PUON ,P51PUON ,P52PUON ,P53PUON ,P54PUON ,P70PUON
+ ,P55PUON ,P71PUON ,P72PUON ,P75PUON ,P76PUON ,P77PUON ,P120PUON ,P140PUON ,P141PUON ,P146PUON
+ ,P147PUON ,PIO00 ,PIO01 ,PIO02 ,PIO10 ,PIO03 ,PIO11 ,PIO04 ,PIO12 ,PIO20
+ ,PIO05 ,PIO13 ,PIO21 ,PIO06 ,PIO14 ,PIO22 ,PIO30 ,PIO15 ,PIO23 ,PIO31
+ ,PIO16 ,PIO24 ,PIO40 ,PIO17 ,PIO25 ,PIO41 ,PIO26 ,PIO42 ,PIO50 ,PIO27
+ ,PIO43 ,PIO51 ,PIO52 ,PIO60 ,PIO53 ,PIO61 ,PIO54 ,PIO62 ,PIO70 ,PIO55
+ ,PIO63 ,PIO71 ,PIO72 ,PIO73 ,PIO74 ,PIO75 ,PIO76 ,PIO77 ,PIO120 ,PIO121
+ ,PIO122 ,PIO130 ,PIO123 ,PIO124 ,PIO140 ,PIO137 ,PIO141 ,PIO146 ,PIO147 ,AD_DB9
+ ,AD_DB8 ,AD_DB7 ,AD_DB6 ,AD_DB4 ,AD_DB2 ,AD_DB1 ,AD_DB0 ,ADCS_B ,AD_A4 ,AD_A3
+ ,AD_A2 ,AD_A1 ,AD_A0 ,ADGSELMOD ,BG2ADSEL ,DGEN06 ,DGEN05 ,DGEN04 ,DGEN03 ,DGEN02
+ ,ADVSELMOD0 ,ADVSELMOD1
+);
+
+  input MDRRAM15 ;
+  input MDRRAM14 ;
+  input MDRRAM13 ;
+  input MDRRAM12 ;
+  input MDRRAM11 ;
+  input MDRRAM10 ;
+  input MDRRAM9 ;
+  input MDRRAM8 ;
+  input MDRRAM7 ;
+  input MDRRAM6 ;
+  input MDRRAM5 ;
+  input MDRRAM4 ;
+  input MDRRAM3 ;
+  input MDRRAM2 ;
+  input MDRRAM1 ;
+  input MDRRAM0 ;
+  input ICETMSPMD ;
+  input ICETMBTSEL ;
+  input RO111 ;
+  input RO031 ;
+  input RO023 ;
+  input RO015 ;
+  input RO110 ;
+  input RO030 ;
+  input RO022 ;
+  input RO014 ;
+  input RO133 ;
+  input RO125 ;
+  input RO117 ;
+  input RO037 ;
+  input RO029 ;
+  input RO132 ;
+  input RO124 ;
+  input RO116 ;
+  input RO036 ;
+  input RO028 ;
+  input RO131 ;
+  input RO123 ;
+  input RO115 ;
+  input RO035 ;
+  input RO027 ;
+  input RO019 ;
+  input RO130 ;
+  input RO122 ;
+  input RO114 ;
+  input RO034 ;
+  input RO026 ;
+  input RO018 ;
+  input RO121 ;
+  input RO113 ;
+  input RO033 ;
+  input RO025 ;
+  input RO017 ;
+  input RO120 ;
+  input RO112 ;
+  input RO032 ;
+  input RO024 ;
+  input RO016 ;
+  input RO021 ;
+  input RO013 ;
+  input RO020 ;
+  input RO012 ;
+  input RO011 ;
+  input RO010 ;
+  input RO17 ;
+  input RO09 ;
+  input RO16 ;
+  input RO08 ;
+  input RO15 ;
+  input RO07 ;
+  input RO14 ;
+  input RO06 ;
+  input RO13 ;
+  input RO05 ;
+  input RO12 ;
+  input RO04 ;
+  input RO11 ;
+  input RO03 ;
+  input RO10 ;
+  input RO02 ;
+  input RO01 ;
+  input RO00 ;
+  input RO137 ;
+  input RO129 ;
+  input RO136 ;
+  input RO128 ;
+  input RO135 ;
+  input RO127 ;
+  input RO119 ;
+  input RO134 ;
+  input RO126 ;
+  input RO118 ;
+  input RO19 ;
+  input RO18 ;
+  input DRO00 ;
+  input DRO01 ;
+  input DRO02 ;
+  input DRO03 ;
+  input DRO04 ;
+  input DRO05 ;
+  input DRO06 ;
+  input DRO07 ;
+  input DRO08 ;
+  input DRO09 ;
+  input DRO010 ;
+  input DRO011 ;
+  input WAITFL2 ;
+  input SVI ;
+  input SVVCOUT7 ;
+  input SVVCOUT6 ;
+  input SVVCOUT5 ;
+  input SVVCOUT4 ;
+  input SVVCOUT3 ;
+  input SVVCOUT2 ;
+  input SVVCOUT1 ;
+  input SVVCOUT0 ;
+  input ICEMSKNMI ;
+  input ICEMSKDBG ;
+  input CPUPID1 ;
+  input ICEWAITMEM ;
+  input ICECSGREGU ;
+  input ICEIFA4 ;
+  input ICEIFA3 ;
+  input ICEIFA2 ;
+  input ICEDI19 ;
+  input ICEDI27 ;
+  input ICEDI18 ;
+  input ICEDI26 ;
+  input ICEDI29 ;
+  input ICEDI28 ;
+  input ICEDI17 ;
+  input ICEDI25 ;
+  input ICEDI16 ;
+  input ICEDI24 ;
+  input ICEDI15 ;
+  input ICEDI23 ;
+  input ICEDI31 ;
+  input ICEDI14 ;
+  input ICEDI22 ;
+  input ICEDI30 ;
+  input ICEDI9 ;
+  input ICEDI8 ;
+  input ICEDI7 ;
+  input ICEDI6 ;
+  input ICEDI5 ;
+  input ICEDI4 ;
+  input ICEDI3 ;
+  input ICEDI2 ;
+  input CPUPID31 ;
+  input CPUPID23 ;
+  input CPUPID15 ;
+  input CPUPID30 ;
+  input CPUPID22 ;
+  input CPUPID14 ;
+  input CPUPID29 ;
+  input CPUPID28 ;
+  input CPUPID27 ;
+  input CPUPID19 ;
+  input CPUPID26 ;
+  input CPUPID18 ;
+  input CPUPID25 ;
+  input CPUPID17 ;
+  input CPUPID24 ;
+  input CPUPID16 ;
+  input CPUPID21 ;
+  input CPUPID13 ;
+  input CPUPID20 ;
+  input CPUPID12 ;
+  input CPUPID11 ;
+  input CPUPID10 ;
+  input CPUPID9 ;
+  input CPUPID8 ;
+  input CPUPID7 ;
+  input CPUPID6 ;
+  input CPUPID5 ;
+  input CPUPID4 ;
+  input CPUPID3 ;
+  input CPUPID2 ;
+  input CPUPID0 ;
+  input FLSIZE3 ;
+  input FLSIZE2 ;
+  input FLSIZE1 ;
+  input FLSIZE0 ;
+  input RAMSIZE7 ;
+  input RAMSIZE6 ;
+  input RAMSIZE5 ;
+  input RAMSIZE4 ;
+  input RAMSIZE3 ;
+  input RAMSIZE2 ;
+  input RAMSIZE1 ;
+  input RAMSIZE0 ;
+  input BFSIZE3 ;
+  input BFSIZE2 ;
+  input BFSIZE1 ;
+  input BFSIZE0 ;
+  input BMSIZE3 ;
+  input BMSIZE2 ;
+  input BMSIZE1 ;
+  input BMSIZE0 ;
+  input DFSIZE1 ;
+  input DFSIZE0 ;
+  input ICEMKLVI ;
+  input ICEMKWDT ;
+  input ICEFLERR ;
+  input ICENOECC ;
+  input CLK60MHZ ;
+  input CLK30MHZ_GB ;
+  input PSEUDOON10 ;
+  input PSEUDOON1 ;
+  input SVMODI ;
+  input SVMODIPERI1 ;
+  input SVMODIPERI2 ;
+  input STBRELESV ;
+  input CLK30MHZ ;
+  input PONRESB ;
+  input CPURCLK3 ;
+  input P121 ;
+  input P122 ;
+  input CPUMCLK ;
+  input CPUSCLK ;
+  input P123 ;
+  input P124 ;
+  input POCRESB ;
+  input VDDLEV0 ;
+  input VDDLEV1 ;
+  input VDDLEV2 ;
+  input VDDLEV3 ;
+  input VDDLEV4 ;
+  input VDDLEV5 ;
+  input VDDLEV6 ;
+  input VDDLEV7 ;
+  input USBIFWR ;
+  input PSEUDOON0 ;
+  input PSEUDOON8 ;
+  input RESINB ;
+  input ICEDATAFLT ;
+  input ICEDMAFLT ;
+  input ICEFETCHFLT ;
+  input PSEUDOTIIDER ;
+  input ICEMSKCKSMER ;
+  input PSEUDOCKSMER ;
+  input SYSRSOUTB ;
+  input ICEWR ;
+  input ICEIFA0 ;
+  input ICEIFA1 ;
+  input ICEIFA5 ;
+  input ICEIFA6 ;
+  input ICEIFA7 ;
+  input ICEIFA8 ;
+  input ICEIFA9 ;
+  input ICEIFA10 ;
+  input ICEIFA11 ;
+  input ICEIFA12 ;
+  input ICEIFA20 ;
+  input ICEIFA13 ;
+  input ICEIFA21 ;
+  input ICEIFA14 ;
+  input ICEIFA22 ;
+  input ICEIFA30 ;
+  input ICEIFA15 ;
+  input ICEIFA23 ;
+  input ICEIFA31 ;
+  input ICEIFA16 ;
+  input ICEIFA24 ;
+  input ICEIFA17 ;
+  input ICEIFA25 ;
+  input ICEIFA18 ;
+  input ICEIFA26 ;
+  input ICEIFA19 ;
+  input ICEIFA27 ;
+  input ICEIFA28 ;
+  input ICEIFA29 ;
+  input ICEDI0 ;
+  input ICEDI1 ;
+  input ICEDI10 ;
+  input ICEDI11 ;
+  input ICEDI12 ;
+  input ICEDI20 ;
+  input ICEDI13 ;
+  input ICEDI21 ;
+  input CLK60MHZLOCK ;
+  input SELRAMMA ;
+  input SELDFADMA ;
+  input SVMODOPBRK ;
+  input ICEMODE ;
+  input P00DIN ;
+  input P01DIN ;
+  input P02DIN ;
+  input P10DIN ;
+  input P03DIN ;
+  input P11DIN ;
+  input P04DIN ;
+  input P12DIN ;
+  input P20DIN ;
+  input P05DIN ;
+  input P13DIN ;
+  input P21DIN ;
+  input P06DIN ;
+  input P14DIN ;
+  input P22DIN ;
+  input P30DIN ;
+  input P15DIN ;
+  input P23DIN ;
+  input P31DIN ;
+  input P16DIN ;
+  input P24DIN ;
+  input P40DIN ;
+  input P17DIN ;
+  input P25DIN ;
+  input P41DIN ;
+  input P26DIN ;
+  input P42DIN ;
+  input P50DIN ;
+  input P27DIN ;
+  input P43DIN ;
+  input P51DIN ;
+  input P52DIN ;
+  input P60DIN ;
+  input P53DIN ;
+  input P61DIN ;
+  input P54DIN ;
+  input P62DIN ;
+  input P70DIN ;
+  input P55DIN ;
+  input P63DIN ;
+  input P71DIN ;
+  input AD_DB3 ;
+  input AD_DB5 ;
+  input P72DIN ;
+  input P73DIN ;
+  input P74DIN ;
+  input P75DIN ;
+  input P76DIN ;
+  input P77DIN ;
+  input P120DIN ;
+  input P137DIN ;
+  input P140DIN ;
+  input P141DIN ;
+  input P146DIN ;
+  input P147DIN ;
+  input ADINT_B ;
+  input AD_DB9 ;
+  input AD_DB8 ;
+  input AD_DB7 ;
+  input AD_DB6 ;
+  input AD_DB4 ;
+  input AD_DB2 ;
+  input AD_DB1 ;
+  input AD_DB0 ;
+
+  output A19 ;
+  output A18 ;
+  output A17 ;
+  output A16 ;
+  output A15 ;
+  output A14 ;
+  output A13 ;
+  output A12 ;
+  output A11 ;
+  output A10 ;
+  output A9 ;
+  output A8 ;
+  output A7 ;
+  output A6 ;
+  output A5 ;
+  output A4 ;
+  output A3 ;
+  output A2 ;
+  output CE0 ;
+  output DA4 ;
+  output AF6 ;
+  output CE1 ;
+  output DA5 ;
+  output AF7 ;
+  output SELRO1 ;
+  output CLKSEL1 ;
+  output EXA ;
+  output BFA ;
+  output BRSAM ;
+  output PID31 ;
+  output PID23 ;
+  output PID15 ;
+  output PID30 ;
+  output PID22 ;
+  output PID14 ;
+  output PID29 ;
+  output PID28 ;
+  output PID27 ;
+  output PID19 ;
+  output PID26 ;
+  output PID18 ;
+  output PID25 ;
+  output PID17 ;
+  output PID24 ;
+  output PID16 ;
+  output PID21 ;
+  output PID13 ;
+  output PID20 ;
+  output PID12 ;
+  output CPURD ;
+  output PID11 ;
+  output PID10 ;
+  output PID9 ;
+  output PID8 ;
+  output PID7 ;
+  output PID6 ;
+  output PID5 ;
+  output PID4 ;
+  output PID3 ;
+  output MDW9 ;
+  output PID2 ;
+  output MDW8 ;
+  output PID1 ;
+  output MDW7 ;
+  output PID0 ;
+  output MDW6 ;
+  output EXMA3 ;
+  output FLSPM ;
+  output EXMA2 ;
+  output EXMA1 ;
+  output EXMA0 ;
+  output DCE0 ;
+  output DCLKSEL1 ;
+  output DRDCLKC1 ;
+  output DA13 ;
+  output AF17 ;
+  output DA12 ;
+  output AF16 ;
+  output DA11 ;
+  output AF15 ;
+  output DA10 ;
+  output AF14 ;
+  output DA9 ;
+  output DA8 ;
+  output DA7 ;
+  output AF9 ;
+  output DA6 ;
+  output AF8 ;
+  output DA3 ;
+  output AF5 ;
+  output DA2 ;
+  output AF4 ;
+  output DA1 ;
+  output AF3 ;
+  output DA0 ;
+  output AF2 ;
+  output SLFLASH ;
+  output SVINTACK ;
+  output SOFTBRK ;
+  output STAGEADR1 ;
+  output STAGEADR0 ;
+  output PREFIX ;
+  output SKIPEXE ;
+  output PCWAITF ;
+  output CPUMASK ;
+  output CPUMISAL ;
+  output FLREAD ;
+  output IMDR10 ;
+  output FLREADB3 ;
+  output FLREADB2 ;
+  output FLREADB1 ;
+  output FLREADB0 ;
+  output FCHRAM ;
+  output SLMEM ;
+  output SLEXM ;
+  output SLBMEM ;
+  output SPDEC ;
+  output SPINC ;
+  output SPREL ;
+  output IDPOP ;
+  output MDW10 ;
+  output IMDR2 ;
+  output CPUWR ;
+  output WDOP ;
+  output DMAACK ;
+  output HLTST ;
+  output STPST ;
+  output INTACK ;
+  output OCDWAIT ;
+  output SVMOD ;
+  output SVMODF ;
+  output ALT1 ;
+  output DW21 ;
+  output DW13 ;
+  output DRDCLK ;
+  output SLDFLASH ;
+  output ICEDO31 ;
+  output ICEDO23 ;
+  output ICEDO15 ;
+  output ICEDO30 ;
+  output ICEDO22 ;
+  output ICEDO14 ;
+  output ICEDO29 ;
+  output ICEDO28 ;
+  output ICEDO27 ;
+  output ICEDO19 ;
+  output ICEDO26 ;
+  output ICEDO18 ;
+  output ICEDO25 ;
+  output ICEDO17 ;
+  output ICEDO24 ;
+  output ICEDO16 ;
+  output ICEDO21 ;
+  output ICEDO13 ;
+  output ICEDO20 ;
+  output ICEDO12 ;
+  output P74PUON ;
+  output ICEDO11 ;
+  output ICEDO10 ;
+  output ICEDO9 ;
+  output ICEDO8 ;
+  output ICEDO7 ;
+  output ICEDO6 ;
+  output ICEDO5 ;
+  output ICEDO4 ;
+  output ICEDO3 ;
+  output ICEDO2 ;
+  output ICEDO1 ;
+  output ICEDO0 ;
+  output PA19 ;
+  output PC11 ;
+  output PA18 ;
+  output PC10 ;
+  output PA17 ;
+  output PA16 ;
+  output PA15 ;
+  output PA14 ;
+  output PA13 ;
+  output DW37 ;
+  output DW29 ;
+  output PA12 ;
+  output DW36 ;
+  output DW28 ;
+  output PA11 ;
+  output DW35 ;
+  output DW27 ;
+  output DW19 ;
+  output PA10 ;
+  output DW34 ;
+  output DW26 ;
+  output DW18 ;
+  output PA9 ;
+  output PC5 ;
+  output PA8 ;
+  output PC4 ;
+  output PA7 ;
+  output PC3 ;
+  output PA6 ;
+  output PC2 ;
+  output PA5 ;
+  output PC1 ;
+  output DW9 ;
+  output PA4 ;
+  output PC0 ;
+  output DW8 ;
+  output PA3 ;
+  output DW7 ;
+  output DIS ;
+  output PA2 ;
+  output DW6 ;
+  output PC19 ;
+  output PC18 ;
+  output PC17 ;
+  output PC16 ;
+  output PC15 ;
+  output PC14 ;
+  output PC13 ;
+  output PC12 ;
+  output PC9 ;
+  output PC8 ;
+  output PC7 ;
+  output PC6 ;
+  output IDADR31 ;
+  output IDADR23 ;
+  output IDADR15 ;
+  output IDADR30 ;
+  output IDADR22 ;
+  output IDADR14 ;
+  output IDADR29 ;
+  output IDADR28 ;
+  output IDADR27 ;
+  output IDADR19 ;
+  output IDADR26 ;
+  output IDADR18 ;
+  output IDADR25 ;
+  output IDADR17 ;
+  output IDADR24 ;
+  output IDADR16 ;
+  output P73PUON ;
+  output IDADR21 ;
+  output IDADR13 ;
+  output IDADR20 ;
+  output IDADR12 ;
+  output IDADR11 ;
+  output IDADR10 ;
+  output IDADR9 ;
+  output IDADR8 ;
+  output IDADR7 ;
+  output IDADR6 ;
+  output IDADR5 ;
+  output IDADR4 ;
+  output IDADR3 ;
+  output IDADR2 ;
+  output IDADR1 ;
+  output IDADR0 ;
+  output MA15 ;
+  output MA14 ;
+  output MA13 ;
+  output MA12 ;
+  output BEU2 ;
+  output MA11 ;
+  output BEU1 ;
+  output MA10 ;
+  output BEU0 ;
+  output MA9 ;
+  output DW1 ;
+  output MA8 ;
+  output DW0 ;
+  output MA7 ;
+  output MA6 ;
+  output MA5 ;
+  output MA4 ;
+  output MA3 ;
+  output MA2 ;
+  output CER ;
+  output MA1 ;
+  output MA0 ;
+  output MDW15 ;
+  output IMDR7 ;
+  output MDW14 ;
+  output IMDR6 ;
+  output MDW13 ;
+  output IMDR5 ;
+  output MDW12 ;
+  output IMDR4 ;
+  output MDW11 ;
+  output IMDR3 ;
+  output MDW5 ;
+  output MDW4 ;
+  output MDW3 ;
+  output MDW2 ;
+  output MDW1 ;
+  output MDW0 ;
+  output EXCH ;
+  output IMDR15 ;
+  output IMDR14 ;
+  output IMDR13 ;
+  output IMDR12 ;
+  output IMDR11 ;
+  output IMDR9 ;
+  output IMDR8 ;
+  output IMDR1 ;
+  output IMDR0 ;
+  output RESETB ;
+  output RESB ;
+  output FCLKRT ;
+  output EMEMRAMCLK ;
+  output FCLK1 ;
+  output FCLK2 ;
+  output DW33 ;
+  output DW25 ;
+  output DW17 ;
+  output DDIS ;
+  output DW32 ;
+  output DW24 ;
+  output DW16 ;
+  output DW31 ;
+  output DW23 ;
+  output DW15 ;
+  output DW30 ;
+  output DW22 ;
+  output DW14 ;
+  output DW20 ;
+  output DW12 ;
+  output DW11 ;
+  output DW10 ;
+  output DW5 ;
+  output DW4 ;
+  output DW3 ;
+  output DW2 ;
+  output TMSPMD ;
+  output TMBTSEL ;
+  output BTFLG ;
+  output READ ;
+  output RDCLKP1 ;
+  output SER ;
+  output WED ;
+  output WWR ;
+  output MRG00 ;
+  output MRG01 ;
+  output MRG10 ;
+  output MRG11 ;
+  output MRG12 ;
+  output PROGI ;
+  output DCER ;
+  output DSER ;
+  output DWWR ;
+  output DWED ;
+  output DMRG00 ;
+  output DMRG01 ;
+  output DMRG10 ;
+  output DMRG11 ;
+  output DMRG12 ;
+  output DREAD ;
+  output AF19 ;
+  output AF18 ;
+  output AF13 ;
+  output AF12 ;
+  output AF11 ;
+  output AF10 ;
+  output AF1 ;
+  output AF0 ;
+  output OCDMOD ;
+  output GDRAMWR ;
+  output PERISVIB ;
+  output LOCK48FAIL ;
+  output LOCK64FAIL ;
+  output LOCKHROSCFAIL ;
+  output CPUPRCLK3 ;
+  output CPUTMCLK ;
+  output CPUTSCLK ;
+  output RESFB5V ;
+  output ICEDOP0 ;
+  output ICEDOP1 ;
+  output ICEDOP2 ;
+  output ICEDOP3 ;
+  output ICEDOP4 ;
+  output ICEDOP5 ;
+  output ICEDOP6 ;
+  output ICEDOP7 ;
+  output ICEDOP8 ;
+  output ICEDOP9 ;
+  output ICEDOP10 ;
+  output ICEDOP11 ;
+  output ICEDOP12 ;
+  output ICEDOP20 ;
+  output ICEDOP13 ;
+  output ICEDOP21 ;
+  output ICEDOP14 ;
+  output ICEDOP22 ;
+  output ICEDOP30 ;
+  output ICEDOP15 ;
+  output ICEDOP23 ;
+  output ICEDOP31 ;
+  output ICEDOP16 ;
+  output ICEDOP24 ;
+  output ICEDOP17 ;
+  output ICEDOP25 ;
+  output ICEDOP18 ;
+  output ICEDOP26 ;
+  output ICEDOP19 ;
+  output ICEDOP27 ;
+  output ICEDOP28 ;
+  output ICEDOP29 ;
+  output CLK240M ;
+  output LOCK240FAIL ;
+  output CLK120M ;
+  output STOPZ ;
+  output P00ENO ;
+  output P01ENO ;
+  output P02ENO ;
+  output P10ENO ;
+  output P03ENO ;
+  output P11ENO ;
+  output P04ENO ;
+  output P12ENO ;
+  output P20ENO ;
+  output P05ENO ;
+  output P13ENO ;
+  output P21ENO ;
+  output P06ENO ;
+  output P14ENO ;
+  output P22ENO ;
+  output P30ENO ;
+  output P00DOUT ;
+  output P01DOUT ;
+  output P02DOUT ;
+  output P10DOUT ;
+  output P03DOUT ;
+  output P11DOUT ;
+  output P04DOUT ;
+  output P12DOUT ;
+  output P20DOUT ;
+  output P05DOUT ;
+  output P13DOUT ;
+  output P21DOUT ;
+  output P06DOUT ;
+  output P14DOUT ;
+  output P22DOUT ;
+  output P30DOUT ;
+  output P00ENI ;
+  output P01ENI ;
+  output P02ENI ;
+  output P10ENI ;
+  output P03ENI ;
+  output P11ENI ;
+  output P04ENI ;
+  output P12ENI ;
+  output P20ENI ;
+  output P05ENI ;
+  output P13ENI ;
+  output P21ENI ;
+  output P06ENI ;
+  output P14ENI ;
+  output P22ENI ;
+  output P30ENI ;
+  output P01SELIN ;
+  output P03SELIN ;
+  output P11SELIN ;
+  output P04SELIN ;
+  output P15ENO ;
+  output P23ENO ;
+  output P31ENO ;
+  output P16ENO ;
+  output P24ENO ;
+  output P40ENO ;
+  output P17ENO ;
+  output P25ENO ;
+  output P41ENO ;
+  output P15DOUT ;
+  output P23DOUT ;
+  output P31DOUT ;
+  output P16DOUT ;
+  output P24DOUT ;
+  output P40DOUT ;
+  output P17DOUT ;
+  output P25DOUT ;
+  output P41DOUT ;
+  output P15ENI ;
+  output P23ENI ;
+  output P31ENI ;
+  output P16ENI ;
+  output P24ENI ;
+  output P40ENI ;
+  output P17ENI ;
+  output P25ENI ;
+  output P41ENI ;
+  output P10SELIN ;
+  output P13SELIN ;
+  output P14SELIN ;
+  output P15SELIN ;
+  output P16SELIN ;
+  output P17SELIN ;
+  output P26ENO ;
+  output P42ENO ;
+  output P50ENO ;
+  output P27ENO ;
+  output P43ENO ;
+  output P51ENO ;
+  output P26DOUT ;
+  output P42DOUT ;
+  output P50DOUT ;
+  output P27DOUT ;
+  output P43DOUT ;
+  output P51DOUT ;
+  output P26ENI ;
+  output P42ENI ;
+  output P50ENI ;
+  output P27ENI ;
+  output P43ENI ;
+  output P51ENI ;
+  output P52ENO ;
+  output P60ENO ;
+  output P53ENO ;
+  output P61ENO ;
+  output DGEN07 ;
+  output P54ENO ;
+  output P62ENO ;
+  output P70ENO ;
+  output P55ENO ;
+  output P63ENO ;
+  output P71ENO ;
+  output P52DOUT ;
+  output P60DOUT ;
+  output P53DOUT ;
+  output P61DOUT ;
+  output P54DOUT ;
+  output P62DOUT ;
+  output P70DOUT ;
+  output P55DOUT ;
+  output P63DOUT ;
+  output P71DOUT ;
+  output P52ENI ;
+  output P60ENI ;
+  output P53ENI ;
+  output P61ENI ;
+  output DGEN01 ;
+  output P54ENI ;
+  output P62ENI ;
+  output P70ENI ;
+  output P55ENI ;
+  output P63ENI ;
+  output P71ENI ;
+  output DGEN00 ;
+  output P55SELIN ;
+  output P72ENO ;
+  output P73ENO ;
+  output P74ENO ;
+  output P75ENO ;
+  output P76ENO ;
+  output P77ENO ;
+  output P72DOUT ;
+  output P73DOUT ;
+  output P74DOUT ;
+  output P75DOUT ;
+  output P76DOUT ;
+  output P77DOUT ;
+  output P72ENI ;
+  output P73ENI ;
+  output P74ENI ;
+  output P75ENI ;
+  output P76ENI ;
+  output P77ENI ;
+  output ADRD_B ;
+  output ADSH_B ;
+  output P120ENO ;
+  output P120DOUT ;
+  output P120ENI ;
+  output P130ENO ;
+  output P130DOUT ;
+  output P137ENI ;
+  output P140ENO ;
+  output P141ENO ;
+  output P146ENO ;
+  output P147ENO ;
+  output P140DOUT ;
+  output P141DOUT ;
+  output P146DOUT ;
+  output P147DOUT ;
+  output P140ENI ;
+  output P141ENI ;
+  output P146ENI ;
+  output P147ENI ;
+  output P00PUON ;
+  output P01PUON ;
+  output P02PUON ;
+  output P10PUON ;
+  output P03PUON ;
+  output P11PUON ;
+  output P04PUON ;
+  output P12PUON ;
+  output P05PUON ;
+  output P13PUON ;
+  output P06PUON ;
+  output P14PUON ;
+  output P30PUON ;
+  output P15PUON ;
+  output P31PUON ;
+  output P16PUON ;
+  output P40PUON ;
+  output P17PUON ;
+  output P41PUON ;
+  output P42PUON ;
+  output P50PUON ;
+  output P43PUON ;
+  output P51PUON ;
+  output P52PUON ;
+  output P53PUON ;
+  output P54PUON ;
+  output P70PUON ;
+  output P55PUON ;
+  output P71PUON ;
+  output P72PUON ;
+  output P75PUON ;
+  output P76PUON ;
+  output P77PUON ;
+  output P120PUON ;
+  output P140PUON ;
+  output P141PUON ;
+  output P146PUON ;
+  output P147PUON ;
+  output PIO00 ;
+  output PIO01 ;
+  output PIO02 ;
+  output PIO10 ;
+  output PIO03 ;
+  output PIO11 ;
+  output PIO04 ;
+  output PIO12 ;
+  output PIO20 ;
+  output PIO05 ;
+  output PIO13 ;
+  output PIO21 ;
+  output PIO06 ;
+  output PIO14 ;
+  output PIO22 ;
+  output PIO30 ;
+  output PIO15 ;
+  output PIO23 ;
+  output PIO31 ;
+  output PIO16 ;
+  output PIO24 ;
+  output PIO40 ;
+  output PIO17 ;
+  output PIO25 ;
+  output PIO41 ;
+  output PIO26 ;
+  output PIO42 ;
+  output PIO50 ;
+  output PIO27 ;
+  output PIO43 ;
+  output PIO51 ;
+  output PIO52 ;
+  output PIO60 ;
+  output PIO53 ;
+  output PIO61 ;
+  output PIO54 ;
+  output PIO62 ;
+  output PIO70 ;
+  output PIO55 ;
+  output PIO63 ;
+  output PIO71 ;
+  output PIO72 ;
+  output PIO73 ;
+  output PIO74 ;
+  output PIO75 ;
+  output PIO76 ;
+  output PIO77 ;
+  output PIO120 ;
+  output PIO121 ;
+  output PIO122 ;
+  output PIO130 ;
+  output PIO123 ;
+  output PIO124 ;
+  output PIO140 ;
+  output PIO137 ;
+  output PIO141 ;
+  output PIO146 ;
+  output PIO147 ;
+  output ADCS_B ;
+  output AD_A4 ;
+  output AD_A3 ;
+  output AD_A2 ;
+  output AD_A1 ;
+  output AD_A0 ;
+  output ADGSELMOD ;
+  output BG2ADSEL ;
+  output DGEN06 ;
+  output DGEN05 ;
+  output DGEN04 ;
+  output DGEN03 ;
+  output DGEN02 ;
+  output ADVSELMOD0 ;
+  output ADVSELMOD1 ;
+
+
+
+  wire  MDRRAM15 ,MDRRAM14 ,MDRRAM13 ,MDRRAM12 ,MDRRAM11 ,MDRRAM10 ,MDRRAM9 ,FRQSEL3 ;
+  wire  MDRRAM8 ,FRQSEL2 ,MDRRAM7 ,FRQSEL1 ,MDRRAM6 ,FRQSEL0 ,MDRRAM5 ,MDRRAM4 ;
+  wire  MDRRAM3 ,MDRRAM2 ,MDRRAM1 ,MDRRAM0 ,A19 ,A18 ,A17 ,A16 ;
+  wire  A15 ,A14 ,A13 ,A12 ,A11 ,A10 ,A9 ,A8 ;
+  wire  A7 ,A6 ,A5 ,A4 ,A3 ,A2 ,CE0 ,DA4 ;
+  wire  AF6 ,CE1 ,DA5 ,AF7 ,SELRO1 ,CLKSEL1 ,EXA ,BFA ;
+  wire  ICETMSPMD ,ICETMBTSEL ,BRSAM ,PID31 ,PID23 ,PID15 ,RO111 ,RO031 ;
+  wire  RO023 ,RO015 ,PID30 ,PID22 ,PID14 ,RO110 ,RO030 ,RO022 ;
+  wire  RO014 ,PID29 ,RO133 ,RO125 ,RO117 ,RO037 ,RO029 ,PID28 ;
+  wire  RO132 ,RO124 ,RO116 ,RO036 ,RO028 ,PID27 ,PID19 ,RO131 ;
+  wire  RO123 ,RO115 ,RO035 ,RO027 ,RO019 ,PID26 ,PID18 ,RO130 ;
+  wire  RO122 ,RO114 ,RO034 ,RO026 ,RO018 ,PID25 ,PID17 ,RO121 ;
+  wire  RO113 ,RO033 ,RO025 ,RO017 ,PID24 ,PID16 ,RO120 ,RO112 ;
+  wire  RO032 ,RO024 ,RO016 ,PID21 ,PID13 ,RO021 ,RO013 ,PID20 ;
+  wire  PID12 ,RO020 ,RO012 ,CPURD ,PID11 ,RO011 ,PID10 ,RO010 ;
+  wire  PID9 ,RO17 ,RO09 ,PID8 ,RO16 ,RO08 ,PID7 ,RO15 ;
+  wire  RO07 ,PID6 ,RO14 ,RO06 ,PID5 ,RO13 ,RO05 ,PID4 ;
+  wire  RO12 ,RO04 ,PID3 ,RO11 ,RO03 ,MDW9 ,PID2 ,RO10 ;
+  wire  RO02 ,MDW8 ,PID1 ,RO01 ,MDW7 ,PID0 ,RO00 ,MDW6 ;
+  wire  RO137 ,RO129 ,EXMA3 ,FLSPM ,RO136 ,RO128 ,EXMA2 ,X1DIN ;
+  wire  RO135 ,RO127 ,RO119 ,EXMA1 ,RO134 ,RO126 ,RO118 ,EXMA0 ;
+  wire  RO19 ,RO18 ,DCE0 ,DCLKSEL1 ,DRDCLKC1 ,DA13 ,AF17 ,DA12 ;
+  wire  AF16 ,DA11 ,AF15 ,DA10 ,AF14 ,DA9 ,DA8 ,DA7 ;
+  wire  AF9 ,DA6 ,AF8 ,DA3 ,AF5 ,DA2 ,AF4 ,DA1 ;
+  wire  AF3 ,DA0 ,AF2 ,DRO00 ,DRO01 ,DRO02 ,DRO03 ,DRO04 ;
+  wire  FIHFL ,DRO05 ,DRO06 ,DRO07 ,DRO08 ,DRO09 ,DRO010 ,DRO011 ;
+  wire  SLFLASH ,WAITFL2 ,SVI ,SVVCOUT7 ,SVVCOUT6 ,SVVCOUT5 ,SVVCOUT4 ,SVVCOUT3 ;
+  wire  SVVCOUT2 ,SVVCOUT1 ,SVVCOUT0 ,SVINTACK ,SOFTBRK ,ICEMSKNMI ,ICEMSKDBG ,STAGEADR1 ;
+  wire  STAGEADR0 ,PREFIX ,OSCSEL ,SKIPEXE ,PCWAITF ,CPUMASK ,CPUPID1 ,CPUMISAL ;
+  wire  FLREAD ,IMDR10 ,FLREADB3 ,FLREADB2 ,FLREADB1 ,FLREADB0 ,FCHRAM ,SLMEM ;
+  wire  SLEXM ,SLBMEM ,SPDEC ,SPINC ,SPREL ,IDPOP ,MDW10 ,IMDR2 ;
+  wire  CPUWR ,WDOP ,ICEWAITMEM ,DMAACK ,HLTST ,STPST ,INTACK ,OCDWAIT ;
+  wire  SVMOD ,SVMODF ,ALT1 ,DW21 ,DW13 ,DRDCLK ,SLDFLASH ,ICECSGREGU ;
+  wire  ICEIFA4 ,ICEIFA3 ,ICEIFA2 ,ICEDO31 ,ICEDO23 ,ICEDO15 ,ICEDO30 ,ICEDO22 ;
+  wire  ICEDO14 ,ICEDO29 ,ICEDO28 ,ICEDO27 ,ICEDO19 ,ICEDO26 ,ICEDO18 ,ICEDO25 ;
+  wire  ICEDO17 ,ICEDO24 ,ICEDO16 ,ICEDO21 ,ICEDO13 ,ICEDO20 ,ICEDO12 ,P74PUON ;
+  wire  ICEDO11 ,ICEDO10 ,ICEDO9 ,ICEDO8 ,ICEDO7 ,ICEDO6 ,ICEDO5 ,ICEDO4 ;
+  wire  ICEDO3 ,ICEDO2 ,ICEDO1 ,ICEDO0 ,PA19 ,PC11 ,PA18 ,PC10 ;
+  wire  PA17 ,PA16 ,PA15 ,PA14 ,PA13 ,DW37 ,DW29 ,PA12 ;
+  wire  DW36 ,DW28 ,PA11 ,DW35 ,DW27 ,DW19 ,PA10 ,DW34 ;
+  wire  DW26 ,DW18 ,PA9 ,PC5 ,PA8 ,PC4 ,PA7 ,PC3 ;
+  wire  PA6 ,PC2 ,PA5 ,PC1 ,DW9 ,PA4 ,PC0 ,DW8 ;
+  wire  PA3 ,DW7 ,DIS ,PA2 ,DW6 ,PC19 ,PC18 ,PC17 ;
+  wire  PC16 ,AMPH ,PC15 ,PC14 ,PC13 ,PC12 ,PC9 ,PC8 ;
+  wire  PC7 ,PC6 ,IDADR31 ,IDADR23 ,IDADR15 ,ICEDI19 ,ICEDI27 ,IDADR30 ;
+  wire  IDADR22 ,IDADR14 ,ICEDI18 ,ICEDI26 ,IDADR29 ,IDADR28 ,IDADR27 ,IDADR19 ;
+  wire  IDADR26 ,IDADR18 ,IDADR25 ,IDADR17 ,ICEDI29 ,IDADR24 ,IDADR16 ,ICEDI28 ;
+  wire  P73PUON ,IDADR21 ,IDADR13 ,ICEDI17 ,ICEDI25 ,IDADR20 ,IDADR12 ,ICEDI16 ;
+  wire  ICEDI24 ,IDADR11 ,ICEDI15 ,ICEDI23 ,ICEDI31 ,IDADR10 ,ICEDI14 ,ICEDI22 ;
+  wire  ICEDI30 ,IDADR9 ,IDADR8 ,IDADR7 ,ICEDI9 ,IDADR6 ,ICEDI8 ,IDADR5 ;
+  wire  ICEDI7 ,IDADR4 ,ICEDI6 ,IDADR3 ,ICEDI5 ,IDADR2 ,ICEDI4 ,IDADR1 ;
+  wire  ICEDI3 ,IDADR0 ,ICEDI2 ,MA15 ,R0A1 ,MA14 ,R0A0 ,MA13 ;
+  wire  MA12 ,BEU2 ,MA11 ,BEU1 ,MA10 ,BEU0 ,MA9 ,DW1 ;
+  wire  MA8 ,DW0 ,MA7 ,MA6 ,MA5 ,MA4 ,MA3 ,MA2 ;
+  wire  CER ,MA1 ,MA0 ,MDW15 ,IMDR7 ,MDW14 ,IMDR6 ,MDW13 ;
+  wire  IMDR5 ,MDW12 ,IMDR4 ,MDW11 ,IMDR3 ,MDW5 ,MDW4 ,MDW3 ;
+  wire  MDW2 ,MDW1 ,MDW0 ,EXCH ,IMDR15 ,IMDR14 ,IMDR13 ,IMDR12 ;
+  wire  IMDR11 ,IMDR9 ,IMDR8 ,IMDR1 ,IMDR0 ,CPUPID31 ,CPUPID23 ,CPUPID15 ;
+  wire  CPUPID30 ,CPUPID22 ,CPUPID14 ,CPUPID29 ,CPUPID28 ,CPUPID27 ,CPUPID19 ,CPUPID26 ;
+  wire  CPUPID18 ,CPUPID25 ,CPUPID17 ,CPUPID24 ,CPUPID16 ,CPUPID21 ,CPUPID13 ,CPUPID20 ;
+  wire  CPUPID12 ,CPUPID11 ,CPUPID10 ,CPUPID9 ,CPUPID8 ,CPUPID7 ,CPUPID6 ,CPUPID5 ;
+  wire  CPUPID4 ,CPUPID3 ,CPUPID2 ,CPUPID0 ,FLSIZE3 ,FLSIZE2 ,FLSIZE1 ,FLSIZE0 ;
+  wire  RAMSIZE7 ,RAMSIZE6 ,RAMSIZE5 ,RAMSIZE4 ,RAMSIZE3 ,RAMSIZE2 ,RAMSIZE1 ,RAMSIZE0 ;
+  wire  BFSIZE3 ,BFSIZE2 ,BFSIZE1 ,BFSIZE0 ,BMSIZE3 ,BMSIZE2 ,BMSIZE1 ,BMSIZE0 ;
+  wire  DFSIZE1 ,DFSIZE0 ,ICEMKLVI ,ICEMKWDT ,RESETB ,RESB ,FCLKRT ,EMEMRAMCLK ;
+  wire  FCLK1 ,FCLK2 ,DW33 ,DW25 ,DW17 ,DDIS ,DW32 ,DW24 ;
+  wire  DW16 ,DW31 ,DW23 ,DW15 ,DW30 ,DW22 ,DW14 ,DW20 ;
+  wire  DW12 ,DW11 ,DW10 ,DW5 ,DW4 ,DW3 ,DW2 ,TMSPMD ;
+  wire  TMBTSEL ,BTFLG ,READ ,RDCLKP1 ,SER ,WED ,WWR ,MRG00 ;
+  wire  MRG01 ,MRG10 ,MRG11 ,MRG12 ,PROGI ,ICEFLERR ,ICENOECC ,DCER ;
+  wire  DSER ,DWWR ,DWED ,DMRG00 ,DMRG01 ,DMRG10 ,DMRG11 ,DMRG12 ;
+  wire  DREAD ,AF19 ,AF18 ,AF13 ,AF12 ,AF11 ,AF10 ,AF1 ;
+  wire  AF0 ,OCDMOD ,CLK60MHZ ,CLK30MHZ_GB ,GDRAMWR ,PSEUDOON10 ,PERISVIB ,PSEUDOON1 ;
+  wire  SVMODI ,SVMODIPERI1 ,SVMODIPERI2 ,STBRELESV ,CLK30MHZ ,LOCK48FAIL ,LOCK64FAIL ,LOCKHROSCFAIL ;
+  wire  PONRESB ,CPUPRCLK3 ,CPURCLK3 ,P121 ,P122 ,CPUTMCLK ,CPUMCLK ,CPUTSCLK ;
+  wire  CPUSCLK ,P123 ,P124 ,POCRESB ,VDDLEV0 ,VDDLEV1 ,VDDLEV2 ,VDDLEV3 ;
+  wire  VDDLEV4 ,VDDLEV5 ,VDDLEV6 ,VDDLEV7 ,USBIFWR ,PSEUDOON0 ,PSEUDOON8 ,RESINB ;
+  wire  RESFB5V ,ICEDATAFLT ,ICEDMAFLT ,ICEFETCHFLT ,PSEUDOTIIDER ,ICEMSKCKSMER ,PSEUDOCKSMER ,SYSRSOUTB ;
+  wire  ICEWR ,ICEIFA0 ,ICEIFA1 ,ICEIFA5 ,ICEIFA6 ,ICEIFA7 ,ICEIFA8 ,ICEIFA9 ;
+  wire  ICEIFA10 ,ICEIFA11 ,ICEIFA12 ,ICEIFA20 ,ICEIFA13 ,ICEIFA21 ,ICEIFA14 ,ICEIFA22 ;
+  wire  ICEIFA30 ,ICEIFA15 ,ICEIFA23 ,ICEIFA31 ,ICEIFA16 ,ICEIFA24 ,ICEIFA17 ,ICEIFA25 ;
+  wire  ICEIFA18 ,ICEIFA26 ,ICEIFA19 ,ICEIFA27 ,ICEIFA28 ,ICEIFA29 ,ICEDI0 ,ICEDI1 ;
+  wire  ICEDI10 ,ICEDI11 ,ICEDI12 ,ICEDI20 ,ICEDI13 ,ICEDI21 ,ICEDOP0 ,ICEDOP1 ;
+  wire  ICEDOP2 ,ICEDOP3 ,ICEDOP4 ,ICEDOP5 ,ICEDOP6 ,ICEDOP7 ,ICEDOP8 ,ICEDOP9 ;
+  wire  ICEDOP10 ,ICEDOP11 ,ICEDOP12 ,ICEDOP20 ,ICEDOP13 ,ICEDOP21 ,ICEDOP14 ,ICEDOP22 ;
+  wire  ICEDOP30 ,ICEDOP15 ,ICEDOP23 ,ICEDOP31 ,ICEDOP16 ,ICEDOP24 ,ICEDOP17 ,ICEDOP25 ;
+  wire  ICEDOP18 ,ICEDOP26 ,ICEDOP19 ,ICEDOP27 ,ICEDOP28 ,ICEDOP29 ,CLK240M ,LOCK240FAIL ;
+  wire  CLK60MHZLOCK ,CLK120M ,SELRAMMA ,SELDFADMA ,SVMODOPBRK ,ICEMODE ,STOPZ ,P00ENO ;
+  wire  P01ENO ,P02ENO ,P10ENO ,P03ENO ,P11ENO ,P04ENO ,P12ENO ,P20ENO ;
+  wire  P05ENO ,P13ENO ,P21ENO ,P06ENO ,P14ENO ,P22ENO ,P30ENO ,P00DOUT ;
+  wire  P01DOUT ,P02DOUT ,P10DOUT ,P03DOUT ,P11DOUT ,P04DOUT ,P12DOUT ,P20DOUT ;
+  wire  P05DOUT ,P13DOUT ,P21DOUT ,P06DOUT ,P14DOUT ,P22DOUT ,P30DOUT ,P00ENI ;
+  wire  P01ENI ,P02ENI ,P10ENI ,P03ENI ,P11ENI ,P04ENI ,P12ENI ,P20ENI ;
+  wire  P05ENI ,P13ENI ,P21ENI ,P06ENI ,P14ENI ,P22ENI ,P30ENI ,P00DIN ;
+  wire  P01DIN ,P02DIN ,P10DIN ,P03DIN ,P11DIN ,P04DIN ,P12DIN ,P20DIN ;
+  wire  P05DIN ,P13DIN ,P21DIN ,P06DIN ,P14DIN ,P22DIN ,P30DIN ,P01SELIN ;
+  wire  P03SELIN ,P11SELIN ,P04SELIN ,P15ENO ,P23ENO ,P31ENO ,P16ENO ,P24ENO ;
+  wire  P40ENO ,P17ENO ,P25ENO ,P41ENO ,P15DOUT ,P23DOUT ,P31DOUT ,P16DOUT ;
+  wire  P24DOUT ,P40DOUT ,P17DOUT ,P25DOUT ,P41DOUT ,P15ENI ,P23ENI ,P31ENI ;
+  wire  P16ENI ,P24ENI ,P40ENI ,P17ENI ,P25ENI ,P41ENI ,P15DIN ,P23DIN ;
+  wire  P31DIN ,P16DIN ,P24DIN ,P40DIN ,P17DIN ,P25DIN ,P41DIN ,P10SELIN ;
+  wire  P13SELIN ,P14SELIN ,P15SELIN ,P16SELIN ,P17SELIN ,P26ENO ,P42ENO ,P50ENO ;
+  wire  P27ENO ,P43ENO ,P51ENO ,ADSAR7 ,P26DOUT ,P42DOUT ,P50DOUT ,P27DOUT ;
+  wire  P43DOUT ,P51DOUT ,P26ENI ,P42ENI ,P50ENI ,P27ENI ,P43ENI ,P51ENI ;
+  wire  ADSAR1 ,P26DIN ,P42DIN ,P50DIN ,P27DIN ,P43DIN ,P51DIN ,P52ENO ;
+  wire  P60ENO ,P53ENO ,P61ENO ,DGEN07 ,P54ENO ,P62ENO ,P70ENO ,P55ENO ;
+  wire  P63ENO ,P71ENO ,P52DOUT ,P60DOUT ,P53DOUT ,P61DOUT ,P54DOUT ,P62DOUT ;
+  wire  P70DOUT ,P55DOUT ,P63DOUT ,P71DOUT ,P52ENI ,P60ENI ,ADSAR9 ,P53ENI ;
+  wire  P61ENI ,DGEN01 ,P54ENI ,P62ENI ,P70ENI ,P55ENI ,P63ENI ,P71ENI ;
+  wire  P52DIN ,P60DIN ,ADSAR0 ,P53DIN ,P61DIN ,ADSAR8 ,P54DIN ,P62DIN ;
+  wire  P70DIN ,DGEN00 ,P55DIN ,P63DIN ,P71DIN ,P55SELIN ,P72ENO ,P73ENO ;
+  wire  P74ENO ,P75ENO ,P76ENO ,AD_DB3 ,P77ENO ,P72DOUT ,P73DOUT ,P74DOUT ;
+  wire  P75DOUT ,P76DOUT ,P77DOUT ,P72ENI ,P73ENI ,P74ENI ,P75ENI ,P76ENI ;
+  wire  P77ENI ,AD_DB5 ,P72DIN ,P73DIN ,P74DIN ,ADRD_B ,P75DIN ,P76DIN ;
+  wire  P77DIN ,ADSH_B ,P120ENO ,P120DOUT ,P120ENI ,P120DIN ,P130ENO ,P130DOUT ;
+  wire  P137ENI ,P137DIN ,P140ENO ,P141ENO ,P146ENO ,P147ENO ,P140DOUT ,P141DOUT ;
+  wire  P146DOUT ,P147DOUT ,P140ENI ,P141ENI ,P146ENI ,P147ENI ,P140DIN ,P141DIN ;
+  wire  P146DIN ,P147DIN ,P00PUON ,P01PUON ,P02PUON ,P10PUON ,P03PUON ,P11PUON ;
+  wire  P04PUON ,P12PUON ,P05PUON ,P13PUON ,ADINT_B ,P06PUON ,P14PUON ,P30PUON ;
+  wire  P15PUON ,P31PUON ,P16PUON ,P40PUON ,P17PUON ,P41PUON ,P42PUON ,P50PUON ;
+  wire  P43PUON ,P51PUON ,P52PUON ,P53PUON ,P54PUON ,P70PUON ,P55PUON ,P71PUON ;
+  wire  P72PUON ,P75PUON ,P76PUON ,P77PUON ,P120PUON ,P140PUON ,P141PUON ,P146PUON ;
+  wire  P147PUON ,PIO00 ,PIO01 ,PIO02 ,PIO10 ,PIO03 ,PIO11 ,PIO04 ;
+  wire  PIO12 ,PIO20 ,PIO05 ,PIO13 ,PIO21 ,PIO06 ,PIO14 ,PIO22 ;
+  wire  PIO30 ,PIO15 ,PIO23 ,PIO31 ,PIO16 ,PIO24 ,PIO40 ,PIO17 ;
+  wire  PIO25 ,PIO41 ,PIO26 ,PIO42 ,PIO50 ,PIO27 ,PIO43 ,PIO51 ;
+  wire  PIO52 ,PIO60 ,PIO53 ,PIO61 ,PIO54 ,PIO62 ,PIO70 ,PIO55 ;
+  wire  PIO63 ,PIO71 ,PIO72 ,VBG08 ,PIO73 ,PIO74 ,PIO75 ,PIO76 ;
+  wire  PIO77 ,PIO120 ,PIO121 ,PIO122 ,PIO130 ,PIO123 ,PIO124 ,PIO140 ;
+  wire  PIO137 ,PIO141 ,PIO146 ,PIO147 ,AD_DB9 ,AD_DB8 ,AD_DB7 ,AD_DB6 ;
+  wire  BGRT10 ,AD_DB4 ,AD_DB2 ,AD_DB1 ,AD_DB0 ,ADCS_B ,AD_A4 ,AD_A3 ;
+  wire  AD_A2 ,AD_A1 ,AD_A0 ,ADGSELMOD ,BG2ADSEL ,DGEN06 ,DGEN05 ,DGEN04 ;
+  wire  DGEN03 ,DGEN02 ,ADVSELMOD0 ,ADVSELMOD1 ,SVSTOP ,R32MSTP ,R15KOUT ,R15KSTPZ ;
+  wire  POCRELNF ,LVIOUTZNF ,REG125ST ,VREG ,BGRT9 ,BGRT8 ,BGRT7 ,RESETINBNF ;
+  wire  PRESADCZ ,ICEDOPA31 ,ICEDOPA23 ,ICEDOPA15 ,ICEDOPB11 ,ICEDOPA30 ,ICEDOPA22 ,ICEDOPA14 ;
+  wire  ICEDOPB10 ,ICEDOPA29 ,ICEDOPB25 ,ICEDOPB17 ,ICEDOPA28 ,ICEDOPB24 ,ICEDOPB16 ,ICEDOPA27 ;
+  wire  ICEDOPA19 ,ICEDOPB31 ,ICEDOPB23 ,ICEDOPB15 ,ICEDOPA26 ,ICEDOPA18 ,ICEDOPB30 ,ICEDOPB22 ;
+  wire  ICEDOPB14 ,ICEDOPA25 ,ICEDOPA17 ,ICEDOPB21 ,ICEDOPB13 ,ICEDOPA24 ,ICEDOPA16 ,ICEDOPB20 ;
+  wire  ICEDOPB12 ,ICEDOPA21 ,ICEDOPA13 ,ICEDOPA20 ,ICEDOPA12 ,ICEDOPA11 ,ICEDOPA10 ,ICEDOPA9 ;
+  wire  ICEDOPB7 ,ICEDOPA8 ,ICEDOPB6 ,ICEDOPA7 ,ICEDOPB5 ,ICEDOPA6 ,ICEDOPB4 ,ICEDOPA5 ;
+  wire  ICEDOPB3 ,ICEDOPA4 ,ICEDOPB2 ,ICEDOPA3 ,ICEDOPB1 ,ICEDOPA2 ,ICEDOPB0 ,ICEDOPA1 ;
+  wire  ICEDOPA0 ,pull_down0 ,pull_down1 ,pull_down2 ,pull_down3 ,pull_down4 ,pull_down5 ,pull_down6 ;
+  wire  pull_down7 ,pull_down8 ,pull_down9 ,pull_down10 ,pull_down11 ,pull_down12 ,pull_down20 ,pull_down13 ;
+  wire  pull_down21 ,pull_down14 ,pull_down15 ,pull_down16 ,pull_down17 ,pull_down18 ,pull_down19 ,ADEOCB ;
+  wire  ADSAR2 ,ADSAR3 ,ADSAR4 ,ADSAR5 ,ADSAR6 ,FIHOCD ,OSCOUTM ,OSCOUTS ;
+  wire  POCREL5V ,R32MOUT ,RPERR ,RTCCLK ,TRESET ,X2DIN ,XT1DIN ,XT2DIN ;
+  wire  ADBIONB ,ADCHSEL0 ,ADCHSEL1 ,ADCHSEL2 ,ADCHSEL3 ,ADCHSEL4 ,ADCLK ,ADCMP ;
+  wire  ADCPON ,ADINL5V ,ADOFC ,ADPDB ,ADS1 ,ADTESMOD0 ,ADTESMOD1 ,ADTESMOD2 ;
+  wire  AMPHS0 ,AMPHS1 ,AMPSEL ,BG1ST ,BG2ADEN ,BGRT0 ,BGRT1 ,BGRT2 ;
+  wire  BGRT3 ,BGRT4 ,BGRT5 ,BGRT6 ,CPUCLKEN ,CTRIM0 ,CTRIM1 ,CTRIM2 ;
+  wire  CTRIM3 ,CTRIM4 ,CTRIM5 ,CTRIM6 ,DSRCUT ,DTRMCP010 ,DTRMCP011 ,DTRMCP012 ;
+  wire  DTRMCP013 ,DTRMCP014 ,EXCLK ,EXCLKS ,FRSEL0 ,FRSEL1 ,FRSEL2 ,FRSEL3 ;
+  wire  FRSEL4 ,FTRIM0 ,FTRIM1 ,FTRIM2 ,FTRIM3 ,FTRIM4 ,FTRIM5 ,HVPPTS1 ;
+  wire  INCDECWS0 ,INCDECWS1 ,LOSCTEST ,LVIEN ,LVIS2 ,TEMP0 ,LVIS0 ,LVIS1 ;
+  wire  LVIS3 ,TEMP1 ,LVITEST ,LVITSEL ,MDLYCUT ,MODENOP ,MODERD ,MODEWR ;
+  wire  MSTOP ,MUTEST ,OREGSTP ,OSCSELS ,PAENB ,PSTN ,R0A2 ,R0A3 ;
+  wire  R0A4 ,R0A5 ,R0FLAGZ ,REGLC ,REGLV ,RTCCLKEN ,RTRIM0 ,RTRIM1 ;
+  wire  RTRIM2 ,RTRIM3 ,RTRIM4 ,RTRIM5 ,SELIN1 ,SELTAR ,SRCUTCP ,TRMCP010 ;
+  wire  TRMCP011 ,TRMCP012 ,TRMCP013 ,TRMCP014 ,TRMRD2 ,TSTN ,VBRESZCP ,VPBIAS ;
+  wire  XT2ENI ,VPPTS1 ,VREGMV ,VREGRMV ,WDWR ,WTRIM0 ,WTRIM1 ,WTRIM2 ;
+  wire  X1ENI ,X2ENI ,XT1ENI ,XTSTOP ,XTWKUP ,reg_adtyp ,CIBRESRQ ,IAWRES ;
+  wire  SVSTOPIAW ,CPUWRIAW ,SVSTOPICE ,SVPERI0ICE ,SVPERI0 ,SVPERI1ICE ,SVPERI1 ,MONMD ;
+  wire  MONSVMOD ,STBRELE ,STBRELEICE ,FRQSEL4 ,REQOCD ,REQFL ,TSELOREG ,TSELIRES ;
+  wire  TTEMP ,SYSRESB ,OPLVIMDS1 ,OPLVIMDS0 ,SCANCLKICE ,SCANMODEICE ,SCANRESZICE ,SCANENICE ;
+  wire  CKSMER ,TIIDER ,ICECKSMER ,CSPDTFLP ,CSPDTFLG ,RAMSIZE7ICE ,RAMSIZE6ICE ,RAMSIZE5ICE ;
+  wire  RAMSIZE4ICE ,RAMSIZE3ICE ,RAMSIZE2ICE ,RAMSIZE1ICE ,RAMSIZE0ICE ,FLSIZE3ICE ,FLSIZE2ICE ,FLSIZE1ICE ;
+  wire  FLSIZE0ICE ,DFSIZE1ICE ,DFSIZE0ICE ,BGISUB1 ,BGISUB2 ,BGISUB3 ,LOCK40FAIL ,CLK64M ;
+  wire  CLK48M ,CLK32M ,BGIOREG1 ,BGIOREG2 ,OREGOUT ,TEMP4 ,TEMP3 ,TEMP2 ;
+  wire  VBG2AD ,REGDRV ,PDRV ,TESTVOUT ,SVPERI0OPBRK ,ICEDOPB29 ,ICEDOPB28 ,ICEDOPB27 ;
+  wire  ICEDOPB19 ,ICEDOPB26 ,ICEDOPB18 ,ICEDOPB9 ,ICEDOPB8 ;
+
+
+  TBCLL pulldown0 ( pull_down0 ) ;
+  TBCLL pulldown1 ( pull_down1 ) ;
+  TBCLL pulldown2 ( pull_down2 ) ;
+  TBCLL pulldown3 ( pull_down3 ) ;
+  TBCLL pulldown4 ( pull_down4 ) ;
+  TBCLL pulldown5 ( pull_down5 ) ;
+  TBCLL pulldown6 ( pull_down6 ) ;
+  TBCLL pulldown7 ( pull_down7 ) ;
+  TBCLL pulldown8 ( pull_down8 ) ;
+  TBCLL pulldown9 ( pull_down9 ) ;
+  TBCLL pulldown10 ( pull_down10 ) ;
+  TBCLL pulldown11 ( pull_down11 ) ;
+  TBCLL pulldown12 ( pull_down12 ) ;
+  TBCLL pulldown20 ( pull_down20 ) ;
+  TBCLL pulldown13 ( pull_down13 ) ;
+  TBCLL pulldown21 ( pull_down21 ) ;
+  TBCLL pulldown14 ( pull_down14 ) ;
+  TBCLL pulldown15 ( pull_down15 ) ;
+  TBCLL pulldown16 ( pull_down16 ) ;
+  TBCLL pulldown17 ( pull_down17 ) ;
+  TBCLL pulldown18 ( pull_down18 ) ;
+  TBCLL pulldown19 ( pull_down19 ) ;
+
+  // Refer to /proj/78k0r_11/78k0r_kx4/_ice/_make_chip/_1chip/_library/d78f1070_v3.1_cf1.00_eva.hdl
+  D78F1070_EVA chip (
+    .ADEOCB ( ADEOCB ) ,.ADSAR0 ( ADSAR0 ) ,.P52DIN ( P52DIN ) ,.P60DIN ( P60DIN )
+     ,.ADSAR1 ( ADSAR1 ) ,.P27ENI ( P27ENI ) ,.P43ENI ( P43ENI ) ,.P51ENI ( P51ENI )
+     ,.ADSAR2 ( ADSAR2 ) ,.ADSAR3 ( ADSAR3 ) ,.ADSAR4 ( ADSAR4 ) ,.ADSAR5 ( ADSAR5 )
+     ,.ADSAR6 ( ADSAR6 ) ,.ADSAR7 ( ADSAR7 ) ,.P27ENO ( P27ENO ) ,.P43ENO ( P43ENO )
+     ,.P51ENO ( P51ENO ) ,.ADSAR8 ( ADSAR8 ) ,.P53DIN ( P53DIN ) ,.P61DIN ( P61DIN )
+     ,.ADSAR9 ( ADSAR9 ) ,.P52ENI ( P52ENI ) ,.P60ENI ( P60ENI ) ,.DRO00 ( DRO00 )
+     ,.DRO01 ( DRO01 ) ,.DRO010 ( DRO010 ) ,.DRO011 ( DRO011 ) ,.DRO02 ( DRO02 )
+     ,.DRO03 ( DRO03 ) ,.DRO04 ( DRO04 ) ,.FIHFL ( FIHFL ) ,.DRO05 ( DRO05 )
+     ,.DRO06 ( DRO06 ) ,.DRO07 ( DRO07 ) ,.DRO08 ( DRO08 ) ,.DRO09 ( DRO09 )
+     ,.EIRAMO0 ( pull_down0 ) ,.EIRAMO1 ( pull_down1 ) ,.FIHOCD ( FIHOCD )
+     ,.HVIN ( pull_down2 ) ,.ICEMODE ( ICEMODE ) ,.LVIOUTZNF ( LVIOUTZNF )
+     ,.MDRRAM0 ( MDRRAM0 ) ,.MDRRAM1 ( MDRRAM1 ) ,.MDRRAM10 ( MDRRAM10 )
+     ,.MDRRAM11 ( MDRRAM11 ) ,.MDRRAM12 ( MDRRAM12 ) ,.MDRRAM13 ( MDRRAM13 )
+     ,.MDRRAM14 ( MDRRAM14 ) ,.MDRRAM15 ( MDRRAM15 ) ,.MDRRAM2 ( MDRRAM2 )
+     ,.MDRRAM3 ( MDRRAM3 ) ,.MDRRAM4 ( MDRRAM4 ) ,.MDRRAM5 ( MDRRAM5 )
+     ,.MDRRAM6 ( MDRRAM6 ) ,.FRQSEL0 ( FRQSEL0 ) ,.MDRRAM7 ( MDRRAM7 )
+     ,.FRQSEL1 ( FRQSEL1 ) ,.MDRRAM8 ( MDRRAM8 ) ,.FRQSEL2 ( FRQSEL2 )
+     ,.MDRRAM9 ( MDRRAM9 ) ,.FRQSEL3 ( FRQSEL3 ) ,.MODE0 ( pull_down3 )
+     ,.MODE1 ( pull_down4 ) ,.OSCOUTM ( OSCOUTM ) ,.OSCOUTS ( OSCOUTS )
+     ,.P00DIN ( P00DIN ) ,.P01DIN ( P01DIN ) ,.P02DIN ( P02DIN ) ,.P10DIN ( P10DIN )
+     ,.P03DIN ( P03DIN ) ,.P11DIN ( P11DIN ) ,.P04DIN ( P04DIN ) ,.P12DIN ( P12DIN )
+     ,.P20DIN ( P20DIN ) ,.P05DIN ( P05DIN ) ,.P13DIN ( P13DIN ) ,.P21DIN ( P21DIN )
+     ,.P06DIN ( P06DIN ) ,.P14DIN ( P14DIN ) ,.P22DIN ( P22DIN ) ,.P30DIN ( P30DIN )
+     ,.P120DIN ( P120DIN ) ,.P137DIN ( P137DIN ) ,.P140DIN ( P140DIN )
+     ,.P141DIN ( P141DIN ) ,.P146DIN ( P146DIN ) ,.P147DIN ( P147DIN )
+     ,.P147SELIN1B5V ( pull_down5 ) ,.P15DIN ( P15DIN ) ,.P23DIN ( P23DIN )
+     ,.P31DIN ( P31DIN ) ,.P16DIN ( P16DIN ) ,.P24DIN ( P24DIN ) ,.P40DIN ( P40DIN )
+     ,.P17DIN ( P17DIN ) ,.P25DIN ( P25DIN ) ,.P41DIN ( P41DIN ) ,.P26DIN ( P26DIN )
+     ,.P42DIN ( P42DIN ) ,.P50DIN ( P50DIN ) ,.P27DIN ( P27DIN ) ,.P43DIN ( P43DIN )
+     ,.P51DIN ( P51DIN ) ,.P40SELIN1B5V ( pull_down6 ) ,.P54DIN ( P54DIN )
+     ,.P62DIN ( P62DIN ) ,.P70DIN ( P70DIN ) ,.DGEN00 ( DGEN00 ) ,.P55DIN ( P55DIN )
+     ,.P63DIN ( P63DIN ) ,.P71DIN ( P71DIN ) ,.P72DIN ( P72DIN ) ,.P73DIN ( P73DIN )
+     ,.P74DIN ( P74DIN ) ,.P75DIN ( P75DIN ) ,.P76DIN ( P76DIN ) ,.P77DIN ( P77DIN )
+     ,.POCREL ( pull_down7 ) ,.RESETB ( RESETB ) ,.POCREL5V ( POCREL5V )
+     ,.POCRELNF ( POCRELNF ) ,.R15KOUT ( R15KOUT ) ,.R32MOUT ( R32MOUT )
+     ,.RESETINBNF ( RESETINBNF ) ,.RO00 ( RO00 ) ,.PID0 ( PID0 ) ,.MDW6 ( MDW6 )
+     ,.RO01 ( RO01 ) ,.PID1 ( PID1 ) ,.MDW7 ( MDW7 ) ,.RO010 ( RO010 )
+     ,.PID10 ( PID10 ) ,.RO011 ( RO011 ) ,.PID11 ( PID11 ) ,.RO012 ( RO012 )
+     ,.RO020 ( RO020 ) ,.PID20 ( PID20 ) ,.PID12 ( PID12 ) ,.CPURD ( CPURD )
+     ,.RO013 ( RO013 ) ,.RO021 ( RO021 ) ,.PID21 ( PID21 ) ,.PID13 ( PID13 )
+     ,.RO014 ( RO014 ) ,.RO022 ( RO022 ) ,.RO030 ( RO030 ) ,.PID30 ( PID30 )
+     ,.PID22 ( PID22 ) ,.PID14 ( PID14 ) ,.RO110 ( RO110 ) ,.RO015 ( RO015 )
+     ,.RO023 ( RO023 ) ,.RO031 ( RO031 ) ,.PID31 ( PID31 ) ,.PID23 ( PID23 )
+     ,.PID15 ( PID15 ) ,.RO111 ( RO111 ) ,.RO016 ( RO016 ) ,.RO024 ( RO024 )
+     ,.RO032 ( RO032 ) ,.PID24 ( PID24 ) ,.PID16 ( PID16 ) ,.RO120 ( RO120 )
+     ,.RO112 ( RO112 ) ,.RO017 ( RO017 ) ,.RO025 ( RO025 ) ,.RO033 ( RO033 )
+     ,.PID25 ( PID25 ) ,.PID17 ( PID17 ) ,.RO121 ( RO121 ) ,.RO113 ( RO113 )
+     ,.RO018 ( RO018 ) ,.RO026 ( RO026 ) ,.RO034 ( RO034 ) ,.PID26 ( PID26 )
+     ,.PID18 ( PID18 ) ,.RO130 ( RO130 ) ,.RO122 ( RO122 ) ,.RO114 ( RO114 )
+     ,.RO019 ( RO019 ) ,.RO027 ( RO027 ) ,.RO035 ( RO035 ) ,.PID27 ( PID27 )
+     ,.PID19 ( PID19 ) ,.RO131 ( RO131 ) ,.RO123 ( RO123 ) ,.RO115 ( RO115 )
+     ,.RO02 ( RO02 ) ,.PID2 ( PID2 ) ,.RO10 ( RO10 ) ,.MDW8 ( MDW8 ) ,.RO028 ( RO028 )
+     ,.RO036 ( RO036 ) ,.PID28 ( PID28 ) ,.RO132 ( RO132 ) ,.RO124 ( RO124 )
+     ,.RO116 ( RO116 ) ,.RO029 ( RO029 ) ,.RO037 ( RO037 ) ,.PID29 ( PID29 )
+     ,.RO133 ( RO133 ) ,.RO125 ( RO125 ) ,.RO117 ( RO117 ) ,.RO03 ( RO03 )
+     ,.PID3 ( PID3 ) ,.RO11 ( RO11 ) ,.MDW9 ( MDW9 ) ,.RO04 ( RO04 ) ,.PID4 ( PID4 )
+     ,.RO12 ( RO12 ) ,.RO05 ( RO05 ) ,.PID5 ( PID5 ) ,.RO13 ( RO13 ) ,.RO06 ( RO06 )
+     ,.PID6 ( PID6 ) ,.RO14 ( RO14 ) ,.RO07 ( RO07 ) ,.PID7 ( PID7 ) ,.RO15 ( RO15 )
+     ,.RO08 ( RO08 ) ,.PID8 ( PID8 ) ,.RO16 ( RO16 ) ,.RO09 ( RO09 ) ,.PID9 ( PID9 )
+     ,.RO17 ( RO17 ) ,.RPERR ( RPERR ) ,.RTCCLK ( RTCCLK ) ,.STN ( pull_down8 )
+     ,.TRESET ( TRESET ) ,.VREG ( VREG ) ,.X1DIN ( X1DIN ) ,.RO136 ( RO136 )
+     ,.RO128 ( RO128 ) ,.EXMA2 ( EXMA2 ) ,.X2DIN ( X2DIN ) ,.XT1DIN ( XT1DIN )
+     ,.XT2DIN ( XT2DIN ) ,.A10 ( A10 ) ,.A11 ( A11 ) ,.A12 ( A12 ) ,.A13 ( A13 )
+     ,.A14 ( A14 ) ,.A15 ( A15 ) ,.A2 ( A2 ) ,.A3 ( A3 ) ,.A4 ( A4 ) ,.A5 ( A5 )
+     ,.A6 ( A6 ) ,.A7 ( A7 ) ,.A8 ( A8 ) ,.A9 ( A9 ) ,.ADBIONB ( ADBIONB )
+     ,.ADCHSEL0 ( ADCHSEL0 ) ,.ADCHSEL1 ( ADCHSEL1 ) ,.ADCHSEL2 ( ADCHSEL2 )
+     ,.ADCHSEL3 ( ADCHSEL3 ) ,.ADCHSEL4 ( ADCHSEL4 ) ,.ADCLK ( ADCLK )
+     ,.ADCMP ( ADCMP ) ,.ADCPON ( ADCPON ) ,.ADGSELMOD ( ADGSELMOD ) ,.ADINL5V ( ADINL5V )
+     ,.ADOFC ( ADOFC ) ,.ADPDB ( ADPDB ) ,.ADS1 ( ADS1 ) ,.ADTESMOD0 ( ADTESMOD0 )
+     ,.ADTESMOD1 ( ADTESMOD1 ) ,.ADTESMOD2 ( ADTESMOD2 ) ,.ADVSELMOD0 ( ADVSELMOD0 )
+     ,.ADVSELMOD1 ( ADVSELMOD1 ) ,.AMPH ( AMPH ) ,.PC16 ( PC16 ) ,.AMPHS0 ( AMPHS0 )
+     ,.AMPHS1 ( AMPHS1 ) ,.AMPSEL ( AMPSEL ) ,.BEU0 ( BEU0 ) ,.MA10 ( MA10 )
+     ,.BEU1 ( BEU1 ) ,.MA11 ( MA11 ) ,.BEU2 ( BEU2 ) ,.MA12 ( MA12 ) ,.BFA ( BFA )
+     ,.BG1ST ( BG1ST ) ,.BG2ADEN ( BG2ADEN ) ,.BG2ADSEL ( BG2ADSEL ) ,.BGRT0 ( BGRT0 )
+     ,.BGRT1 ( BGRT1 ) ,.BGRT10 ( BGRT10 ) ,.BGRT2 ( BGRT2 ) ,.BGRT3 ( BGRT3 )
+     ,.BGRT4 ( BGRT4 ) ,.BGRT5 ( BGRT5 ) ,.BGRT6 ( BGRT6 ) ,.BGRT7 ( BGRT7 )
+     ,.BGRT8 ( BGRT8 ) ,.BGRT9 ( BGRT9 ) ,.BRSAM ( BRSAM ) ,.CPUCLKEN ( CPUCLKEN )
+     ,.CTRIM0 ( CTRIM0 ) ,.CTRIM1 ( CTRIM1 ) ,.CTRIM2 ( CTRIM2 ) ,.CTRIM3 ( CTRIM3 )
+     ,.CTRIM4 ( CTRIM4 ) ,.CTRIM5 ( CTRIM5 ) ,.CTRIM6 ( CTRIM6 ) ,.DA0 ( DA0 )
+     ,.AF2 ( AF2 ) ,.DA1 ( DA1 ) ,.AF3 ( AF3 ) ,.DA10 ( DA10 ) ,.AF14 ( AF14 )
+     ,.DA11 ( DA11 ) ,.AF15 ( AF15 ) ,.DA2 ( DA2 ) ,.AF4 ( AF4 ) ,.DA3 ( DA3 )
+     ,.AF5 ( AF5 ) ,.DA4 ( DA4 ) ,.CE0 ( CE0 ) ,.AF6 ( AF6 ) ,.DA5 ( DA5 )
+     ,.CE1 ( CE1 ) ,.AF7 ( AF7 ) ,.DA6 ( DA6 ) ,.AF8 ( AF8 ) ,.DA7 ( DA7 )
+     ,.AF9 ( AF9 ) ,.DA8 ( DA8 ) ,.DA9 ( DA9 ) ,.DSRCUT ( DSRCUT ) ,.DTRMCP010 ( DTRMCP010 )
+     ,.DTRMCP011 ( DTRMCP011 ) ,.DTRMCP012 ( DTRMCP012 ) ,.DTRMCP013 ( DTRMCP013 )
+     ,.DTRMCP014 ( DTRMCP014 ) ,.DW0 ( DW0 ) ,.MA8 ( MA8 ) ,.DW1 ( DW1 )
+     ,.MA9 ( MA9 ) ,.DW10 ( DW10 ) ,.DW11 ( DW11 ) ,.DW12 ( DW12 ) ,.DW20 ( DW20 )
+     ,.DW13 ( DW13 ) ,.DW21 ( DW21 ) ,.ALT1 ( ALT1 ) ,.DW14 ( DW14 ) ,.DW22 ( DW22 )
+     ,.DW30 ( DW30 ) ,.DW15 ( DW15 ) ,.DW23 ( DW23 ) ,.DW31 ( DW31 ) ,.DW16 ( DW16 )
+     ,.DW24 ( DW24 ) ,.DW32 ( DW32 ) ,.DW17 ( DW17 ) ,.DW25 ( DW25 ) ,.DW33 ( DW33 )
+     ,.DDIS ( DDIS ) ,.DW18 ( DW18 ) ,.DW26 ( DW26 ) ,.DW34 ( DW34 ) ,.PA10 ( PA10 )
+     ,.DW19 ( DW19 ) ,.DW27 ( DW27 ) ,.DW35 ( DW35 ) ,.PA11 ( PA11 ) ,.DW2 ( DW2 )
+     ,.DW28 ( DW28 ) ,.DW36 ( DW36 ) ,.PA12 ( PA12 ) ,.DW29 ( DW29 ) ,.DW37 ( DW37 )
+     ,.PA13 ( PA13 ) ,.DW3 ( DW3 ) ,.DW4 ( DW4 ) ,.DW5 ( DW5 ) ,.DW6 ( DW6 )
+     ,.PA2 ( PA2 ) ,.DW7 ( DW7 ) ,.PA3 ( PA3 ) ,.DIS ( DIS ) ,.DW8 ( DW8 )
+     ,.PA4 ( PA4 ) ,.PC0 ( PC0 ) ,.DW9 ( DW9 ) ,.PA5 ( PA5 ) ,.PC1 ( PC1 )
+     ,.EMEMRAMCLK ( EMEMRAMCLK ) ,.EXA ( EXA ) ,.EXCLK ( EXCLK ) ,.EXCLKS ( EXCLKS )
+     ,.FCLK2 ( FCLK2 ) ,.FRSEL0 ( FRSEL0 ) ,.FRSEL1 ( FRSEL1 ) ,.FRSEL2 ( FRSEL2 )
+     ,.FRSEL3 ( FRSEL3 ) ,.FRSEL4 ( FRSEL4 ) ,.FTRIM0 ( FTRIM0 ) ,.FTRIM1 ( FTRIM1 )
+     ,.FTRIM2 ( FTRIM2 ) ,.FTRIM3 ( FTRIM3 ) ,.FTRIM4 ( FTRIM4 ) ,.FTRIM5 ( FTRIM5 )
+     ,.HVPPTS1 ( HVPPTS1 ) ,.INCDECWS0 ( INCDECWS0 ) ,.INCDECWS1 ( INCDECWS1 )
+     ,.LOSCTEST ( LOSCTEST ) ,.LVIEN ( LVIEN ) ,.LVIS2 ( LVIS2 ) ,.LVIS0 ( LVIS0 )
+     ,.LVIS1 ( LVIS1 ) ,.LVIS3 ( LVIS3 ) ,.LVITEST ( LVITEST ) ,.LVITSEL ( LVITSEL )
+     ,.MDLYCUT ( MDLYCUT ) ,.MODENOP ( MODENOP ) ,.MODERD ( MODERD ) ,.MODEWR ( MODEWR )
+     ,.MSTOP ( MSTOP ) ,.MUTEST ( MUTEST ) ,.OREGSTP ( OREGSTP ) ,.OSCSEL ( OSCSEL )
+     ,.PREFIX ( PREFIX ) ,.OSCSELS ( OSCSELS ) ,.P00DOUT ( P00DOUT ) ,.P00ENI ( P00ENI )
+     ,.P00ENO ( P00ENO ) ,.P00PUON ( P00PUON ) ,.P01DOUT ( P01DOUT ) ,.P01ENI ( P01ENI )
+     ,.P01ENO ( P01ENO ) ,.P01PUON ( P01PUON ) ,.P01SELIN ( P01SELIN )
+     ,.P02DOUT ( P02DOUT ) ,.P10DOUT ( P10DOUT ) ,.P02ENI ( P02ENI ) ,.P10ENI ( P10ENI )
+     ,.P02ENO ( P02ENO ) ,.P10ENO ( P10ENO ) ,.P02PUON ( P02PUON ) ,.P10PUON ( P10PUON )
+     ,.P03DOUT ( P03DOUT ) ,.P11DOUT ( P11DOUT ) ,.P03ENI ( P03ENI ) ,.P11ENI ( P11ENI )
+     ,.P03ENO ( P03ENO ) ,.P11ENO ( P11ENO ) ,.P03PUON ( P03PUON ) ,.P11PUON ( P11PUON )
+     ,.P03SELIN ( P03SELIN ) ,.P11SELIN ( P11SELIN ) ,.P04DOUT ( P04DOUT )
+     ,.P12DOUT ( P12DOUT ) ,.P20DOUT ( P20DOUT ) ,.P04ENI ( P04ENI ) ,.P12ENI ( P12ENI )
+     ,.P20ENI ( P20ENI ) ,.P04ENO ( P04ENO ) ,.P12ENO ( P12ENO ) ,.P20ENO ( P20ENO )
+     ,.P04PUON ( P04PUON ) ,.P12PUON ( P12PUON ) ,.P04SELIN ( P04SELIN )
+     ,.P05DOUT ( P05DOUT ) ,.P13DOUT ( P13DOUT ) ,.P21DOUT ( P21DOUT )
+     ,.P05ENI ( P05ENI ) ,.P13ENI ( P13ENI ) ,.P21ENI ( P21ENI ) ,.P05ENO ( P05ENO )
+     ,.P13ENO ( P13ENO ) ,.P21ENO ( P21ENO ) ,.P05PUON ( P05PUON ) ,.P13PUON ( P13PUON )
+     ,.P06DOUT ( P06DOUT ) ,.P14DOUT ( P14DOUT ) ,.P22DOUT ( P22DOUT )
+     ,.P30DOUT ( P30DOUT ) ,.P06ENI ( P06ENI ) ,.P14ENI ( P14ENI ) ,.P22ENI ( P22ENI )
+     ,.P30ENI ( P30ENI ) ,.P06ENO ( P06ENO ) ,.P14ENO ( P14ENO ) ,.P22ENO ( P22ENO )
+     ,.P30ENO ( P30ENO ) ,.P06PUON ( P06PUON ) ,.P14PUON ( P14PUON ) ,.P30PUON ( P30PUON )
+     ,.P10SELIN ( P10SELIN ) ,.P120DOUT ( P120DOUT ) ,.P120ENI ( P120ENI )
+     ,.P120ENO ( P120ENO ) ,.P120PUON ( P120PUON ) ,.P130DOUT ( P130DOUT )
+     ,.P130ENO ( P130ENO ) ,.P137ENI ( P137ENI ) ,.P13SELIN ( P13SELIN )
+     ,.P140DOUT ( P140DOUT ) ,.P140ENI ( P140ENI ) ,.P140ENO ( P140ENO )
+     ,.P140PUON ( P140PUON ) ,.P141DOUT ( P141DOUT ) ,.P141ENI ( P141ENI )
+     ,.P141ENO ( P141ENO ) ,.P141PUON ( P141PUON ) ,.P146DOUT ( P146DOUT )
+     ,.P146ENI ( P146ENI ) ,.P146ENO ( P146ENO ) ,.P146PUON ( P146PUON )
+     ,.P147DOUT ( P147DOUT ) ,.P147ENI ( P147ENI ) ,.P147ENO ( P147ENO )
+     ,.P147PUON ( P147PUON ) ,.P14SELIN ( P14SELIN ) ,.P15DOUT ( P15DOUT )
+     ,.P23DOUT ( P23DOUT ) ,.P31DOUT ( P31DOUT ) ,.P15ENI ( P15ENI ) ,.P23ENI ( P23ENI )
+     ,.P31ENI ( P31ENI ) ,.P15ENO ( P15ENO ) ,.P23ENO ( P23ENO ) ,.P31ENO ( P31ENO )
+     ,.P15PUON ( P15PUON ) ,.P31PUON ( P31PUON ) ,.P15SELIN ( P15SELIN )
+     ,.P16DOUT ( P16DOUT ) ,.P24DOUT ( P24DOUT ) ,.P40DOUT ( P40DOUT )
+     ,.P16ENI ( P16ENI ) ,.P24ENI ( P24ENI ) ,.P40ENI ( P40ENI ) ,.P16ENO ( P16ENO )
+     ,.P24ENO ( P24ENO ) ,.P40ENO ( P40ENO ) ,.P16PUON ( P16PUON ) ,.P40PUON ( P40PUON )
+     ,.P16SELIN ( P16SELIN ) ,.P17DOUT ( P17DOUT ) ,.P25DOUT ( P25DOUT )
+     ,.P41DOUT ( P41DOUT ) ,.P17ENI ( P17ENI ) ,.P25ENI ( P25ENI ) ,.P41ENI ( P41ENI )
+     ,.P17ENO ( P17ENO ) ,.P25ENO ( P25ENO ) ,.P41ENO ( P41ENO ) ,.P17PUON ( P17PUON )
+     ,.P41PUON ( P41PUON ) ,.P17SELIN ( P17SELIN ) ,.P26DOUT ( P26DOUT )
+     ,.P42DOUT ( P42DOUT ) ,.P50DOUT ( P50DOUT ) ,.P26ENI ( P26ENI ) ,.P42ENI ( P42ENI )
+     ,.P50ENI ( P50ENI ) ,.P26ENO ( P26ENO ) ,.P42ENO ( P42ENO ) ,.P50ENO ( P50ENO )
+     ,.P27DOUT ( P27DOUT ) ,.P43DOUT ( P43DOUT ) ,.P51DOUT ( P51DOUT )
+     ,.P42PUON ( P42PUON ) ,.P50PUON ( P50PUON ) ,.P43PUON ( P43PUON )
+     ,.P51PUON ( P51PUON ) ,.P52DOUT ( P52DOUT ) ,.P60DOUT ( P60DOUT )
+     ,.P52ENO ( P52ENO ) ,.P60ENO ( P60ENO ) ,.P52PUON ( P52PUON ) ,.P53DOUT ( P53DOUT )
+     ,.P61DOUT ( P61DOUT ) ,.P53ENI ( P53ENI ) ,.P61ENI ( P61ENI ) ,.DGEN01 ( DGEN01 )
+     ,.P53ENO ( P53ENO ) ,.P61ENO ( P61ENO ) ,.DGEN07 ( DGEN07 ) ,.P53PUON ( P53PUON )
+     ,.P54DOUT ( P54DOUT ) ,.P62DOUT ( P62DOUT ) ,.P70DOUT ( P70DOUT )
+     ,.P54ENI ( P54ENI ) ,.P62ENI ( P62ENI ) ,.P70ENI ( P70ENI ) ,.P54ENO ( P54ENO )
+     ,.P62ENO ( P62ENO ) ,.P70ENO ( P70ENO ) ,.P54PUON ( P54PUON ) ,.P70PUON ( P70PUON )
+     ,.P55DOUT ( P55DOUT ) ,.P63DOUT ( P63DOUT ) ,.P71DOUT ( P71DOUT )
+     ,.P55ENI ( P55ENI ) ,.P63ENI ( P63ENI ) ,.P71ENI ( P71ENI ) ,.P55ENO ( P55ENO )
+     ,.P63ENO ( P63ENO ) ,.P71ENO ( P71ENO ) ,.P55PUON ( P55PUON ) ,.P71PUON ( P71PUON )
+     ,.P55SELIN ( P55SELIN ) ,.P72DOUT ( P72DOUT ) ,.P72ENI ( P72ENI )
+     ,.P72ENO ( P72ENO ) ,.P72PUON ( P72PUON ) ,.P73DOUT ( P73DOUT ) ,.P73ENI ( P73ENI )
+     ,.P73ENO ( P73ENO ) ,.P73PUON ( P73PUON ) ,.IDADR24 ( IDADR24 ) ,.IDADR16 ( IDADR16 )
+     ,.P74DOUT ( P74DOUT ) ,.P74ENI ( P74ENI ) ,.P74ENO ( P74ENO ) ,.P74PUON ( P74PUON )
+     ,.ICEDO20 ( ICEDO20 ) ,.ICEDO12 ( ICEDO12 ) ,.P75DOUT ( P75DOUT )
+     ,.P75ENI ( P75ENI ) ,.P75ENO ( P75ENO ) ,.P75PUON ( P75PUON ) ,.P76DOUT ( P76DOUT )
+     ,.P76ENI ( P76ENI ) ,.P76ENO ( P76ENO ) ,.P76PUON ( P76PUON ) ,.P77DOUT ( P77DOUT )
+     ,.P77ENI ( P77ENI ) ,.P77ENO ( P77ENO ) ,.P77PUON ( P77PUON ) ,.PAENB ( PAENB )
+     ,.PSTN ( PSTN ) ,.R0A0 ( R0A0 ) ,.MA14 ( MA14 ) ,.R0A1 ( R0A1 ) ,.MA15 ( MA15 )
+     ,.R0A2 ( R0A2 ) ,.R0A3 ( R0A3 ) ,.R0A4 ( R0A4 ) ,.R0A5 ( R0A5 ) ,.R0FLAGZ ( R0FLAGZ )
+     ,.REG125ST ( REG125ST ) ,.REGLC ( REGLC ) ,.REGLV ( REGLV ) ,.RTCCLKEN ( RTCCLKEN )
+     ,.RTRIM0 ( RTRIM0 ) ,.RTRIM1 ( RTRIM1 ) ,.RTRIM2 ( RTRIM2 ) ,.RTRIM3 ( RTRIM3 )
+     ,.RTRIM4 ( RTRIM4 ) ,.RTRIM5 ( RTRIM5 ) ,.SELIN1 ( SELIN1 ) ,.SELTAR ( SELTAR )
+     ,.SRCUTCP ( SRCUTCP ) ,.STOPZ ( STOPZ ) ,.TRMCP010 ( TRMCP010 ) ,.TRMCP011 ( TRMCP011 )
+     ,.TRMCP012 ( TRMCP012 ) ,.TRMCP013 ( TRMCP013 ) ,.TRMCP014 ( TRMCP014 )
+     ,.TRMRD2 ( TRMRD2 ) ,.TSTN ( TSTN ) ,.VBRESZCP ( VBRESZCP ) ,.VPBIAS ( VPBIAS )
+     ,.XT2ENI ( XT2ENI ) ,.VPPTS1 ( VPPTS1 ) ,.VREGMV ( VREGMV ) ,.VREGRMV ( VREGRMV )
+     ,.WDWR ( WDWR ) ,.WTRIM0 ( WTRIM0 ) ,.WTRIM1 ( WTRIM1 ) ,.WTRIM2 ( WTRIM2 )
+     ,.X1ENI ( X1ENI ) ,.X2ENI ( X2ENI ) ,.XT1ENI ( XT1ENI ) ,.XTSTOP ( XTSTOP )
+     ,.XTWKUP ( XTWKUP ) ,.reg_adtyp ( reg_adtyp ) ,.A19 ( A19 ) ,.A18 ( A18 )
+     ,.A17 ( A17 ) ,.A16 ( A16 ) ,.SELRO1 ( SELRO1 ) ,.CLKSEL1 ( CLKSEL1 )
+     ,.ICETMSPMD ( ICETMSPMD ) ,.ICETMBTSEL ( ICETMBTSEL ) ,.RO137 ( RO137 )
+     ,.RO129 ( RO129 ) ,.EXMA3 ( EXMA3 ) ,.FLSPM ( FLSPM ) ,.RO135 ( RO135 )
+     ,.RO127 ( RO127 ) ,.RO119 ( RO119 ) ,.EXMA1 ( EXMA1 ) ,.RO134 ( RO134 )
+     ,.RO126 ( RO126 ) ,.RO118 ( RO118 ) ,.EXMA0 ( EXMA0 ) ,.RO19 ( RO19 )
+     ,.RO18 ( RO18 ) ,.DCE0 ( DCE0 ) ,.DCLKSEL1 ( DCLKSEL1 ) ,.DRDCLKC1 ( DRDCLKC1 )
+     ,.DA13 ( DA13 ) ,.AF17 ( AF17 ) ,.DA12 ( DA12 ) ,.AF16 ( AF16 ) ,.SLFLASH ( SLFLASH )
+     ,.WAITFL2 ( WAITFL2 ) ,.SVI ( SVI ) ,.SVVCOUT7 ( SVVCOUT7 ) ,.SVVCOUT6 ( SVVCOUT6 )
+     ,.SVVCOUT5 ( SVVCOUT5 ) ,.SVVCOUT4 ( SVVCOUT4 ) ,.SVVCOUT3 ( SVVCOUT3 )
+     ,.SVVCOUT2 ( SVVCOUT2 ) ,.SVVCOUT1 ( SVVCOUT1 ) ,.SVVCOUT0 ( SVVCOUT0 )
+     ,.SVINTACK ( SVINTACK ) ,.SOFTBRK ( SOFTBRK ) ,.ICEMSKNMI ( ICEMSKNMI )
+     ,.ICEMSKDBG ( ICEMSKDBG ) ,.STAGEADR1 ( STAGEADR1 ) ,.STAGEADR0 ( STAGEADR0 )
+     ,.SKIPEXE ( SKIPEXE ) ,.PCWAITF ( PCWAITF ) ,.CPUMASK ( CPUMASK )
+     ,.CPUPID1 ( CPUPID1 ) ,.CPUMISAL ( CPUMISAL ) ,.FLREAD ( FLREAD )
+     ,.IMDR10 ( IMDR10 ) ,.FLREADB3 ( FLREADB3 ) ,.FLREADB2 ( FLREADB2 )
+     ,.FLREADB1 ( FLREADB1 ) ,.FLREADB0 ( FLREADB0 ) ,.FCHRAM ( FCHRAM )
+     ,.SLMEM ( SLMEM ) ,.SLEXM ( SLEXM ) ,.SLBMEM ( SLBMEM ) ,.SPDEC ( SPDEC )
+     ,.SPINC ( SPINC ) ,.SPREL ( SPREL ) ,.IDPOP ( IDPOP ) ,.MDW10 ( MDW10 )
+     ,.IMDR2 ( IMDR2 ) ,.CPUWR ( CPUWR ) ,.WDOP ( WDOP ) ,.ICEWAITMEM ( ICEWAITMEM )
+     ,.DMAACK ( DMAACK ) ,.HLTST ( HLTST ) ,.STPST ( STPST ) ,.INTACK ( INTACK )
+     ,.OCDWAIT ( OCDWAIT ) ,.SVMOD ( SVMOD ) ,.SVMODF ( SVMODF ) ,.DRDCLK ( DRDCLK )
+     ,.SLDFLASH ( SLDFLASH ) ,.ICECSGREGU ( ICECSGREGU ) ,.ICEIFA4 ( ICEIFA4 )
+     ,.ICEIFA3 ( ICEIFA3 ) ,.ICEIFA2 ( ICEIFA2 ) ,.ICEDO31 ( ICEDO31 )
+     ,.ICEDO23 ( ICEDO23 ) ,.ICEDO15 ( ICEDO15 ) ,.ICEDO30 ( ICEDO30 )
+     ,.ICEDO22 ( ICEDO22 ) ,.ICEDO14 ( ICEDO14 ) ,.ICEDO29 ( ICEDO29 )
+     ,.ICEDO28 ( ICEDO28 ) ,.ICEDO27 ( ICEDO27 ) ,.ICEDO19 ( ICEDO19 )
+     ,.ICEDO26 ( ICEDO26 ) ,.ICEDO18 ( ICEDO18 ) ,.ICEDO25 ( ICEDO25 )
+     ,.ICEDO17 ( ICEDO17 ) ,.ICEDO24 ( ICEDO24 ) ,.ICEDO16 ( ICEDO16 )
+     ,.ICEDO21 ( ICEDO21 ) ,.ICEDO13 ( ICEDO13 ) ,.ICEDO11 ( ICEDO11 )
+     ,.ICEDO10 ( ICEDO10 ) ,.ICEDO9 ( ICEDO9 ) ,.ICEDO8 ( ICEDO8 ) ,.ICEDO7 ( ICEDO7 )
+     ,.ICEDO6 ( ICEDO6 ) ,.ICEDO5 ( ICEDO5 ) ,.ICEDO4 ( ICEDO4 ) ,.ICEDO3 ( ICEDO3 )
+     ,.ICEDO2 ( ICEDO2 ) ,.ICEDO1 ( ICEDO1 ) ,.ICEDO0 ( ICEDO0 ) ,.PA19 ( PA19 )
+     ,.PC11 ( PC11 ) ,.PA18 ( PA18 ) ,.PC10 ( PC10 ) ,.PA17 ( PA17 ) ,.PA16 ( PA16 )
+     ,.PA15 ( PA15 ) ,.PA14 ( PA14 ) ,.PA9 ( PA9 ) ,.PC5 ( PC5 ) ,.PA8 ( PA8 )
+     ,.PC4 ( PC4 ) ,.PA7 ( PA7 ) ,.PC3 ( PC3 ) ,.PA6 ( PA6 ) ,.PC2 ( PC2 )
+     ,.PC19 ( PC19 ) ,.PC18 ( PC18 ) ,.PC17 ( PC17 ) ,.PC15 ( PC15 ) ,.PC14 ( PC14 )
+     ,.PC13 ( PC13 ) ,.PC12 ( PC12 ) ,.PC9 ( PC9 ) ,.PC8 ( PC8 ) ,.PC7 ( PC7 )
+     ,.PC6 ( PC6 ) ,.IDADR31 ( IDADR31 ) ,.IDADR23 ( IDADR23 ) ,.IDADR15 ( IDADR15 )
+     ,.IDADR30 ( IDADR30 ) ,.IDADR22 ( IDADR22 ) ,.IDADR14 ( IDADR14 )
+     ,.IDADR29 ( IDADR29 ) ,.IDADR28 ( IDADR28 ) ,.IDADR27 ( IDADR27 )
+     ,.IDADR19 ( IDADR19 ) ,.IDADR26 ( IDADR26 ) ,.IDADR18 ( IDADR18 )
+     ,.IDADR25 ( IDADR25 ) ,.IDADR17 ( IDADR17 ) ,.IDADR21 ( IDADR21 )
+     ,.IDADR13 ( IDADR13 ) ,.IDADR20 ( IDADR20 ) ,.IDADR12 ( IDADR12 )
+     ,.IDADR11 ( IDADR11 ) ,.IDADR10 ( IDADR10 ) ,.IDADR9 ( IDADR9 ) ,.IDADR8 ( IDADR8 )
+     ,.IDADR7 ( IDADR7 ) ,.IDADR6 ( IDADR6 ) ,.IDADR5 ( IDADR5 ) ,.IDADR4 ( IDADR4 )
+     ,.IDADR3 ( IDADR3 ) ,.IDADR2 ( IDADR2 ) ,.IDADR1 ( IDADR1 ) ,.IDADR0 ( IDADR0 )
+     ,.MA13 ( MA13 ) ,.MA7 ( MA7 ) ,.MA6 ( MA6 ) ,.MA5 ( MA5 ) ,.MA4 ( MA4 )
+     ,.MA3 ( MA3 ) ,.MA2 ( MA2 ) ,.CER ( CER ) ,.MA1 ( MA1 ) ,.MA0 ( MA0 )
+     ,.MDW15 ( MDW15 ) ,.IMDR7 ( IMDR7 ) ,.MDW14 ( MDW14 ) ,.IMDR6 ( IMDR6 )
+     ,.MDW13 ( MDW13 ) ,.IMDR5 ( IMDR5 ) ,.MDW12 ( MDW12 ) ,.IMDR4 ( IMDR4 )
+     ,.MDW11 ( MDW11 ) ,.IMDR3 ( IMDR3 ) ,.MDW5 ( MDW5 ) ,.MDW4 ( MDW4 )
+     ,.MDW3 ( MDW3 ) ,.MDW2 ( MDW2 ) ,.MDW1 ( MDW1 ) ,.MDW0 ( MDW0 ) ,.EXCH ( EXCH )
+     ,.IMDR15 ( IMDR15 ) ,.IMDR14 ( IMDR14 ) ,.IMDR13 ( IMDR13 ) ,.IMDR12 ( IMDR12 )
+     ,.IMDR11 ( IMDR11 ) ,.IMDR9 ( IMDR9 ) ,.IMDR8 ( IMDR8 ) ,.IMDR1 ( IMDR1 )
+     ,.IMDR0 ( IMDR0 ) ,.CPUPID31 ( CPUPID31 ) ,.CPUPID23 ( CPUPID23 )
+     ,.CPUPID15 ( CPUPID15 ) ,.CPUPID30 ( CPUPID30 ) ,.CPUPID22 ( CPUPID22 )
+     ,.CPUPID14 ( CPUPID14 ) ,.CPUPID29 ( CPUPID29 ) ,.CPUPID28 ( CPUPID28 )
+     ,.CPUPID27 ( CPUPID27 ) ,.CPUPID19 ( CPUPID19 ) ,.CPUPID26 ( CPUPID26 )
+     ,.CPUPID18 ( CPUPID18 ) ,.CPUPID25 ( CPUPID25 ) ,.CPUPID17 ( CPUPID17 )
+     ,.CPUPID24 ( CPUPID24 ) ,.CPUPID16 ( CPUPID16 ) ,.CPUPID21 ( CPUPID21 )
+     ,.CPUPID13 ( CPUPID13 ) ,.CPUPID20 ( CPUPID20 ) ,.CPUPID12 ( CPUPID12 )
+     ,.CPUPID11 ( CPUPID11 ) ,.CPUPID10 ( CPUPID10 ) ,.CPUPID9 ( CPUPID9 )
+     ,.CPUPID8 ( CPUPID8 ) ,.CPUPID7 ( CPUPID7 ) ,.CPUPID6 ( CPUPID6 )
+     ,.CPUPID5 ( CPUPID5 ) ,.CPUPID4 ( CPUPID4 ) ,.CPUPID3 ( CPUPID3 )
+     ,.CPUPID2 ( CPUPID2 ) ,.CPUPID0 ( CPUPID0 ) ,.FLSIZE3 ( FLSIZE3 )
+     ,.FLSIZE2 ( FLSIZE2 ) ,.FLSIZE1 ( FLSIZE1 ) ,.FLSIZE0 ( FLSIZE0 )
+     ,.RAMSIZE7 ( RAMSIZE7 ) ,.RAMSIZE6 ( RAMSIZE6 ) ,.RAMSIZE5 ( RAMSIZE5 )
+     ,.RAMSIZE4 ( RAMSIZE4 ) ,.RAMSIZE3 ( RAMSIZE3 ) ,.RAMSIZE2 ( RAMSIZE2 )
+     ,.RAMSIZE1 ( RAMSIZE1 ) ,.RAMSIZE0 ( RAMSIZE0 ) ,.BFSIZE3 ( BFSIZE3 )
+     ,.BFSIZE2 ( BFSIZE2 ) ,.BFSIZE1 ( BFSIZE1 ) ,.BFSIZE0 ( BFSIZE0 )
+     ,.BMSIZE3 ( BMSIZE3 ) ,.BMSIZE2 ( BMSIZE2 ) ,.BMSIZE1 ( BMSIZE1 )
+     ,.BMSIZE0 ( BMSIZE0 ) ,.DFSIZE1 ( DFSIZE1 ) ,.DFSIZE0 ( DFSIZE0 )
+     ,.ICEMKLVI ( ICEMKLVI ) ,.ICEMKWDT ( ICEMKWDT ) ,.ICEMKSRQ ( SVSTOP )
+     ,.RESB ( RESB ) ,.FCLKRT ( FCLKRT ) ,.CIBRESRQ ( CIBRESRQ ) ,.CIBRESRQICE ( pull_down9 )
+     ,.FCLK1 ( FCLK1 ) ,.TMSPMD ( TMSPMD ) ,.TMBTSEL ( TMBTSEL ) ,.BTFLG ( BTFLG )
+     ,.READ ( READ ) ,.RDCLKP1 ( RDCLKP1 ) ,.SER ( SER ) ,.WED ( WED )
+     ,.WWR ( WWR ) ,.MRG00 ( MRG00 ) ,.MRG01 ( MRG01 ) ,.MRG10 ( MRG10 )
+     ,.MRG11 ( MRG11 ) ,.MRG12 ( MRG12 ) ,.PROGI ( PROGI ) ,.ICEFLERR ( ICEFLERR )
+     ,.ICENOECC ( ICENOECC ) ,.DCER ( DCER ) ,.DSER ( DSER ) ,.DWWR ( DWWR )
+     ,.DWED ( DWED ) ,.DMRG00 ( DMRG00 ) ,.DMRG01 ( DMRG01 ) ,.DMRG10 ( DMRG10 )
+     ,.DMRG11 ( DMRG11 ) ,.DMRG12 ( DMRG12 ) ,.DREAD ( DREAD ) ,.AF19 ( AF19 )
+     ,.AF18 ( AF18 ) ,.AF13 ( AF13 ) ,.AF12 ( AF12 ) ,.AF11 ( AF11 ) ,.AF10 ( AF10 )
+     ,.AF1 ( AF1 ) ,.AF0 ( AF0 ) ,.OCDMOD ( OCDMOD ) ,.ICECK60M ( CLK60MHZ )
+     ,.CLK60MHZ ( CLK60MHZ ) ,.CLK60M ( CLK60MHZ ) ,.GDRAMWR ( GDRAMWR )
+     ,.IAWRES ( IAWRES ) ,.SVSTOPIAW ( SVSTOPIAW ) ,.CPUWRIAW ( CPUWRIAW )
+     ,.PSEUDOON10 ( PSEUDOON10 ) ,.PSEUDOON1 ( PSEUDOON1 ) ,.SVSTOPICE ( SVSTOPICE )
+     ,.SVSTOP ( SVSTOP ) ,.SVPERI0ICE ( SVPERI0ICE ) ,.SVPERI0 ( SVPERI0 )
+     ,.SVPERI1ICE ( SVPERI1ICE ) ,.SVPERI1 ( SVPERI1 ) ,.MONMD ( MONMD )
+     ,.MONSVMOD ( MONSVMOD ) ,.STBRELE ( STBRELE ) ,.STBRELEICE ( STBRELEICE )
+     ,.FRQSEL4 ( FRQSEL4 ) ,.R32MSTP ( R32MSTP ) ,.REQOCD ( REQOCD ) ,.REQFL ( REQFL )
+     ,.TSELOREG ( TSELOREG ) ,.TSELIRES ( TSELIRES ) ,.TTEMP ( TTEMP )
+     ,.R15KSTPZ ( R15KSTPZ ) ,.SYSRESB ( SYSRESB ) ,.OPLVIMDS1 ( OPLVIMDS1 )
+     ,.OPLVIMDS0 ( OPLVIMDS0 ) ,.SCANCLKICE ( SCANCLKICE ) ,.SCANMODEICE ( SCANMODEICE )
+     ,.SCANRESZICE ( SCANRESZICE ) ,.SCANENICE ( SCANENICE ) ,.SCANCLK ( pull_down10 )
+     ,.SCANMODE ( pull_down11 ) ,.SCANRESZ ( pull_down12 ) ,.SCANEN ( pull_down13 )
+     ,.CKSMER ( CKSMER ) ,.ICEDATAFLT ( ICEDATAFLT ) ,.ICEDMAFLT ( ICEDMAFLT )
+     ,.ICEFETCHFLT ( ICEFETCHFLT ) ,.ICESVSTOP ( SVSTOP ) ,.TIIDER ( TIIDER )
+     ,.PSEUDOTIIDER ( PSEUDOTIIDER ) ,.ICECKSMER ( ICECKSMER ) ,.CSPDTFLP ( CSPDTFLP )
+     ,.CSPDTFLG ( CSPDTFLG ) ,.RAMSIZE7ICE ( RAMSIZE7ICE ) ,.RAMSIZE6ICE ( RAMSIZE6ICE )
+     ,.RAMSIZE5ICE ( RAMSIZE5ICE ) ,.RAMSIZE4ICE ( RAMSIZE4ICE ) ,.RAMSIZE3ICE ( RAMSIZE3ICE )
+     ,.RAMSIZE2ICE ( RAMSIZE2ICE ) ,.RAMSIZE1ICE ( RAMSIZE1ICE ) ,.RAMSIZE0ICE ( RAMSIZE0ICE )
+     ,.FLSIZE3ICE ( FLSIZE3ICE ) ,.FLSIZE2ICE ( FLSIZE2ICE ) ,.FLSIZE1ICE ( FLSIZE1ICE )
+     ,.FLSIZE0ICE ( FLSIZE0ICE ) ,.DFSIZE1ICE ( DFSIZE1ICE ) ,.DFSIZE0ICE ( DFSIZE0ICE )
+     ,.SYSRSOUTB ( SYSRSOUTB ) ,.PIO00 ( PIO00 ) ,.PIO01 ( PIO01 ) ,.PIO02 ( PIO02 )
+     ,.PIO10 ( PIO10 ) ,.PIO03 ( PIO03 ) ,.PIO11 ( PIO11 ) ,.PIO04 ( PIO04 )
+     ,.PIO12 ( PIO12 ) ,.PIO20 ( PIO20 ) ,.PIO05 ( PIO05 ) ,.PIO13 ( PIO13 )
+     ,.PIO21 ( PIO21 ) ,.PIO06 ( PIO06 ) ,.PIO14 ( PIO14 ) ,.PIO22 ( PIO22 )
+     ,.PIO30 ( PIO30 ) ,.PIO15 ( PIO15 ) ,.PIO23 ( PIO23 ) ,.PIO31 ( PIO31 )
+     ,.PIO16 ( PIO16 ) ,.PIO24 ( PIO24 ) ,.PIO40 ( PIO40 ) ,.PIO17 ( PIO17 )
+     ,.PIO25 ( PIO25 ) ,.PIO41 ( PIO41 ) ,.PIO26 ( PIO26 ) ,.PIO42 ( PIO42 )
+     ,.PIO50 ( PIO50 ) ,.PIO27 ( PIO27 ) ,.PIO43 ( PIO43 ) ,.PIO51 ( PIO51 )
+     ,.PIO52 ( PIO52 ) ,.PIO60 ( PIO60 ) ,.PIO53 ( PIO53 ) ,.PIO61 ( PIO61 )
+     ,.PIO54 ( PIO54 ) ,.PIO62 ( PIO62 ) ,.PIO70 ( PIO70 ) ,.PIO55 ( PIO55 )
+     ,.PIO63 ( PIO63 ) ,.PIO71 ( PIO71 ) ,.PIO72 ( PIO72 ) ,.PIO73 ( PIO73 )
+     ,.PIO74 ( PIO74 ) ,.PIO75 ( PIO75 ) ,.PIO76 ( PIO76 ) ,.PIO77 ( PIO77 )
+     ,.PIO120 ( PIO120 ) ,.PIO121 ( PIO121 ) ,.PIO122 ( PIO122 ) ,.PIO130 ( PIO130 )
+     ,.PIO123 ( PIO123 ) ,.PIO124 ( PIO124 ) ,.PIO140 ( PIO140 ) ,.PIO137 ( PIO137 )
+     ,.PIO141 ( PIO141 ) ,.PIO146 ( PIO146 ) ,.PIO147 ( PIO147 ) ,.PRESADCZ ( PRESADCZ )
+     ,.DGEN06 ( DGEN06 ) ,.DGEN05 ( DGEN05 ) ,.DGEN04 ( DGEN04 ) ,.DGEN03 ( DGEN03 )
+     ,.DGEN02 ( DGEN02 )
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/QAHMOS0HNV1_ICE.v
+  QAHMOS0HNV1_ICE oscmain (
+    .OSCSEL ( OSCSEL ) ,.EXCLK ( EXCLK ) ,.X1 ( P121 ) ,.X1ENI ( X1ENI )
+     ,.X1DIN ( X1DIN ) ,.X2 ( P122 ) ,.X2ENI ( X2ENI ) ,.X2DIN ( X2DIN )
+     ,.MSTOP ( MSTOP ) ,.OSCOUTM ( OSCOUTM ) ,.CPUTMCLK ( CPUTMCLK ) ,.CPUMCLK ( CPUMCLK )
+     ,.RESETB ( RESETB ) ,.MDLYCUT ( MDLYCUT ) ,.AMPH ( AMPH )
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/QAHSOS1HNV1_ICE.v
+  QAHSOS1HNV1_ICE oscsub (
+    .OSCSELS ( OSCSELS ) ,.EXCLKS ( EXCLKS ) ,.XT1 ( P123 ) ,.XT1ENI ( XT1ENI )
+     ,.XT1DIN ( XT1DIN ) ,.XT2 ( P124 ) ,.XT2ENI ( XT2ENI ) ,.XT2DIN ( XT2DIN )
+     ,.XTSTOP ( XTSTOP ) ,.CPUCLKEN ( CPUCLKEN ) ,.RTCCLKEN ( RTCCLKEN )
+     ,.OSCOUTS ( OSCOUTS ) ,.RTCCLK ( RTCCLK ) ,.CPUTSCLK ( CPUTSCLK )
+     ,.CPUSCLK ( CPUSCLK ) ,.AMPHS0 ( AMPHS0 ) ,.AMPHS1 ( AMPHS1 ) ,.XTWKUP ( XTWKUP )
+     ,.BGISUB1 ( BGISUB1 ) ,.BGISUB2 ( BGISUB2 ) ,.BGISUB3 ( BGISUB3 )
+    
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/QAHIOS0BN32MV2_ICE.v
+  QAHIOS0BN32MV2_ICE h_rosc (
+    .FRQSEL5 ( pull_down14 ) ,.FRQSEL4 ( FRQSEL4 ) ,.FRQSEL3 ( FRQSEL3 )
+     ,.FRQSEL2 ( FRQSEL2 ) ,.FRQSEL1 ( FRQSEL1 ) ,.FRQSEL0 ( FRQSEL0 )
+     ,.IOSCSTP ( R32MSTP ) ,.REQOCD ( REQOCD ) ,.REQFL ( REQFL ) ,.R32MOUT ( R32MOUT )
+     ,.FIHOCD ( FIHOCD ) ,.FIHFL ( FIHFL ) ,.CLK30MHZ ( CLK30MHZ ) ,.PONRESB ( PONRESB )
+     ,.LOCK48FAIL ( LOCK48FAIL ) ,.LOCK64FAIL ( LOCK64FAIL ) ,.LOCKHROSCFAIL ( LOCKHROSCFAIL )
+     ,.LOCK40FAIL ( LOCK40FAIL ) ,.CLK64M ( CLK64M ) ,.CLK48M ( CLK48M )
+     ,.CLK32M ( CLK32M ) ,.VBGOREG ( VBG08 ) ,.BGIOREG1 ( BGIOREG1 ) ,.BGIOREG2 ( BGIOREG2 )
+     ,.OREGSTP ( OREGSTP ) ,.POCREL5V ( POCREL5V ) ,.TSELOREG ( TSELOREG )
+     ,.TSELIRES ( TSELIRES ) ,.CTRIM6 ( CTRIM6 ) ,.CTRIM5 ( CTRIM5 ) ,.CTRIM4 ( CTRIM4 )
+     ,.CTRIM3 ( CTRIM3 ) ,.CTRIM2 ( CTRIM2 ) ,.CTRIM1 ( CTRIM1 ) ,.CTRIM0 ( CTRIM0 )
+     ,.RTRIM5 ( RTRIM5 ) ,.RTRIM4 ( RTRIM4 ) ,.RTRIM3 ( RTRIM3 ) ,.RTRIM2 ( RTRIM2 )
+     ,.RTRIM1 ( RTRIM1 ) ,.RTRIM0 ( RTRIM0 ) ,.EXRTRIM ( pull_down15 )
+     ,.WTRIM2 ( WTRIM2 ) ,.WTRIM1 ( WTRIM1 ) ,.WTRIM0 ( WTRIM0 ) ,.FTRIM5 ( FTRIM5 )
+     ,.FTRIM4 ( FTRIM4 ) ,.FTRIM3 ( FTRIM3 ) ,.FTRIM2 ( FTRIM2 ) ,.FTRIM1 ( FTRIM1 )
+     ,.FTRIM0 ( FTRIM0 ) ,.TTEMP ( TTEMP ) ,.OREGOUT ( OREGOUT ) ,.TEMP4 ( TEMP4 )
+     ,.TEMP3 ( TEMP3 ) ,.TEMP2 ( TEMP2 ) ,.TEMP1 ( TEMP1 ) ,.TEMP0 ( TEMP0 )
+    
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/QAHIOS1BN15KV1_ICE.v
+  QAHIOS1BN15KV1_ICE l_rosc (
+    .LOSCSTPZ ( R15KSTPZ ) ,.LOSCOUT ( R15KOUT ) ,.CLK30MHZ ( CLK30MHZ_GB )
+     ,.PONRESB ( PONRESB ) ,.CPUPRCLK3 ( CPUPRCLK3 ) ,.CPURCLK3 ( CPURCLK3 )
+     ,.FRSEL0 ( FRSEL0 ) ,.FRSEL1 ( FRSEL1 ) ,.FRSEL2 ( FRSEL2 ) ,.FRSEL3 ( FRSEL3 )
+     ,.FRSEL4 ( FRSEL4 ) ,.LOSCTEST ( LOSCTEST )
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/QAHREGOHNMAINV2_ICE.v
+  QAHREGOHNMAINV2_ICE regm (
+    .LVIS3 ( LVIS3 ) ,.LVIS2 ( LVIS2 ) ,.LVIEN ( LVIEN ) ,.LVIS1 ( LVIS1 )
+     ,.LVIS0 ( LVIS0 ) ,.LVIOUTZ ( LVIOUTZNF ) ,.POCREL ( POCRELNF ) ,.SYSRESB ( SYSRESB )
+     ,.POCRESB ( POCRESB ) ,.VDDLEV7 ( VDDLEV7 ) ,.VDDLEV6 ( VDDLEV6 )
+     ,.VDDLEV5 ( VDDLEV5 ) ,.VDDLEV4 ( VDDLEV4 ) ,.VDDLEV3 ( VDDLEV3 )
+     ,.VDDLEV2 ( VDDLEV2 ) ,.VDDLEV1 ( VDDLEV1 ) ,.VDDLEV0 ( VDDLEV0 )
+     ,.USBIFWR ( USBIFWR ) ,.PSEUDOON0 ( PSEUDOON0 ) ,.PSEUDOON8 ( PSEUDOON8 )
+     ,.PONRESB ( PONRESB ) ,.OPLVIMDS1 ( OPLVIMDS1 ) ,.OPLVIMDS0 ( OPLVIMDS0 )
+     ,.BG1EN ( REG125ST ) ,.RESFB5V ( RESFB5V ) ,.REGLV ( REGLV ) ,.REGLC ( REGLC )
+     ,.BGRT6 ( BGRT6 ) ,.BGRT5 ( BGRT5 ) ,.BGRT4 ( BGRT4 ) ,.BGRT3 ( BGRT3 )
+     ,.BGRT2 ( BGRT2 ) ,.BGRT1 ( BGRT1 ) ,.BGRT0 ( BGRT0 ) ,.BG1ST ( BG1ST )
+     ,.BG2ADEN ( BG2ADEN ) ,.BG2ADSEL ( BG2ADSEL ) ,.LVITEST ( LVITEST )
+     ,.LVITSEL ( LVITSEL ) ,.PAENB ( PAENB ) ,.SENSEVDD ( pull_down16 )
+     ,.VBG1 ( VREG ) ,.VBG08 ( VBG08 ) ,.BGIOREG2 ( BGIOREG2 ) ,.BGIOREG1 ( BGIOREG1 )
+     ,.VBG2AD ( VBG2AD ) ,.BGISUB3 ( BGISUB3 ) ,.BGISUB2 ( BGISUB2 ) ,.BGISUB1 ( BGISUB1 )
+     ,.REGDRV ( REGDRV ) ,.PDRV ( PDRV ) ,.POCREL5V ( POCREL5V ) ,.TEMPADJ3 ( BGRT10 )
+     ,.TEMPADJ2 ( BGRT9 ) ,.TEMPADJ1 ( BGRT8 ) ,.TEMPADJ0 ( BGRT7 ) ,.AMPSEL ( AMPSEL )
+     ,.BGRTEST ( pull_down17 ) ,.TESTVOUT ( TESTVOUT )
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/QID04005_ICE.v
+  QID04005_ICE resetb (
+    .RSTINBNF ( RESETINBNF ) ,.RESFB5V ( RESFB5V ) ,.TRESET ( TRESET )
+     ,.DIN5V ( pull_down18 ) ,.POCREL5V ( POCREL5V ) ,.SPAD ( RESINB )
+     ,.HVIN5V ( pull_down19 )
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/rl78g13adc10664cnt.hdl
+  RL78G13ADC10664CNT adcnt (
+    .ADCS_B ( ADCS_B ) ,.ADRD_B ( ADRD_B ) ,.ADSH_B ( ADSH_B ) ,.AD_DB9 ( AD_DB9 )
+     ,.AD_DB8 ( AD_DB8 ) ,.AD_DB7 ( AD_DB7 ) ,.AD_DB6 ( AD_DB6 ) ,.AD_DB5 ( AD_DB5 )
+     ,.AD_DB4 ( AD_DB4 ) ,.AD_DB3 ( AD_DB3 ) ,.AD_DB2 ( AD_DB2 ) ,.AD_DB1 ( AD_DB1 )
+     ,.AD_DB0 ( AD_DB0 ) ,.ADINT_B ( ADINT_B ) ,.AD_A4 ( AD_A4 ) ,.AD_A3 ( AD_A3 )
+     ,.AD_A2 ( AD_A2 ) ,.AD_A1 ( AD_A1 ) ,.AD_A0 ( AD_A0 ) ,.ADCHSEL4 ( ADCHSEL4 )
+     ,.ADCHSEL3 ( ADCHSEL3 ) ,.ADCHSEL2 ( ADCHSEL2 ) ,.ADCHSEL1 ( ADCHSEL1 )
+     ,.ADCHSEL0 ( ADCHSEL0 ) ,.ADS1 ( ADS1 ) ,.ADSAR9 ( ADSAR9 ) ,.ADSAR8 ( ADSAR8 )
+     ,.ADSAR7 ( ADSAR7 ) ,.ADSAR6 ( ADSAR6 ) ,.ADSAR5 ( ADSAR5 ) ,.ADSAR4 ( ADSAR4 )
+     ,.ADSAR3 ( ADSAR3 ) ,.ADSAR2 ( ADSAR2 ) ,.ADSAR1 ( ADSAR1 ) ,.ADSAR0 ( ADSAR0 )
+     ,.ADCLK ( ADCLK ) ,.PERESADCZ ( PRESADCZ ) ,.ADEOCB ( ADEOCB ) ,.reg_adtyp ( reg_adtyp )
+     ,.BG2ADEN ( BG2ADEN ) ,.BG2ADSEL ( BG2ADSEL ) ,.ADTESMOD2 ( ADTESMOD2 )
+     ,.ADTESMOD1 ( ADTESMOD1 ) ,.ADTESMOD0 ( ADTESMOD0 ) ,.CLK30MHZ ( CLK30MHZ )
+     ,.PONRESB ( PONRESB ) ,.SEL100PI ( pull_down20 ) ,.SEL128PI ( pull_down21 )
+    
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/iawif.v
+  IAWIF iawif (
+    .IAWRES ( IAWRES ) ,.PERISVIB ( PERISVIB ) ,.SVMOD ( SVMOD ) ,.SOFTBRK ( SOFTBRK )
+     ,.SVSTOPIAW ( SVSTOPIAW ) ,.CPUWR ( CPUWR ) ,.CPUWRIAW ( CPUWRIAW )
+     ,.FCLKRT ( FCLKRT ) ,.RESB ( RESB )
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/svmodif.v
+  SVMODIF svmodif (
+    .SVSTOPICE ( SVSTOPICE ) ,.SVPERI0ICE ( SVPERI0ICE ) ,.SVPERI1ICE ( SVPERI1ICE )
+     ,.SVMODI ( SVMODI ) ,.SVMODIPERI1 ( SVMODIPERI1 ) ,.SVMODIPERI2 ( SVMODIPERI2 )
+     ,.SVSTOP ( SVSTOP ) ,.SVPERI0 ( SVPERI0 ) ,.SVPERI1 ( SVPERI1 ) ,.SVMODOPBRK ( SVMODOPBRK )
+     ,.SVPERI0OPBRK ( SVPERI0OPBRK ) ,.MONMD ( MONMD ) ,.SVMOD ( SVMOD )
+     ,.MONSVMOD ( MONSVMOD ) ,.STBRELE ( STBRELE ) ,.STBRELESV ( STBRELESV )
+     ,.STBRELEICE ( STBRELEICE )
+  ) ;
+  // Refer to /proj/78k0r_11/78k0r_kx4/_ice/_macro/_sss/icescon/icescon_g13_64_dummy.v
+  icescon icescon (
+    .TIIDER ( TIIDER ) ,.ICEMSKCKSMER ( ICEMSKCKSMER ) ,.CKSMER ( CKSMER )
+     ,.PSEUDOCKSMER ( PSEUDOCKSMER ) ,.CSPDTFLP ( CSPDTFLP ) ,.ICEIFA31 ( ICEIFA31 )
+     ,.ICEIFA23 ( ICEIFA23 ) ,.ICEIFA15 ( ICEIFA15 ) ,.ICEIFA30 ( ICEIFA30 )
+     ,.ICEIFA22 ( ICEIFA22 ) ,.ICEIFA14 ( ICEIFA14 ) ,.ICEIFA29 ( ICEIFA29 )
+     ,.ICEIFA28 ( ICEIFA28 ) ,.ICEIFA27 ( ICEIFA27 ) ,.ICEIFA19 ( ICEIFA19 )
+     ,.ICEIFA26 ( ICEIFA26 ) ,.ICEIFA18 ( ICEIFA18 ) ,.ICEIFA25 ( ICEIFA25 )
+     ,.ICEIFA17 ( ICEIFA17 ) ,.ICEIFA24 ( ICEIFA24 ) ,.ICEIFA16 ( ICEIFA16 )
+     ,.ICEIFA21 ( ICEIFA21 ) ,.ICEIFA13 ( ICEIFA13 ) ,.ICEIFA20 ( ICEIFA20 )
+     ,.ICEIFA12 ( ICEIFA12 ) ,.ICEIFA11 ( ICEIFA11 ) ,.ICEIFA10 ( ICEIFA10 )
+     ,.ICEIFA9 ( ICEIFA9 ) ,.ICEIFA8 ( ICEIFA8 ) ,.ICEIFA7 ( ICEIFA7 )
+     ,.ICEIFA6 ( ICEIFA6 ) ,.ICEIFA5 ( ICEIFA5 ) ,.ICEIFA4 ( ICEIFA4 )
+     ,.ICEIFA3 ( ICEIFA3 ) ,.ICEIFA2 ( ICEIFA2 ) ,.ICEIFA1 ( ICEIFA1 )
+     ,.ICEIFA0 ( ICEIFA0 ) ,.ICEDI31 ( ICEDI31 ) ,.ICEDI23 ( ICEDI23 )
+     ,.ICEDI15 ( ICEDI15 ) ,.ICEDI30 ( ICEDI30 ) ,.ICEDI22 ( ICEDI22 )
+     ,.ICEDI14 ( ICEDI14 ) ,.ICEDI29 ( ICEDI29 ) ,.ICEDI28 ( ICEDI28 )
+     ,.ICEDI27 ( ICEDI27 ) ,.ICEDI19 ( ICEDI19 ) ,.ICEDI26 ( ICEDI26 )
+     ,.ICEDI18 ( ICEDI18 ) ,.ICEDI25 ( ICEDI25 ) ,.ICEDI17 ( ICEDI17 )
+     ,.ICEDI24 ( ICEDI24 ) ,.ICEDI16 ( ICEDI16 ) ,.ICEDI21 ( ICEDI21 )
+     ,.ICEDI13 ( ICEDI13 ) ,.ICEDI20 ( ICEDI20 ) ,.ICEDI12 ( ICEDI12 )
+     ,.ICEDI11 ( ICEDI11 ) ,.ICEDI10 ( ICEDI10 ) ,.ICEDI9 ( ICEDI9 ) ,.ICEDI8 ( ICEDI8 )
+     ,.ICEDI7 ( ICEDI7 ) ,.ICEDI6 ( ICEDI6 ) ,.ICEDI5 ( ICEDI5 ) ,.ICEDI4 ( ICEDI4 )
+     ,.ICEDI3 ( ICEDI3 ) ,.ICEDI2 ( ICEDI2 ) ,.ICEDI1 ( ICEDI1 ) ,.ICEDI0 ( ICEDI0 )
+     ,.ICEWR ( ICEWR ) ,.FCLKRT ( FCLKRT ) ,.SYSRSOUTB ( SYSRSOUTB ) ,.ICEDOP31 ( ICEDOPA31 )
+     ,.ICEDOP23 ( ICEDOPA23 ) ,.ICEDOP15 ( ICEDOPA15 ) ,.ICEDOP30 ( ICEDOPA30 )
+     ,.ICEDOP22 ( ICEDOPA22 ) ,.ICEDOP14 ( ICEDOPA14 ) ,.ICEDOP29 ( ICEDOPA29 )
+     ,.ICEDOP28 ( ICEDOPA28 ) ,.ICEDOP27 ( ICEDOPA27 ) ,.ICEDOP19 ( ICEDOPA19 )
+     ,.ICEDOP26 ( ICEDOPA26 ) ,.ICEDOP18 ( ICEDOPA18 ) ,.ICEDOP25 ( ICEDOPA25 )
+     ,.ICEDOP17 ( ICEDOPA17 ) ,.ICEDOP24 ( ICEDOPA24 ) ,.ICEDOP16 ( ICEDOPA16 )
+     ,.ICEDOP21 ( ICEDOPA21 ) ,.ICEDOP13 ( ICEDOPA13 ) ,.ICEDOP20 ( ICEDOPA20 )
+     ,.ICEDOP12 ( ICEDOPA12 ) ,.ICEDOP11 ( ICEDOPA11 ) ,.ICEDOP10 ( ICEDOPA10 )
+     ,.ICEDOP9 ( ICEDOPA9 ) ,.ICEDOP8 ( ICEDOPA8 ) ,.ICEDOP7 ( ICEDOPA7 )
+     ,.ICEDOP6 ( ICEDOPA6 ) ,.ICEDOP5 ( ICEDOPA5 ) ,.ICEDOP4 ( ICEDOPA4 )
+     ,.ICEDOP3 ( ICEDOPA3 ) ,.ICEDOP2 ( ICEDOPA2 ) ,.ICEDOP1 ( ICEDOPA1 )
+     ,.ICEDOP0 ( ICEDOPA0 ) ,.ICECKSMER ( ICECKSMER ) ,.CSPDTFLG ( CSPDTFLG )
+    
+  ) ;
+  // Refer to /proj/78k0r_11/78k0r_kx4/_ice/_macro/_eva/_local/_070/chiptop_other.v
+  chiptop_other chiptop_other (
+    .ADBIONB ( ADBIONB ) ,.ADCMP ( ADCMP ) ,.ADCPON ( ADCPON ) ,.ADINL5V ( ADINL5V )
+     ,.ADOFC ( ADOFC ) ,.ADPDB ( ADPDB ) ,.DSRCUT ( DSRCUT ) ,.DTRMCP010 ( DTRMCP010 )
+     ,.DTRMCP011 ( DTRMCP011 ) ,.DTRMCP012 ( DTRMCP012 ) ,.DTRMCP013 ( DTRMCP013 )
+     ,.DTRMCP014 ( DTRMCP014 ) ,.HVPPTS1 ( HVPPTS1 ) ,.INCDECWS0 ( INCDECWS0 )
+     ,.INCDECWS1 ( INCDECWS1 ) ,.MODENOP ( MODENOP ) ,.MODERD ( MODERD )
+     ,.MODEWR ( MODEWR ) ,.MUTEST ( MUTEST ) ,.PSTN ( PSTN ) ,.R0A0 ( R0A0 )
+     ,.R0A1 ( R0A1 ) ,.R0A2 ( R0A2 ) ,.R0A3 ( R0A3 ) ,.R0A4 ( R0A4 ) ,.R0A5 ( R0A5 )
+     ,.R0FLAGZ ( R0FLAGZ ) ,.SELIN1 ( SELIN1 ) ,.SELTAR ( SELTAR ) ,.SRCUTCP ( SRCUTCP )
+     ,.TRMCP010 ( TRMCP010 ) ,.TRMCP011 ( TRMCP011 ) ,.TRMCP012 ( TRMCP012 )
+     ,.TRMCP013 ( TRMCP013 ) ,.TRMCP014 ( TRMCP014 ) ,.TRMRD2 ( TRMRD2 )
+     ,.TSTN ( TSTN ) ,.VBRESZCP ( VBRESZCP ) ,.VPBIAS ( VPBIAS ) ,.VPPTS1 ( VPPTS1 )
+     ,.VREGMV ( VREGMV ) ,.VREGRMV ( VREGRMV ) ,.WDWR ( WDWR )
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/ierl78clk240basev1.v
+  IERL78CLK240BASEV1 clk240base (
+    .PONRESB ( PONRESB ) ,.CLK60MHZ ( CLK60MHZ ) ,.CLK60MHZLOCK ( CLK60MHZLOCK )
+     ,.CLK240M ( CLK240M ) ,.LOCK240FAIL ( LOCK240FAIL ) ,.CLK120M ( CLK120M )
+    
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/ierl78prtyerrv1.v
+  IERL78PRTYERRV1 prtyerr (
+    .RPERR ( RPERR ) ,.MA15 ( MA15 ) ,.MA14 ( MA14 ) ,.MA13 ( MA13 ) ,.MA12 ( MA12 )
+     ,.MA11 ( MA11 ) ,.MA10 ( MA10 ) ,.MA9 ( MA9 ) ,.MA8 ( MA8 ) ,.MA7 ( MA7 )
+     ,.MA6 ( MA6 ) ,.MA5 ( MA5 ) ,.MA4 ( MA4 ) ,.MA3 ( MA3 ) ,.MA2 ( MA2 )
+     ,.MA1 ( MA1 ) ,.MA0 ( MA0 ) ,.ICEIFA31 ( ICEIFA31 ) ,.ICEIFA23 ( ICEIFA23 )
+     ,.ICEIFA15 ( ICEIFA15 ) ,.ICEIFA30 ( ICEIFA30 ) ,.ICEIFA22 ( ICEIFA22 )
+     ,.ICEIFA14 ( ICEIFA14 ) ,.ICEIFA29 ( ICEIFA29 ) ,.ICEIFA28 ( ICEIFA28 )
+     ,.ICEIFA27 ( ICEIFA27 ) ,.ICEIFA19 ( ICEIFA19 ) ,.ICEIFA26 ( ICEIFA26 )
+     ,.ICEIFA18 ( ICEIFA18 ) ,.ICEIFA25 ( ICEIFA25 ) ,.ICEIFA17 ( ICEIFA17 )
+     ,.ICEIFA24 ( ICEIFA24 ) ,.ICEIFA16 ( ICEIFA16 ) ,.ICEIFA21 ( ICEIFA21 )
+     ,.ICEIFA13 ( ICEIFA13 ) ,.ICEIFA20 ( ICEIFA20 ) ,.ICEIFA12 ( ICEIFA12 )
+     ,.ICEIFA11 ( ICEIFA11 ) ,.ICEIFA10 ( ICEIFA10 ) ,.ICEIFA9 ( ICEIFA9 )
+     ,.ICEIFA8 ( ICEIFA8 ) ,.ICEIFA7 ( ICEIFA7 ) ,.ICEIFA6 ( ICEIFA6 )
+     ,.ICEIFA5 ( ICEIFA5 ) ,.ICEIFA4 ( ICEIFA4 ) ,.ICEIFA3 ( ICEIFA3 )
+     ,.ICEIFA2 ( ICEIFA2 ) ,.ICEIFA1 ( ICEIFA1 ) ,.ICEIFA0 ( ICEIFA0 )
+     ,.ICEDI15 ( ICEDI15 ) ,.ICEDI14 ( ICEDI14 ) ,.ICEDI13 ( ICEDI13 )
+     ,.ICEDI12 ( ICEDI12 ) ,.ICEDI11 ( ICEDI11 ) ,.ICEDI10 ( ICEDI10 )
+     ,.ICEDI9 ( ICEDI9 ) ,.ICEDI8 ( ICEDI8 ) ,.ICEDI7 ( ICEDI7 ) ,.ICEDI6 ( ICEDI6 )
+     ,.ICEDI5 ( ICEDI5 ) ,.ICEDI4 ( ICEDI4 ) ,.ICEDI3 ( ICEDI3 ) ,.ICEDI2 ( ICEDI2 )
+     ,.ICEDI1 ( ICEDI1 ) ,.ICEDI0 ( ICEDI0 ) ,.ICEDOPB31 ( ICEDOPB31 )
+     ,.ICEDOPB23 ( ICEDOPB23 ) ,.ICEDOPB15 ( ICEDOPB15 ) ,.ICEDOPB30 ( ICEDOPB30 )
+     ,.ICEDOPB22 ( ICEDOPB22 ) ,.ICEDOPB14 ( ICEDOPB14 ) ,.ICEDOPB29 ( ICEDOPB29 )
+     ,.ICEDOPB28 ( ICEDOPB28 ) ,.ICEDOPB27 ( ICEDOPB27 ) ,.ICEDOPB19 ( ICEDOPB19 )
+     ,.ICEDOPB26 ( ICEDOPB26 ) ,.ICEDOPB18 ( ICEDOPB18 ) ,.ICEDOPB25 ( ICEDOPB25 )
+     ,.ICEDOPB17 ( ICEDOPB17 ) ,.ICEDOPB24 ( ICEDOPB24 ) ,.ICEDOPB16 ( ICEDOPB16 )
+     ,.ICEDOPB21 ( ICEDOPB21 ) ,.ICEDOPB13 ( ICEDOPB13 ) ,.ICEDOPB20 ( ICEDOPB20 )
+     ,.ICEDOPB12 ( ICEDOPB12 ) ,.ICEDOPB11 ( ICEDOPB11 ) ,.ICEDOPB10 ( ICEDOPB10 )
+     ,.ICEDOPB9 ( ICEDOPB9 ) ,.ICEDOPB8 ( ICEDOPB8 ) ,.ICEDOPB7 ( ICEDOPB7 )
+     ,.ICEDOPB6 ( ICEDOPB6 ) ,.ICEDOPB5 ( ICEDOPB5 ) ,.ICEDOPB4 ( ICEDOPB4 )
+     ,.ICEDOPB3 ( ICEDOPB3 ) ,.ICEDOPB2 ( ICEDOPB2 ) ,.ICEDOPB1 ( ICEDOPB1 )
+     ,.ICEDOPB0 ( ICEDOPB0 ) ,.ICEWR ( ICEWR ) ,.SYSRSOUTB ( SYSRSOUTB )
+     ,.FCHRAM ( FCHRAM ) ,.CPUWR ( CPUWR ) ,.WDOP ( WDOP ) ,.SELTAR ( SELTAR )
+     ,.SLMEM ( SLMEM ) ,.GDRAMWR ( GDRAMWR ) ,.CSPDTFLG ( CSPDTFLG ) ,.SELRAMMA ( SELRAMMA )
+     ,.SELDFADMA ( SELDFADMA ) ,.CPURD ( CPURD ) ,.SVMOD ( SVMOD )
+  ) ;
+  // Refer to /home/product/div-micom-ice/data/proj/78K0R/Common/ReplaceMacro/tags/0005/ierl78orbusicedopv1.v
+  IERL78ORBUSICEDOPV1 orbusicedop (
+    .ICEDOP31 ( ICEDOP31 ) ,.ICEDOP23 ( ICEDOP23 ) ,.ICEDOP15 ( ICEDOP15 )
+     ,.ICEDOP30 ( ICEDOP30 ) ,.ICEDOP22 ( ICEDOP22 ) ,.ICEDOP14 ( ICEDOP14 )
+     ,.ICEDOP29 ( ICEDOP29 ) ,.ICEDOP28 ( ICEDOP28 ) ,.ICEDOP27 ( ICEDOP27 )
+     ,.ICEDOP19 ( ICEDOP19 ) ,.ICEDOP26 ( ICEDOP26 ) ,.ICEDOP18 ( ICEDOP18 )
+     ,.ICEDOP25 ( ICEDOP25 ) ,.ICEDOP17 ( ICEDOP17 ) ,.ICEDOP24 ( ICEDOP24 )
+     ,.ICEDOP16 ( ICEDOP16 ) ,.ICEDOP21 ( ICEDOP21 ) ,.ICEDOP13 ( ICEDOP13 )
+     ,.ICEDOP20 ( ICEDOP20 ) ,.ICEDOP12 ( ICEDOP12 ) ,.ICEDOP11 ( ICEDOP11 )
+     ,.ICEDOP10 ( ICEDOP10 ) ,.ICEDOP9 ( ICEDOP9 ) ,.ICEDOP8 ( ICEDOP8 )
+     ,.ICEDOP7 ( ICEDOP7 ) ,.ICEDOP6 ( ICEDOP6 ) ,.ICEDOP5 ( ICEDOP5 )
+     ,.ICEDOP4 ( ICEDOP4 ) ,.ICEDOP3 ( ICEDOP3 ) ,.ICEDOP2 ( ICEDOP2 )
+     ,.ICEDOP1 ( ICEDOP1 ) ,.ICEDOP0 ( ICEDOP0 ) ,.ICEDOPA31 ( ICEDOPA31 )
+     ,.ICEDOPA23 ( ICEDOPA23 ) ,.ICEDOPA15 ( ICEDOPA15 ) ,.ICEDOPB11 ( ICEDOPB11 )
+     ,.ICEDOPA30 ( ICEDOPA30 ) ,.ICEDOPA22 ( ICEDOPA22 ) ,.ICEDOPA14 ( ICEDOPA14 )
+     ,.ICEDOPB10 ( ICEDOPB10 ) ,.ICEDOPA29 ( ICEDOPA29 ) ,.ICEDOPB25 ( ICEDOPB25 )
+     ,.ICEDOPB17 ( ICEDOPB17 ) ,.ICEDOPA28 ( ICEDOPA28 ) ,.ICEDOPB24 ( ICEDOPB24 )
+     ,.ICEDOPB16 ( ICEDOPB16 ) ,.ICEDOPA27 ( ICEDOPA27 ) ,.ICEDOPA19 ( ICEDOPA19 )
+     ,.ICEDOPB31 ( ICEDOPB31 ) ,.ICEDOPB23 ( ICEDOPB23 ) ,.ICEDOPB15 ( ICEDOPB15 )
+     ,.ICEDOPA26 ( ICEDOPA26 ) ,.ICEDOPA18 ( ICEDOPA18 ) ,.ICEDOPB30 ( ICEDOPB30 )
+     ,.ICEDOPB22 ( ICEDOPB22 ) ,.ICEDOPB14 ( ICEDOPB14 ) ,.ICEDOPA25 ( ICEDOPA25 )
+     ,.ICEDOPA17 ( ICEDOPA17 ) ,.ICEDOPB21 ( ICEDOPB21 ) ,.ICEDOPB13 ( ICEDOPB13 )
+     ,.ICEDOPA24 ( ICEDOPA24 ) ,.ICEDOPA16 ( ICEDOPA16 ) ,.ICEDOPB20 ( ICEDOPB20 )
+     ,.ICEDOPB12 ( ICEDOPB12 ) ,.ICEDOPA21 ( ICEDOPA21 ) ,.ICEDOPA13 ( ICEDOPA13 )
+     ,.ICEDOPA20 ( ICEDOPA20 ) ,.ICEDOPA12 ( ICEDOPA12 ) ,.ICEDOPA11 ( ICEDOPA11 )
+     ,.ICEDOPA10 ( ICEDOPA10 ) ,.ICEDOPA9 ( ICEDOPA9 ) ,.ICEDOPB7 ( ICEDOPB7 )
+     ,.ICEDOPA8 ( ICEDOPA8 ) ,.ICEDOPB6 ( ICEDOPB6 ) ,.ICEDOPA7 ( ICEDOPA7 )
+     ,.ICEDOPB5 ( ICEDOPB5 ) ,.ICEDOPA6 ( ICEDOPA6 ) ,.ICEDOPB4 ( ICEDOPB4 )
+     ,.ICEDOPA5 ( ICEDOPA5 ) ,.ICEDOPB3 ( ICEDOPB3 ) ,.ICEDOPA4 ( ICEDOPA4 )
+     ,.ICEDOPB2 ( ICEDOPB2 ) ,.ICEDOPA3 ( ICEDOPA3 ) ,.ICEDOPB1 ( ICEDOPB1 )
+     ,.ICEDOPA2 ( ICEDOPA2 ) ,.ICEDOPB0 ( ICEDOPB0 ) ,.ICEDOPA1 ( ICEDOPA1 )
+     ,.ICEDOPA0 ( ICEDOPA0 ) ,.ICEDOPB29 ( ICEDOPB29 ) ,.ICEDOPB28 ( ICEDOPB28 )
+     ,.ICEDOPB27 ( ICEDOPB27 ) ,.ICEDOPB19 ( ICEDOPB19 ) ,.ICEDOPB26 ( ICEDOPB26 )
+     ,.ICEDOPB18 ( ICEDOPB18 ) ,.ICEDOPB9 ( ICEDOPB9 ) ,.ICEDOPB8 ( ICEDOPB8 )
+    
+  ) ;
+endmodule

@@ -1,0 +1,99 @@
+/**********************************************************************/
+/*                                                                    */
+/* K0R series PORT bit macro                                          */
+/*                                                                    */
+/*   [ port bit : 入力ポート ]                                        */
+/*                                                                    */
+/*    PL                                                              */
+/*    兼用出力機能 なし                                               */
+/*    兼用入力機能 なし                                               */
+/*                                                                    */
+/*    Module   : QPK0RBCIN010V1                                       */
+/*    Date     : 2009/12/02                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : S.Nakata                                             */
+/*    Note     :                                                      */
+/*                                                                    */
+/**********************************************************************/
+/*                                                                    */
+/* <<入力信号>>                                         <<接続先>>    */
+/* RE_PORT     : PORTリードイネーブル信号               port control  */
+/* SEL_PL      : PL Register select 信号                port control  */
+/* OPEN_BUF    : 入力バッファイネーブル信号             port control  */
+/* DIN         : ポートレベル入力信号                   buffer        */
+/*                                                                    */
+/* SCANMODE    : SCANテストモード信号                   MODECTL       */
+/* TESDBT      : BTモード信号                           MODECTL       */
+/* TESENO      : テストモード ENO制御信号               MODECTL       */
+/* TDSEL       : テストモード DOUT制御信号              MODECTL       */
+/* TDOUT       : テストモード DOUT信号                  MODECTL       */
+/* TDIN        : テストモード DIN信号                   MODECTL       */
+/*                                                                    */
+/* <<出力信号>>                                         <<接続先>>    */
+/* PRDATA      : 出力データバス                         APB Bridge    */
+/* ENI         : 入力イネーブル信号                     buffer        */
+/* EXINA       : 兼用機能入力信号                                     */
+/*                                                                    */
+/*                                                                    */
+/**********************************************************************/
+
+module QPK0RBCIN010V1 ( RE_PORT  , SEL_PL   ,
+                        DIN      , OPEN_BUF ,
+                        TDIN     ,
+			SCANMODE , TESDBT   ,
+			EXINA    ,
+			MODIDIS  ,
+                        PRDATA   , ENI      ) ;
+
+
+	input		RE_PORT  , SEL_PL   ; 
+	input		OPEN_BUF , DIN      ;
+	input		SCANMODE , TESDBT   ;
+	input		MODIDIS  ;
+
+	output		PRDATA   , ENI      , TDIN     ;
+	output		EXINA    ;
+
+	reg		READ_DATA ;
+	reg		ENI      , DIN_s    ;
+	wire		PRDATA   , ENI_pre  ;
+
+
+//=====  port register read access  =====
+
+	always @ ( SEL_PL or DIN_s ) begin
+	    case ( { SEL_PL } )	// synopsys parallel_case
+		1'b0	: READ_DATA = 1'b1 ;
+		1'b1	: READ_DATA = DIN_s ;
+	    endcase
+	end
+
+	assign PRDATA = READ_DATA & RE_PORT ;
+
+//=====  port function  =====
+
+        assign TDIN     = DIN ;
+
+        assign ENI_pre	= OPEN_BUF ;
+	assign EXINA    = DIN_s ;
+
+        always@ ( SCANMODE or TESDBT or MODIDIS or ENI_pre ) begin
+            casex ( { SCANMODE, TESDBT, MODIDIS } )       // synopsys parallel_case
+                3'b10x   : ENI = 1'b1 ;          // scan mode
+                3'b11x   : ENI = 1'b1 ;          // bt mode
+                3'b001   : ENI = 1'b0 ;          //
+                3'b000   : ENI = ENI_pre ;       // user mode
+                default : ENI = ENI_pre ;
+            endcase
+        end
+
+        always@ ( SCANMODE or TESDBT or DIN or ENI_pre ) begin
+            case ( { SCANMODE, TESDBT } )       // synopsys parallel_case
+                2'b00   : DIN_s = DIN ;         // user mode
+                2'b10   : DIN_s = ENI_pre ;	// scan mode
+                2'b11   : DIN_s = DIN ;         // bt mode
+                default : DIN_s = DIN ;
+            endcase
+        end
+
+endmodule

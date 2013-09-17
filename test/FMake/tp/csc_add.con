@@ -1,0 +1,2 @@
+RESB   RESB:terminal
+FCLK   cspf.mp200.cpu.EMEMRAMCLK

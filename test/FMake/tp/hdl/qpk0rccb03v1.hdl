@@ -1,0 +1,154 @@
+/**********************************************************************/
+/*                                                                    */
+/* K0R series PORT control macro for PORT3                            */
+/*                                                                    */
+/*   [ port control ] , 3 register ( PL , PM , PU )                   */
+/*                                                                    */
+/*    Module   : QPK0RCCB03V1                                         */
+/*    Date     : 2009/11/30                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : S.Nakata (NMS)                                       */
+/*                                                                    */
+/*    Date     : 2010/07/01                                           */
+/*    Revision : 1.10                                                 */
+/*    Designer : H.Ono (RMS)                                          */
+/*    Note     :                                                      */
+/*                                                                    */
+/**********************************************************************/
+/*[改訂履歴]                                                          */
+/*    Ver 1.10 : add signal : SEL36P, SEL36PI                         */
+/*                                                                    */
+/**********************************************************************/
+/*                                                                    */
+/* <<入力信号>>                                       <<接続先>>      */
+/* PENABLE     : APB転送許可信号                      APB Bridge      */
+/* PWRITE      : APB転送方向信号(H:Write L:Read)      APB Bridge      */
+/* PSEL        : APBマクロ選択信号                    APB Bridge      */
+/* AD_PL       : PLアドレス選択信号                   port offset dec */
+/* AD_PM       : PMアドレス選択信号                   port offset dec */
+/* AD_PU       : PUアドレス選択信号                   port offset dec */
+/* SEL08P      : 製品選択信号（PWモード）             PORGA           */
+/* SEL20P      : 製品選択信号（20pinモード）          PORGA           */
+/* SEL24P      : 製品選択信号（24pinモード）          PORGA           */
+/* SEL30P      : 製品選択信号（30pinモード）          PORGA           */
+/* SEL32P      : 製品選択信号（32pinモード）          PORGA           */
+/* SEL36P      : 製品選択信号（36pinモード）          PORGA           */
+/* SEL38P      : 製品選択信号（38pinモード）          PORGA           */
+/* SEL40P      : 製品選択信号（40pinモード）          PORGA           */
+/* SEL44P      : 製品選択信号（44pinモード）          PORGA           */
+/* SEL48P      : 製品選択信号（48pinモード）          PORGA           */
+/* SEL52P      : 製品選択信号（52pinモード）          PORGA           */
+/* SEL64P      : 製品選択信号（64pinモード）          PORGA           */
+/*                                                                    */
+/* <<出力信号>>                                       <<接続先>>      */
+/* SEL_PL      : PLレジスタ選択信号                   port bit        */
+/* SEL_PM      : PMレジスタ選択信号                   port bit        */
+/* SEL_PU      : PUレジスタ選択信号                   port bit        */
+/* WE_PL       : PLレジスタライトイネーブル信号       port bit        */
+/* WE_PM       : PMレジスタライトイネーブル信号       port bit        */
+/* WE_PU       : PUレジスタライトイネーブル信号       port bit        */
+/* RE_PORT     : リードイネーブル信号                 port bit        */
+/* OPEN_BUF0   : 入力イネーブル信号(bit0)             port bit        */
+/* OPEN_BUF1   : 入力イネーブル信号(bit1)             port bit        */
+/*                                                                    */
+/**********************************************************************/
+
+module	QPK0RCCB03V1 (  PSEL      , PWRITE    , PENABLE   , AD_PL     , AD_PM     , AD_PU ,
+                        SEL64P    , SEL52P    , SEL48P    , SEL44P    , SEL40P    ,
+                        SEL38P    , SEL36P    , SEL32P    , SEL30P    , SEL24P    ,
+                        SEL20P    , SEL08P    ,
+                        SEL64PI   , SEL52PI   , SEL48PI   , SEL44PI   , SEL40PI   ,
+                        SEL38PI   , SEL36PI   , SEL32PI   , SEL30PI   , SEL24PI   ,
+                        SEL20PI   ,
+	                RE_PORT   , OPEN_BUF0 , OPEN_BUF1 , NSRESB    ,
+		        SEL_PL    , SEL_PM    , SEL_PU    , WE_PL     , WE_PM     , WE_PU ,
+                        ICEENI
+			) ;
+
+	input		PSEL      , PWRITE    , PENABLE   , AD_PL     , AD_PM     , AD_PU ;
+        input           SEL64P    , SEL52P    , SEL48P    , SEL44P    , SEL40P    ;
+        input           SEL38P    , SEL36P    , SEL32P    , SEL30P    , SEL24P    ;
+        input           SEL20P    , SEL08P    , NSRESB    ;
+        input           SEL64PI   , SEL52PI   , SEL48PI   , SEL44PI   , SEL40PI   ;
+        input           SEL38PI   , SEL36PI   , SEL32PI   , SEL30PI   , SEL24PI   ;
+        input           SEL20PI   ;
+
+	output		RE_PORT   , OPEN_BUF0 , OPEN_BUF1 ;
+	output		SEL_PL    , SEL_PM    , SEL_PU    , WE_PL     , WE_PM     , WE_PU ;
+        output  [1:0]   ICEENI    ;
+
+        wire            RE_PORT   , OPEN_BUF0 , OPEN_BUF1 ;
+        wire            SEL_PL    , SEL_PM    , SEL_PU    , WE_PL     , WE_PM     , WE_PU ;
+	wire		write_stb , read_stb  ;
+
+        reg     [1:0]   OPENB7_0  ;
+
+//=====  address latch control  =====
+
+        assign  SEL_PL = PSEL & AD_PL ;
+        assign  SEL_PM = PSEL & AD_PM ;
+        assign  SEL_PU = PSEL & AD_PU ;
+
+//=====  make port write strobe  =====
+
+	assign  write_stb = PENABLE & PSEL & PWRITE ;
+        assign  WE_PU     = write_stb & AD_PU ;
+        assign  WE_PM     = write_stb & AD_PM ;
+        assign  WE_PL     = write_stb & AD_PL ;
+
+//=====  make port read strobe  =====
+
+	assign  read_stb  = PENABLE & PSEL & ~PWRITE ;
+        assign  RE_PORT   = read_stb ;
+
+        assign  OPEN_BUF1 = NSRESB & OPENB7_0[1] ;
+        assign  OPEN_BUF0 = NSRESB & OPENB7_0[0] ;
+
+        always @ ( SEL64P or SEL52P or SEL48P or SEL44P or SEL40P or SEL38P or SEL36P or SEL32P or SEL30P or SEL24P or SEL20P or SEL08P ) begin
+            case ( { SEL64P, SEL52P, SEL48P, SEL44P, SEL40P, SEL38P, SEL36P, SEL32P, SEL30P, SEL24P, SEL20P, SEL08P } )
+                12'b000000000001 : OPENB7_0 = 2'b00 ; //SEL08P
+                12'b000000000010 : OPENB7_0 = 2'b01 ; //SEL20P
+                12'b000000000100 : OPENB7_0 = 2'b11 ; //SEL24P
+                12'b000000001000 : OPENB7_0 = 2'b11 ; //SEL30P
+                12'b000000010000 : OPENB7_0 = 2'b11 ; //SEL32P
+                12'b000000100000 : OPENB7_0 = 2'b11 ; //SEL36P
+                12'b000001000000 : OPENB7_0 = 2'b11 ; //SEL38P
+                12'b000010000000 : OPENB7_0 = 2'b11 ; //SEL40P
+                12'b000100000000 : OPENB7_0 = 2'b11 ; //SEL44P
+                12'b001000000000 : OPENB7_0 = 2'b11 ; //SEL48P
+                12'b010000000000 : OPENB7_0 = 2'b11 ; //SEL52P
+                12'b100000000000 : OPENB7_0 = 2'b11 ; //SEL64P
+                default          : OPENB7_0 = 2'b11 ; //SEL64P
+        endcase
+     end
+
+//=====  ICE用ENI端子
+
+      `ifndef FPGA_ICE
+        assign ICEENI[1:0] = 2'b0;
+
+      `else
+        reg     [1:0]   I_ENI     ;
+        assign  ICEENI[1:0] = I_ENI[1:0] ;
+
+        always @ ( SEL64PI or SEL52PI or SEL48PI or SEL44PI or SEL40PI or SEL38PI or SEL36PI or SEL32PI or SEL30PI or SEL24PI or SEL20PI or SEL08P ) begin
+            case ( { SEL64PI, SEL52PI, SEL48PI, SEL44PI, SEL40PI, SEL38PI, SEL36PI, SEL32PI, SEL30PI, SEL24PI, SEL20PI, SEL08P } )
+                12'b000000000001 : I_ENI = 2'b00 ; //SEL08P
+                12'b000000000010 : I_ENI = 2'b01 ; //SEL20PI
+                12'b000000000100 : I_ENI = 2'b11 ; //SEL24PI
+                12'b000000001000 : I_ENI = 2'b11 ; //SEL30PI
+                12'b000000010000 : I_ENI = 2'b11 ; //SEL32PI
+                12'b000000100000 : I_ENI = 2'b11 ; //SEL36PI
+                12'b000001000000 : I_ENI = 2'b11 ; //SEL38PI
+                12'b000010000000 : I_ENI = 2'b11 ; //SEL40PI
+                12'b000100000000 : I_ENI = 2'b11 ; //SEL44PI
+                12'b001000000000 : I_ENI = 2'b11 ; //SEL48PI
+                12'b010000000000 : I_ENI = 2'b11 ; //SEL52PI
+                12'b100000000000 : I_ENI = 2'b11 ; //SEL64PI
+                default          : I_ENI = 2'b11 ; //SEL64PI
+         endcase
+      end
+     `endif
+
+endmodule
+

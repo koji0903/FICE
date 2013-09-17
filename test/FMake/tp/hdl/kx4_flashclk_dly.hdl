@@ -1,0 +1,37 @@
+
+// [NEC Electronics Group CONFIDENTIAL]
+// (C) Copyright NEC Electronics Corporation 2009
+// All Rights Reserved. Do not duplicate without prior written
+// consent of NEC Electronics Corporation.
+
+// Macro Name      : KX4_FLASHCLK_DLY
+// Version         : 1.00
+// Date            : 2010.07.23
+// Author          : Masaki.Ouchiyama
+// History         : 0.01	2010/07/23 for v2.0 DF3.1
+//                 :    
+//                 :
+
+
+module KX4_FLASHCLK_DLY (
+	RDCLKC1
+	,BASECKHS
+);
+
+input	BASECKHS ;
+output	RDCLKC1	;
+
+	assign RDCLKC1 = BASECKHS ;
+
+//	TBBUFCLX4 dly0 ( .N01( clk_dly1) ,.H01( BASECKHS ) ) ;
+//	TBBUFCLX4 dly1 ( .N01( clk_dly2) ,.H01( clk_dly1 ) ) ;
+//	TBBUFCLX4 dly2 ( .N01( clk_dly3) ,.H01( clk_dly2 ) ) ;
+//	TBBUFCLX4 dly3 ( .N01( clk_dly4) ,.H01( clk_dly3 ) ) ;
+//	TBBUFCLX4 dly4 ( .N01( clk_dly5) ,.H01( clk_dly4 ) ) ;
+//	TBBUFCLX4 dly5 ( .N01( clk_dly6) ,.H01( clk_dly5 ) ) ;
+//	TBBUFCLX4 dly6 ( .N01( clk_dly7) ,.H01( clk_dly6 ) ) ;
+//	TBBUFCLX4 dly7 ( .N01( clk_dly8) ,.H01( clk_dly7 ) ) ;
+//	TBBUFCLX4 dly8 ( .N01( clk_dly9) ,.H01( clk_dly8 ) ) ;
+//	TBBUFCLX4 dly9 ( .N01( RDCLKC1 ) ,.H01( clk_dly9 ) ) ;
+
+endmodule

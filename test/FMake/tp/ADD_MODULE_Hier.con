@@ -1,0 +1,18 @@
+#
+# Connect File for ADD_Module
+#
+# Test for : terminla/pullup/pulldown/open/connect
+#            DriveChange - no need because there is no original connection in Add Macro
+#
+
+In_A1 PULLDOWN
+In_A2 PULLDOWN
+In_A3 PULLDOWN
+In_A4 PULLUP
+Out_B1 OPEN
+Out_B2 OPEN
+Out_B3 OPEN
+Out_B4 OPEN
+Inout_C1 OPEN
+Inout_C2 OPEN
+

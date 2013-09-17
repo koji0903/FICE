@@ -1,0 +1,576 @@
+Release 12.3 ngdbuild M.70d (lin64)
+Copyright (c) 1995-2010 Xilinx, Inc.  All rights reserved.
+
+Command Line:
+/home/tools13/eda_tools/Linux_RHEL5/xilinx/ise/12.3/ISE_DS/ISE/bin/lin64/unwrapp
+ed/ngdbuild -intstyle ise -dd _ngo -nt timestamp -p xc4vlx80-ff1148-11
+EVA_TOP.edf EVA_TOP.ngd -uc EVA_TOP_10MHz.ucf
+
+Executing edif2ngd -quiet "EVA_TOP.edf" "_ngo/EVA_TOP.ngo"
+Release 12.3 - edif2ngd M.70d (lin64)
+Copyright (c) 1995-2010 Xilinx, Inc.  All rights reserved.
+Reading NGO file
+"/home/2007H1/cf6fs90_disk0503/product/ice/work/koji-h/work/K0R-Ix4/_DF3.1/_tria
+l/1_Synthesis/ISE_10MHz/_ngo/EVA_TOP.ngo" ...
+Gathering constraint information from source properties...
+Done.
+
+Annotating constraints to design from ucf file "EVA_TOP_10MHz.ucf" ...
+Resolving constraint associations...
+Checking Constraint Associations...
+WARNING:ConstraintSystem:123 - Constraint '<TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" = FALLING
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE";> [EVA_TOP_10MHz.ucf(473)]'
+   includes bel 'BUFGCTRL' which has multiple clock pins.  Any timing
+   calculations for this constraint will apply to all FALLING clock pins on that
+   bel.
+
+WARNING:ConstraintSystem:123 - Constraint '<TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_rise" = RISING
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE";> [EVA_TOP_10MHz.ucf(515)]'
+   includes bel 'BUFGCTRL' which has multiple clock pins.  Any timing
+   calculations for this constraint will apply to all RISING clock pins on that
+   bel.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(628)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(629)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(630)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(631)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(632)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(633)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(634)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(635)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(636)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(637)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(638)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(639)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(640)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(641)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(642)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1090_1";> [EVA_TOP_10MHz.ucf(643)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(735)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(736)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(737)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(738)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(739)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(740)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(741)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(742)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(743)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(744)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(745)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(746)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(747)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(748)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(749)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1091_1";> [EVA_TOP_10MHz.ucf(750)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:123 - Constraint '<TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" = FALLING
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE";> [EVA_TOP_10MHz.ucf(785)]'
+   includes bel 'BUFGCTRL' which has multiple clock pins.  Any timing
+   calculations for this constraint will apply to all FALLING clock pins on that
+   bel.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(860)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(861)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(862)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(863)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(864)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(865)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(866)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(867)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(868)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(869)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(870)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(871)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(872)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(873)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(874)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1094_1";> [EVA_TOP_10MHz.ucf(875)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(984)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(985)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(986)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(987)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(988)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(989)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(990)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(991)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(992)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(993)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(994)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(995)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(996)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(997)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(998)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1095_1";> [EVA_TOP_10MHz.ucf(999)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/dsbbr/GND" TPTHRU =
+   "thru_1097_0";> [EVA_TOP_10MHz.ucf(1132)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/dsbbr/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/dsbbr/GND" TPTHRU =
+   "thru_1097_0";> [EVA_TOP_10MHz.ucf(1133)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/dsbbr/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/dsbbr/GND" TPTHRU =
+   "thru_1097_0";> [EVA_TOP_10MHz.ucf(1148)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/dsbbr/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/dsbbr/GND" TPTHRU =
+   "thru_1097_0";> [EVA_TOP_10MHz.ucf(1149)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/dsbbr/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/dsbbr/GND" TPTHRU =
+   "thru_1097_0";> [EVA_TOP_10MHz.ucf(1164)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/dsbbr/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/dsbbr/GND" TPTHRU =
+   "thru_1097_0";> [EVA_TOP_10MHz.ucf(1165)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/dsbbr/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET
+   "chiptop/chip/socket/fcb/mode/SCANMODE" TPTHRU = "thru_1629_0";>
+   [EVA_TOP_10MHz.ucf(1697)]: This constraint cannot be distributed from the
+   design objects matching 'NET "chiptop/chip/socket/fcb/mode/SCANMODE"' because
+   those design objects do not contain or drive any instances of the correct
+   type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET
+   "chiptop/chip/socket/fcb/regrw/TFWEPR" TPTHRU = "thru_1629_0";>
+   [EVA_TOP_10MHz.ucf(1698)]: This constraint cannot be distributed from the
+   design objects matching 'NET "chiptop/chip/socket/fcb/regrw/TFWEPR"' because
+   those design objects do not contain or drive any instances of the correct
+   type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET
+   "chiptop/chip/socket/fcb/wcbctl/ICENOECC" TPTHRU = "thru_1629_0";>
+   [EVA_TOP_10MHz.ucf(1700)]: This constraint cannot be distributed from the
+   design objects matching 'NET "chiptop/chip/socket/fcb/wcbctl/ICENOECC"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET
+   "chiptop/chip/socket/fcb/wcbctl/FLMEMTES" TPTHRU = "thru_1629_0";>
+   [EVA_TOP_10MHz.ucf(1701)]: This constraint cannot be distributed from the
+   design objects matching 'NET "chiptop/chip/socket/fcb/wcbctl/FLMEMTES"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1648_0";> [EVA_TOP_10MHz.ucf(1721)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1648_0";> [EVA_TOP_10MHz.ucf(1722)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1648_0";> [EVA_TOP_10MHz.ucf(1723)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1648_0";> [EVA_TOP_10MHz.ucf(1724)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1648_0";> [EVA_TOP_10MHz.ucf(1725)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/GND" TPTHRU
+   = "thru_1648_0";> [EVA_TOP_10MHz.ucf(1726)]: This constraint cannot be
+   distributed from the design objects matching 'NET "chiptop/chip/socket/GND"'
+   because those design objects do not contain or drive any instances of the
+   correct type.
+
+WARNING:ConstraintSystem:119 - Constraint <NET "chiptop/chip/socket/TESENI4"
+   TPTHRU = "thru_1648_0";> [EVA_TOP_10MHz.ucf(1728)]: This constraint cannot be
+   distributed from the design objects matching 'NET
+   "chiptop/chip/socket/TESENI4"' because those design objects do not contain or
+   drive any instances of the correct type.
+
+WARNING:ConstraintSystem - TNM : CLK60MHZ was distributed to a DCM but new TNM
+   constraints were not derived. The requirement for derived TNM constraints is
+   that the distributed TNM is referenced by no more than a single PERIOD
+   constraint. Non-PERIOD referencers are also not allowed. This TNM is used in
+   the following user groups or specifications:
+   <TIMEGRP "CLK60MHZ_grp" = "CLK60MHZ" EXCEPT "FCLK" "USBCLK" "ICEWR" "OCDCLK"
+   "FMAIN_PCLBUZ" "FSUB_PCLBUZ" "FMX4";> [EVA_TOP_10MHz.ucf(59)]
+
+WARNING:NgdBuild:1345 - The constraint <TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" = FALLING
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE";> [EVA_TOP_10MHz.ucf(785)] is
+   overridden by the constraint <TIMEGRP
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE_fall" = FALLING
+   "chiptop_chip_socket_csc_cg_tbase_FCLK_ICE";> [EVA_TOP_10MHz.ucf(473)]. The
+   overriden constraint usually comes from the input netlist or ncf files.
+   Please set XIL_NGDBUILD_CONSTR_OVERRIDE_ERROR to promote this message to an
+   error.
+Done...
+
+Checking expanded design ...
+WARNING:NgdBuild:458 - logical net 'chiptop.PLUG_SCANMODEICE' has an active
+   driver and a pulldown
+WARNING:NgdBuild:458 - logical net 'chiptop.chip.BBTESINST' has an active driver
+   and a pulldown
+WARNING:NgdBuild:458 - logical net 'chiptop.chip.socket.PTESINST' has an active
+   driver and a pulldown
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+NGDBUILD Design Results Summary:
+  Number of errors:     0
+  Number of warnings:  89
+
+Total memory usage is 605172 kilobytes
+
+Writing NGD file "EVA_TOP.ngd" ...
+Total REAL time to NGDBUILD completion: 1 min  36 sec
+Total CPU time to NGDBUILD completion:  1 min  12 sec
+
+Writing NGDBUILD log file "EVA_TOP.bld"...

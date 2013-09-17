@@ -1,0 +1,202 @@
+#-----------------------------------------------------------------------------------------
+# FMake Connect File (TypeB approach)
+#   Please divide connection informations which depend on the macro into each macro as
+#   much as possible. It may facilitate to distinguish product dependent information from
+#   macro common information.
+#   (1) Please list a connection information in a higher-priority module.
+#         -> It becomes the emulation specification like?
+#       +---------------------------------------------------------------------------+
+#       | Priority High<- - - - - - - - - - - - - - - - - - - - - - - - - - - ->Low |
+#       |               Fmake-Limit  ADD1  Replace  ADD2  KeepChange  ADD3  ICE     |
+#       +---------------------------------------------------------------------------+
+#       Replace -> It except Code-Flash, Data-Flash and RAM (They are included in ICE Macro).
+#       ADD1 -> primary function of ICE   : inspect, PUCTL, FixedPin, prtyerr
+#       ADD2 -> related to replace macro  : admux, iawif
+#       Add3 -> secondary function of ICE : svmodif, CLK240BASE, ieICEControl, iePortControl
+#   (2) Please divide it into three following categories.
+#         - common     : There are no parameters which should be changed.
+#         - local      : It may be necessary to modify the instance for each product.
+#         - Limitation : FMake Limitation.
+#   (3) Please separate the parameter to files below.
+#         - <Macro>_common.con : connection information that is not changed.
+#         - <Macro>_local.con  : connection information that may be changed for product.
+#         - <Macro>.con        : connection information for local macro.
+#- History -------------------------------------------------------------------------------
+# 2012.7.9
+# initial
+# T.Tsunoda
+#-----------------------------------------------------------------------------------------
+
+#=========================================================================================
+# Following Connection match FMake Limitation
+#=========================================================================================
+p12eni_0		pericore.p12eni_0
+
+#=========================================================================================
+# It may be necessary to modify the signal below for each product.
+#=========================================================================================
+#------------------------------------------------
+# CSI12Mbps Line I/F
+#------------------------------------------------
+SI00_P11		SI00_P11:terminal
+SI00_P11OEB		SI00_P11OEB:terminal
+PONRESB			ice.PONRESB
+#------------------------------------------------
+# Terminal I/F
+#------------------------------------------------
+PIO07			PIO07:terminal
+PIO06			PIO06:terminal
+PIO05			PIO05:terminal
+PIO04			PIO04:terminal
+PIO03			PIO03:terminal
+PIO02			PIO02:terminal
+PIO01			PIO01:terminal
+PIO00			PIO00:terminal
+PIO17			PIO17:terminal
+PIO16			PIO16:terminal
+PIO15			PIO15:terminal
+PIO14			PIO14:terminal
+PIO13			PIO13:terminal
+PIO12			PIO12:terminal
+PIO11			PIO11:terminal
+PIO10			PIO10:terminal
+PIO27			PIO27:terminal
+PIO26			PIO26:terminal
+PIO25			PIO25:terminal
+PIO24			PIO24:terminal
+PIO23			PIO23:terminal
+PIO22			PIO22:terminal
+PIO21			PIO21:terminal
+PIO20			PIO20:terminal
+PIO37			PIO37:terminal
+PIO36			PIO36:terminal
+PIO35			PIO35:terminal
+PIO34			PIO34:terminal
+PIO33			PIO33:terminal
+PIO32			PIO32:terminal
+PIO31			PIO31:terminal
+PIO30			PIO30:terminal
+PIO47			PIO47:terminal
+PIO46			PIO46:terminal
+PIO45			PIO45:terminal
+PIO44			PIO44:terminal
+PIO43			PIO43:terminal
+PIO42			PIO42:terminal
+PIO41			PIO41:terminal
+PIO40			PIO40:terminal
+PIO57			PIO57:terminal
+PIO56			PIO56:terminal
+PIO55			PIO55:terminal
+PIO54			PIO54:terminal
+PIO53			PIO53:terminal
+PIO52			PIO52:terminal
+PIO51			PIO51:terminal
+PIO50			PIO50:terminal
+PIO67			PIO67:terminal
+PIO66			PIO66:terminal
+PIO65			PIO65:terminal
+PIO64			PIO64:terminal
+PIO63			PIO63:terminal
+PIO62			PIO62:terminal
+PIO61			PIO61:terminal
+PIO60			PIO60:terminal
+PIO77			PIO77:terminal
+PIO76			PIO76:terminal
+PIO75			PIO75:terminal
+PIO74			PIO74:terminal
+PIO73			PIO73:terminal
+PIO72			PIO72:terminal
+PIO71			PIO71:terminal
+PIO70			PIO70:terminal
+PIO87			PIO87:terminal
+PIO86			PIO86:terminal
+PIO85			PIO85:terminal
+PIO84			PIO84:terminal
+PIO83			PIO83:terminal
+PIO82			PIO82:terminal
+PIO81			PIO81:terminal
+PIO80			PIO80:terminal
+PIO97			PIO97:terminal
+PIO96			PIO96:terminal
+PIO95			PIO95:terminal
+PIO94			PIO94:terminal
+PIO93			PIO93:terminal
+PIO92			PIO92:terminal
+PIO91			PIO91:terminal
+PIO90			PIO90:terminal
+PIO102			PIO102:terminal
+PIO101			PIO101:terminal
+PIO100			PIO100:terminal
+PIO114			PIO114:terminal
+PIO113			PIO113:terminal
+PIO112			PIO112:terminal
+PIO111			PIO111:terminal
+PIO110			PIO110:terminal
+PIO127			PIO127:terminal
+PIO126			PIO126:terminal
+PIO125			PIO125:terminal
+PIO124			PIO124:terminal
+PIO123			PIO123:terminal
+PIO122			PIO122:terminal
+PIO121			PIO121:terminal
+PIO120			PIO120:terminal
+PIO137			PIO137:terminal
+PIO130			PIO130:terminal
+PIO147			PIO147:terminal
+PIO146			PIO146:terminal
+PIO145			PIO145:terminal
+PIO144			PIO144:terminal
+PIO143			PIO143:terminal
+PIO142			PIO142:terminal
+PIO141			PIO141:terminal
+PIO140			PIO140:terminal
+PIO156			PIO156:terminal
+PIO155			PIO155:terminal
+PIO154			PIO154:terminal
+PIO153			PIO153:terminal
+PIO152			PIO152:terminal
+PIO151			PIO151:terminal
+PIO150			PIO150:terminal
+PORTEN_B0		PORTEN_B0:terminal
+PORTEN_B1		PORTEN_B1:terminal
+PORTEN_B2		PORTEN_B2:terminal
+PORTEN_B3		PORTEN_B3:terminal
+PORTEN_B4		PORTEN_B4:terminal
+PORTEN_B5		PORTEN_B5:terminal
+PORTEN_B6		PORTEN_B6:terminal
+PORTEN_B7		PORTEN_B7:terminal
+PORTEN_B8		PORTEN_B8:terminal
+PORTEN_B9		PORTEN_B9:terminal
+PORTEN_B10		PORTEN_B10:terminal
+PORTEN_B11		PORTEN_B11:terminal
+PORTEN_B12		PORTEN_B12:terminal
+PORTEN_B13		PORTEN_B13:terminal
+PORTEN_B14		PORTEN_B14:terminal
+PORTEN_B16		PORTEN_B16:terminal
+PORTEN_B17		PORTEN_B17:terminal
+PORTEN_B18		PORTEN_B18:terminal
+PORTEN_B19		PORTEN_B19:terminal
+PORTEN_B20		PORTEN_B20:terminal
+p0eni   pericore.port0.eni
+p2eni   pericore.port2.eni
+p10eni  pericore.port10.eni
+p12eni  pericore.port12.eni
+p14eni  pericore.port14.eni
+p15eni  pericore.port15.eni
+fpga_pio0       portice.fpga_pio0
+fpga_pio1       portice.fpga_pio1
+fpga_pio2       portice.fpga_pio2
+fpga_pio3       portice.fpga_pio3
+fpga_pio4       portice.fpga_pio4
+fpga_pio5       portice.fpga_pio5
+fpga_pio6       portice.fpga_pio6
+fpga_pio7       portice.fpga_pio7
+fpga_pio8       portice.fpga_pio8
+fpga_pio9       portice.fpga_pio9
+fpga_pio10      portice.fpga_pio10
+fpga_pio11      portice.fpga_pio11
+fpga_pio12      portice.fpga_pio12
+fpga_pio13_7    portice.fpga_pio13_7
+fpga_pio13_0    portice.fpga_pio13_0
+fpga_pio14      portice.fpga_pio14
+fpga_pio15      portice.fpga_pio15

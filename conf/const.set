@@ -1,0 +1,49 @@
+#######################################################################
+#
+# Judgement Category & Reason for no applied constraint List file
+#
+#  Author : Koji HIJIKURO
+#
+#######################################################################
+#
+# [File Format]
+#   "Identifier":"contents"
+
+
+#
+# Category
+#   0          : Applied
+#   1          : Removed
+#   2          : Limit
+#   3 or above : Need to analize
+#
+
+C:3:[SCAN Path]Not need to apply. These relational circuit removed on synthesis operation because this path has scan signal. 
+C:4:[TEST Path]Not need to apply. These relational circuit removed on synthesis operation because this path has test signal. 
+C:5:[Removed by Synthesis]Not need to apply. This path meets the conditions of constraint do not exist in the circuit which is synthesized for FPGA.
+C:6:[GATE Path]Not need to apply. This path is a gate fo the device. The circuit for FPGA cannnot meet gate level to device.
+C:7:[Not Found]There are the logic pointed the constraint. But there are not data path pointed the constraint. 
+
+#
+# Constraint Path
+#
+
+P:modectl/modectl_tport/scanbuf1:3
+P:modectl/modectl_tport/scanbuf2:3
+P:modectl/test_se:4
+P:modectl/TESENI:4
+P:port\*/TDIN:4
+P:chip.TESENI:4
+P:modectl/modectl_tport/U235:4
+P:csc/cg/tbase/stby/stpst3_reg:5	
+P:port7/INTKR:5
+P:OPTOPLRD:5
+P:lvimd_p_reg_:5
+P:resctl_main/p214748365A846:6
+P:cibc/fmop/p214748365A13876:6
+P:pclbuz/main/p214748365:6
+P:cibc/U16:6
+P:cpu/clk/imdr:7
+P:rg/resctl_main/fih32m_cts:7	
+P:rg/lvictl/counter:7
+P:fcb/ICENOECC:7

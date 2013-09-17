@@ -1,0 +1,105 @@
+##################################################
+##
+## Synthesis Project File for Synplify Pro
+##
+##################################################
+
+
+#project files
+add_file -verilog "/home/m0001/rl0003/product/div-micom-ice/data/proj/RL78/Common/FICE/trunk/test/FMake/test.def"
+add_file -verilog "/home/m0001/rl0003/product/div-micom-ice/data/proj/RL78/Common/FICE/trunk/test/FMake/test_v2xml_define.v"
+add_file -verilog "/design01/iecube_rl78/Common/FMakeFiles/HDL/latest/ice.def"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/break.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/DFlashEmu1.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/test.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/iirl78coveragev1.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/host_interface.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/orbus-SS3rd.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/iirl78timerv1.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/bforebreak.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/ice_other.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/pseudoemu.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/iirl78timetagv1.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/status.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/ice_top_SS3rd.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/resetctl.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/iirl78tracev1.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/clockctl.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/iirl78eventv1.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/idversion.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/mask.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/iirl78ememv1.v"
+add_file -verilog "/home/product/div-micom-ice/data/proj/78K0R/Common/ICEMacroSuite/ICEMacro/tags/SS3rd_V1_2_7/iirl78failsafev1.v"
+add_file -verilog "/design01/iecube_rl78/Common/ReplaceMacro/latest/ierl78prtyerrv1.v"
+add_file -verilog "/design01/iecube_rl78/Common/ReplaceMacro/latest/MF3_Prim.v"
+add_file -verilog "/design01/iecube_rl78/Common/ReplaceMacro/latest/ieCommon.v"
+add_file -verilog "/design01/iecube_rl78/Common/ReplaceMacro/latest/QLK0RMULDIV1V1_MUL_ICE_bb.v"
+add_file -verilog "/design01/iecube_rl78/Common/ReplaceMacro/latest/QLK0RMULDIV2V1_MUL_ICE_bb.v"
+add_file -verilog "./tp/itrl78qbv1.v"
+add_file -verilog "/home/m0001/rl0003/product/div-micom-ice/data/proj/RL78/Common/FICE/trunk/test/FMake/FMakeConfigTest_df0.1_rev001_ICE.v"
+add_file -edif "/design01/iecube_rl78/Common/ReplaceMacro/latest/QLK0RMULDIV1V1_MUL.edf"
+add_file -edif "/design01/iecube_rl78/Common/ReplaceMacro/latest/QLK0RMULDIV2V1_MUL.edf"
+
+#implementation: "1_Synthesis"
+impl -add 1_Synthesis -type fpga
+
+#
+#implementation attributes
+
+set_option -vlog_std v2001
+set_option -num_critical_paths 10
+set_option -num_startend_points 10
+set_option -project_relative_includes 1
+
+#device options
+set_option -technology Virtex5
+set_option -part XC5VLX110
+set_option -package FF1153
+set_option -speed_grade -2
+set_option -part_companion ""
+
+#compilation/mapping options
+set_option -use_fsm_explorer 0
+set_option -top_module "R5F10PMFJ_EVA"
+
+# mapper_options
+set_option -frequency 1.00
+set_option -write_verilog 1
+set_option -write_vhdl 0
+
+# Xilinx Virtex2
+set_option -run_prop_extract 1
+set_option -maxfan 500
+set_option -disable_io_insertion 0
+set_option -pipe 1
+set_option -update_models_cp 1
+set_option -retiming 0
+set_option -no_sequential_opt 0
+set_option -fixgatedclocks 3
+set_option -fixgeneratedclocks 0
+
+# Xilinx Virtex5
+set_option -enable_prepacking 1
+
+# NFilter
+set_option -popfeed 0
+set_option -constprop 0
+set_option -createhierarchy 0
+
+# sequential_optimization_options
+set_option -symbolic_fsm_compiler 1
+
+# Compiler Options
+set_option -compiler_compatible 0
+set_option -resource_sharing 0
+
+#VIF options
+set_option -write_vif 1
+
+#automatic place and route (vendor) options
+set_option -write_apr_constraint 1
+
+#set result format/file last
+project -result_file "./1_Synthesis/R5F10PMFJ_EVA.edf"
+impl -active "1_Synthesis"
+

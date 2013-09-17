@@ -1,0 +1,54 @@
+// ====================
+// fclk cts
+// ====================
+module QLK0RCSC1V2_CG_CTS_FCLK ( clkin , scanclk , scanmode , clkout, ramclk );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+	output  ramclk;
+
+	wire clkoutp2 /* synthesis syn_keep=1 */;
+	wire clkoutp  /* synthesis syn_keep=1 */;
+	BUFG eramrt (.I(clkin),  .O(ramclk));
+	BUF dbuf1 (.I(ramclk),   .O(clkoutp2));
+        BUF dbuf2 (.I(clkoutp2), .O(clkoutp));
+	BUFG root (.I(clkoutp),  .O(clkout));
+
+endmodule
+
+// ====================
+// fih cts
+// ====================
+module QLK0RCSC1V2_CG_CTS_FIH ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+	BUFG    root ( .I(clkin), .O(clkout) );
+
+endmodule
+
+// ====================
+// fmx4 cts
+// ====================
+module QLK0RCSC1V2_CG_CTS_FMX4 ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+	BUFG    root ( .I(clkin), .O(clkout) );
+
+endmodule
+
+// ====================
+// fih4 cts
+// ====================
+module QLK0RCSC1V2_CG_CTS_FIH4 ( clkin , scanclk , scanmode , clkout );
+
+        input   clkin, scanclk, scanmode;
+        output  clkout;
+
+	BUFG    root ( .I(clkin), .O(clkout) );
+
+endmodule
+

@@ -1,0 +1,15 @@
+
+# M:InstanceName,ModuleName
+
+M:pericore.p12,P12
+M:pericore.p12_iobuf,P12_IOBUF
+
+
+# Connect Information
+
+pericore.p12.eni[2:0] -> pericore.p12_iobuf.eni[2:0]
+pericore.p12.eni[2:0] -> pericore.p12_iobuf.eni[2:0]
+pericore.p12.eni[2:0] -> pericore.p12_iobuf.eni[2:0]
+pericore.p12_iobuf.eni[2:0] <- pericore.p12.eni[2:0]
+pericore.p12_iobuf.eni[2:0] <- pericore.p12.eni[2:0]
+pericore.p12_iobuf.eni[2:0] <- pericore.p12.eni[2:0]

@@ -1,0 +1,220 @@
+// ==============================================================//
+//                                                               //
+// 78K0R series inten Macro                                      //
+//                                                               //
+//  Module   : KX4_CLDIST                                        //
+//  Date     : 2009/12/16                                        //
+//  Revision : 0.01                                              //
+//  Designer : MURATOMI (ryouta.muratomi@cnt.nms.necel.com)      //
+//                                                               //
+// ==============================================================//
+//                                                               //
+//  DATA        : 2010/1/29                                      //
+//  Change      : IICA, SV Mode                                  //
+//  Name Change : inpxx -> selxx                                 //
+//                                                               //
+// ==============================================================//
+
+module  KX4_CKDIST (
+			PRSCLK1,  PRSCLK2, PRSCLK3,  PRSCLK4,  PRSCLK5,  PRSCLK6 , PRSCLK7, 
+            		PRSCLK8,  PRSCLK9, PRSCLK10, PRSCLK11, PRSCLK12, PRSCLK13, PRSCLK14, PRSCLK15,
+ 			PRST003,  PRST002, PRST001,  PRST000,  PRST013,  PRST012,  PRST011,  PRST010,
+                        PRST021,  PRST020, PRST031,  PRST030,
+ 			PRSS003,  PRSS002, PRSS001,  PRSS000,  PRSS013,  PRSS012,  PRSS011,  PRSS010,
+ 			PRSS103,  PRSS102, PRSS101,  PRSS100,  PRSS113,  PRSS112,  PRSS111,  PRSS110,
+			PRSI000,
+			CK0TAU0,  CK1TAU0, CK2TAU0,  CK3TAU0,   
+			CK0SAU0,  CK1SAU0, CK0SAU1,  CK1SAU1,
+			CK0IIC0,
+			SVPERI0,  SVPERI1
+                        );
+ 
+ 	input	      	PRSCLK1,  PRSCLK2, PRSCLK3,  PRSCLK4,  PRSCLK5,  PRSCLK6,  PRSCLK7,
+			PRSCLK8,  PRSCLK9, PRSCLK10, PRSCLK11, PRSCLK12, PRSCLK13, PRSCLK14, PRSCLK15,
+                        PRST003,  PRST002, PRST001,  PRST000,  PRST013,  PRST012,  PRST011,  PRST010,
+                        PRST021,  PRST020, PRST031,  PRST030,
+                        PRSS003,  PRSS002, PRSS001,  PRSS000,  PRSS013,  PRSS012,  PRSS011,  PRSS010,
+                        PRSS103,  PRSS102, PRSS101,  PRSS100,  PRSS113,  PRSS112,  PRSS111,  PRSS110,
+			PRSI000,
+			SVPERI0,  SVPERI1 ;
+ 
+	output		CK0TAU0,  CK1TAU0, CK2TAU0,  CK3TAU0,   
+                        CK0SAU0,  CK1SAU0, CK0SAU1,  CK1SAU1,
+			CK0IIC0   ;
+
+//	wire		CK0TAU0,  CK1TAU0, CK2TAU0,  CK3TAU0,   
+//                      CK0SAU0,  CK1SAU0, CK0SAU1,  CK1SAU1,
+//			CK0IIC0   ;
+
+
+// TAU                                                           
+// ==============================================================
+
+	KX4_CKDIST_SEL0_1 TAU0CK0 (.in1(PRSCLK1),   .in2(PRSCLK2),   .in3(PRSCLK3),   .in4(PRSCLK4),
+   		                   .in5(PRSCLK5),   .in6(PRSCLK6),   .in7(PRSCLK7),   .in8(PRSCLK8),
+                                   .in9(PRSCLK9),   .in10(PRSCLK10), .in11(PRSCLK11), .in12(PRSCLK12),
+ 			           .in13(PRSCLK13), .in14(PRSCLK14), .in15(PRSCLK15),
+                                   .sel3(PRST003),  .sel2(PRST002),  .sel1(PRST001),  .sel0(PRST000), 
+			           .out(CK0TAU0),   .svm(SVPERI0)
+				   );
+
+        KX4_CKDIST_SEL0_1 TAU0CK1 (.in1(PRSCLK1),   .in2(PRSCLK2),   .in3(PRSCLK3),   .in4(PRSCLK4),
+                                   .in5(PRSCLK5),   .in6(PRSCLK6),   .in7(PRSCLK7),   .in8(PRSCLK8),
+                                   .in9(PRSCLK9),   .in10(PRSCLK10), .in11(PRSCLK11), .in12(PRSCLK12),
+                                   .in13(PRSCLK13), .in14(PRSCLK14), .in15(PRSCLK15),
+                                   .sel3(PRST013),  .sel2(PRST012),  .sel1(PRST011),  .sel0(PRST010), 
+                                   .out(CK1TAU0),   .svm(SVPERI0)
+			           );
+
+
+        KX4_CKDIST_SEL2_3 TAU0CK2 (.in1(PRSCLK1),   .in2(PRSCLK2),   .in3(PRSCLK4),   .in4(PRSCLK6),
+				   .sel1(PRST021),  .sel0(PRST020),  .out(CK2TAU0),   .svm(SVPERI0)
+				   );
+
+        KX4_CKDIST_SEL2_3 TAU0CK3 (.in1(PRSCLK8),   .in2(PRSCLK10),  .in3(PRSCLK12), .in4(PRSCLK14),
+                                   .sel1(PRST031),  .sel0(PRST030),  .out(CK3TAU0),  .svm(SVPERI0)
+				   );
+
+// SAU                                                           
+// ==============================================================
+
+        KX4_CKDIST_SEL0_1 SAU0CK0 (.in1(PRSCLK1),   .in2(PRSCLK2),   .in3(PRSCLK3),   .in4(PRSCLK4),
+                                   .in5(PRSCLK5),   .in6(PRSCLK6),   .in7(PRSCLK7),   .in8(PRSCLK8),
+                                   .in9(PRSCLK9),   .in10(PRSCLK10), .in11(PRSCLK11), .in12(PRSCLK12),
+                                   .in13(PRSCLK13), .in14(PRSCLK14), .in15(PRSCLK15),
+                                   .sel3(PRSS003),  .sel2(PRSS002),  .sel1(PRSS001),  .sel0(PRSS000), 
+                                   .out(CK0SAU0),   .svm(SVPERI1)
+				   );
+
+        KX4_CKDIST_SEL0_1 SAU0CK1 (.in1(PRSCLK1),   .in2(PRSCLK2),   .in3(PRSCLK3),   .in4(PRSCLK4),
+                                   .in5(PRSCLK5),   .in6(PRSCLK6),   .in7(PRSCLK7),   .in8(PRSCLK8),
+                                   .in9(PRSCLK9),   .in10(PRSCLK10), .in11(PRSCLK11), .in12(PRSCLK12),
+                                   .in13(PRSCLK13), .in14(PRSCLK14), .in15(PRSCLK15),
+                                   .sel3(PRSS013),  .sel2(PRSS012),  .sel1(PRSS011),  .sel0(PRSS010), 
+                                   .out(CK1SAU0),   .svm(SVPERI1)
+				   );
+
+        KX4_CKDIST_SEL0_1 SAU1CK0 (.in1(PRSCLK1),   .in2(PRSCLK2),   .in3(PRSCLK3),   .in4(PRSCLK4),
+                                   .in5(PRSCLK5),   .in6(PRSCLK6),   .in7(PRSCLK7),   .in8(PRSCLK8),
+                                   .in9(PRSCLK9),   .in10(PRSCLK10), .in11(PRSCLK11), .in12(PRSCLK12),
+                                   .in13(PRSCLK13), .in14(PRSCLK14), .in15(PRSCLK15),
+                                   .sel3(PRSS103),  .sel2(PRSS102),  .sel1(PRSS101),  .sel0(PRSS100), 
+                                   .out(CK0SAU1),   .svm(SVPERI1)
+				   );
+
+        KX4_CKDIST_SEL0_1 SAU1CK1 (.in1(PRSCLK1),   .in2(PRSCLK2),   .in3(PRSCLK3),   .in4(PRSCLK4),
+                                   .in5(PRSCLK5),   .in6(PRSCLK6),   .in7(PRSCLK7),   .in8(PRSCLK8),
+                                   .in9(PRSCLK9),   .in10(PRSCLK10), .in11(PRSCLK11), .in12(PRSCLK12),
+                                   .in13(PRSCLK13), .in14(PRSCLK14), .in15(PRSCLK15),
+                                   .sel3(PRSS113),  .sel2(PRSS112),  .sel1(PRSS111),  .sel0(PRSS110), 
+                                   .out(CK1SAU1),   .svm(SVPERI1)
+				   );
+
+// IICA
+// ==============================================================
+
+        KX4_CKDIST_IICA   IIC0CK0 (.in(PRSCLK1),   .en(PRSI000),  .out(CK0IIC0),  .svm(SVPERI1)
+				   );
+
+
+
+endmodule
+
+
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+
+
+//----------------------------------------------------------------------------
+// CLOCK0-1 < TAU, SAU >
+//----------------------------------------------------------------------------
+module KX4_CKDIST_SEL0_1(in1,  in2,  in3,  in4,  in5,  in6,  in7,  in8,  in9,
+		         in10, in11, in12, in13, in14, in15,
+		         sel3, sel2, sel1, sel0, out,  svm
+			 );
+
+	input 	in1,  in2,  in3,  in4,  in5,  in6,  in7,  in8,  in9,
+                in10, in11, in12, in13, in14, in15, 
+                sel3, sel2, sel1, sel0, svm   ;
+
+	output	out ;
+
+	reg	out     ;
+
+ always @( svm  or in1  or in2   or in3  or in4  or in5  or in6  or in7  or in8  or 
+	   in9  or in10 or in11  or in12 or in13 or in14 or in15 or sel3 or
+	   sel2 or sel1 or sel0  )  begin
+
+	casex ( {svm, sel3, sel2, sel1, sel0} )
+
+ 	 	( {1'b0, 4'b0000} )    : out = 1'b1    ;
+ 	 	( {1'b0, 4'b0001} )    : out = in1     ;
+		( {1'b0, 4'b0010} )    : out = in2     ;
+	 	( {1'b0, 4'b0011} )    : out = in3     ;
+		( {1'b0, 4'b0100} )    : out = in4     ;
+		( {1'b0, 4'b0101} )    : out = in5     ;
+		( {1'b0, 4'b0110} )    : out = in6     ;
+		( {1'b0, 4'b0111} )    : out = in7     ;
+		( {1'b0, 4'b1000} )    : out = in8     ;
+		( {1'b0, 4'b1001} )    : out = in9     ;
+		( {1'b0, 4'b1010} )    : out = in10    ;
+		( {1'b0, 4'b1011} )    : out = in11    ;
+		( {1'b0, 4'b1100} )    : out = in12    ;
+		( {1'b0, 4'b1101} )    : out = in13    ;
+		( {1'b0, 4'b1110} )    : out = in14    ;
+		( {1'b0, 4'b1111} )    : out = in15    ;
+                ( {1'b1, 4'bxxxx} )    : out = 1'b0    ;
+	endcase
+ end
+
+endmodule  
+
+
+
+//----------------------------------------------------------------------------
+//CLOCK2-3 < TAU > 
+//----------------------------------------------------------------------------
+module KX4_CKDIST_SEL2_3(in1,  in2,  in3,  in4,  sel1,  sel0,  out,  svm);
+
+	input	in1,  in2,  in3,  in4,  sel1,  sel0,  svm ;
+
+	output	out;
+
+	reg	out     ;
+
+ always @( svm or in1 or in2 or in3 or in4 or sel1 or sel0 ) begin
+	 casex ( {svm, sel1, sel0} )
+	  ( {1'b0,2'b00} )  : out = in1  ;
+	  ( {1'b0,2'b01} )  : out = in2  ;
+	  ( {1'b0,2'b10} )  : out = in3  ;
+	  ( {1'b0,2'b11} )  : out = in4  ;
+	  ( {1'b1,2'bxx} )  : out = 1'b0 ;
+   	 endcase
+
+  end
+
+endmodule 
+
+
+//----------------------------------------------------------------------------
+//CLOCK0 < IICA >
+//----------------------------------------------------------------------------
+module KX4_CKDIST_IICA(in, en, out, svm); 
+	
+  	input 	in, en, svm ;
+  	output	out         ;
+
+  	reg	out	    ;     
+	
+  always @( svm or en or in ) begin
+	case ( {svm, en} )
+	 ( 2'b00 ) : out = 1'b1 ;
+         ( 2'b01 ) : out = in   ;
+         ( 2'b10 ) : out = 1'b0 ;
+         ( 2'b11 ) : out = 1'b0 ;
+	endcase
+  end
+
+endmodule
+

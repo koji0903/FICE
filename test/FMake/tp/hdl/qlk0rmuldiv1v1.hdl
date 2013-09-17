@@ -1,0 +1,1046 @@
+/***********************************************************************/
+/*  Module Name : QLK0RMULDIV1V1    	                               */
+/*  Author      : Siva                                                 */
+/*  Rev, Date   : 0.10 2009/11/24                                      */
+/***********************************************************************/
+//²þÄêÍúÎò
+//  0.10    2007/06/11  Siva  First Relese
+//	Functional + DFT Release
+/************************************************************************/
+//³¬ÁØ¹½Â¤
+//      QLK0RMULDIV1V1
+//        +--QLK0RMULDIV1V1_BI
+//        +--QLK0RMULDIV1V1_MAIN
+//             +--QLK0RMULDIV1V1_REG
+//             +--QLK0RMULDIV1V1_CALCNT
+//             |    +--QLK0RMULDIV1V1_ENGEN
+//             |    +--QLK0RMULDIV1V1_REGSEL
+//             +--QLK0RMULDIV1V1_MUL
+//             +--QLK0RMULDIV1V1_MAC_DIV
+//
+/************************************************************************/
+
+module QLK0RMULDIV1V1 (
+
+	CPURD,		CPUWR,		PSELMD1,	PSELMD2,
+	MDW15,		MDW14,		MDW13,		MDW12,
+	MDW11,		MDW10,		MDW9,		MDW8,
+	MDW7,		MDW6,		MDW5,		MDW4,
+	MDW3,		MDW2,		MDW1,		MDW0,	
+	MDR15,		MDR14,		MDR13,		MDR12,
+	MDR11,		MDR10,		MDR9,		MDR8,
+	MDR7,		MDR6,		MDR5,		MDR4,
+	MDR3,		MDR2,		MDR1,		MDR0,
+	MA3,		MA2,		MA1,		MA0,
+	BASECK,		RESB,		SVSTOP,		INTMD,	
+	SCANMODE,	PCLKRW					// Included Control register write clock
+);		
+
+
+	input		BASECK;
+	input		PCLKRW;		// Control Register write clock definition
+	input		RESB;
+	input		SVSTOP;
+	input		CPURD;
+	input		CPUWR;
+	input		PSELMD1;
+	input		PSELMD2;
+	input		MA3,		MA2,		MA1,		MA0;
+	input		MDW15,		MDW14,		MDW13,		MDW12,
+			MDW11,		MDW10,		MDW9,		MDW8,
+			MDW7,		MDW6,		MDW5,		MDW4,
+			MDW3,		MDW2,		MDW1,		MDW0;
+	input		SCANMODE;
+
+	output		MDR15,		MDR14,		MDR13,		MDR12,
+			MDR11,		MDR10,		MDR9,		MDR8,
+			MDR7,		MDR6,		MDR5,		MDR4,
+			MDR3,		MDR2,		MDR1,		MDR0;
+	output		INTMD;
+
+	wire		we_mdal;
+	wire		we_mdah;
+	wire		we_mdb;
+	wire		we_mdbh;
+	wire		we_mdbl;
+	wire		we_mdch;	// MDCH Write Enable 
+	wire		we_mdcl;	// MDCL Write Enable
+	wire		we_mduc;
+	wire            DIVMODE;	
+	wire            DIVST;		
+	wire            MACMODE;	// MACMODE 
+	wire            MDSM;	        // MDSM 
+	wire            MACOF;		// MACOF
+	wire            MACSF;		// MACSF 
+	wire	[3:0]	MA;
+	wire	[15:0]	MDW;
+	wire	[15:0]	MDR;
+	wire    [15:0]  MDALO;		
+        wire    [15:0]  MDAHO;		
+        wire    [15:0]  MDBLO;		
+        wire    [15:0]  MDBHO;		
+        wire    [31:0]  MDCO;		
+
+	assign	MA = {MA3,MA2,MA1,MA0};
+	assign	MDW ={MDW15,MDW14,MDW13,MDW12,MDW11,MDW10,MDW9,MDW8,MDW7,MDW6,MDW5,MDW4,MDW3,MDW2,MDW1,MDW0};
+	assign	{MDR15,MDR14,MDR13,MDR12,MDR11,MDR10,MDR9,MDR8,MDR7,MDR6,MDR5,MDR4,MDR3,MDR2,MDR1,MDR0}= MDR;
+	
+
+/********************************************************************/
+/*CPU¥Ð¥¹¥¤¥ó¥¿¡¼¥Õ¥§¡¼¥¹Éô QLK0RMULDIV1V1_BI                       */
+/*------------------------------------------------------------------*/
+/*  1stSFR MDAH,MDAL,MDBH,MDBL¤Î¥¢¥¯¥»¥¹À©¸æ                        */
+/*  2ndSFR MDUC,MDCH,MDCL¤Î¥¢¥¯¥»¥¹À©¸æ                             */
+/********************************************************************/
+ QLK0RMULDIV1V1_BI bi (
+
+	.MA(MA),		.CPURD(CPURD),          .CPUWR(CPUWR),          .PSELMD1(PSELMD1),
+	.PSELMD2(PSELMD2),	
+	.MDR(MDR),
+	.we_mdal(we_mdal),	.we_mdah(we_mdah),	.we_mdb(we_mdb),	.we_mdbh(we_mdbh),
+	.we_mduc(we_mduc),	.we_mdbl(we_mdbl),      .we_mdch(we_mdch),      .we_mdcl(we_mdcl),   //Included we for MDC Reg 
+	.MDALO(MDALO),          .MDAHO(MDAHO),          .MDBLO(MDBLO),          .MDBHO(MDBHO),	
+	.MDCO(MDCO),            .DIVMODE(DIVMODE),      .DIVST(DIVST),	        
+        .MACMODE(MACMODE),      .MDSM(MDSM),            .MACOF(MACOF),          .MACSF(MACSF)    //Included new Register inputs 
+);
+
+/********************************************************************/
+/*¥á¥¤¥ó±é»»Éô QLK0RMULDIV1V1_MAIN                               */
+/*------------------------------------------------------------------*/
+/* ¾è»»±é»»16bit X 16bit = 32bit (Signed & Unsigned)                */
+/* Product Sum (16bit X 16bit) + 32bit  = 32bit (Signed & Unsigned) */
+/* ½ü»»±é»»32bit / 32bit = 32bit ...32bit                           */
+/* MDA¥ì¥¸¥¹¥¿¤Î¥é¥¤¥ÈÀ©¸æ      ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡                */
+/* MDB¥ì¥¸¥¹¥¿¤Î¥é¥¤¥ÈÀ©¸æ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡  */
+/* MDC¥ì¥¸¥¹¥¿¤Î¥é¥¤¥ÈÀ©¸æ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡  */
+/* MDCU¥ì¥¸¥¹¥¿¤Î¥é¥¤¥ÈÀ©¸æ                                         */ 
+/* ¾è»»±é»»¥¤¥Í¡¼¥Ö¥ëÀ¸À®¡¿À©¸æ                                     */
+/* ½ü»»±é»»¥¤¥Í¡¼¥Ö¥ëÀ¸À®¡¿À©¸æ					    */
+/* ProductSum¥¤¥Í¡¼¥Ö¥ëÀ¸À®¡¿À©¸æ				    */
+/*                                                                  */
+/********************************************************************/
+ QLK0RMULDIV1V1_MAIN main (
+	.BASECK(BASECK),	.RESB(RESB),		.SVSTOP(SVSTOP),	.MDW(MDW),
+	.we_mdal(we_mdal),	.we_mdah(we_mdah),	.we_mdb(we_mdb),	.we_mdbh(we_mdbh),
+	.we_mduc(we_mduc),	.INTMD(INTMD),		.we_mdbl(we_mdbl),
+	.MDALO(MDALO),          .MDAHO(MDAHO),          .MDBLO(MDBLO),          .MDBHO(MDBHO),		
+        .MDCO(MDCO),            .DIVMODE(DIVMODE),      .DIVST(DIVST),          .MACMODE(MACMODE),
+        .MDSM(MDSM),            .MACOF(MACOF),          .MACSF(MACSF),          .we_mdch(we_mdch),
+        .we_mdcl(we_mdcl),	.PCLKRW(PCLKRW)			                                    //Included MAC MODE Func signals, MDC register write enable signals and Control register write clock
+
+);
+
+endmodule
+
+/********************************************************************/
+/* Module Name : QLK0RMULDIV1V1_MAIN                             */
+/********************************************************************/
+module QLK0RMULDIV1V1_MAIN (
+
+	BASECK,		RESB,		SVSTOP,		INTMD,
+	MDW,		
+	we_mdal,	we_mdah,	we_mdb,		we_mdbh,
+	we_mduc,	we_mdbl,	we_mdch,        we_mdcl, // Included MDC register write enable signals
+        MDAHO,          MDALO,		MDBLO,		MDBHO,
+        MDCO,		DIVMODE,        DIVST,          MACMODE, // Included MACMODE Func registers
+        MDSM,		MACOF,		MACSF,		PCLKRW	 // Included control register clock				
+);
+
+
+	input		BASECK;
+	input		PCLKRW;		// Control register write clock definition
+	input		RESB;
+	input		SVSTOP;
+	input	[15:0]	MDW;
+	input		we_mdal;
+	input		we_mdah;
+	input		we_mdbl;
+	input		we_mdb;
+	input		we_mdbh;
+	input		we_mdch;	// Include MDC Lower Half-word register write signals
+	input		we_mdcl;	// Include MDC Upper Half-work wordregister write signals
+	input		we_mduc;
+
+	output		INTMD;
+	output          DIVMODE;		
+        output          DIVST;			
+	output		MACMODE;	// Macmode enable signal
+	output		MDSM;		// Signed mode enable signal
+	output		MACOF;		// Overflow flag register
+	output		MACSF;		// Signflag register
+        output  [15:0]  MDAHO;			
+        output  [15:0]  MDALO;			
+        output  [15:0]  MDBLO;			
+        output  [15:0]  MDBHO;			
+        output  [31:0]  MDCO;			
+
+	wire		DIVINIT1;
+	wire	[1:0]	DIVOUT;
+	wire	[15:0]	MDBHI;
+	wire	[15:0]	MDBLI;
+	wire	[15:0]	MDAHO;
+	wire	[15:0]	MDALO;
+	wire	[15:0]	MDBLO;
+	wire	[15:0]	MDBHO;
+	wire	[31:0]	MDCO;
+	wire	[31:0]	MULO;
+	wire	[31:0]	SPL;
+	wire	[15:0]	MULA;
+	wire	[15:0]	MULB;
+	wire		DIVMODE;
+	wire		DIVST;
+	wire		MULEN1;
+	wire		MDAHO15;
+	wire		MDAHO14;
+	wire	[15:0]	MDW;
+	wire		OVF;		// Overflow status signal
+	wire		SF;		// Sign status signal
+	wire 		MACEN1;         // MACMODE result load signal
+	wire 		PSMODE;         // Decoded MACMODE signal
+	wire 		PS_load;        // Decoded MACMODE  result load signal
+
+	assign MDAHO15 = MDAHO[15];
+	assign MDAHO14 = MDAHO[14];
+
+ QLK0RMULDIV1V1_REG reg1(
+
+	.BASECK(BASECK),	.RESB(RESB),		.MDW(MDW),		
+	.we_mdal(we_mdal),	.we_mdah(we_mdah),	.we_mdbh(we_mdbh),	.we_mduc(we_mduc),
+	.we_mdch(we_mdch),	.we_mdcl(we_mdcl),	.we_mdbl(we_mdbl),	.SPL(SPL),
+	.MULEN1(MULEN1),	.DIVOUT(DIVOUT),        .DIVMODE(DIVMODE),      .DIVINIT1(DIVINIT1),
+	.MDBHI(MDBHI),		.MDBLI(MDBLI),		.MDAHO(MDAHO),		.MACEN1(MACEN1),
+	.MDALO(MDALO),		.MDBHO(MDBHO),		.MDBLO(MDBLO),		.DIVST(DIVST),
+	.MDCO(MDCO),		.SVSTOP(SVSTOP),	.MACMODE(MACMODE),	.MDSM(MDSM),
+	.PSMODE(PSMODE),	.PS_load(PS_load),	.PCLKRW(PCLKRW)
+	
+);		// Included MACMODE, Sign mode signals  and Control register write clock signal
+
+
+ QLK0RMULDIV1V1_CALCNT calcnt(
+
+	.BASECK(BASECK),	.RESB(RESB),		.SVSTOP(SVSTOP),	.we_mdb(we_mdb),
+	.we_mduc(we_mduc),	.DIVMODE(DIVMODE),	.DIVST(DIVST),		.DIVINIT1(DIVINIT1),
+	.MULEN1(MULEN1),	.MACEN1(MACEN1),	.MDSM(MDSM),		.MACMODE(MACMODE),	
+	.MDW(MDW),		.MDBHI(MDBHI),		.MDBLI(MDBLI),		.MDAHO(MDAHO),
+	.MDALO(MDALO),		.MULA(MULA),		.MULB(MULB),		.MULO(MULO),
+	.INTMD(INTMD),		.OVF(OVF),		.SF(SF),		.MACOF(MACOF),
+	.MACSF(MACSF),		.PSMODE(PSMODE),	.PS_load(PS_load)
+);		// Included MACMODE & Sign mode FUNC Signals 
+
+
+ QLK0RMULDIV1V1_MUL mul(
+
+	.MULA(MULA),
+	.MULB(MULB),
+	.MULO(MULO),
+	.MDSM(MDSM)
+);		// Include Signed mode func signals
+
+
+ QLK0RMULDIV1V1_MAC_DIV mac_div(
+
+	.MDBHO(MDBHO),
+	.MDBLO(MDBLO),
+	.SPL(SPL),
+	.MDAHO15(MDAHO15),	
+	.MDAHO14(MDAHO14),	
+	.DIVOUT(DIVOUT),
+	.MDCO(MDCO),
+	.MDSM(MDSM),
+	.MACMODE(MACMODE),
+	.OVF(OVF),
+	.SF(SF),
+	.DIVMODE(DIVMODE),
+	.PSMODE(PSMODE)
+);		//  Included MACMODE & Sign mode FUNC Signals 
+
+endmodule
+/********************************************************************/
+/*¥á¥¤¥ó±é»»Éô QLK0RMULDIV1V1_CALCNT                                */
+/*------------------------------------------------------------------*/
+/* ¾è»»±é»»¥¤¥Í¡¼¥Ö¥ëÀ¸À®¡¿À©¸æ                                     */
+/* ½ü»»±é»»¥¤¥Í¡¼¥Ö¥ëÀ¸À®¡¿À©¸æ					    */
+/* ¾è»»¡¿½ü»»¥â¡¼¥É¤Ë¤è¤ë¥ì¥¸¥¹¥¿ÀÚ¤êÂØ¤¨À©¸æ                       */
+/*                                                                  */
+/********************************************************************/
+module  QLK0RMULDIV1V1_CALCNT(
+
+	BASECK,		RESB,		SVSTOP,		we_mdb,
+	we_mduc,	DIVMODE,	DIVST,		DIVINIT1,
+	MULEN1,		MACEN1,		MDSM,		MACMODE,	
+	MDW,		MDBHI,		MDBLI,		MDAHO,
+	MDALO,		MULA,		MULB,		MULO,
+	INTMD,		OVF,		SF,		MACOF,
+	MACSF,		PSMODE,	        PS_load		// Inlcuded MACMODE & Signmode Signals
+);
+
+	
+	input		BASECK;
+	input		RESB;
+	input		SVSTOP;
+	input		we_mdb;
+	input		we_mduc;
+	input		DIVMODE;
+	input		MACMODE;
+	input 		MDSM;
+	input		OVF;
+	input		SF;
+	input		PSMODE;
+	input		PS_load;
+	input	[15:0]	MDW;
+	input	[31:0]	MULO;
+	input	[15:0]	MDAHO;
+	input	[15:0]	MDALO;
+
+	output		DIVST;
+	output		MACOF;
+	output		MACSF;
+	output		DIVINIT1;
+	output		MULEN1;
+	output		MACEN1;
+	output		INTMD; 
+	output	[15:0]	MDBHI;
+	output	[15:0]	MDBLI;
+	output	[15:0]	MULA;
+	output	[15:0]	MULB;
+
+	wire		MDW0;
+	wire		MDW7;
+	wire		DIVINIT1;
+
+	assign	MDW0 = MDW[0];
+	assign	MDW7 = MDW[7];
+
+ QLK0RMULDIV1V1_ENGEN engen(
+
+	.BASECK(BASECK),	.RESB(RESB),		.SVSTOP(SVSTOP),	.we_mdb(we_mdb),
+	.we_mduc(we_mduc),	.DIVMODE(DIVMODE),	.DIVST(DIVST),		.DIVINIT1(DIVINIT1),
+	.MULEN1(MULEN1),	.MDW7(MDW7),		.MDW0(MDW0),		.INTMD(INTMD),
+	.MACOF(MACOF),		.MACSF(MACSF),		.OVF(OVF),		.SF(SF),
+	.MACMODE(MACMODE),	.MACEN1(MACEN1),	.MDSM(MDSM),		.PSMODE(PSMODE),	.PS_load(PS_load)	// Added MACMODE func Signals 
+);
+
+
+ QLK0RMULDIV1V1_REGSEL regsel(
+
+	.DIVMODE(DIVMODE),	.MDW(MDW),		.MDBHI(MDBHI),		.MDBLI(MDBLI),
+	.MDAHO(MDAHO),		.MDALO(MDALO),		.MULA(MULA),		.MULB(MULB),
+	.MULO(MULO)		
+); 
+
+endmodule
+/********************************************************************/
+/* Module Name : QLK0RMULDIV1V1_BI                                  */
+/********************************************************************/
+module QLK0RMULDIV1V1_BI (
+
+	CPURD,		CPUWR,		PSELMD1,	PSELMD2,
+	we_mdal,	we_mdah,	we_mdb,		we_mdbh,
+	we_mduc,	MA,		
+	MDR,
+	we_mdbl,        we_mdch,        we_mdcl,	          // Included new inputs 
+	MDAHO,          MDALO,          MDBHO,          MDBLO,			
+	MDCO,           DIVMODE,        MACMODE,        MDSM,     // Included new inputs 
+        MACOF,          MACSF,          DIVST		          // Included new inputs 
+);
+
+	input		CPURD;
+	input		CPUWR;
+	input		PSELMD1;
+	input		PSELMD2;
+	input           DIVMODE;		
+	input           MACMODE;      // MACMODE REG 
+	input           MDSM;	      // MDSM REG 
+	input           MACOF;	      // MACOF REG 
+	input           MACSF;	      // MACSF REG 
+	input           DIVST;			
+	input	[3:0]	MA;
+	input   [15:0]  MDAHO;			
+        input   [15:0]  MDALO;			
+        input   [15:0]  MDBHO;			
+        input   [15:0]  MDBLO;			
+        input   [31:0]  MDCO;			
+
+	output		we_mdal;
+	output		we_mdah;
+	output		we_mdbl;
+	output		we_mdch;
+	output		we_mdcl;
+	output		we_mdbh;
+	output		we_mdb;
+	output		we_mduc;
+	output	[15:0]	MDR;
+
+	wire		dec_mdal;
+	wire		dec_mdah;
+	wire		dec_mdbl;
+	wire		dec_mdbh;
+	wire		dec_mdcl;
+	wire		dec_mdch;
+	wire		dec_mduc;
+	wire		dec_mdb;
+	wire		psel_write1 ;
+	wire		psel_write2 ;
+	wire		psel_read1 ;
+	wire		psel_read2 ;
+	wire            sel_mdal;		
+        wire            sel_mdah;		
+        wire            sel_mdbl;		
+        wire            sel_mdbh;		
+        wire            sel_mdcl;		
+        wire            sel_mdch;		
+        wire            sel_mduc;		
+	wire    [15:0]  mdal_out;		
+        wire    [15:0]  mdah_out;		
+        wire    [15:0]  mdbl_out;		
+        wire    [15:0]  mdbh_out;		
+        wire    [15:0]  mdcl_out;		
+        wire    [15:0]  mdch_out;		
+        wire            mduc_out7;		
+        wire            mduc_out6;	// Included for MACMODE	
+        wire            mduc_out3;	// Included for MDSM	
+        wire            mduc_out2;	// Included for MACOF	
+        wire            mduc_out1;	// Included for MACSF	
+        wire            mduc_out0;		
+	wire	[3:0]	MA;
+	wire    [15:0]  MDR;			
+
+
+	// Address Decode
+	assign dec_mdal	= ( MA == 4'h0 );
+	assign dec_mdah	= ( MA == 4'h2 );
+	assign dec_mdbh	= ( MA == 4'h4 );
+	assign dec_mdbl	= ( MA == 4'h6 );
+	assign dec_mdch	= ( MA == 4'h2 );
+	assign dec_mdcl	= ( MA == 4'h0 );
+	assign dec_mduc	= ( MA == 4'h8 );
+	assign dec_mdb	= ( (dec_mdal & !MACMODE) | dec_mdah ); // MDAH write is trigger in MACMODE
+	 
+
+	// Write Enable
+	assign psel_write1 = PSELMD1 & CPUWR ;
+	assign psel_write2 = PSELMD2 & CPUWR ;
+
+	assign we_mdal	= dec_mdal & psel_write1 ;
+	assign we_mdah	= dec_mdah & psel_write1 ;
+	assign we_mdbh	= dec_mdbh & psel_write1 ;
+	assign we_mdbl	= dec_mdbl & psel_write1 ;
+	assign we_mdch	= dec_mdch & psel_write2 ;  // MDCH Write
+	assign we_mdcl	= dec_mdcl & psel_write2 ;  // MDCL Write
+	assign we_mduc	= dec_mduc & psel_write2 ;
+	assign we_mdb	= dec_mdb  & psel_write1 ;
+
+
+	// Read Enable
+	assign psel_read1 = PSELMD1 & CPURD ;
+	assign psel_read2 = PSELMD2 & CPURD ;
+
+	assign sel_mdal	= dec_mdal & psel_read1 ;
+	assign sel_mdah	= dec_mdah & psel_read1 ;
+	assign sel_mdbl	= dec_mdbl & psel_read1 ;
+	assign sel_mdbh	= dec_mdbh & psel_read1 ;
+	assign sel_mdcl	= dec_mdcl & psel_read2 ;
+	assign sel_mdch	= dec_mdch & psel_read2 ;
+	assign sel_mduc	= dec_mduc & psel_read2 ;
+
+	// Read Data Output Control
+//====================================================
+	assign mdal_out[15] = MDALO[15] & sel_mdal;
+        assign mdal_out[14] = MDALO[14] & sel_mdal;
+        assign mdal_out[13] = MDALO[13] & sel_mdal;
+        assign mdal_out[12] = MDALO[12] & sel_mdal;
+        assign mdal_out[11] = MDALO[11] & sel_mdal;
+        assign mdal_out[10] = MDALO[10] & sel_mdal;
+        assign mdal_out[9]  = MDALO[9]  & sel_mdal;
+        assign mdal_out[8]  = MDALO[8]  & sel_mdal;
+        assign mdal_out[7]  = MDALO[7]  & sel_mdal;
+        assign mdal_out[6]  = MDALO[6]  & sel_mdal;
+        assign mdal_out[5]  = MDALO[5]  & sel_mdal;
+        assign mdal_out[4]  = MDALO[4]  & sel_mdal;
+        assign mdal_out[3]  = MDALO[3]  & sel_mdal;
+        assign mdal_out[2]  = MDALO[2]  & sel_mdal;
+        assign mdal_out[1]  = MDALO[1]  & sel_mdal;
+        assign mdal_out[0]  = MDALO[0]  & sel_mdal;
+        assign mdah_out[15] = MDAHO[15] & sel_mdah;
+        assign mdah_out[14] = MDAHO[14] & sel_mdah;
+        assign mdah_out[13] = MDAHO[13] & sel_mdah;
+        assign mdah_out[12] = MDAHO[12] & sel_mdah;
+        assign mdah_out[11] = MDAHO[11] & sel_mdah;
+        assign mdah_out[10] = MDAHO[10] & sel_mdah;
+        assign mdah_out[9]  = MDAHO[9]  & sel_mdah;
+	assign mdah_out[8]  = MDAHO[8]  & sel_mdah;
+        assign mdah_out[7]  = MDAHO[7]  & sel_mdah;
+        assign mdah_out[6]  = MDAHO[6]  & sel_mdah;
+        assign mdah_out[5]  = MDAHO[5]  & sel_mdah;
+        assign mdah_out[4]  = MDAHO[4]  & sel_mdah;
+        assign mdah_out[3]  = MDAHO[3]  & sel_mdah;
+        assign mdah_out[2]  = MDAHO[2]  & sel_mdah;
+        assign mdah_out[1]  = MDAHO[1]  & sel_mdah;
+        assign mdah_out[0]  = MDAHO[0]  & sel_mdah;
+
+	assign mdbl_out[15] = MDBLO[15] & sel_mdbl;
+        assign mdbl_out[14] = MDBLO[14] & sel_mdbl;
+        assign mdbl_out[13] = MDBLO[13] & sel_mdbl;
+        assign mdbl_out[12] = MDBLO[12] & sel_mdbl;
+        assign mdbl_out[11] = MDBLO[11] & sel_mdbl;
+        assign mdbl_out[10] = MDBLO[10] & sel_mdbl;
+        assign mdbl_out[9]  = MDBLO[9]  & sel_mdbl;
+        assign mdbl_out[8]  = MDBLO[8]  & sel_mdbl;
+        assign mdbl_out[7]  = MDBLO[7]  & sel_mdbl;
+        assign mdbl_out[6]  = MDBLO[6]  & sel_mdbl;
+        assign mdbl_out[5]  = MDBLO[5]  & sel_mdbl;
+        assign mdbl_out[4]  = MDBLO[4]  & sel_mdbl;
+        assign mdbl_out[3]  = MDBLO[3]  & sel_mdbl;
+        assign mdbl_out[2]  = MDBLO[2]  & sel_mdbl;
+        assign mdbl_out[1]  = MDBLO[1]  & sel_mdbl;
+        assign mdbl_out[0]  = MDBLO[0]  & sel_mdbl;
+        assign mdbh_out[15] = MDBHO[15] & sel_mdbh;
+        assign mdbh_out[14] = MDBHO[14] & sel_mdbh;
+        assign mdbh_out[13] = MDBHO[13] & sel_mdbh;
+        assign mdbh_out[12] = MDBHO[12] & sel_mdbh;
+        assign mdbh_out[11] = MDBHO[11] & sel_mdbh;
+        assign mdbh_out[10] = MDBHO[10] & sel_mdbh;
+        assign mdbh_out[9]  = MDBHO[9]  & sel_mdbh;
+        assign mdbh_out[8]  = MDBHO[8]  & sel_mdbh;
+        assign mdbh_out[7]  = MDBHO[7]  & sel_mdbh;
+        assign mdbh_out[6]  = MDBHO[6]  & sel_mdbh;
+        assign mdbh_out[5]  = MDBHO[5]  & sel_mdbh;
+        assign mdbh_out[4]  = MDBHO[4]  & sel_mdbh;
+        assign mdbh_out[3]  = MDBHO[3]  & sel_mdbh;
+        assign mdbh_out[2]  = MDBHO[2]  & sel_mdbh;
+        assign mdbh_out[1]  = MDBHO[1]  & sel_mdbh;
+        assign mdbh_out[0]  = MDBHO[0]  & sel_mdbh;
+
+	assign mdch_out[15] = MDCO[31] & sel_mdch;
+	assign mdch_out[14] = MDCO[30] & sel_mdch;
+        assign mdch_out[13] = MDCO[29] & sel_mdch;
+        assign mdch_out[12] = MDCO[28] & sel_mdch;
+        assign mdch_out[11] = MDCO[27] & sel_mdch;
+        assign mdch_out[10] = MDCO[26] & sel_mdch;
+        assign mdch_out[9]  = MDCO[25] & sel_mdch;
+        assign mdch_out[8]  = MDCO[24] & sel_mdch;
+        assign mdch_out[7]  = MDCO[23] & sel_mdch;
+        assign mdch_out[6]  = MDCO[22] & sel_mdch;
+        assign mdch_out[5]  = MDCO[21] & sel_mdch;
+        assign mdch_out[4]  = MDCO[20] & sel_mdch;
+        assign mdch_out[3]  = MDCO[19] & sel_mdch;
+        assign mdch_out[2]  = MDCO[18] & sel_mdch;
+        assign mdch_out[1]  = MDCO[17] & sel_mdch;
+        assign mdch_out[0]  = MDCO[16] & sel_mdch;
+        assign mdcl_out[15] = MDCO[15] & sel_mdcl;
+        assign mdcl_out[14] = MDCO[14] & sel_mdcl;
+        assign mdcl_out[13] = MDCO[13] & sel_mdcl;
+        assign mdcl_out[12] = MDCO[12] & sel_mdcl;
+        assign mdcl_out[11] = MDCO[11] & sel_mdcl;
+        assign mdcl_out[10] = MDCO[10] & sel_mdcl;
+        assign mdcl_out[9]  = MDCO[9]  & sel_mdcl;
+        assign mdcl_out[8]  = MDCO[8]  & sel_mdcl;
+        assign mdcl_out[7]  = MDCO[7]  & sel_mdcl;
+        assign mdcl_out[6]  = MDCO[6]  & sel_mdcl;
+        assign mdcl_out[5]  = MDCO[5]  & sel_mdcl;
+        assign mdcl_out[4]  = MDCO[4]  & sel_mdcl;
+        assign mdcl_out[3]  = MDCO[3]  & sel_mdcl;
+        assign mdcl_out[2]  = MDCO[2]  & sel_mdcl;
+        assign mdcl_out[1]  = MDCO[1]  & sel_mdcl;
+        assign mdcl_out[0]  = MDCO[0]  & sel_mdcl;
+
+	assign mduc_out7    = DIVMODE  & sel_mduc;
+	assign mduc_out6    = MACMODE  & sel_mduc;  // Macmode Reg 
+	assign mduc_out3    = MDSM     & sel_mduc;  // MDSM Reg 
+	assign mduc_out2    = MACOF    & sel_mduc;  // MACOF Reg 
+	assign mduc_out1    = MACSF    & sel_mduc;  // MACSF Reg 
+        assign mduc_out0    = DIVST    & sel_mduc;
+
+        assign MDR = mdal_out | mdah_out | mdbl_out | mdbh_out | mdcl_out | mdch_out | {8'b0, mduc_out7, mduc_out6, 2'b0, mduc_out3, mduc_out2, mduc_out1, mduc_out0}; //Included new Registers 
+
+endmodule
+
+/********************************************************************/
+/* Module Name : QLK0RMULDIV1V1_REG                                 */
+/********************************************************************/
+module QLK0RMULDIV1V1_REG (
+
+	BASECK,		RESB,
+	we_mdbl,        we_mdch, 	we_mdcl,                        // Included Write Enable for MDC registers 
+	we_mdal,	we_mdah,	we_mdbh,	we_mduc,
+	MULEN1,		DIVOUT,         DIVMODE,        DIVINIT1,
+	MDW,		MACMODE,        MDSM,		MACEN1,		// Included MACMODE & Signmode Registers 
+	MDBHI,
+	MDBLI,		MDAHO,		MDALO,		MDBHO,
+	MDBLO,		DIVST,		MDCO,		SPL,
+	SVSTOP,		PSMODE,		PS_load,	PCLKRW		// Included control register write clock
+);
+
+
+	input		BASECK;
+	input		PCLKRW;		// Control register write clock definition		
+	input		RESB;
+	input		we_mdal;
+	input		we_mdah;
+	input		we_mdbl;
+	input		we_mdbh;
+	input		we_mdcl;	// Included MACMODE & Signmode Registers 
+	input		we_mdch;
+	input		we_mduc;
+	input		SVSTOP;
+
+	input		MULEN1;		
+	input		MACEN1;		// PSMODE result loading signal	from ENGEN module
+	input	[1:0]	DIVOUT;
+	input		DIVINIT1;
+	input		DIVST;
+	input	[15:0]	MDW;
+	input	[31:0]	SPL;
+
+	input	[15:0]	MDBHI;
+	input	[15:0]	MDBLI;
+	output	[15:0]	MDAHO;
+	output	[15:0]	MDALO;
+	output	[15:0]	MDBHO;
+	output	[15:0]	MDBLO;
+	output	[31:0]	MDCO;
+	output		DIVMODE;
+	output		MACMODE;	// MACMODE register signal
+	output		MDSM;		// SIGNMODE register signal
+	output		PS_load;	// MACMODE result load enable
+	output		PSMODE;		// MACMODE decoded output
+
+	reg		DIVMODE;
+	reg		MACMODE;	// MACMODE register declaration
+	reg		MDSM;		// SIGNMODE register declaration
+	reg	[15:0]	MDALO;
+	reg	[15:0]	MDAHO;
+	reg	[15:0]	MDBLO;
+	reg	[15:0]	MDBHO;
+	reg	[15:0]	MDCLO;
+	reg	[15:0]	MDCHO;
+
+	wire		mdah_en;
+	wire		mdal_en;
+	wire		mdbh_en;
+	wire		mdbl_en;
+	wire		mdc_en;
+	wire	[15:0]	MDW;
+	wire		DIVINIT1;
+	wire	[31:0]	MDCO;
+	assign	MDCO = {MDCHO,MDCLO};
+	assign PSMODE = (MACMODE & !DIVMODE);
+
+/*******************************************************************/
+/* MDUC¥ì¥¸¥¹¥¿¡¡Bit7(DIVMODE)                                     */
+/*******************************************************************/
+	//synopsys async_set_reset "RESB"
+	always @(posedge PCLKRW or negedge RESB) begin // Modified clock input as PCLKRW
+		if (!RESB)
+			DIVMODE <= 1'b0;
+		else if (we_mduc == 1'b1) begin
+			DIVMODE <= MDW[7];
+		end
+	end
+/*******************************************************************/
+/* MDUC¥ì¥¸¥¹¥¿¡¡Bit6(MACMODE - Added by Siva)                     */
+/*******************************************************************/
+	//synopsys async_set_reset "RESB"
+
+	always @(posedge PCLKRW or negedge RESB) begin  // Clock is PCLKRW
+		if (!RESB)
+			MACMODE <= 1'b0;
+		else if (we_mduc == 1'b1) begin
+			MACMODE <= MDW[6];
+		end
+	end
+
+/*******************************************************************/
+/* MDUC¥ì¥¸¥¹¥¿¡¡Bit3(MDSM - Added by Siva)                        */
+/*******************************************************************/
+	//synopsys async_set_reset "RESB"
+	always @(posedge PCLKRW or negedge RESB) begin // Clock is PCLKRW
+		if (!RESB)
+			MDSM <= 1'b0;
+		else if (we_mduc == 1'b1) begin
+			MDSM <= MDW[3];
+		end
+	end
+
+/********************************************************************/
+/* MDAL¥ì¥¸¥¹¥¿¡¡                                                   */
+/********************************************************************/
+	assign mdal_en = (( DIVST | we_mdal) & ~( SVSTOP & DIVST ));
+
+	//synopsys async_set_reset "RESB"
+	always @(posedge BASECK or negedge RESB) begin
+		if (!RESB)
+			MDALO <= 16'h0;
+		else if (mdal_en == 1'b1) begin 
+		    if (we_mdal == 1'b1)
+			MDALO <= MDW;
+		    else 
+			MDALO <= {MDALO[13:0],DIVOUT};
+		end
+	end
+/********************************************************************/
+/* MDAH¥ì¥¸¥¹¥¿¡¡                                                   */
+/********************************************************************/
+	assign mdah_en = ((DIVST | we_mdah ) & ~( SVSTOP & DIVST ));
+
+	//synopsys async_set_reset "RESB"
+	always @(posedge BASECK or negedge RESB) begin
+		if (!RESB)
+			MDAHO <= 16'h0;
+		else if (mdah_en == 1'b1) begin
+		    if(we_mdah == 1'b1)	
+			MDAHO <= MDW;
+		    else 
+			MDAHO <= {MDAHO[13:0],MDALO[15],MDALO[14]};
+		end
+	end	
+/********************************************************************/
+/* MDBL¥ì¥¸¥¹¥¿¡¡                                                   */
+/********************************************************************/
+         assign mdbl_en =  (~(~MULEN1 | DIVMODE ) | we_mdbl) & ~( SVSTOP & DIVST ) ;
+
+        //synopsys async_set_reset "RESB"
+        always @(posedge BASECK or negedge RESB) begin
+                if (!RESB)
+                        MDBLO <= 16'h0;
+                else if (mdbl_en == 1'b1) begin
+                        MDBLO <= MDBLI;
+                end
+        end
+/********************************************************************/
+/* MDBH¥ì¥¸¥¹¥¿¡¡                                                   */
+/********************************************************************/
+         assign mdbh_en =  (~(~MULEN1 | DIVMODE ) | we_mdbh) & ~( SVSTOP & DIVST ) ;
+
+        //synopsys async_set_reset "RESB"
+        always @(posedge BASECK or negedge RESB) begin
+                if (!RESB)
+                        MDBHO <= 16'h0;
+                else if (mdbh_en == 1'b1) begin
+                        MDBHO <= MDBHI;
+                end
+        end
+/********************************************************************/
+/* MDCL¥ì¥¸¥¹¥¿¡¡                                                   */
+/********************************************************************/
+	assign mdc_en     = (( DIVINIT1 | DIVST )  & ~SVSTOP ) ;
+	assign PS_load    = (MACEN1 & !SVSTOP); // Product-sum result load
+
+	//synopsys async_set_reset "RESB"
+	always @(posedge BASECK or negedge RESB) begin
+		if (!RESB)
+			MDCLO <= 16'h0;
+		else if (PSMODE & we_mdcl)		// S/w write 
+                       MDCLO <= MDW;		// MDCL S/w Write 
+		else if (PS_load)		// Load MACMODE result when no system break 
+		       MDCLO <= SPL[15:0];      // Product-sum Output Write 
+		else if (mdc_en == 1'b1) begin
+		    if (DIVINIT1 == 1'b1)
+			MDCLO <= 16'h0;
+		    else
+			MDCLO <= SPL[15:0];
+		end
+	end
+/********************************************************************/
+/* MDCH¥ì¥¸¥¹¥¿¡¡                                                   */
+/********************************************************************/
+
+	//synopsys async_set_reset "RESB"
+	always @(posedge BASECK or negedge RESB) begin
+		if (!RESB)
+			MDCHO <= 16'h0;
+                else if (PSMODE & we_mdch)		// S/w write
+                       MDCHO <= MDW;		// MDCL S/w wire 
+		else if (PS_load)		// Load MACMODE result when no system break   
+		       MDCHO <= SPL[31:16];	// Product-sum Output mode 
+		else if (mdc_en == 1'b1) begin
+		    if (DIVINIT1 == 1'b1)
+			MDCHO <= 16'h0;
+		    else
+			MDCHO <= SPL[31:16];
+		end
+	end
+
+endmodule
+
+/********************************************************************/
+/* Module Name : QLK0RMULDIV1V1_ENGEN                               */
+/********************************************************************/
+module QLK0RMULDIV1V1_ENGEN(
+	
+	BASECK,		RESB,		SVSTOP,		we_mdb,
+	we_mduc,	DIVMODE,	DIVST,		DIVINIT1,
+	MULEN1,		MACEN1,		MDW7,		MDW0,   //Included MACMODE func signals
+	MACSF,		MACOF,		MACMODE,	INTMD,  //Included MACMODE func signals
+	OVF,		SF,		MDSM,		PSMODE, //Included MACMODE func signals
+	PS_load   // Include MACMODE func signals 
+);
+
+	input		BASECK;
+	input		RESB;
+	input		SVSTOP;
+	input		we_mdb;
+	input		we_mduc;
+	input		DIVMODE;
+	input		MDW7;
+	input		MDW0;
+	input 		MACMODE;	// MACMODE control register value
+	input 		OVF;		// Overflow value of MACMODE result
+	input 		SF;		// Sign value of MACMODE result
+	input 		MDSM;		// SIGNMODE control register value
+	input 		PSMODE;		// Decoded MACMODE value
+	input 		PS_load;	// Interrupt and Status register load signal
+
+	output		DIVST;
+	output		MACOF;		// Overflow status register signal
+	output		MACSF;		// Signflag status register signal
+	output		DIVINIT1;
+	output		MULEN1;
+	output		MACEN1;   	// MACMODE result value load enable
+	output		INTMD; 
+
+	reg		DIVST;
+	reg 		MACOF;   	// Register declaration	
+	reg		INTMD;
+	reg	[3:0]	counter;
+	reg		MULEN1;
+	reg		MACEN1;   	// Register declaration
+
+	wire		MACSF;   	// Wire declaration
+	wire		DIVSTCLR1;
+	wire		DIVST_en;
+	wire		ctr_ld;
+	wire		ctr_en;
+	wire		mule_en;
+	wire		mode_sel;
+	wire		div_start;
+	wire		divst_msk;
+	
+
+/********************************************************************/
+/* ½ü»»¥¤¥Í¡¼¥Ö¥ë(DIVST)À¸À®                                        */
+/********************************************************************/
+//¡ö½ü»»±é»»´°Î»»þ¡¢DIVST¡á£°¤Ë¤¹¤ë¡£
+//¡ö½ü»»±é»»Ãæ¤Ë¡¢¾è»»¥â¡¼¥É¤ËÀÚ¤êÂØ¤ï¤Ã¤¿»þ¡¢DIVST¡á£°¤Ë¤¹¤ë¡£
+
+	assign mode_sel  = we_mduc & ~MDW7 & DIVMODE;		//½ü»»¢ª¾è»»¤ØÀÚ¤êÂØ¤¨»þ¤Î£±¥·¥ç¥Ã¥È v0.30 06_28
+	assign divst_msk = we_mduc & ~DIVMODE ;			//MUL MODE deno DIVST Write Mask
+	assign div_start = we_mduc & MDW0  & ~DIVST;    	//¾è»»¢ª½ü»»¤ØÀÚ¤êÂØ¤¨»þ¤Î£±¥·¥ç¥Ã¥È
+	assign DIVST_en  = div_start | mode_sel | DIVSTCLR1 ;	//v0.60 SVSTOP del 2007_07_06
+	//synopsys async_set_reset "RESB"
+        always @(posedge BASECK or negedge RESB) begin
+                if (!RESB)
+                    DIVST <= 1'b0;
+                else if (DIVST_en == 1'b1) begin
+                    if (( mode_sel | DIVSTCLR1 | divst_msk )  == 1'b1)
+                        DIVST <= 1'b0;
+                        else if (MDW0 == 1'b1)
+                            DIVST <= 1'b1;	//DIVMODE=£±¤ÇMDW£°=£±¤Ê¤é¤ÐDIVST=£±
+                end
+        end
+
+	
+	assign DIVSTCLR1 = counter[3] & counter[2] & counter[1] & counter[0] & ~SVSTOP ;  //v1.10 SVSTOP add 2008_05_20
+	assign DIVINIT1  = div_start & DIVMODE & MDW7;				 //v0.40    2007/07/02
+	assign ctr_ld 	 = (div_start | DIVSTCLR1 | mode_sel) & DIVMODE;
+	assign ctr_en 	 = (ctr_ld | DIVST | DIVSTCLR1 | mode_sel) & ~SVSTOP;
+
+	//synopsys async_set_reset "RESB"
+	always @(posedge BASECK or negedge RESB) begin
+		if (!RESB)
+			counter <= 4'b0000;
+		else if(ctr_en == 1'b1) begin
+		    if( ctr_ld == 1'b1)
+			counter <= 4'b0000;
+		    else 
+			counter <= counter + 4'b0001;
+		end
+	end
+
+/********************************************************************/
+/* ¾è»»¥¤¥Í¡¼¥Ö¥ëÀ¸À®                                               */
+/********************************************************************/
+	assign mule_en = ((we_mdb | MULEN1 ) & ~DIVMODE) ;
+
+	//synopsys async_set_reset "RESB"
+	always @(posedge BASECK or negedge RESB) begin
+		if (!RESB)
+	    	    MULEN1 <= 1'b0;
+		else if (PSMODE & SVSTOP) // Preserve MULEN1 value during break 
+		    MULEN1 <= MULEN1;	  // Latching same value
+		else if (mule_en == 1'b1) begin
+	  	    MULEN1 <= we_mdb;
+		end
+	end
+
+
+/********************************************************************/
+/* Product-sum result loading enable logic(Added by Siva)	    */
+/********************************************************************/
+
+	//synopsys async_set_reset "RESB"
+	always @(posedge BASECK or negedge RESB) begin
+		if (!RESB)
+	    	    MACEN1 <= 1'b0;
+		else if (!PSMODE)
+	    	    MACEN1 <= 1'b0;
+		else if (PSMODE & !SVSTOP)  begin // MACEN1 update condtion when no break in PSMODE 
+	  	    MACEN1 <= MULEN1; 	      	  // Delaying MULEN1 value
+		end
+	end
+
+/********************************************************************/
+/* Product-sum OVERFLOW REGISTER  logic (Added by Siva)		    */
+/********************************************************************/
+	
+	//synopsys async_set_reset "RESB"
+	always @(posedge BASECK or negedge RESB) begin
+		if (!RESB)
+	    	    MACOF <= 1'b0;
+		else if (MULEN1 | DIVST)	// Clearing Overflow flag when MULEN1.
+		    MACOF <= 1'b0;
+		else if (PS_load) 		// Updating STATUS Register during MACEN1 and no break.
+	  	    MACOF <= OVF ;
+	end
+
+/********************************************************************/
+/* Product-sum SIGN FLAG REGISTER  logic 			    */
+/********************************************************************/
+
+	assign MACSF =  MDSM & SF; // Sign flag is set when MDSM = 1 in MACMODE 
+
+/********************************************************************/
+/* I½INTERRUPT ENABLE GEN FOR MACMODE OVERFLOW & DIVISION COMPLETIO */
+/********************************************************************/
+	//synopsys async_set_reset "RESB"
+	always @(posedge BASECK or negedge RESB) begin
+		if (!RESB)
+	    	    INTMD <= 1'b0;
+		else if (PS_load)	 	// Interrupt generation for OVERFLOW 
+		    INTMD <= OVF;		// Overflow value of MACMODE operation
+		else if ((DIVST & DIVSTCLR1) | INTMD == 1'b1) begin // Interrupt setting during DIVISION completion.
+	  	    INTMD <= DIVSTCLR1 & !MACMODE;	// No Interrupt when MACMODE in DIVMODE.
+		end
+	end
+	
+endmodule
+
+/********************************************************************/
+/* Module Name : QLK0RMULDIV1V1_REGSEL                           */
+/********************************************************************/
+module QLK0RMULDIV1V1_REGSEL(
+	
+	MDW,		DIVMODE,	MDBHI,		MDBLI,
+	MDAHO,		MDALO,		MULA,		MULB,
+	MULO
+);
+
+
+	input		DIVMODE;
+	input	[15:0]	MDW;
+	input	[31:0]	MULO;
+	input	[15:0]	MDAHO;
+	input	[15:0]	MDALO;
+
+	output	[15:0]	MDBHI;
+	output	[15:0]	MDBLI;
+	output	[15:0]	MULA;
+	output	[15:0]	MULB;
+
+	
+	wire	[15:0]	MDBHI;
+	wire	[15:0]	MULA;
+	wire	[15:0]	MULB;
+	wire	[31:0]	MULO;
+
+
+	assign MDBLI = (DIVMODE) ? MDW 		: MULO[15:0];
+	assign MDBHI = (DIVMODE) ? MDW 		: MULO[31:16];
+	assign MULA  = (DIVMODE) ? 16'h0000 	: MDAHO;
+	assign MULB  = (DIVMODE) ? 16'h0000 	: MDALO;
+
+
+endmodule
+
+/********************************************************************/
+/* Module Nane : QLK0RMULDIV1V1_MUL   16bit*16bit=32bit             */
+/********************************************************************/
+`ifndef FPGA_ICE
+module QLK0RMULDIV1V1_MUL(
+
+	MDSM, 		MULA,		MULB,		MULO	// Added Signed mode control input
+);
+
+
+	input	[15:0]	MULA;
+	input	[15:0]	MULB;
+	input	 	MDSM;
+
+	output	[31:0]	MULO;
+
+	wire	[31:0]	result;
+
+	assign	MULO = result;
+
+	DW02_mult #(16,16) Mult_U1 (.A(MULA), .B(MULB), .TC(MDSM), .PRODUCT(result)); 
+	// Include signed mode control bit.
+
+endmodule
+`endif
+
+/********************************************************************/
+/* Module Nane : QLK0RMULDIV1V1_DIV                              */
+/*   32bit/32bit=32bit ...32bit   				    */
+/*   32bit+32bit=32bit         (Unsigned)  			    */
+/*   32bit+32bit=32bit         (Signed)				    */
+/********************************************************************/
+module QLK0RMULDIV1V1_MAC_DIV(
+
+	MDAHO15,	MDBHO,		MDBLO,		SPL,
+	DIVOUT,		MDAHO14,	MDCO, 		MDSM,	// Included MACMODE signals
+	DIVMODE,	MACMODE, 	OVF,		SF,	// Included MACMODE signals
+	PSMODE							// Included MACMODE func Signals
+);
+
+	input		MDAHO15;
+	input		MDAHO14;
+        input           MACMODE;
+        input           DIVMODE;
+        input           MDSM;		// Signed mode signal
+	input	[15:0]	MDBHO;
+	input	[15:0]	MDBLO;
+	input	[31:0]	MDCO;
+	input		PSMODE;		// Decoded MACMODE signal
+	output	[31:0]	SPL;
+	output	[1:0]	DIVOUT;
+	output		OVF;		// Overflow value of MACMODE result
+	output		SF;		// Sign value of Signed MACMODE result
+
+	wire	[31:0]	SUBOUT1;
+	wire	[31:0]	SUBOUT2;
+	wire		bout1;
+	wire		bout2;
+	wire	[31:0]	SPL1,SPL2;
+	wire 		OVERFLOW;
+	wire		ovf_cond;		// Overflow value condition
+
+	assign {bout1,SUBOUT1} = {MDCO,MDAHO15} - {1'b0,MDBHO,MDBLO};  // Unmodified HDL 
+	assign SPL1 =  bout1 ? {MDCO[30:0],MDAHO15} : SUBOUT1;  //Unmodified HDL 
+
+//	assign {bout2,SUBOUT2} = {SPL1,MDAHO14} - {1'b0,MDBHO,MDBLO};  // Original Logic
+
+	assign {bout2,SUBOUT2} = PSMODE?({MDBHO,MDBLO} + MDCO) : ({SPL1,MDAHO14} - {1'b0,MDBHO,MDBLO});  // IN PRODUCT SUM MODE ADDER IS SELECTED AND IN DIVIDER MODE SUBTRACTOR(ORIGINAL LOGIC) IS USED.
+
+        assign ovf_cond = (((MDBHO[15] & MDCO[31]) & !SUBOUT2[31]) | (!(MDBHO[15] | MDCO[31]) & SUBOUT2[31])); // Overflow condition in Signed mode operation.
+
+	assign OVERFLOW = MDSM? ovf_cond : bout2;  // OVERFLOW VALUE SELECTION in SIGNED and NON-SIGNED MODE
+	assign OVF = PSMODE & OVERFLOW; 	   // MACOF STATUS REGISTER INPUT
+        
+	assign SF  = MDCO[31]; 		   // MACSF STATUS REGISTER INPUT
+	
+	assign SPL2 = (DIVMODE & bout2) ? {SPL1[30:0],MDAHO14} : SUBOUT2; // Output selected based on DIVMODE condition.
+ 
+	assign DIVOUT = {~bout1,~bout2};   // Unmodified HDL 
+	assign SPL = SPL2;		   // Unmodified HDL
+
+endmodule 

@@ -1,0 +1,15 @@
+##################################################
+#
+# Configuration file for mkeva
+#
+##################################################
+
+# For System Setting
+WORK_DIR   = work
+
+# For make_chip Setting
+PARAMETER  = main.para.d78f1026
+REPORT     = make_chip.report_ice
+PARTS      = parts.para_v
+CONNECT    = connect.para_v
+	

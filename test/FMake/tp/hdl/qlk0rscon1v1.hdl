@@ -1,0 +1,395 @@
+
+// [NEC Electronics Group CONFIDENTIAL]
+// (C) Copyright NEC Electronics Corporation 2009
+// All Rights Reserved. Do not duplicate without prior written
+// consent of NEC Electronics Corporation.
+//
+
+/*======================================================================*/
+/*									*/
+/* 78K0R series SCON macro						*/
+/*									*/
+/*    Module   : QLK0RSCON1V1						*/
+/*    Date     : 2010/07/02						*/
+/*    Revision : 1.10							*/
+/*    Designer : M.Ouchiyama						*/
+/*    Note     : QLK0RSCON1V1 change				 	*/
+/*		  add BBTESINST in sresin1 for CKSMER at BB		*/
+/*									*/
+/*									*/
+/* 10.09.10: change HDL for ICE						*/
+/*	read&clear's dly adding						*/
+/*	adding ICECK60M							*/
+/*									*/
+/*									*/
+/*======================================================================*/
+
+/*======================================================================*/
+/*									*/
+/* 78K0R series SCON macro						*/
+/*									*/
+/*    Module   : QLK0RSCON1V1						*/
+/*    Date     : 2009/11/02						*/
+/*    Revision : 1.00							*/
+/*    Designer : N.Fukuyama						*/
+/*    Note     : QLK0RSCON0V1 change				 	*/
+/*		  delete SNMI & SCR_ON/OFF				*/
+/*									*/
+/*======================================================================*/
+/*　  QLK0RSCON1V1						*/
+/*　    |								*/
+/*　    |--- QLK0RSCON1V1_APBBI					*/
+/*　    |--- QLK0RSCON1V1_MAIN					*/
+/*		|--- QLK0RSCON1V1_BUF					*/
+/*  									*/
+/*======================================================================*/
+
+module QLK0RSCON1V1	(
+		RESETB   , SYSRESB  , BASECK   , TESINST  , CSPDTFLG , SVSTOP   ,
+		PENABLE  , PSEL     , PADDR2   , PADDR1   , PADDR0   , PWRITE   , SCANMODE , SCANRESZ ,
+		PRDATA15 , PRDATA14 , PRDATA13 , PRDATA12 , PRDATA11 , PRDATA10 , PRDATA9  , PRDATA8  ,
+		PRDATA7  , PRDATA6  , PRDATA5  , PRDATA4  , PRDATA3  , PRDATA2  , PRDATA1  , PRDATA0  ,
+		SRESIN3  , SRESIN2  , SRESIN1  , SRESIN0  , SFRESEN3 , SFRESEN2 , SFRESEN1 , SFRESEN0 ,
+		SRESREQ  , PWDATA7
+//		PWDATA1  , PWDATA0
+//		SNMIIN3  , SNMIIN2  , SNMIIN1  , SNMIIN0  , SFNMIEN3 , SFNMIEN2 , SFNMIEN1 , SFNMIEN0 ,
+//		RSCROFF  , FSCROFF  , SNMIREQ 
+		,BBTESINST
+		,ICECK60M
+	      ) ;
+
+	input	BBTESINST ;
+	input	ICECK60M ;
+
+	input	RESETB   , SYSRESB  , BASECK   , TESINST  , CSPDTFLG , SVSTOP   , PENABLE  , PSEL     ;
+	input	PADDR2   , PADDR1   , PADDR0   , PWRITE   , SCANMODE , SCANRESZ ;
+	input	PWDATA7  ; //, PWDATA1  , PWDATA0  ;
+	input	SRESIN3  , SRESIN2  , SRESIN1  , SRESIN0  , SFRESEN3 , SFRESEN2 , SFRESEN1 , SFRESEN0 ;
+//	input	SNMIIN3  , SNMIIN2  , SNMIIN1  , SNMIIN0  , SFNMIEN3 , SFNMIEN2 , SFNMIEN1 , SFNMIEN0 ;
+
+//	output  RSCROFF  , FSCROFF  , SNMIREQ  ;
+	output	SRESREQ  ;
+	output	PRDATA15 , PRDATA14 , PRDATA13 , PRDATA12 , PRDATA11 , PRDATA10 , PRDATA9  , PRDATA8  ,
+		PRDATA7  , PRDATA6  , PRDATA5  , PRDATA4  , PRDATA3  , PRDATA2  , PRDATA1  , PRDATA0  ;
+	
+	wire	we_ctrl  , re_sres  , re_ctrl  ;
+
+QLK0RSCON1V1_APBBI	scon_apbbi (
+		.paddr2(PADDR2)      , .paddr1(PADDR1)      , .paddr0(PADDR0)      ,
+		.pwrite(PWRITE)      , .psel(PSEL)          , .penable(PENABLE)    ,
+		.we_ctrl(we_ctrl)    , .re_sres(re_sres)    , .re_ctrl(re_ctrl)
+//		.re_snmi(re_snmi)    
+		);
+
+QLK0RSCON1V1_MAIN	scon_main (
+                .resetb(RESETB)     , .sysresb(SYSRESB)   , .baseck(BASECK)     , .scanmode(SCANMODE) ,
+		.cspdtflg(CSPDTFLG) , .svstop(SVSTOP)     , .tesinst(TESINST)   ,
+                .prdata15(PRDATA15) , .prdata14(PRDATA14) , .prdata13(PRDATA13) , .prdata12(PRDATA12) ,
+                .prdata11(PRDATA11) , .prdata10(PRDATA10) , .prdata9(PRDATA9)   , .prdata8(PRDATA8)   ,
+                .prdata7(PRDATA7)   , .prdata6(PRDATA6)   , .prdata5(PRDATA5)   , .prdata4(PRDATA4)   ,
+                .prdata3(PRDATA3)   , .prdata2(PRDATA2)   , .prdata1(PRDATA1)   , .prdata0(PRDATA0)   ,
+//              .pwdata7(PWDATA7)   , .pwdata1(PWDATA1)   , .pwdata0(PWDATA0)   , .scanresz(SCANRESZ) ,
+                .pwdata7(PWDATA7)   , .scanresz(SCANRESZ) ,
+                .sresin3(SRESIN3)   , .sresin2(SRESIN2)   , .sresin1(SRESIN1)   , .sresin0(SRESIN0)   ,
+		.sfresen3(SFRESEN3) , .sfresen2(SFRESEN2) , .sfresen1(SFRESEN1) , .sfresen0(SFRESEN0) ,
+//                .snmiin3(SNMIIN3)   , .snmiin2(SNMIIN2)   , .snmiin1(SNMIIN1)   , .snmiin0(SNMIIN0)   ,
+//		.sfnmien3(SFNMIEN3) , .sfnmien2(SFNMIEN2) , .sfnmien1(SFNMIEN1) , .sfnmien0(SFNMIEN0) ,
+//		.snmireq(SNMIREQ)   , .rscroff(RSCROFF)   , .fscroff(FSCROFF)   , .re_snmi(re_snmi)   ,
+                .sresreq(SRESREQ)   , .we_ctrl(we_ctrl)   , .re_sres(re_sres)   , .re_ctrl(re_ctrl)
+		,.BBTESINST(BBTESINST)
+		,.ICECK60M(ICECK60M)
+		);
+endmodule
+
+// =====================================================================================
+// APBアクセス制御部
+// =====================================================================================
+module QLK0RSCON1V1_APBBI (
+		pwrite   , psel     , penable  , paddr2   , paddr1   , paddr0   ,
+		re_sres  , re_ctrl  , we_ctrl
+	      ) ;
+
+	input	pwrite   , psel     , penable  ;
+	input	paddr2   , paddr1   , paddr0   ;
+
+	output	re_sres  , re_ctrl  ;
+	output	we_ctrl  ;
+
+	wire	sel_sres ,  sel_ctrl ;
+
+//Address Decode
+	assign	sel_sres = psel & ({ paddr2, paddr1, paddr0 } == 3'b000) ;  // OFFSET 0
+//	assign	sel_snmi = psel & ({ paddr2, paddr1, paddr0 } == 3'b010) ;  // OFFSET 2
+	assign	sel_ctrl = psel & ({ paddr2, paddr1, paddr0 } == 3'b100) ;  // OFFSET 4
+
+//Write Enable
+	assign	we_ctrl	 = (sel_ctrl && penable && pwrite) ;
+
+//Read Enable
+	assign	re_sres  = (sel_sres && penable && ~pwrite) ;
+//	assign	re_snmi  = (sel_snmi && penable && ~pwrite) ;
+	assign	re_ctrl	 = (sel_ctrl && penable && ~pwrite) ;
+
+//Output
+
+
+endmodule
+
+// =====================================================================================
+// SCON メイン部
+// =====================================================================================
+module QLK0RSCON1V1_MAIN (
+		resetb   , sysresb  , baseck   , cspdtflg , svstop   , tesinst  , scanmode ,
+		prdata15 , prdata14 , prdata13 , prdata12 , prdata11 , prdata10 , prdata9  , prdata8  ,
+		prdata7  , prdata6  , prdata5  , prdata4  , prdata3  , prdata2  , prdata1  , prdata0  ,
+		pwdata7  , scanresz , 
+		sresin3  , sresin2  , sresin1  , sresin0  , sfresen3 , sfresen2 , sfresen1 , sfresen0 ,
+		sresreq  , re_sres  , re_ctrl  , we_ctrl
+		,BBTESINST
+		,ICECK60M
+	      ) ;
+
+	input	BBTESINST ;
+	input	ICECK60M ;
+
+	input	resetb   , sysresb  , baseck   , cspdtflg , svstop   , tesinst  , scanmode , scanresz ;
+	input	re_sres  , re_ctrl  , we_ctrl  , pwdata7  ;
+	input	sresin3  , sresin2  , sresin1  , sresin0  , sfresen3 , sfresen2 , sfresen1 , sfresen0 ;
+
+	output	prdata15 , prdata14 , prdata13 , prdata12 , prdata11 , prdata10 , prdata9  , prdata8  ,
+		prdata7  , prdata6  , prdata5  , prdata4  , prdata3  , prdata2  , prdata1  , prdata0  ;
+	output	sresreq  ; 
+
+	reg	sres_clr ;
+	reg	sres3    , sres2    , sres1    , sres0    ;
+	reg	resreq_p , resreq_pp, smask    ;
+
+	wire	sres_clr_dly , sres_and , sres_clr_b , sres_clr_b_s ;
+	wire	resin3   , resin2   , resin1   , resin0   ;
+	wire	resreqor , re_sres_sv, testresb ;
+
+
+// ===== セキュリティリセット検出レジスタ(SRES) =====
+
+	// エミュレーション時(SVSTOP=1)は、リード・クリアさせない。
+	assign re_sres_sv = re_sres & ~svstop ;
+	
+	// リードクリアするリセット信号の同期化回路(クリア信号のヒゲ対策)
+	// synopsys async_set_reset "sysresb"
+	always @( posedge baseck or negedge sysresb ) begin
+		if ( !sysresb ) sres_clr <= 1'b0 ;
+		else            sres_clr <= re_sres_sv ;
+	end
+
+	QLK0RSCON1V1_BUF sres_buf ( .clk_out( sres_clr_dly ) , .clk_in( sres_clr ) ,.iceclk(ICECK60M) ) ;
+
+	assign sres_and = ~sres_clr & sres_clr_dly ;
+
+	assign sres_clr_b = sysresb & ~sres_and ;
+
+	assign sres_clr_b_s = ( scanmode ) ? scanresz : sres_clr_b ;
+
+
+	// セキュリティ信号のイネーブル制御
+	assign resin3 = ( sfresen3 ) ? ( sresin3 & cspdtflg ) : sresin3 ;
+	assign resin2 = ( sfresen2 ) ? ( sresin2 & cspdtflg ) : sresin2 ;
+	assign resin1 = ( sfresen1 ) ? ( sresin1 & cspdtflg ) : sresin1 ;
+	assign resin0 = ( sfresen0 ) ? ( sresin0 & cspdtflg ) : sresin0 ;
+
+	// セキュリティリセット検出レジスタ
+	//synopsys async_set_reset "sres_clr_b_s"
+	always @( posedge baseck or negedge sres_clr_b_s ) begin
+		if      ( !sres_clr_b_s ) sres3 <= 1'b0 ;
+		else if ( resin3 )        sres3 <= 1'b1 ;
+	end
+
+	//synopsys async_set_reset "sres_clr_b_s"
+	always @( posedge baseck or negedge sres_clr_b_s ) begin
+		if      ( !sres_clr_b_s ) sres2 <= 1'b0 ;
+		else if ( resin2 )        sres2 <= 1'b1 ;
+	end
+
+	//synopsys async_set_reset "sres_clr_b_s"
+	always @( posedge baseck or negedge sres_clr_b_s ) begin
+		if      ( !sres_clr_b_s ) sres1 <= 1'b0 ;
+		else if ( resin1 )        sres1 <= 1'b1 ;
+	end
+
+	//synopsys async_set_reset "sres_clr_b_s"
+	always @( posedge baseck or negedge sres_clr_b_s ) begin
+		if      ( !sres_clr_b_s ) sres0 <= 1'b0 ;
+		else if ( resin0 )        sres0 <= 1'b1 ;
+	end
+
+
+// ===== セキュリティリセット要求信号部 =====
+
+//	assign resreqor = resin3 | resin2 | resin1 | resin0 ;
+	assign resreqor = resin3 | resin2 | ( resin1 & ~BBTESINST ) | resin0 ;	// Change for v1.10
+
+	//synopsys async_set_reset "resetb"
+	always @( posedge baseck or negedge resetb ) begin
+		if ( !resetb ) resreq_p <= 1'b0     ;
+		else           resreq_p <= resreqor ;
+	end
+
+	//synopsys async_set_reset "resetb"
+	always @( posedge baseck or negedge resetb ) begin
+		if ( !resetb ) resreq_pp <= 1'b0     ;
+		else           resreq_pp <= resreq_p ;
+	end
+
+	// TESINST時は、要求信号をアクティブにしない。
+	// 要求信号は、クロック1発分とする。
+	assign sresreq = resreq_p & ~resreq_pp & ~( tesinst & smask ) ;
+
+
+// ===== セキュリティ割り込み検出レジスタ(SNMI) =====
+
+	// エミュレーション時(SVSTOP=1)は、リード・クリアさせない。
+//	assign re_snmi_sv = re_snmi & ~svstop ;  
+
+	// リードクリアするリセット信号の同期化回路(クリア信号のヒゲ対策)
+//	// synopsys async_set_reset "sysresb"
+//	always @( posedge baseck or negedge sysresb ) begin
+//		if ( !sysresb ) snmi_clr <= 1'b0 ;
+//		else            snmi_clr <= re_snmi_sv ;
+//	end
+//
+//	QLK0RSCON1V1_BUF snmi_buf ( .clk_out( snmi_clr_dly ) , .clk_in( snmi_clr ) ) ;
+//
+//	assign snmi_and = ~snmi_clr & snmi_clr_dly ;
+//
+//	assign snmi_clr_b = sysresb & ~snmi_and ;
+//
+//	assign snmi_clr_b_s = ( scanmode ) ? scanresz : snmi_clr_b ;
+
+	
+	// セキュリティ信号のイネーブル制御
+//	assign nmiin3 = ( sfnmien3 ) ? ( snmiin3 & cspdtflg ) : snmiin3 ;
+//	assign nmiin2 = ( sfnmien2 ) ? ( snmiin2 & cspdtflg ) : snmiin2 ;
+//	assign nmiin1 = ( sfnmien1 ) ? ( snmiin1 & cspdtflg ) : snmiin1 ;
+//	assign nmiin0 = ( sfnmien0 ) ? ( snmiin0 & cspdtflg ) : snmiin0 ;
+
+	// セキュリティ割り込み検出レジスタ
+//	//synopsys async_set_reset "snmi_clr_b_s"
+//	always @( posedge baseck or negedge snmi_clr_b_s ) begin
+//		if      ( !snmi_clr_b_s ) snmi3 <= 1'b0 ;
+//		else if ( nmiin3 )        snmi3 <= 1'b1 ;
+//	end
+//
+//	//synopsys async_set_reset "snmi_clr_b_s"
+//	always @( posedge baseck or negedge snmi_clr_b_s ) begin
+//		if      ( !snmi_clr_b_s ) snmi2 <= 1'b0 ;
+//		else if ( nmiin2 )        snmi2 <= 1'b1 ;
+//	end
+//
+//	//synopsys async_set_reset "snmi_clr_b_s"
+//	always @( posedge baseck or negedge snmi_clr_b_s ) begin
+//		if      ( !snmi_clr_b_s ) snmi1 <= 1'b0 ;
+//		else if ( nmiin1 )        snmi1 <= 1'b1 ;
+//	end
+//
+//	//synopsys async_set_reset "snmi_clr_b_s"
+//	always @( posedge baseck or negedge snmi_clr_b_s ) begin
+//		if      ( !snmi_clr_b_s ) snmi0 <= 1'b0 ;
+//		else if ( nmiin0 )        snmi0 <= 1'b1 ;
+//	end
+
+
+// ===== セキュリティ割り込み要求信号部 =====
+
+////	assign nmireqor = snmi3 | snmi2 | snmi1 | snmi0 ;
+//	assign nmireqor = nmiin3 | nmiin2 | nmiin1 | nmiin0 ;
+//
+//	//synopsys async_set_reset "resetb"
+//	always @( posedge baseck or negedge resetb ) begin
+//		if ( !resetb ) nmireq_p <= 1'b0     ;
+//		else           nmireq_p <= nmireqor ;
+//	end
+//
+//	//synopsys async_set_reset "resetb"
+//	always @( posedge baseck or negedge resetb ) begin
+//		if ( !resetb ) nmireq_pp <= 1'b0     ;
+//		else           nmireq_pp <= nmireq_p ;
+//	end
+//
+//	// TESINST時は、要求信号をアクティブにしない。
+	// 要求信号は、クロック1発分とする。
+//	assign snmireq = nmireq_p & ~nmireq_pp & ~( tesinst & smask ) ;
+
+
+// ===== セキュリティ回路制御レジスタ(SCTRL) =====
+// ===== TESINST or SCANMODE モード時のみ許可 =====
+
+	// テストレジスタは、テストモード時のみ有効とし、
+	// ユーザーモード時は動作させない。
+	// TESINST時のみ有効とするリセット信号
+	assign testresb = ( scanmode ) ? scanresz : tesinst & resetb ;
+
+	// RAM スクランブルOFF信号生成
+	//synopsys async_set_reset "testresb"
+//	always @( posedge baseck or negedge testresb ) begin
+//		if      ( !testresb ) rscroff <= 1'b0    ;
+//		else if ( we_ctrl )   rscroff <= pwdata0 ;
+//	end
+
+	// FLASH スクランブルOFF信号生成
+	//synopsys async_set_reset "testresb"
+//	always @( posedge baseck or negedge testresb ) begin
+//		if      ( !testresb ) fscroff <= 1'b0    ;
+//		else if ( we_ctrl )   fscroff <= pwdata1 ;
+//	end
+
+	// リセットマスク解除信号生成SMASK=Lで、リセットが有効となる。
+	// デフォルトリセットマスクである。
+	//synopsys async_set_reset "testresb"
+	always @( posedge baseck or negedge testresb ) begin
+		if      ( !testresb ) smask <= 1'b1    ;
+		else if ( we_ctrl )   smask <= pwdata7 ;
+	end
+
+
+// ===== DATA READ 制御部 =====
+
+	assign { prdata15, prdata14, prdata13, prdata12, prdata11, prdata10, prdata9 , prdata8 ,
+		 prdata7 , prdata6 , prdata5 , prdata4 , prdata3 , prdata2 , prdata1 , prdata0 }
+		= ( re_sres ) ? { 12'b0 , sres3 , sres2 , sres1   , sres0   }	// SRES
+//		: ( re_snmi ) ? { 12'b0 , snmi3 , snmi2 , snmi1   , snmi0   }	// SNMI
+		: ( re_ctrl ) ? { 8'b0  , smask , 7'b0  }	// SCTRL
+		: 16'b0 ;
+
+endmodule
+
+
+`ifndef FPGA_ICE
+// module QLK0RSCON1V1_BUF ( clk_out , clk_in ) ;
+module QLK0RSCON1V1_BUF ( clk_out , clk_in , iceclk ) ;
+
+	input   clk_in  ;
+	output  clk_out ;
+        input   iceclk ;
+
+	wire    clk_a , clk_b ;
+
+	TBDLY3X2 delay1 ( .H01( clk_in ) , .N01( clk_a ) ); 
+	TBDLY3X2 delay2 ( .H01( clk_a )  , .N01( clk_b ) ); 
+	TBDLY2X2 delay3 ( .H01( clk_b )  , .N01( clk_out ) );
+
+endmodule
+`else
+module QLK0RSCON1V1_BUF ( clk_out , clk_in , iceclk ) ;
+        input   clk_in  ;
+        output  clk_out ;
+        input   iceclk ;
+
+        reg [1:0]  in_dly;
+        always @( posedge iceclk ) begin
+                in_dly <= {in_dly[0], clk_in};
+        end
+        assign clk_out = in_dly[1];
+
+endmodule
+`endif
+
+

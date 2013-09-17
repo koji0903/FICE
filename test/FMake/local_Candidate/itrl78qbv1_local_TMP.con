@@ -1,0 +1,42 @@
+#-----------------------------------------------------------------------------------------
+# FMake Connect File (TypeB approach)
+#   Please divide connection informations which depend on the macro into each macro as
+#   much as possible. It may facilitate to distinguish product dependent information from
+#   macro common information.
+#   (1) Please list a connection information in a higher-priority module.
+#         -> It becomes the emulation specification like?
+#       +---------------------------------------------------------------------------+
+#       | Priority High<- - - - - - - - - - - - - - - - - - - - - - - - - - - ->Low |
+#       |               Fmake-Limit  ADD1  Replace  ADD2  KeepChange  ADD3  ICE     |
+#       +---------------------------------------------------------------------------+
+#       Replace -> It except Code-Flash, Data-Flash and RAM (They are included in ICE Macro).
+#       ADD1 -> primary function of ICE   : inspect, PUCTL, FixedPin, prtyerr
+#       ADD2 -> related to replace macro  : admux, iawif
+#       Add3 -> secondary function of ICE : svmodif, CLK240BASE, ieICEControl, iePortControl
+#   (2) Please divide it into three following categories.
+#         - common     : There are no parameters which should be changed.
+#         - local      : It may be necessary to modify the instance for each product.
+#         - Limitation : FMake Limitation.
+#   (3) Please separate the parameter to files below.
+#         - <Macro>_common.con : connection information that is not changed.
+#         - <Macro>_local.con  : connection information that may be changed for product.
+#         - <Macro>.con        : connection information for local macro.
+#- History -------------------------------------------------------------------------------
+# 2012.7.9
+# initial
+# T.Tsunoda
+#-----------------------------------------------------------------------------------------
+
+#=========================================================================================
+# Following Connection match FMake Limitation #1789
+#=========================================================================================
+
+# macro pin is single-line but use bus-style to their interconnect.
+MA                      cspf.mc200.cpu_ma       # [15:0] Bus-Connection (cpu)
+EXMA                    cspf.mc200.cpu_exma     # [3:0]  Bus-Connection (cpu)
+MDW                     cspf.mc200.cpu_mdw      # [15:0] Bus-Connection (cpu)
+
+#=========================================================================================
+# It may be necessary to modify the signal below for each product.
+#=========================================================================================
+MDRRAM                  cspf.mc200.bbr.ramif_prdata

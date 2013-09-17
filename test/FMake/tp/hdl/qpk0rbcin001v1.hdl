@@ -1,0 +1,88 @@
+/**********************************************************************/
+/*                                                                    */
+/* K0R series PORT bit macro                                          */
+/*                                                                    */
+/*   [ port bit : 入力ポート ]                                        */
+/*                                                                    */
+/*    PL,PM,PU なし                                                   */
+/*    兼用出力機能 なし                                               */
+/*    兼用入力機能 なし                                               */
+/*                                                                    */
+/*    Module   : QPK0RBCIN001V1                                       */
+/*    Date     : 2009/12/02                                           */
+/*    Revision : 1.00                                                 */
+/*    Designer : S.Nakata                                             */
+/*    Note     :                                                      */
+/*                                                                    */
+/**********************************************************************/
+/*                                                                    */
+/* <<入力信号>>                                         <<接続先>>    */
+/* RE_PORT     : PORTリードイネーブル信号               port control  */
+/* SEL_PL      : PL Register select 信号                port control  */
+/* SEL_PM      : PM Register select 信号                port control  */
+/* OPEN_BUF    : 入力バッファイネーブル信号             port control  */
+/* DIN         : ポートレベル入力信号                   buffer        */
+/*                                                                    */
+/* SCANMODE    : SCANテストモード信号                   MODECTL       */
+/* TESDBT      : BTモード信号                           MODECTL       */
+/*                                                                    */
+/* <<出力信号>>                                         <<接続先>>    */
+/* PRDATA      : 出力データバス                         APB Bridge    */
+/* ENI         : 入力イネーブル信号                     buffer        */
+/*                                                                    */
+/*                                                                    */
+/**********************************************************************/
+
+module QPK0RBCIN001V1 ( RE_PORT  , SEL_PL   , SEL_PM   , SEL_PMC  ,
+                        DIN      , OPEN_BUF ,
+			SCANMODE , TESDBT   ,
+                        PRDATA   , ENI      ) ;
+
+
+	input		RE_PORT  , SEL_PL   , SEL_PM   , SEL_PMC  ;
+	input		OPEN_BUF , DIN      ;
+	input		SCANMODE , TESDBT   ;
+
+	output		PRDATA   , ENI      ;
+
+	reg		READ_DATA ;
+	reg		ENI      , DIN_s    ;
+	wire		PRDATA   , ENI_pre  ;
+
+
+//=====  port register read access  =====
+
+	always @ ( SEL_PL or SEL_PM or SEL_PMC or DIN_s ) begin
+	    case ( { SEL_PL , SEL_PM , SEL_PMC } )	// synopsys parallel_case
+		3'b001  : READ_DATA = 1'b1 ;
+		3'b010	: READ_DATA = 1'b1 ;
+		3'b100	: READ_DATA = DIN_s ;
+		default : READ_DATA = 1'b0 ;
+	    endcase
+	end
+
+	assign PRDATA = READ_DATA & RE_PORT ;
+
+//=====  port function  =====
+
+        assign ENI_pre	= OPEN_BUF ;
+
+        always@ ( SCANMODE or TESDBT or ENI_pre ) begin
+            case ( { SCANMODE, TESDBT } )       // synopsys parallel_case
+                2'b00   : ENI = ENI_pre ;       // user mode
+                2'b10   : ENI = 1'b0 ;          // scan mode
+                2'b11   : ENI = 1'b1 ;          // bt mode
+                default : ENI = ENI_pre ;
+            endcase
+        end
+
+        always@ ( SCANMODE or TESDBT or DIN or ENI_pre ) begin
+            case ( { SCANMODE, TESDBT } )       // synopsys parallel_case
+                2'b00   : DIN_s = DIN ;         // user mode
+                2'b10   : DIN_s = ENI_pre ;	// scan mode
+                2'b11   : DIN_s = DIN ;         // bt mode
+                default : DIN_s = DIN ;
+            endcase
+        end
+
+endmodule

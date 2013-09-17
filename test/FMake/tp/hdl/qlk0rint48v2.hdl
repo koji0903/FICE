@@ -1,0 +1,2047 @@
+
+/*======================================================================*/
+/* Module Name : QLK0RINT48V2 for MF3                                   */
+/* Author      : M.Ouchiyama                                            */
+/*======================================================================*/
+/*   QLK0RINT48V2 : SoftMacro Top module                                */
+/*             |                                                        */
+/*             |___QLK0RINT48V2_BI :K0R local Bus Interface             */
+/*             |                                                        */
+/*             |___QLK0RINT48V2_MAIN                                    */
+/*                 |                                                    */
+/*                 |___QLK0RINT48V2_MAIN_REG :SFR register              */
+/*                 |                                                    */
+/*                 |___QLK0RINT48V2_MAIN_STBRELE                        */
+/*                 |                                                    */
+/*                 |___QLK0RINT48V2_MAIN_CTL :main controler            */
+/*                 |   |                                                */
+/*                 |   |___QLK0RINT48V2_MAIN_IFCLR                      */
+/*                 |                                                    */
+/*                 |___QLK0RINT48V2_MAIN_TEST :Test Register            */
+/*======================================================================*/
+/*[²þÄûÍúÎò]                                                            */
+/*    Ver 2.00 : SFR(PR*, MK*) ¤Î PCLKRW ²½¤Î»î¹Ô¡Ê¹çÀ®´Ä¶­¹½ÃÛÍÑ¡Ë     */
+/*                                                                      */
+/*		-2009.10.30						*/
+/*		 INTS, TEST SFR, TEST-Circuit delete			*/
+/*                                                                      */
+/*		-2010.01.28	- kouno					*/
+/*               TOP input name chenge : BASECK -> BASECKHS             */
+/*               (only TOP module)                                      */
+/*                                                                      */
+/*======================================================================*/
+
+
+/*======================================================================*/
+/* Module Name : QLK0RINT48V1                                           */
+/* Author      : K.Kawai                                                */
+/*======================================================================*/
+/*    Module   : QLK0RINT48V1                                           */
+/*    Date     : 2006/03/17                                             */
+/*    Revision : 1.20                                                   */
+/*    Designer : K.Kawai                                                */
+/*======================================================================*/
+/*    Module   : QLK0RINT48V1_BIT_IFREG                                 */
+/*    Module   : QLK0RINT48V1_METASTABLE                                */
+/*    Date     : 2007/05/31                                             */
+/*    Revision : 1.30                                                   */
+/*    Designer : T.Natusme                                              */
+/*======================================================================*/
+/*[²þÄûÍúÎò]                                                            */
+/*    Ver1.00a 2005/09/27  kazuyoshi.kawai                              */
+/*             ¿·µ¬ºîÀ®                                                 */
+/*    Ver1.00b 2005/11/01                                               */
+/*             ¥Ç¥Ð¥Ã¥°³ä¤ê¹þ¤ßÍ×µá¤òÈóÆ±´ü¤«¤éÆ±´ü¤ËÊÑ¹¹               */
+/*                                                                      */
+/*             EdgeDetect¤ÎSCANMODE»þ¤ÎÆþÎÏ¥¯¥í¥Ã¥¯¤òBASECK¤«¤é         */
+/*             SCANCLK¤ËÊÑ¹¹                                            */
+/*                                                                      */
+/*             ¥Ç¥Ð¥Ã¥°³ä¤ê¹þ¤ß¤¬Æ±´ü³ä¤ê¹þ¤ß¤Ë¤Ê¤Ã¤¿¤Î¤Çites4¤âºï½ü    */
+/*    Ver1.10  2005/12/22                                               */
+/*             OCD¤ÇUART¼õ¿®¤ÇSTOP²ò½ü¤¬¤Ç¤­¤Ê¤¤ÉÔ¶ñ¹ç¤¬È¯À¸(1st Ver1.0)*/
+/*             ¥Ç¥Ð¥Ã¥°³ä¤ê¹þ¤ß¤òÈóÆ±´ü¤«¤éÆ±´ü¤ËÌá¤¹¡£                 */
+/*             Ã¢¤·¡¢º£¸å¤Î»ÅÍÍÊÑ¹¹¤ò¹ÍÎ¸¤·Æ±´ü³ä¤ê¹þ¤ß¤Ï»Ä¤¹¤³¤È¤Ë¤·¤¿.*/
+/*    Ver1.20  2006/03/17                                               */
+/*             STOP²ò½üÉÔ¶ñ¹çECO½¤Àµ¥Õ¥£¡¼¥É¥Ð¥Ã¥°                      */
+/*             BASECK¤ÇÀÚ¤êÄ¾¤¹Á°¤Î³ä¤ê¹þ¤ßÍ×µá¿®¹æ¤ÎOR¤òSTBRELE¤ËOR¤ò  */
+/*             ÄÉ²Ã¤·¡¢³ä¤ê¹þ¤ßÍ×µá¤Ç¤âSTOP²ò½ü¤Ç¤­¤ë¤è¤¦¤Ë¤¹¤ë¡£       */
+/*    Ver1.30  2007/05/31                                               */
+/*             ¥á¥¿¥¹¥Æ¡¼¥Ö¥ë¤Ë¤è¤ëEdgeDetect¤Î¥ê¥»¥Ã¥ÈÌäÂê             */
+/*             ¥ê¥»¥Ã¥È¿®¹æ¤ò½¾Íè¤ÎIFREG¤«¤éIFREG¤ÈBASECK¤ÎNOT¤ÎAND¤ËÊÑ¹¹*/
+/*             SCAN¸¡½ÐÎ¨¸þ¾å¤Î¤¿¤á¡¢´ÑÂ¬ÍÑFF¤òÄÉ²Ã¡£                   */
+/*                                                                      */
+/* [v1.10]assign STBRELE = tmp0 | tmp1 | tmp2 | tmp3 | tmp4 | tmp5;     */
+/*                                                                      */
+/* [v1.20]assign tmp6 = pre_intrq0 | pre_intrq1 | pre_intrq2 |          */
+/*                      pre_intrq3 | pre_intnmi | pre_intdbg;           */
+/*        assign STBRELE = tmp0 | tmp1 | tmp2 | tmp3 | tmp4 | tmp5 | tmp6;*/
+/* [v1.30]QLK0RINT48V1_METASTABLE	METASTABLE(.BASECK(BASECK),         */
+/*                                  .IFREG(IFREG), .ifreg_ex(ifreg_ex));*/
+/*        assign ed_reset = ~RESB | (ifreg_ex & ~SCANMODE);             */
+/*                                                                      */
+/*              2006/04/06                                              */
+/*              LEDA FATAL¥¨¥é¡¼¤Îµ­½Ò¤ò½¤Àµ                            */
+/*======================================================================*/
+/*                                                                      */
+/*   QLK0RINT48V1 : SoftMacro Top module                                */
+/*             |                                                        */
+/*             |___QLK0RINT48V1_BI :K0R local Bus Interface             */
+/*             |                                                        */
+/*             |___QLK0RINT41V1_MAIN                                    */
+/*                 |                                                    */
+/*                 |___QLK0RINT48V1_MAIN_REG :SFR register              */
+/*                 |                                                    */
+/*                 |___QLK0RINT48V1_MAIN_STBRELE                        */
+/*                 |                                                    */
+/*                 |___QLK0RINT48V1_MAIN_CTL :main controler            */
+/*                 |   |                                                */
+/*                 |   |___QLK0RINT48V1_MAIN_IFCLR                      */
+/*                 |                                                    */
+/*                 |___QLK0RINT48V1_MAIN_TEST :Test Register            */
+/*                                                                      */
+/*======================================================================*/
+module QLK0RINT48V2(
+//  INTS02,
+//  INTS04,INTS06,INTS08,INTS0A,INTS0C,INTS0E,INTS10,INTS12,
+//  INTS14,INTS16,INTS18,INTS1A,INTS1C,INTS1E,INTS20,INTS22,
+//  INTS24,INTS26,INTS28,INTS2A,INTS2C,INTS2E,INTS30,INTS32,
+//  INTS34,INTS36,INTS38,INTS3A,INTS3C,INTS3E,INTS40,INTS42,
+//  INTS44,INTS46,INTS48,INTS4A,INTS4C,INTS4E,INTS50,INTS52,
+//  INTS54,INTS56,INTS58,INTS5A,INTS5C,INTS5E,INTS60,INTS62,
+    
+    INTAS02,
+    INTAS04,INTAS06,INTAS08,INTAS0A,INTAS0C,INTAS0E,INTAS10,INTAS12,
+    INTAS14,INTAS16,INTAS18,INTAS1A,INTAS1C,INTAS1E,INTAS20,INTAS22,
+    INTAS24,INTAS26,INTAS28,INTAS2A,INTAS2C,INTAS2E,INTAS30,INTAS32,
+    INTAS34,INTAS36,INTAS38,INTAS3A,INTAS3C,INTAS3E,INTAS40,INTAS42,
+    INTAS44,INTAS46,INTAS48,INTAS4A,INTAS4C,INTAS4E,INTAS50,INTAS52,
+    INTAS54,INTAS56,INTAS58,INTAS5A,INTAS5C,INTAS5E,INTAS60,INTAS62,
+    
+    INTS04EN,INTS06EN,INTS08EN,INTS0AEN,INTS0CEN,INTS0EEN,INTS10EN,INTS12EN,
+    INTS14EN,INTS16EN,INTS18EN,INTS1AEN,INTS1CEN,INTS1EEN,INTS20EN,INTS22EN,
+    INTS24EN,INTS26EN,INTS28EN,INTS2AEN,INTS2CEN,INTS2EEN,INTS30EN,INTS32EN,
+    INTS34EN,INTS36EN,INTS38EN,INTS3AEN,INTS3CEN,INTS3EEN,INTS40EN,INTS42EN,
+    INTS44EN,INTS46EN,INTS48EN,INTS4AEN,INTS4CEN,INTS4EEN,INTS50EN,INTS52EN,
+    INTS54EN,INTS56EN,INTS58EN,INTS5AEN,INTS5CEN,INTS5EEN,INTS60EN,INTS62EN,
+    
+    NMIMODE,
+    INTDBG,
+    INTNMI,
+    INTRQ0,
+    INTRQ1,
+    INTRQ2,
+    INTRQ3,
+    INTACK,
+    VCOUT6,VCOUT5,VCOUT4,VCOUT3,VCOUT2,VCOUT1,
+    STBRELE,
+    PSELINT1,
+//  PSELINT2,
+    MA4,MA3,MA2,MA1,MA0,
+    MDR15,MDR14,MDR13,MDR12,MDR11,MDR10,MDR9,MDR8,
+    MDR7,MDR6,MDR5,MDR4,MDR3,MDR2,MDR1,MDR0,
+    MDW15,MDW14,MDW13,MDW12,MDW11,MDW10,MDW9,MDW8,
+    MDW7,MDW6,MDW5,MDW4,MDW3,MDW2,MDW1,MDW0,
+    CPURD,
+    CPUWR,
+    WDOP,
+    BITEN7,BITEN6,BITEN5,BITEN4,BITEN3,BITEN2,BITEN1,BITEN0,
+    BASECKHS,
+    RESB,
+    SCANMODE,
+    SCANCLK,
+//  TESTMODE
+
+    PCLKRW
+);
+
+   input	PCLKRW ;
+
+// input  INTS62,INTS60,INTS5E,INTS5C,INTS5A,INTS58,INTS56,INTS54,
+//        INTS52,INTS50,INTS4E,INTS4C,INTS4A,INTS48,INTS46,INTS44,
+//        INTS42,INTS40,INTS3E,INTS3C,INTS3A,INTS38,INTS36,INTS34,
+//        INTS32,INTS30,INTS2E,INTS2C,INTS2A,INTS28,INTS26,INTS24,
+//        INTS22,INTS20,INTS1E,INTS1C,INTS1A,INTS18,INTS16,INTS14,
+//        INTS12,INTS10,INTS0E,INTS0C,INTS0A,INTS08,INTS06,INTS04,
+//        INTS02;
+
+   input  INTAS62,INTAS60,INTAS5E,INTAS5C,INTAS5A,INTAS58,INTAS56,INTAS54,
+          INTAS52,INTAS50,INTAS4E,INTAS4C,INTAS4A,INTAS48,INTAS46,INTAS44,
+          INTAS42,INTAS40,INTAS3E,INTAS3C,INTAS3A,INTAS38,INTAS36,INTAS34,
+          INTAS32,INTAS30,INTAS2E,INTAS2C,INTAS2A,INTAS28,INTAS26,INTAS24,
+          INTAS22,INTAS20,INTAS1E,INTAS1C,INTAS1A,INTAS18,INTAS16,INTAS14,
+          INTAS12,INTAS10,INTAS0E,INTAS0C,INTAS0A,INTAS08,INTAS06,INTAS04,
+          INTAS02;
+
+   input  INTS62EN,INTS60EN,INTS5EEN,INTS5CEN,INTS5AEN,INTS58EN,INTS56EN,INTS54EN,
+          INTS52EN,INTS50EN,INTS4EEN,INTS4CEN,INTS4AEN,INTS48EN,INTS46EN,INTS44EN,
+          INTS42EN,INTS40EN,INTS3EEN,INTS3CEN,INTS3AEN,INTS38EN,INTS36EN,INTS34EN,
+          INTS32EN,INTS30EN,INTS2EEN,INTS2CEN,INTS2AEN,INTS28EN,INTS26EN,INTS24EN,
+          INTS22EN,INTS20EN,INTS1EEN,INTS1CEN,INTS1AEN,INTS18EN,INTS16EN,INTS14EN,
+          INTS12EN,INTS10EN,INTS0EEN,INTS0CEN,INTS0AEN,INTS08EN,INTS06EN,INTS04EN;
+
+   input  NMIMODE;
+   output INTDBG;
+   output INTNMI;
+   output INTRQ0;
+   output INTRQ1;
+   output INTRQ2;
+   output INTRQ3;
+   input  INTACK;
+   output VCOUT6,VCOUT5,VCOUT4,VCOUT3,VCOUT2,VCOUT1;
+   output STBRELE;
+   input  PSELINT1;
+// input  PSELINT2;
+   input  MA4,MA3,MA2,MA1,MA0;
+   output MDR15,MDR14,MDR13,MDR12,MDR11,MDR10,MDR9,MDR8,
+          MDR7,MDR6,MDR5,MDR4,MDR3,MDR2,MDR1,MDR0;
+   input  MDW15,MDW14,MDW13,MDW12,MDW11,MDW10,MDW9,MDW8,
+          MDW7,MDW6,MDW5,MDW4,MDW3,MDW2,MDW1,MDW0;
+   input  CPURD;
+   input  CPUWR;
+   input  WDOP;
+   input  BITEN7,BITEN6,BITEN5,BITEN4,BITEN3,BITEN2,BITEN1,BITEN0;
+   input  BASECKHS;
+   input  RESB;
+   input  SCANMODE;
+   input  SCANCLK;
+// input  TESTMODE;
+
+   
+   wire [15:0]  mdr;
+   
+   wire [15:0]  dout;
+   wire         sel_if0, sel_if1, sel_if2,
+                sel_mk0, sel_mk1, sel_mk2, 
+                sel_pr00, sel_pr01, sel_pr02, 
+                sel_pr10, sel_pr11, sel_pr12;
+//              sel_ites;
+   wire         we_if0l, we_if0h, we_if1l, we_if1h, we_if2l, we_if2h,
+                we_mk0l, we_mk0h, we_mk1l, we_mk1h, we_mk2l, we_mk2h,
+                we_pr00l, we_pr00h, we_pr01l, we_pr01h, we_pr02l, we_pr02h,
+                we_pr10l, we_pr10h, we_pr11l, we_pr11h, we_pr12l, we_pr12h;
+//              we_ites;
+   
+   assign MDR15 = mdr[15];
+   assign MDR14 = mdr[14];
+   assign MDR13 = mdr[13];
+   assign MDR12 = mdr[12];
+   assign MDR11 = mdr[11];
+   assign MDR10 = mdr[10];
+   assign MDR9  = mdr[9];
+   assign MDR8  = mdr[8];
+   assign MDR7  = mdr[7];
+   assign MDR6  = mdr[6];
+   assign MDR5  = mdr[5];
+   assign MDR4  = mdr[4];
+   assign MDR3  = mdr[3];
+   assign MDR2  = mdr[2];
+   assign MDR1  = mdr[1];
+   assign MDR0  = mdr[0];
+
+   QLK0RINT48V2_BI bi ( 
+                .PSELINT1(PSELINT1), //.PSELINT2(PSELINT2), 
+                .ma({MA4,MA3,MA2,MA1,MA0}), 
+                .CPUWR(CPUWR), .CPURD(CPURD), .WDOP(WDOP), .mdr(mdr),
+                .dout(dout),
+                .sel_if0(sel_if0),   .sel_if1(sel_if1),   .sel_if2(sel_if2),
+                .sel_mk0(sel_mk0),   .sel_mk1(sel_mk1),   .sel_mk2(sel_mk2), 
+                .sel_pr00(sel_pr00), .sel_pr01(sel_pr01), .sel_pr02(sel_pr02), 
+                .sel_pr10(sel_pr10), .sel_pr11(sel_pr11), .sel_pr12(sel_pr12),
+//              .sel_ites(sel_ites),
+                .we_if0l(we_if0l),   .we_if0h(we_if0h),   .we_if1l(we_if1l),   .we_if1h(we_if1h), 
+                .we_if2l(we_if2l),   .we_if2h(we_if2h),
+                .we_mk0l(we_mk0l),   .we_mk0h(we_mk0h),   .we_mk1l(we_mk1l),   .we_mk1h(we_mk1h), 
+                .we_mk2l(we_mk2l),   .we_mk2h(we_mk2h),
+                .we_pr00l(we_pr00l), .we_pr00h(we_pr00h), .we_pr01l(we_pr01l), .we_pr01h(we_pr01h), 
+                .we_pr02l(we_pr02l), .we_pr02h(we_pr02h),
+                .we_pr10l(we_pr10l), .we_pr10h(we_pr10h), .we_pr11l(we_pr11l), .we_pr11h(we_pr11h), 
+                .we_pr12l(we_pr12l), .we_pr12h(we_pr12h)
+		);
+//              .we_ites(we_ites) );
+   
+   QLK0RINT48V2_MAIN main (
+		.PCLKRW(PCLKRW),
+//              .INTS02(INTS02),
+//              .INTS04(INTS04), .INTS06(INTS06), .INTS08(INTS08), .INTS0A(INTS0A), 
+//              .INTS0C(INTS0C), .INTS0E(INTS0E), .INTS10(INTS10), .INTS12(INTS12), 
+//              .INTS14(INTS14), .INTS16(INTS16), .INTS18(INTS18), .INTS1A(INTS1A), 
+//              .INTS1C(INTS1C), .INTS1E(INTS1E), .INTS20(INTS20), .INTS22(INTS22), 
+//              .INTS24(INTS24), .INTS26(INTS26), .INTS28(INTS28), .INTS2A(INTS2A), 
+//              .INTS2C(INTS2C), .INTS2E(INTS2E), .INTS30(INTS30), .INTS32(INTS32), 
+//              .INTS34(INTS34), .INTS36(INTS36), .INTS38(INTS38), .INTS3A(INTS3A), 
+//              .INTS3C(INTS3C), .INTS3E(INTS3E), .INTS40(INTS40), .INTS42(INTS42), 
+//              .INTS44(INTS44), .INTS46(INTS46), .INTS48(INTS48), .INTS4A(INTS4A), 
+//              .INTS4C(INTS4C), .INTS4E(INTS4E), .INTS50(INTS50), .INTS52(INTS52), 
+//              .INTS54(INTS54), .INTS56(INTS56), .INTS58(INTS58), .INTS5A(INTS5A), 
+//              .INTS5C(INTS5C), .INTS5E(INTS5E), .INTS60(INTS60), .INTS62(INTS62), 
+                .INTAS02(INTAS02),
+                .INTAS04(INTAS04), .INTAS06(INTAS06), .INTAS08(INTAS08), .INTAS0A(INTAS0A), 
+                .INTAS0C(INTAS0C), .INTAS0E(INTAS0E), .INTAS10(INTAS10), .INTAS12(INTAS12),
+                .INTAS14(INTAS14), .INTAS16(INTAS16), .INTAS18(INTAS18), .INTAS1A(INTAS1A), 
+                .INTAS1C(INTAS1C), .INTAS1E(INTAS1E), .INTAS20(INTAS20), .INTAS22(INTAS22),
+                .INTAS24(INTAS24), .INTAS26(INTAS26), .INTAS28(INTAS28), .INTAS2A(INTAS2A), 
+                .INTAS2C(INTAS2C), .INTAS2E(INTAS2E), .INTAS30(INTAS30), .INTAS32(INTAS32),
+                .INTAS34(INTAS34), .INTAS36(INTAS36), .INTAS38(INTAS38), .INTAS3A(INTAS3A), 
+                .INTAS3C(INTAS3C), .INTAS3E(INTAS3E), .INTAS40(INTAS40), .INTAS42(INTAS42),
+                .INTAS44(INTAS44), .INTAS46(INTAS46), .INTAS48(INTAS48), .INTAS4A(INTAS4A), 
+                .INTAS4C(INTAS4C), .INTAS4E(INTAS4E), .INTAS50(INTAS50), .INTAS52(INTAS52),
+                .INTAS54(INTAS54), .INTAS56(INTAS56), .INTAS58(INTAS58), .INTAS5A(INTAS5A), 
+                .INTAS5C(INTAS5C), .INTAS5E(INTAS5E), .INTAS60(INTAS60), .INTAS62(INTAS62),
+                .INTS04EN(INTS04EN), .INTS06EN(INTS06EN), .INTS08EN(INTS08EN), .INTS0AEN(INTS0AEN), 
+                .INTS0CEN(INTS0CEN), .INTS0EEN(INTS0EEN), .INTS10EN(INTS10EN), .INTS12EN(INTS12EN),
+                .INTS14EN(INTS14EN), .INTS16EN(INTS16EN), .INTS18EN(INTS18EN), .INTS1AEN(INTS1AEN), 
+                .INTS1CEN(INTS1CEN), .INTS1EEN(INTS1EEN), .INTS20EN(INTS20EN), .INTS22EN(INTS22EN),
+                .INTS24EN(INTS24EN), .INTS26EN(INTS26EN), .INTS28EN(INTS28EN), .INTS2AEN(INTS2AEN), 
+                .INTS2CEN(INTS2CEN), .INTS2EEN(INTS2EEN), .INTS30EN(INTS30EN), .INTS32EN(INTS32EN),
+                .INTS34EN(INTS34EN), .INTS36EN(INTS36EN), .INTS38EN(INTS38EN), .INTS3AEN(INTS3AEN), 
+                .INTS3CEN(INTS3CEN), .INTS3EEN(INTS3EEN), .INTS40EN(INTS40EN), .INTS42EN(INTS42EN),
+                .INTS44EN(INTS44EN), .INTS46EN(INTS46EN), .INTS48EN(INTS48EN), .INTS4AEN(INTS4AEN), 
+                .INTS4CEN(INTS4CEN), .INTS4EEN(INTS4EEN), .INTS50EN(INTS50EN), .INTS52EN(INTS52EN),
+                .INTS54EN(INTS54EN), .INTS56EN(INTS56EN), .INTS58EN(INTS58EN), .INTS5AEN(INTS5AEN), 
+                .INTS5CEN(INTS5CEN), .INTS5EEN(INTS5EEN), .INTS60EN(INTS60EN), .INTS62EN(INTS62EN),
+                .NMIMODE(NMIMODE),
+                .INTDBG(INTDBG), .INTNMI(INTNMI), 
+                .INTRQ0(INTRQ0), .INTRQ1(INTRQ1), .INTRQ2(INTRQ2), .INTRQ3(INTRQ3),
+                .INTACK(INTACK),
+                .VCOUT6(VCOUT6), .VCOUT5(VCOUT5), .VCOUT4(VCOUT4), 
+                .VCOUT3(VCOUT3), .VCOUT2(VCOUT2), .VCOUT1(VCOUT1),
+                .STBRELE(STBRELE),
+                .MDW15(MDW15), .MDW14(MDW14), .MDW13(MDW13), .MDW12(MDW12), 
+                .MDW11(MDW11), .MDW10(MDW10), .MDW9(MDW9),   .MDW8(MDW8),
+                .MDW7(MDW7),   .MDW6(MDW6),   .MDW5(MDW5),   .MDW4(MDW4), 
+                .MDW3(MDW3),   .MDW2(MDW2),   .MDW1(MDW1),   .MDW0(MDW0),
+                .BASECK(BASECKHS), .RESB(RESB),
+                .SCANMODE(SCANMODE), .SCANCLK(SCANCLK), //.TESTMODE(TESTMODE), 
+                .biten({BITEN7,BITEN6,BITEN5,BITEN4,BITEN3,BITEN2,BITEN1,BITEN0}),
+                .dout(dout),
+                .sel_if0(sel_if0),   .sel_if1(sel_if1),   .sel_if2(sel_if2),
+                .sel_mk0(sel_mk0),   .sel_mk1(sel_mk1),   .sel_mk2(sel_mk2), 
+                .sel_pr00(sel_pr00), .sel_pr01(sel_pr01), .sel_pr02(sel_pr02), 
+                .sel_pr10(sel_pr10), .sel_pr11(sel_pr11), .sel_pr12(sel_pr12),
+//              .sel_ites(sel_ites),
+                .we_if0l(we_if0l),   .we_if0h(we_if0h),   .we_if1l(we_if1l),   .we_if1h(we_if1h), 
+                .we_if2l(we_if2l),   .we_if2h(we_if2h),
+                .we_mk0l(we_mk0l),   .we_mk0h(we_mk0h),   .we_mk1l(we_mk1l),   .we_mk1h(we_mk1h), 
+                .we_mk2l(we_mk2l),   .we_mk2h(we_mk2h),
+                .we_pr00l(we_pr00l), .we_pr00h(we_pr00h), .we_pr01l(we_pr01l), .we_pr01h(we_pr01h), 
+                .we_pr02l(we_pr02l), .we_pr02h(we_pr02h),
+                .we_pr10l(we_pr10l), .we_pr10h(we_pr10h), .we_pr11l(we_pr11l), .we_pr11h(we_pr11h), 
+                .we_pr12l(we_pr12l), .we_pr12h(we_pr12h)
+		);
+//              .we_ites(we_ites));
+   
+endmodule
+
+//***************************************************************************************************
+// Module Name : QLK0RINT48V2_BI
+// function    : K0R¥í¡¼¥«¥ë¥Ð¥¹I/F
+//***************************************************************************************************
+module QLK0RINT48V2_BI( 
+        PSELINT1, // PSELINT2,  
+        ma, CPUWR, CPURD, WDOP, 
+        mdr, dout,
+        sel_if0, sel_if1, sel_if2,
+        sel_mk0, sel_mk1, sel_mk2, 
+        sel_pr00, sel_pr01, sel_pr02, 
+        sel_pr10, sel_pr11, sel_pr12,
+//      sel_ites,
+        we_if0l, we_if0h, we_if1l, we_if1h, we_if2l, we_if2h,
+        we_mk0l, we_mk0h, we_mk1l, we_mk1h, we_mk2l, we_mk2h,
+        we_pr00l, we_pr00h, we_pr01l, we_pr01h, we_pr02l, we_pr02h,
+        we_pr10l, we_pr10h, we_pr11l, we_pr11h, we_pr12l, we_pr12h
+//      we_ites
+);
+
+   input         PSELINT1; //, PSELINT2;
+   input  [4:0]  ma;
+   input         CPUWR, CPURD, WDOP;
+   output [15:0] mdr;
+   input  [15:0] dout;
+   output        sel_if0, sel_if1, sel_if2;
+   output        sel_mk0, sel_mk1, sel_mk2;
+   output        sel_pr00, sel_pr01, sel_pr02;
+   output        sel_pr10, sel_pr11, sel_pr12;
+// output        sel_ites;
+   output        we_if0l, we_if0h, we_if1l, we_if1h, we_if2l, we_if2h;
+   output        we_mk0l, we_mk0h, we_mk1l, we_mk1h, we_mk2l, we_mk2h;
+   output        we_pr00l, we_pr00h, we_pr01l, we_pr01h, we_pr02l, we_pr02h;
+   output        we_pr10l, we_pr10h, we_pr11l, we_pr11h, we_pr12l, we_pr12h;
+// output        we_ites;
+      
+   wire          rd_en;
+   
+
+//======address decode ===================================================
+
+   assign sel_if0  = PSELINT1 & ~ma[4] & ~ma[3] & ~ma[2] & ~ma[1];  //ma == 5'b0000x
+   assign sel_if1  = PSELINT1 & ~ma[4] & ~ma[3] & ~ma[2] &  ma[1];  //ma == 5'b0001x
+   assign sel_mk0  = PSELINT1 & ~ma[4] & ~ma[3] &  ma[2] & ~ma[1];  //ma == 5'b0010x
+   assign sel_mk1  = PSELINT1 & ~ma[4] & ~ma[3] &  ma[2] &  ma[1];  //ma == 5'b0011x
+   assign sel_pr00 = PSELINT1 & ~ma[4] &  ma[3] & ~ma[2] & ~ma[1];  //ma == 5'b0100x
+   assign sel_pr01 = PSELINT1 & ~ma[4] &  ma[3] & ~ma[2] &  ma[1];  //ma == 5'b0101x
+   assign sel_pr10 = PSELINT1 & ~ma[4] &  ma[3] &  ma[2] & ~ma[1];  //ma == 5'b0110x
+   assign sel_pr11 = PSELINT1 & ~ma[4] &  ma[3] &  ma[2] &  ma[1];  //ma == 5'b0111x
+   assign sel_if2  = PSELINT1 &  ma[4] & ~ma[3] & ~ma[2] & ~ma[1];  //ma == 5'b1000x
+   assign sel_mk2  = PSELINT1 &  ma[4] & ~ma[3] &  ma[2] & ~ma[1];  //ma == 5'b1010x
+   assign sel_pr02 = PSELINT1 &  ma[4] &  ma[3] & ~ma[2] & ~ma[1];  //ma == 5'b1100x
+   assign sel_pr12 = PSELINT1 &  ma[4] &  ma[3] &  ma[2] & ~ma[1];  //ma == 5'b1110x
+// assign sel_ites = PSELINT2;                                      //ma == 5'bxxxxx
+
+//=======Write Enable ====================================================
+//´ñ¿ô¥¢¥É¥ì¥¹¤Ø¤Î¥ï¡¼¥É¥¢¥¯¥»¥¹¤ÏK0R¤Ç¤ÏÈ¯À¸¤·¤Ê¤¤¡Ê´ñ¿ô¥¢¥É¥ì¥¹¤Ø¤Î
+//¥ï¡¼¥É¥¢¥¯¥»¥¹¤Ï¥¢¥É¥ì¥¹¤ÎºÇ²¼°Ì¥Ó¥Ã¥È¤¬0¤Ë¤Ê¤ë¤Î¤Ç¡¢¶ö¿ô¥¢¥É¥ì¥¹¤Î¥ï¡¼¥É
+//¥¢¥¯¥»¥¹¤Ë¤Ê¤ë¡Ë
+//Write Enable Interrput Flag Register
+
+   assign we_if0l = CPUWR & sel_if0 & ~ma[0];
+   assign we_if0h = CPUWR & sel_if0 & ( ma[0] | WDOP ) ;
+   assign we_if1l = CPUWR & sel_if1 & ~ma[0];
+   assign we_if1h = CPUWR & sel_if1 & ( ma[0] | WDOP ) ;
+   assign we_if2l = CPUWR & sel_if2 & ~ma[0];
+   assign we_if2h = CPUWR & sel_if2 & ( ma[0] | WDOP ) ;
+   
+//Write Enable Mask Flag Register
+   
+   assign we_mk0l = CPUWR & sel_mk0 & ~ma[0];
+   assign we_mk0h = CPUWR & sel_mk0 & ( ma[0] | WDOP ) ;
+   assign we_mk1l = CPUWR & sel_mk1 & ~ma[0];
+   assign we_mk1h = CPUWR & sel_mk1 & ( ma[0] | WDOP ) ;
+   assign we_mk2l = CPUWR & sel_mk2 & ~ma[0];
+   assign we_mk2h = CPUWR & sel_mk2 & ( ma[0] | WDOP ) ;
+
+//Write Enable PR0 Flag Register
+
+   assign we_pr00l = CPUWR & sel_pr00 & ~ma[0];
+   assign we_pr00h = CPUWR & sel_pr00 & ( ma[0] | WDOP) ;
+   assign we_pr01l = CPUWR & sel_pr01 & ~ma[0];
+   assign we_pr01h = CPUWR & sel_pr01 & ( ma[0] | WDOP) ;
+   assign we_pr02l = CPUWR & sel_pr02 & ~ma[0];
+   assign we_pr02h = CPUWR & sel_pr02 & ( ma[0] | WDOP) ;
+
+
+//Write Enable PR1 Flag Register
+
+   assign we_pr10l = CPUWR & sel_pr10 & ~ma[0];
+   assign we_pr10h = CPUWR & sel_pr10 & ( ma[0] | WDOP) ;
+   assign we_pr11l = CPUWR & sel_pr11 & ~ma[0];
+   assign we_pr11h = CPUWR & sel_pr11 & ( ma[0] | WDOP) ;
+   assign we_pr12l = CPUWR & sel_pr12 & ~ma[0];
+   assign we_pr12h = CPUWR & sel_pr12 & ( ma[0] | WDOP) ;
+
+//Write Enable Interrupt TEST Register
+
+// assign we_ites  = CPUWR & sel_ites;
+
+//==============MDRÀ©¸æ======================================================================
+
+   assign rd_en = CPURD & ( sel_if0 | sel_if1 | sel_mk0 | sel_mk1 | sel_pr00 | sel_pr01 | sel_pr10 |
+                            sel_pr11 | sel_if2 | sel_mk2 | sel_pr02 | sel_pr12 ); //| sel_ites);
+                            
+   assign mdr[0] = dout[0] & rd_en  ; 
+   assign mdr[1] = dout[1] & rd_en  ; 
+   assign mdr[2] = dout[2] & rd_en  ; 
+   assign mdr[3] = dout[3] & rd_en  ; 
+   assign mdr[4] = dout[4] & rd_en  ; 
+   assign mdr[5] = dout[5] & rd_en  ; 
+   assign mdr[6] = dout[6] & rd_en  ; 
+   assign mdr[7] = dout[7] & rd_en  ; 
+   assign mdr[8] = dout[8] & rd_en  ; 
+   assign mdr[9] = dout[9] & rd_en  ; 
+   assign mdr[10] = dout[10] & rd_en  ; 
+   assign mdr[11] = dout[11] & rd_en  ; 
+   assign mdr[12] = dout[12] & rd_en  ; 
+   assign mdr[13] = dout[13] & rd_en  ; 
+   assign mdr[14] = dout[14] & rd_en  ; 
+   assign mdr[15] = dout[15] & rd_en  ; 
+
+
+endmodule
+
+
+
+//***************************************************************************************************
+// Module Name : QLK0RINT48V2_MAIN
+// function    : ¥á¥¤¥óÉô
+//***************************************************************************************************
+module QLK0RINT48V2_MAIN(
+	PCLKRW,
+//  INTS02,
+//  INTS04,INTS06,INTS08,INTS0A,INTS0C,INTS0E,INTS10,INTS12,
+//  INTS14,INTS16,INTS18,INTS1A,INTS1C,INTS1E,INTS20,INTS22,
+//  INTS24,INTS26,INTS28,INTS2A,INTS2C,INTS2E,INTS30,INTS32,
+//  INTS34,INTS36,INTS38,INTS3A,INTS3C,INTS3E,INTS40,INTS42,
+//  INTS44,INTS46,INTS48,INTS4A,INTS4C,INTS4E,INTS50,INTS52,
+//  INTS54,INTS56,INTS58,INTS5A,INTS5C,INTS5E,INTS60,INTS62,
+    INTAS02,
+    INTAS04,INTAS06,INTAS08,INTAS0A,INTAS0C,INTAS0E,INTAS10,INTAS12,
+    INTAS14,INTAS16,INTAS18,INTAS1A,INTAS1C,INTAS1E,INTAS20,INTAS22,
+    INTAS24,INTAS26,INTAS28,INTAS2A,INTAS2C,INTAS2E,INTAS30,INTAS32,
+    INTAS34,INTAS36,INTAS38,INTAS3A,INTAS3C,INTAS3E,INTAS40,INTAS42,
+    INTAS44,INTAS46,INTAS48,INTAS4A,INTAS4C,INTAS4E,INTAS50,INTAS52,
+    INTAS54,INTAS56,INTAS58,INTAS5A,INTAS5C,INTAS5E,INTAS60,INTAS62,
+    INTS04EN,INTS06EN,INTS08EN,INTS0AEN,INTS0CEN,INTS0EEN,INTS10EN,INTS12EN,
+    INTS14EN,INTS16EN,INTS18EN,INTS1AEN,INTS1CEN,INTS1EEN,INTS20EN,INTS22EN,
+    INTS24EN,INTS26EN,INTS28EN,INTS2AEN,INTS2CEN,INTS2EEN,INTS30EN,INTS32EN,
+    INTS34EN,INTS36EN,INTS38EN,INTS3AEN,INTS3CEN,INTS3EEN,INTS40EN,INTS42EN,
+    INTS44EN,INTS46EN,INTS48EN,INTS4AEN,INTS4CEN,INTS4EEN,INTS50EN,INTS52EN,
+    INTS54EN,INTS56EN,INTS58EN,INTS5AEN,INTS5CEN,INTS5EEN,INTS60EN,INTS62EN,
+    NMIMODE,
+    INTDBG,
+    INTNMI,
+    INTRQ0,
+    INTRQ1,
+    INTRQ2,
+    INTRQ3,
+    INTACK,
+    VCOUT6,VCOUT5,VCOUT4,VCOUT3,VCOUT2,VCOUT1,
+    STBRELE,
+    MDW15,MDW14,MDW13,MDW12,MDW11,MDW10,MDW9,MDW8,
+    MDW7,MDW6,MDW5,MDW4,MDW3,MDW2,MDW1,MDW0,
+    BASECK,
+    RESB,
+    SCANMODE,
+    SCANCLK,
+//  TESTMODE,
+    biten,
+    dout,
+    sel_if0, sel_if1, sel_if2,
+    sel_mk0, sel_mk1, sel_mk2, 
+    sel_pr00, sel_pr01, sel_pr02, 
+    sel_pr10, sel_pr11, sel_pr12,
+//  sel_ites,
+    we_if0l, we_if0h, we_if1l, we_if1h, we_if2l, we_if2h,
+    we_mk0l, we_mk0h, we_mk1l, we_mk1h, we_mk2l, we_mk2h,
+    we_pr00l, we_pr00h, we_pr01l, we_pr01h, we_pr02l, we_pr02h,
+    we_pr10l, we_pr10h, we_pr11l, we_pr11h, we_pr12l, we_pr12h
+//  we_ites
+);
+input	PCLKRW ;
+
+// input  INTS62,INTS60,INTS5E,INTS5C,INTS5A,INTS58,INTS56,INTS54,
+//        INTS52,INTS50,INTS4E,INTS4C,INTS4A,INTS48,INTS46,INTS44,
+//        INTS42,INTS40,INTS3E,INTS3C,INTS3A,INTS38,INTS36,INTS34,
+//        INTS32,INTS30,INTS2E,INTS2C,INTS2A,INTS28,INTS26,INTS24,
+//        INTS22,INTS20,INTS1E,INTS1C,INTS1A,INTS18,INTS16,INTS14,
+//        INTS12,INTS10,INTS0E,INTS0C,INTS0A,INTS08,INTS06,INTS04,
+//        INTS02;
+
+   input  INTAS62,INTAS60,INTAS5E,INTAS5C,INTAS5A,INTAS58,INTAS56,INTAS54,
+          INTAS52,INTAS50,INTAS4E,INTAS4C,INTAS4A,INTAS48,INTAS46,INTAS44,
+          INTAS42,INTAS40,INTAS3E,INTAS3C,INTAS3A,INTAS38,INTAS36,INTAS34,
+          INTAS32,INTAS30,INTAS2E,INTAS2C,INTAS2A,INTAS28,INTAS26,INTAS24,
+          INTAS22,INTAS20,INTAS1E,INTAS1C,INTAS1A,INTAS18,INTAS16,INTAS14,
+          INTAS12,INTAS10,INTAS0E,INTAS0C,INTAS0A,INTAS08,INTAS06,INTAS04,
+          INTAS02;
+
+   input  INTS62EN,INTS60EN,INTS5EEN,INTS5CEN,INTS5AEN,INTS58EN,INTS56EN,INTS54EN,
+          INTS52EN,INTS50EN,INTS4EEN,INTS4CEN,INTS4AEN,INTS48EN,INTS46EN,INTS44EN,
+          INTS42EN,INTS40EN,INTS3EEN,INTS3CEN,INTS3AEN,INTS38EN,INTS36EN,INTS34EN,
+          INTS32EN,INTS30EN,INTS2EEN,INTS2CEN,INTS2AEN,INTS28EN,INTS26EN,INTS24EN,
+          INTS22EN,INTS20EN,INTS1EEN,INTS1CEN,INTS1AEN,INTS18EN,INTS16EN,INTS14EN,
+          INTS12EN,INTS10EN,INTS0EEN,INTS0CEN,INTS0AEN,INTS08EN,INTS06EN,INTS04EN;
+
+   input  NMIMODE;
+   output INTDBG;
+   output INTNMI;
+   output INTRQ0;
+   output INTRQ1;
+   output INTRQ2;
+   output INTRQ3;
+   input  INTACK;
+   output VCOUT6,VCOUT5,VCOUT4,VCOUT3,VCOUT2,VCOUT1;
+   output STBRELE;
+   input  MDW15,MDW14,MDW13,MDW12,MDW11,MDW10,MDW9,MDW8,
+          MDW7,MDW6,MDW5,MDW4,MDW3,MDW2,MDW1,MDW0;
+   input  BASECK;
+   input  RESB;
+   input  SCANMODE;
+   input  SCANCLK;
+// input  TESTMODE;
+   input  [7:0] biten;
+   output [15:0] dout;
+   input  sel_if0, sel_if1, sel_if2;
+   input  sel_mk0, sel_mk1, sel_mk2;
+   input  sel_pr00, sel_pr01, sel_pr02;
+   input  sel_pr10, sel_pr11, sel_pr12;
+// input  sel_ites;
+   input  we_if0l, we_if0h, we_if1l, we_if1h, we_if2l, we_if2h;
+   input  we_mk0l, we_mk0h, we_mk1l, we_mk1h, we_mk2l, we_mk2h;
+   input  we_pr00l, we_pr00h, we_pr01l, we_pr01h, we_pr02l, we_pr02h;
+   input  we_pr10l, we_pr10h, we_pr11l, we_pr11h, we_pr12l, we_pr12h;
+// input  we_ites;
+
+   wire [47:0] clr_ifreg;
+   wire        clr_ifreg_dbg;
+
+   wire [47:0] edge_detect;
+   wire        edge_detect_dbg;
+   
+   reg  [15:0] dout;
+   
+   wire        ifreg_dbg;
+   wire [7:0]  if0l, if0h, if1l, if1h, if2l, if2h,
+               mk0l, mk0h, mk1l, mk1h, mk2l, mk2h,
+               pr00l, pr00h, pr01l, pr01h, pr02l, pr02h,
+               pr10l, pr10h, pr11l, pr11h, pr12l, pr12h;
+   wire        ites7, ites4, ites0;
+   wire        pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3, pre_intnmi, pre_intdbg;
+
+   //STBRELE¿®¹æ¤ÎÀ¸À®
+   QLK0RINT48V2_MAIN_STBRELE stbrele_ctl( 
+                .edge_detect(edge_detect), .edge_detect_dbg(edge_detect_dbg), 
+                .mk0l(mk0l), .mk0h(mk0h), .mk1l(mk1l), .mk1h(mk1h), .mk2l(mk2l), .mk2h(mk2h), 
+                .pre_intrq0(pre_intrq0), .pre_intrq1(pre_intrq1), .pre_intrq2(pre_intrq2), 
+                .pre_intrq3(pre_intrq3), .pre_intnmi(pre_intnmi), .pre_intdbg(pre_intdbg),
+                .NMIMODE(NMIMODE), .STBRELE(STBRELE));
+
+   //³ä¹þ¤ß¥×¥é¥¤¥ª¥ê¥Æ¥£À©¸æ
+   QLK0RINT48V2_MAIN_CTL main_ctl( 
+                .BASECK(BASECK), .RESB(RESB), .NMIMODE(NMIMODE), .INTACK(INTACK), 
+                .ifreg_dbg(ifreg_dbg), 
+                .if0l(if0l), .if0h(if0h), .if1l(if1l), .if1h(if1h), .if2l(if2l), .if2h(if2h),
+                .mk0l(mk0l), .mk0h(mk0h), .mk1l(mk1l), .mk1h(mk1h), .mk2l(mk2l), .mk2h(mk2h),
+                .pr00l(pr00l), .pr00h(pr00h), .pr01l(pr01l), .pr01h(pr01h), .pr02l(pr02l), .pr02h(pr02h),
+                .pr10l(pr10l), .pr10h(pr10h), .pr11l(pr11l), .pr11h(pr11h), .pr12l(pr12l), .pr12h(pr12h),
+                .INTDBG(INTDBG), .INTNMI(INTNMI), 
+                .INTRQ3(INTRQ3), .INTRQ2(INTRQ2), .INTRQ1(INTRQ1), .INTRQ0(INTRQ0), 
+                .pre_intrq0(pre_intrq0), .pre_intrq1(pre_intrq1), .pre_intrq2(pre_intrq2), 
+                .pre_intrq3(pre_intrq3), .pre_intnmi(pre_intnmi), .pre_intdbg(pre_intdbg),
+                .VCOUT6(VCOUT6), .VCOUT5(VCOUT5), .VCOUT4(VCOUT4), .VCOUT3(VCOUT3), .VCOUT2(VCOUT2), .VCOUT1(VCOUT1),
+                .clr_ifreg(clr_ifreg), .clr_ifreg_dbg(clr_ifreg_dbg) );
+
+   //SFR
+   QLK0RINT48V2_MAIN_REG sfrreg (   
+                .BASECK(BASECK), .RESB(RESB),
+		.PCLKRW(PCLKRW),
+//              .INTS02(INTS02),
+//              .INTS04(INTS04), .INTS06(INTS06), .INTS08(INTS08), .INTS0A(INTS0A), 
+//              .INTS0C(INTS0C), .INTS0E(INTS0E), .INTS10(INTS10), .INTS12(INTS12), 
+//              .INTS14(INTS14), .INTS16(INTS16), .INTS18(INTS18), .INTS1A(INTS1A), 
+//              .INTS1C(INTS1C), .INTS1E(INTS1E), .INTS20(INTS20), .INTS22(INTS22), 
+//              .INTS24(INTS24), .INTS26(INTS26), .INTS28(INTS28), .INTS2A(INTS2A), 
+//              .INTS2C(INTS2C), .INTS2E(INTS2E), .INTS30(INTS30), .INTS32(INTS32), 
+//              .INTS34(INTS34), .INTS36(INTS36), .INTS38(INTS38), .INTS3A(INTS3A), 
+//              .INTS3C(INTS3C), .INTS3E(INTS3E), .INTS40(INTS40), .INTS42(INTS42), 
+//              .INTS44(INTS44), .INTS46(INTS46), .INTS48(INTS48), .INTS4A(INTS4A), 
+//              .INTS4C(INTS4C), .INTS4E(INTS4E), .INTS50(INTS50), .INTS52(INTS52), 
+//              .INTS54(INTS54), .INTS56(INTS56), .INTS58(INTS58), .INTS5A(INTS5A), 
+//              .INTS5C(INTS5C), .INTS5E(INTS5E), .INTS60(INTS60), .INTS62(INTS62), 
+                .INTAS02(INTAS02),
+                .INTAS04(INTAS04), .INTAS06(INTAS06), .INTAS08(INTAS08), .INTAS0A(INTAS0A), 
+                .INTAS0C(INTAS0C), .INTAS0E(INTAS0E), .INTAS10(INTAS10), .INTAS12(INTAS12),
+                .INTAS14(INTAS14), .INTAS16(INTAS16), .INTAS18(INTAS18), .INTAS1A(INTAS1A), 
+                .INTAS1C(INTAS1C), .INTAS1E(INTAS1E), .INTAS20(INTAS20), .INTAS22(INTAS22),
+                .INTAS24(INTAS24), .INTAS26(INTAS26), .INTAS28(INTAS28), .INTAS2A(INTAS2A), 
+                .INTAS2C(INTAS2C), .INTAS2E(INTAS2E), .INTAS30(INTAS30), .INTAS32(INTAS32),
+                .INTAS34(INTAS34), .INTAS36(INTAS36), .INTAS38(INTAS38), .INTAS3A(INTAS3A), 
+                .INTAS3C(INTAS3C), .INTAS3E(INTAS3E), .INTAS40(INTAS40), .INTAS42(INTAS42),
+                .INTAS44(INTAS44), .INTAS46(INTAS46), .INTAS48(INTAS48), .INTAS4A(INTAS4A), 
+                .INTAS4C(INTAS4C), .INTAS4E(INTAS4E), .INTAS50(INTAS50), .INTAS52(INTAS52),
+                .INTAS54(INTAS54), .INTAS56(INTAS56), .INTAS58(INTAS58), .INTAS5A(INTAS5A), 
+                .INTAS5C(INTAS5C), .INTAS5E(INTAS5E), .INTAS60(INTAS60), .INTAS62(INTAS62),
+                .INTS04EN(INTS04EN), .INTS06EN(INTS06EN), .INTS08EN(INTS08EN), .INTS0AEN(INTS0AEN), 
+                .INTS0CEN(INTS0CEN), .INTS0EEN(INTS0EEN), .INTS10EN(INTS10EN), .INTS12EN(INTS12EN),
+                .INTS14EN(INTS14EN), .INTS16EN(INTS16EN), .INTS18EN(INTS18EN), .INTS1AEN(INTS1AEN), 
+                .INTS1CEN(INTS1CEN), .INTS1EEN(INTS1EEN), .INTS20EN(INTS20EN), .INTS22EN(INTS22EN),
+                .INTS24EN(INTS24EN), .INTS26EN(INTS26EN), .INTS28EN(INTS28EN), .INTS2AEN(INTS2AEN), 
+                .INTS2CEN(INTS2CEN), .INTS2EEN(INTS2EEN), .INTS30EN(INTS30EN), .INTS32EN(INTS32EN),
+                .INTS34EN(INTS34EN), .INTS36EN(INTS36EN), .INTS38EN(INTS38EN), .INTS3AEN(INTS3AEN), 
+                .INTS3CEN(INTS3CEN), .INTS3EEN(INTS3EEN), .INTS40EN(INTS40EN), .INTS42EN(INTS42EN),
+                .INTS44EN(INTS44EN), .INTS46EN(INTS46EN), .INTS48EN(INTS48EN), .INTS4AEN(INTS4AEN), 
+                .INTS4CEN(INTS4CEN), .INTS4EEN(INTS4EEN), .INTS50EN(INTS50EN), .INTS52EN(INTS52EN),
+                .INTS54EN(INTS54EN), .INTS56EN(INTS56EN), .INTS58EN(INTS58EN), .INTS5AEN(INTS5AEN), 
+                .INTS5CEN(INTS5CEN), .INTS5EEN(INTS5EEN), .INTS60EN(INTS60EN), .INTS62EN(INTS62EN),
+                .NMIMODE(NMIMODE), 
+                .MDW15(MDW15), .MDW14(MDW14), .MDW13(MDW13), .MDW12(MDW12), 
+                .MDW11(MDW11), .MDW10(MDW10), .MDW9(MDW9),   .MDW8(MDW8),
+                .MDW7(MDW7),   .MDW6(MDW6),   .MDW5(MDW5),   .MDW4(MDW4), 
+                .MDW3(MDW3),   .MDW2(MDW2),   .MDW1(MDW1),   .MDW0(MDW0),
+                .biten(biten),
+                .edge_detect(edge_detect), .edge_detect_dbg(edge_detect_dbg),
+                .clr_ifreg(clr_ifreg), .clr_ifreg_dbg(clr_ifreg_dbg),
+                .ifreg_dbg(ifreg_dbg), 
+                .if0l(if0l), .if0h(if0h), .if1l(if1l), .if1h(if1h), .if2l(if2l), .if2h(if2h),
+                .mk0l(mk0l), .mk0h(mk0h), .mk1l(mk1l), .mk1h(mk1h), .mk2l(mk2l), .mk2h(mk2h),
+                .pr00l(pr00l), .pr00h(pr00h), .pr01l(pr01l), .pr01h(pr01h), .pr02l(pr02l), .pr02h(pr02h),
+                .pr10l(pr10l), .pr10h(pr10h), .pr11l(pr11l), .pr11h(pr11h), .pr12l(pr12l), .pr12h(pr12h),
+                .we_if0l(we_if0l), .we_if0h(we_if0h), .we_if1l(we_if1l), .we_if1h(we_if1h), 
+                .we_if2l(we_if2l), .we_if2h(we_if2h),
+                .we_mk0l(we_mk0l), .we_mk0h(we_mk0h), .we_mk1l(we_mk1l), .we_mk1h(we_mk1h), 
+                .we_mk2l(we_mk2l), .we_mk2h(we_mk2h),
+                .we_pr00l(we_pr00l), .we_pr00h(we_pr00h), .we_pr01l(we_pr01l), .we_pr01h(we_pr01h), 
+                .we_pr02l(we_pr02l), .we_pr02h(we_pr02h),
+                .we_pr10l(we_pr10l), .we_pr10h(we_pr10h), .we_pr11l(we_pr11l), .we_pr11h(we_pr11h), 
+                .we_pr12l(we_pr12l), .we_pr12h(we_pr12h),
+//              .ites0(ites0), .ites4(ites4),
+                .SCANMODE(SCANMODE),
+                .SCANCLK(SCANCLK)
+		);
+//              .TESTMODE(TESTMODE));
+
+// INT48V2 del#	   //¥Æ¥¹¥È¥ì¥¸¥¹¥¿
+// INT48V2 del#	   QLK0RINT48V2_MAIN_TEST testreg( 
+// INT48V2 del#	                .BASECK(BASECK), .RESB(RESB), .TESTMODE(TESTMODE), 
+// INT48V2 del#	                .edge_detect(edge_detect), .edge_detect_dbg(edge_detect_dbg), 
+// INT48V2 del#	                .MDW0(MDW0), .MDW4(MDW4), .MDW7(MDW7), .we_ites(we_ites),
+// INT48V2 del#	                .biten0(biten[0]), .biten4(biten[4]), .biten7(biten[7]),
+// INT48V2 del#	                .ites0(ites0), .ites4(ites4), .ites7(ites7));
+
+//======== SFR Selector =================================================================
+   always @( sel_if0 or sel_if1 or sel_if2 or
+             sel_mk0 or sel_mk1 or sel_mk2 or
+             sel_pr00 or sel_pr01 or sel_pr02 or
+             sel_pr10 or sel_pr11 or sel_pr12 or // sel_ites or
+             if0l or if0h or if1l or if1h or if2l or if2h or
+             mk0l or mk0h or mk1l or mk1h or mk2l or mk2h or
+             pr00l or pr00h or pr01l or pr01h or pr02l or pr02h or
+             pr10l or pr10h or pr11l or pr11h or pr12l or pr12h or ites7) begin
+        if(sel_if0) begin
+            dout = {if0h, if0l};
+        end else if(sel_if1) begin
+            dout = {if1h, if1l};
+        end else if(sel_if2) begin
+            dout = {if2h, if2l};
+        end else if(sel_mk0) begin
+            dout = {mk0h, mk0l};
+        end else if(sel_mk1) begin
+            dout = {mk1h, mk1l};
+        end else if(sel_mk2) begin
+            dout = {mk2h, mk2l};
+        end else if(sel_pr00) begin
+            dout = {pr00h, pr00l};
+        end else if(sel_pr01) begin
+            dout = {pr01h, pr01l};
+        end else if(sel_pr02) begin
+            dout = {pr02h, pr02l};
+        end else if(sel_pr10) begin
+            dout = {pr10h, pr10l};
+        end else if(sel_pr11) begin
+            dout = {pr11h, pr11l};
+        end else if(sel_pr12) begin
+            dout = {pr12h, pr12l};
+//      end else if(sel_ites) begin
+//          dout = {8'b0,ites7,7'b0};
+        end else begin
+            dout = 16'h0000;
+        end
+   end
+
+endmodule
+
+//***************************************************************************************************
+// Module Name : QLK0RINT48V2_MAIN_CTL
+// function    : ³ä¹þ¤ß¥×¥é¥¤¥ª¥ê¥Æ¥£À©¸æ
+//***************************************************************************************************
+module QLK0RINT48V2_MAIN_CTL( 
+        BASECK, RESB, 
+        NMIMODE, INTACK, 
+        ifreg_dbg,
+        if0l, if0h, if1l, if1h, if2l, if2h,
+        mk0l, mk0h, mk1l, mk1h, mk2l, mk2h,
+        pr00l, pr00h, pr01l, pr01h, pr02l, pr02h,
+        pr10l, pr10h, pr11l, pr11h, pr12l, pr12h,
+        INTDBG, INTNMI, INTRQ3, INTRQ2, INTRQ1, INTRQ0, 
+	pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3, pre_intnmi, pre_intdbg,
+        VCOUT6, VCOUT5, VCOUT4, VCOUT3, VCOUT2, VCOUT1,
+        clr_ifreg, clr_ifreg_dbg
+);
+
+   input         BASECK, RESB;
+   input         NMIMODE;
+   input         INTACK;
+   input         ifreg_dbg;
+   input [7:0]   if0l, if0h, if1l, if1h, if2l, if2h;
+   input [7:0]   mk0l, mk0h, mk1l, mk1h, mk2l, mk2h;
+   input [7:0]   pr00l, pr00h, pr01l, pr01h, pr02l, pr02h;
+   input [7:0]   pr10l, pr10h, pr11l, pr11h, pr12l, pr12h;
+   output        INTDBG, INTNMI, INTRQ3, INTRQ2, INTRQ1, INTRQ0;
+   output        pre_intdbg, pre_intnmi, pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3;
+   output        VCOUT6, VCOUT5, VCOUT4, VCOUT3, VCOUT2, VCOUT1;
+   output [47:0] clr_ifreg;
+   output        clr_ifreg_dbg;
+   
+   reg         INTDBG, INTNMI, INTRQ3, INTRQ2, INTRQ1, INTRQ0;
+   reg         pre_intdbg, pre_intnmi, pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3;
+   
+   wire [47:0] ifreg, mkreg, pr0reg, pr1reg;
+
+   wire [47:0] int_tmp;
+   reg  [47:0] int_rq;
+   wire [47:0] int_rq0,int_rq1,int_rq2,int_rq3;
+   wire        sel_rq0,sel_rq1,sel_rq2,sel_rq3;
+   wire        ints04_rq;
+   reg  [5:0]  int_sel;
+   reg  [47:0] clr_sel;
+   reg         clr_sel_dbg;
+
+   wire        sel_rq0_tmp0, sel_rq0_tmp1, sel_rq0_tmp2, sel_rq0_tmp3, sel_rq0_tmp4, sel_rq0_tmp5;
+   wire        sel_rq1_tmp0, sel_rq1_tmp1, sel_rq1_tmp2, sel_rq1_tmp3, sel_rq1_tmp4, sel_rq1_tmp5;
+   wire        sel_rq2_tmp0, sel_rq2_tmp1, sel_rq2_tmp2, sel_rq2_tmp3, sel_rq2_tmp4, sel_rq2_tmp5;
+   wire        sel_rq3_tmp0, sel_rq3_tmp1, sel_rq3_tmp2, sel_rq3_tmp3, sel_rq3_tmp4, sel_rq3_tmp5;
+
+   //For Power compiler
+   wire        int_en, int_en_tmp0, int_en_tmp1, int_en_tmp2, int_en_tmp3,int_en_tmp4, int_en_tmp5, int_en_tmp6;
+
+   assign ifreg = {if2h, if2l, if1h, if1l, if0h, if0l};
+   assign mkreg = {mk2h, mk2l, mk1h, mk1l, mk0h, mk0l};
+   assign pr0reg = {pr02h, pr02l, pr01h, pr01l, pr00h, pr00l};
+   assign pr1reg = {pr12h, pr12l, pr11h, pr11l, pr10h, pr10l};
+
+//=========== Priority Controller =====================================================================
+
+   assign int_tmp[47:0] = {(ifreg[47:1] & ~mkreg[47:1]),(ifreg[0] & ~mkreg[0] & ~NMIMODE)|(ifreg[0] & NMIMODE)};
+
+//¥¯¥í¥Ã¥¯¥²¡¼¥Æ¥£¥ó¥°ÍÑ
+//³ä¹þ¤ß¤¬È¯À¸¤·¤Æ¤«¤é¥ê¥¯¥¨¥¹¥È¤¬´°Î»¤¹¤ë¤Þ¤Çint_en¤¬¥¢¥¯¥Æ¥£¥Ö¤Ë¤Ê¤ë¡£
+   assign int_en_tmp0 = |int_tmp[7:0];
+   assign int_en_tmp1 = |int_tmp[15:8];
+   assign int_en_tmp2 = |int_tmp[23:16];
+   assign int_en_tmp3 = |int_tmp[31:24];
+   assign int_en_tmp4 = |int_tmp[39:32];
+   assign int_en_tmp5 = |int_tmp[47:40];
+   assign int_en_tmp6 = |{ifreg_dbg,INTDBG,INTNMI,INTRQ0,INTRQ1,INTRQ2,INTRQ3};
+   assign int_en = int_en_tmp0 | int_en_tmp1 | int_en_tmp2 | int_en_tmp3 | int_en_tmp4 | int_en_tmp5 | int_en_tmp6;
+   
+   //PR¥ì¥¸¥¹¥¿¤Ë¤è¤ëÍ¥ÀèÅÙËè¤ËÊ¬¤±¤ë
+   assign int_rq0[47:0] = int_tmp[47:0] & ~pr0reg[47:0] & ~pr1reg[47:0];
+   assign int_rq1[47:0] = int_tmp[47:0] &  pr0reg[47:0] & ~pr1reg[47:0];
+   assign int_rq2[47:0] = int_tmp[47:0] & ~pr0reg[47:0] &  pr1reg[47:0];
+   assign int_rq3[47:0] = int_tmp[47:0] &  pr0reg[47:0] &  pr1reg[47:0];
+   
+   //Í¥ÀèÅÙËè¤Ë¥ê¥¯¥¨¥¹¥È¤¬È¯À¸¤·¤Æ¤¤¤ë¤«¤òÈ½Äê
+   assign sel_rq0_tmp0 = |int_rq0[7:0];
+   assign sel_rq0_tmp1 = |int_rq0[15:8];
+   assign sel_rq0_tmp2 = |int_rq0[23:16];
+   assign sel_rq0_tmp3 = |int_rq0[31:24];
+   assign sel_rq0_tmp4 = |int_rq0[39:32];
+   assign sel_rq0_tmp5 = |int_rq0[47:40];
+   assign sel_rq0 = sel_rq0_tmp0 | sel_rq0_tmp1 | sel_rq0_tmp2 | sel_rq0_tmp3 | sel_rq0_tmp4 | sel_rq0_tmp5;
+
+   assign sel_rq1_tmp0 = |int_rq1[7:0];
+   assign sel_rq1_tmp1 = |int_rq1[15:8];
+   assign sel_rq1_tmp2 = |int_rq1[23:16];
+   assign sel_rq1_tmp3 = |int_rq1[31:24];
+   assign sel_rq1_tmp4 = |int_rq1[39:32];
+   assign sel_rq1_tmp5 = |int_rq1[47:40];
+   assign sel_rq1 = sel_rq1_tmp0 | sel_rq1_tmp1 | sel_rq1_tmp2 | sel_rq1_tmp3 | sel_rq1_tmp4 | sel_rq1_tmp5;
+
+   assign sel_rq2_tmp0 = |int_rq2[7:0];
+   assign sel_rq2_tmp1 = |int_rq2[15:8];
+   assign sel_rq2_tmp2 = |int_rq2[23:16];
+   assign sel_rq2_tmp3 = |int_rq2[31:24];
+   assign sel_rq2_tmp4 = |int_rq2[39:32];
+   assign sel_rq2_tmp5 = |int_rq2[47:40];
+   assign sel_rq2 = sel_rq2_tmp0 | sel_rq2_tmp1 | sel_rq2_tmp2 | sel_rq2_tmp3 | sel_rq2_tmp4 | sel_rq2_tmp5;
+
+   assign sel_rq3_tmp0 = |int_rq3[7:0];
+   assign sel_rq3_tmp1 = |int_rq3[15:8];
+   assign sel_rq3_tmp2 = |int_rq3[23:16];
+   assign sel_rq3_tmp3 = |int_rq3[31:24];
+   assign sel_rq3_tmp4 = |int_rq3[39:32];
+   assign sel_rq3_tmp5 = |int_rq3[47:40];
+   assign sel_rq3 = sel_rq3_tmp0 | sel_rq3_tmp1 | sel_rq3_tmp2 | sel_rq3_tmp3 | sel_rq3_tmp4 | sel_rq3_tmp5;
+
+   //Í¥ÀèÅÙ¤ÎºÇ¤â¹â¤¤¥ê¥¯¥¨¥¹¥È¤òÁªÂò
+   always @(sel_rq0 or sel_rq1 or sel_rq2 or int_rq0 or int_rq1 or int_rq2 or int_rq3) begin
+       if(sel_rq0 == 1'b1) begin
+           int_rq[47:0] = int_rq0[47:0];
+       end else if(sel_rq1 == 1'b1) begin
+           int_rq[47:0] = int_rq1[47:0];
+       end else if(sel_rq2 == 1'b1) begin
+           int_rq[47:0] = int_rq2[47:0];
+       end else begin
+           int_rq[47:0] = int_rq3[47:0];
+       end
+   end
+   
+   //Í¥ÀèÅÙ¤Ë±þ¤¸¤¿¥ê¥¯¥¨¥¹¥È¿®¹æ¤ò¥¢¥¯¥Æ¥£¥Ö¤Ë¤¹¤ë
+   always @(ifreg_dbg or ifreg or NMIMODE or sel_rq0 or sel_rq1 or sel_rq2 or sel_rq3) begin
+        if(ifreg_dbg == 1'b1) begin
+            {pre_intdbg, pre_intnmi, pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3} = 6'b100000;
+        end else if(ifreg[0] == 1'b1 && NMIMODE == 1'b1) begin
+            {pre_intdbg, pre_intnmi, pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3} = 6'b010000;
+        end else if(sel_rq0 == 1'b1) begin
+            {pre_intdbg, pre_intnmi, pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3} = 6'b001000;
+        end else if(sel_rq1 == 1'b1) begin
+            {pre_intdbg, pre_intnmi, pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3} = 6'b000100;
+        end else if(sel_rq2 == 1'b1) begin
+            {pre_intdbg, pre_intnmi, pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3} = 6'b000010;
+        end else if(sel_rq3 == 1'b1) begin
+            {pre_intdbg, pre_intnmi, pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3} = 6'b000001;
+        end else begin
+            {pre_intdbg, pre_intnmi, pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3} = 6'b000000;
+        end
+   end
+   
+   //¥ê¥¯¥¨¥¹¥È¿®¹æ¤òBASECK¤ÇÀÚ¤êÄ¾¤¹¡£
+   always @(posedge BASECK or negedge RESB) begin
+       if(!RESB) begin
+           INTDBG <= 1'b0;
+           INTNMI <= 1'b0;
+           INTRQ0 <= 1'b0;
+           INTRQ1 <= 1'b0;
+           INTRQ2 <= 1'b0;
+           INTRQ3 <= 1'b0;
+       end else if(int_en) begin
+           INTDBG <= pre_intdbg;
+           INTNMI <= pre_intnmi;
+           INTRQ0 <= pre_intrq0;
+           INTRQ1 <= pre_intrq1;
+           INTRQ2 <= pre_intrq2;
+           INTRQ3 <= pre_intrq3;
+       end
+   end
+   
+  //Æ±°ìÍ¥ÀèÅÙÆâ¤ÇºÇ¤â¹â¤¤Í¥ÀèÅÙ¤ÎÊª¤òÁªÂò¤¹¤ë
+   assign ints04_rq = (ifreg[0] & NMIMODE) | (int_rq[0] & ~NMIMODE);
+   
+   always @(posedge BASECK or negedge RESB) begin
+       if(!RESB) begin
+           int_sel <= 6'b0;
+       end else if(int_en) begin
+           if(ifreg_dbg) begin
+               int_sel <= 6'h1;
+           end else if(ints04_rq) begin
+               int_sel <= 6'h2;
+           end else if(int_rq[1]) begin
+               int_sel <= 6'h3;
+           end else if(int_rq[2]) begin
+               int_sel <= 6'h4;
+           end else if(int_rq[3]) begin
+               int_sel <= 6'h5;
+           end else if(int_rq[4]) begin
+               int_sel <= 6'h6;
+           end else if(int_rq[5]) begin
+               int_sel <= 6'h7;
+           end else if(int_rq[6]) begin
+               int_sel <= 6'h8;
+           end else if(int_rq[7]) begin
+               int_sel <= 6'h9;
+           end else if(int_rq[8]) begin
+               int_sel <= 6'ha;
+           end else if(int_rq[9]) begin
+               int_sel <= 6'hb;
+           end else if(int_rq[10]) begin
+               int_sel <= 6'hc;
+           end else if(int_rq[11]) begin
+               int_sel <= 6'hd;
+           end else if(int_rq[12]) begin
+               int_sel <= 6'he;
+           end else if(int_rq[13]) begin
+               int_sel <= 6'hf;
+           end else if(int_rq[14]) begin
+               int_sel <= 6'h10;
+           end else if(int_rq[15]) begin
+               int_sel <= 6'h11;
+           end else if(int_rq[16]) begin
+               int_sel <= 6'h12;
+           end else if(int_rq[17]) begin
+               int_sel <= 6'h13;
+           end else if(int_rq[18]) begin
+               int_sel <= 6'h14;
+           end else if(int_rq[19]) begin
+               int_sel <= 6'h15;
+           end else if(int_rq[20]) begin
+               int_sel <= 6'h16;
+           end else if(int_rq[21]) begin
+               int_sel <= 6'h17;
+           end else if(int_rq[22]) begin
+               int_sel <= 6'h18;
+           end else if(int_rq[23]) begin
+               int_sel <= 6'h19;
+           end else if(int_rq[24]) begin
+               int_sel <= 6'h1a;
+           end else if(int_rq[25]) begin
+               int_sel <= 6'h1b;
+           end else if(int_rq[26]) begin
+               int_sel <= 6'h1c;
+           end else if(int_rq[27]) begin
+               int_sel <= 6'h1d;
+           end else if(int_rq[28]) begin
+               int_sel <= 6'h1e;
+           end else if(int_rq[29]) begin
+               int_sel <= 6'h1f;
+           end else if(int_rq[30]) begin
+               int_sel <= 6'h20;
+           end else if(int_rq[31]) begin
+               int_sel <= 6'h21;
+           end else if(int_rq[32]) begin
+               int_sel <= 6'h22;
+           end else if(int_rq[33]) begin
+               int_sel <= 6'h23;
+           end else if(int_rq[34]) begin
+               int_sel <= 6'h24;
+           end else if(int_rq[35]) begin
+               int_sel <= 6'h25;
+           end else if(int_rq[36]) begin
+               int_sel <= 6'h26;
+           end else if(int_rq[37]) begin
+               int_sel <= 6'h27;
+           end else if(int_rq[38]) begin
+               int_sel <= 6'h28;
+           end else if(int_rq[39]) begin
+               int_sel <= 6'h29;
+           end else if(int_rq[40]) begin
+               int_sel <= 6'h2a;
+           end else if(int_rq[41]) begin
+               int_sel <= 6'h2b;
+           end else if(int_rq[42]) begin
+               int_sel <= 6'h2c;
+           end else if(int_rq[43]) begin
+               int_sel <= 6'h2d;
+           end else if(int_rq[44]) begin
+               int_sel <= 6'h2e;
+           end else if(int_rq[45]) begin
+               int_sel <= 6'h2f;
+           end else if(int_rq[46]) begin
+               int_sel <= 6'h30;
+           end else if(int_rq[47]) begin
+               int_sel <= 6'h31;
+           end else begin
+               int_sel <= 6'b0;
+           end
+       end
+    end
+
+//=========Vector Table address generator =============================================
+
+   assign VCOUT6 = int_sel[5];
+   assign VCOUT5 = int_sel[4];
+   assign VCOUT4 = int_sel[3];
+   assign VCOUT3 = int_sel[2];
+   assign VCOUT2 = int_sel[1];
+   assign VCOUT1 = int_sel[0];
+
+//==========Clear Interrupt Flag Register =============================================
+   //¥ê¥¯¥¨¥¹¥È¤ËÂÐ¤·¡¢CPU¤¬INTACK¤òÊÖ¤·¤Æ¤­¤¿¤éIF¤ò¥¯¥ê¥¢¤¹¤ë¿®¹æ¤ò½ÐÎÏ¤¹¤ë¡£          
+   always @(int_sel) begin
+       casex(int_sel)
+           6'h1: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000000000000001;
+           6'h2: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000000000000010;
+           6'h3: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000000000000100;
+           6'h4: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000000000001000;
+           6'h5: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000000000010000;
+           6'h6: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000000000100000;
+           6'h7: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000000001000000;
+           6'h8: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000000010000000;
+           6'h9: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000000100000000;
+           6'ha: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000001000000000;
+           6'hb: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000010000000000;
+           6'hc: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000000100000000000;
+           6'hd: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000001000000000000;
+           6'he: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000010000000000000;
+           6'hf: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000000100000000000000;
+           6'h10: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000001000000000000000;
+           6'h11: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000010000000000000000;
+           6'h12: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000000100000000000000000;
+           6'h13: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000001000000000000000000;
+           6'h14: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000010000000000000000000;
+           6'h15: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000000100000000000000000000;
+           6'h16: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000001000000000000000000000;
+           6'h17: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000010000000000000000000000;
+           6'h18: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000000100000000000000000000000;
+           6'h19: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000001000000000000000000000000;
+           6'h1a: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000010000000000000000000000000;
+           6'h1b: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000000100000000000000000000000000;
+           6'h1c: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000001000000000000000000000000000;
+           6'h1d: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000010000000000000000000000000000;
+           6'h1e: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000000100000000000000000000000000000;
+           6'h1f: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000001000000000000000000000000000000;
+           6'h20: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000010000000000000000000000000000000;
+           6'h21: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000000100000000000000000000000000000000;
+           6'h22: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000001000000000000000000000000000000000;
+           6'h23: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000010000000000000000000000000000000000;
+           6'h24: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000000100000000000000000000000000000000000;
+           6'h25: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000001000000000000000000000000000000000000;
+           6'h26: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000010000000000000000000000000000000000000;
+           6'h27: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000000100000000000000000000000000000000000000;
+           6'h28: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000001000000000000000000000000000000000000000;
+           6'h29: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000010000000000000000000000000000000000000000;
+           6'h2a: {clr_sel[47:0],clr_sel_dbg} = 49'b0000000100000000000000000000000000000000000000000;
+           6'h2b: {clr_sel[47:0],clr_sel_dbg} = 49'b0000001000000000000000000000000000000000000000000;
+           6'h2c: {clr_sel[47:0],clr_sel_dbg} = 49'b0000010000000000000000000000000000000000000000000;
+           6'h2d: {clr_sel[47:0],clr_sel_dbg} = 49'b0000100000000000000000000000000000000000000000000;
+           6'h2e: {clr_sel[47:0],clr_sel_dbg} = 49'b0001000000000000000000000000000000000000000000000;
+           6'h2f: {clr_sel[47:0],clr_sel_dbg} = 49'b0010000000000000000000000000000000000000000000000;
+           6'h30: {clr_sel[47:0],clr_sel_dbg} = 49'b0100000000000000000000000000000000000000000000000;
+           6'h31: {clr_sel[47:0],clr_sel_dbg} = 49'b1000000000000000000000000000000000000000000000000;
+           default: {clr_sel[47:0],clr_sel_dbg} = 49'b0;
+       endcase
+   end
+
+   assign {clr_ifreg[47:0],clr_ifreg_dbg} = {49{INTACK}} & {clr_sel[47:0],clr_sel_dbg};
+
+endmodule
+
+
+//***************************************************************************************************
+// Module Name : QLK0RINT48V2_MAIN_STBRELE
+// function    : STBRELE¿®¹æÀ¸À®
+//***************************************************************************************************
+module QLK0RINT48V2_MAIN_STBRELE( edge_detect, edge_detect_dbg, mk0l, mk0h, mk1l, mk1h, mk2l, mk2h, 
+                                  pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3, pre_intnmi, pre_intdbg,
+                                  NMIMODE, STBRELE);
+
+   input [47:0] edge_detect;
+   input        edge_detect_dbg;
+   input [7:0]  mk0l, mk0h, mk1l, mk1h, mk2l, mk2h;
+   input        pre_intrq0, pre_intrq1, pre_intrq2, pre_intrq3, pre_intnmi, pre_intdbg;
+   input        NMIMODE;
+   output       STBRELE;
+   
+   wire         tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
+   
+   assign tmp0 = edge_detect_dbg | (edge_detect[0] & ~mk0l[0] & ~NMIMODE)|(edge_detect[0] & NMIMODE);
+   assign tmp1 = |{(edge_detect[7:1] & ~mk0l[7:1])};
+   assign tmp2 = |{(edge_detect[15:8] & ~mk0h)};
+   assign tmp3 = |{(edge_detect[23:16] & ~mk1l)};
+   assign tmp4 = |{(edge_detect[31:24] & ~mk1h)};
+   assign tmp5 = |{(edge_detect[39:32] & ~mk2l)};
+   assign tmp6 = |{(edge_detect[47:40] & ~mk2h)};
+   assign tmp7 = pre_intrq0 | pre_intrq1 | pre_intrq2 | pre_intrq3 | pre_intnmi | pre_intdbg;
+   
+   assign STBRELE =  tmp0 | tmp1 | tmp2 | tmp3 | tmp4 | tmp5 | tmp6 | tmp7;
+
+   
+endmodule
+
+//***************************************************************************************************
+// Module Name : QLK0RINT48V2_MAIN_REG
+// function    : SFR¥ì¥¸¥¹¥¿·²µÚ¤ÓÀ©¸æ
+//***************************************************************************************************
+module QLK0RINT48V2_MAIN_REG( 
+    BASECK, RESB, 
+	PCLKRW,
+//  INTS02,
+//  INTS04,INTS06,INTS08,INTS0A,INTS0C,INTS0E,INTS10,INTS12,
+//  INTS14,INTS16,INTS18,INTS1A,INTS1C,INTS1E,INTS20,INTS22,
+//  INTS24,INTS26,INTS28,INTS2A,INTS2C,INTS2E,INTS30,INTS32,
+//  INTS34,INTS36,INTS38,INTS3A,INTS3C,INTS3E,INTS40,INTS42,
+//  INTS44,INTS46,INTS48,INTS4A,INTS4C,INTS4E,INTS50,INTS52,
+//  INTS54,INTS56,INTS58,INTS5A,INTS5C,INTS5E,INTS60,INTS62,
+    INTAS02,
+    INTAS04,INTAS06,INTAS08,INTAS0A,INTAS0C,INTAS0E,INTAS10,INTAS12,
+    INTAS14,INTAS16,INTAS18,INTAS1A,INTAS1C,INTAS1E,INTAS20,INTAS22,
+    INTAS24,INTAS26,INTAS28,INTAS2A,INTAS2C,INTAS2E,INTAS30,INTAS32,
+    INTAS34,INTAS36,INTAS38,INTAS3A,INTAS3C,INTAS3E,INTAS40,INTAS42,
+    INTAS44,INTAS46,INTAS48,INTAS4A,INTAS4C,INTAS4E,INTAS50,INTAS52,
+    INTAS54,INTAS56,INTAS58,INTAS5A,INTAS5C,INTAS5E,INTAS60,INTAS62,
+    INTS04EN,INTS06EN,INTS08EN,INTS0AEN,INTS0CEN,INTS0EEN,INTS10EN,INTS12EN,
+    INTS14EN,INTS16EN,INTS18EN,INTS1AEN,INTS1CEN,INTS1EEN,INTS20EN,INTS22EN,
+    INTS24EN,INTS26EN,INTS28EN,INTS2AEN,INTS2CEN,INTS2EEN,INTS30EN,INTS32EN,
+    INTS34EN,INTS36EN,INTS38EN,INTS3AEN,INTS3CEN,INTS3EEN,INTS40EN,INTS42EN,
+    INTS44EN,INTS46EN,INTS48EN,INTS4AEN,INTS4CEN,INTS4EEN,INTS50EN,INTS52EN,
+    INTS54EN,INTS56EN,INTS58EN,INTS5AEN,INTS5CEN,INTS5EEN,INTS60EN,INTS62EN,
+    NMIMODE,
+    MDW15,MDW14,MDW13,MDW12,MDW11,MDW10,MDW9,MDW8,
+    MDW7,MDW6,MDW5,MDW4,MDW3,MDW2,MDW1,MDW0,
+    biten,
+    edge_detect, edge_detect_dbg,
+    clr_ifreg, clr_ifreg_dbg,
+    ifreg_dbg,
+    if0l, if0h, if1l, if1h, if2l, if2h,
+    mk0l, mk0h, mk1l, mk1h, mk2l, mk2h,
+    pr00l, pr00h, pr01l, pr01h, pr02l, pr02h,
+    pr10l, pr10h, pr11l, pr11h, pr12l, pr12h,
+    we_if0l, we_if0h, we_if1l, we_if1h, we_if2l, we_if2h,
+    we_mk0l, we_mk0h, we_mk1l, we_mk1h, we_mk2l, we_mk2h,
+    we_pr00l, we_pr00h, we_pr01l, we_pr01h, we_pr02l, we_pr02h,
+    we_pr10l, we_pr10h, we_pr11l, we_pr11h, we_pr12l, we_pr12h,
+//  ites0, ites4,
+    SCANMODE,
+    SCANCLK
+//  TESTMODE
+);
+
+input	PCLKRW ;
+
+   input  BASECK, RESB;
+// input  INTS62,INTS60,INTS5E,INTS5C,INTS5A,INTS58,INTS56,INTS54,
+//        INTS52,INTS50,INTS4E,INTS4C,INTS4A,INTS48,INTS46,INTS44,
+//        INTS42,INTS40,INTS3E,INTS3C,INTS3A,INTS38,INTS36,INTS34,
+//        INTS32,INTS30,INTS2E,INTS2C,INTS2A,INTS28,INTS26,INTS24,
+//        INTS22,INTS20,INTS1E,INTS1C,INTS1A,INTS18,INTS16,INTS14,
+//        INTS12,INTS10,INTS0E,INTS0C,INTS0A,INTS08,INTS06,INTS04,
+//        INTS02;
+
+   input  INTAS62,INTAS60,INTAS5E,INTAS5C,INTAS5A,INTAS58,INTAS56,INTAS54,
+          INTAS52,INTAS50,INTAS4E,INTAS4C,INTAS4A,INTAS48,INTAS46,INTAS44,
+          INTAS42,INTAS40,INTAS3E,INTAS3C,INTAS3A,INTAS38,INTAS36,INTAS34,
+          INTAS32,INTAS30,INTAS2E,INTAS2C,INTAS2A,INTAS28,INTAS26,INTAS24,
+          INTAS22,INTAS20,INTAS1E,INTAS1C,INTAS1A,INTAS18,INTAS16,INTAS14,
+          INTAS12,INTAS10,INTAS0E,INTAS0C,INTAS0A,INTAS08,INTAS06,INTAS04,
+          INTAS02;
+
+   input  INTS62EN,INTS60EN,INTS5EEN,INTS5CEN,INTS5AEN,INTS58EN,INTS56EN,INTS54EN,
+          INTS52EN,INTS50EN,INTS4EEN,INTS4CEN,INTS4AEN,INTS48EN,INTS46EN,INTS44EN,
+          INTS42EN,INTS40EN,INTS3EEN,INTS3CEN,INTS3AEN,INTS38EN,INTS36EN,INTS34EN,
+          INTS32EN,INTS30EN,INTS2EEN,INTS2CEN,INTS2AEN,INTS28EN,INTS26EN,INTS24EN,
+          INTS22EN,INTS20EN,INTS1EEN,INTS1CEN,INTS1AEN,INTS18EN,INTS16EN,INTS14EN,
+          INTS12EN,INTS10EN,INTS0EEN,INTS0CEN,INTS0AEN,INTS08EN,INTS06EN,INTS04EN;
+
+   input  NMIMODE;
+   input  MDW15,MDW14,MDW13,MDW12,MDW11,MDW10,MDW9,MDW8,
+          MDW7,MDW6,MDW5,MDW4,MDW3,MDW2,MDW1,MDW0;
+   input  [7:0] biten;
+   output [47:0] edge_detect;
+   output  edge_detect_dbg;
+   input  [47:0] clr_ifreg;
+   input  clr_ifreg_dbg;
+   input  we_if0l, we_if0h, we_if1l, we_if1h, we_if2l, we_if2h;
+   input  we_mk0l, we_mk0h, we_mk1l, we_mk1h, we_mk2l, we_mk2h;
+   input  we_pr00l, we_pr00h, we_pr01l, we_pr01h, we_pr02l, we_pr02h;
+   input  we_pr10l, we_pr10h, we_pr11l, we_pr11h, we_pr12l, we_pr12h;
+   output       ifreg_dbg;
+   output [7:0] if0l, if0h, if1l, if1h, if2l, if2h;
+   output [7:0] mk0l, mk0h, mk1l, mk1h, mk2l, mk2h;
+   output [7:0] pr00l, pr00h, pr01l, pr01h, pr02l, pr02h;
+   output [7:0] pr10l, pr10h, pr11l, pr11h, pr12l, pr12h;
+// input  ites0, ites4;
+   input  SCANMODE;
+   input  SCANCLK;
+// input  TESTMODE;
+   
+   reg   [7:0] mk0l, mk0h, mk1l, mk1h, mk2l, mk2h;
+   reg   [7:0] pr00l, pr00h, pr01l, pr01h, pr02l, pr02h;
+   reg   [7:0] pr10l, pr10h, pr11l, pr11h, pr12l, pr12h;
+   
+   wire  [47:0] ifreg;
+   wire  [47:0] we_ifreg;
+   wire  [48:0] ex_moni;
+
+//======= Interrupt Flag register ========================================================================
+   assign we_ifreg[7:0]   = {8{we_if0l}} & biten;
+   assign we_ifreg[15:8]  = {8{we_if0h}} & biten;
+   assign we_ifreg[23:16] = {8{we_if1l}} & biten;
+   assign we_ifreg[31:24] = {8{we_if1h}} & biten;
+   assign we_ifreg[39:32] = {8{we_if2l}} & biten;
+   assign we_ifreg[47:40] = {8{we_if2h}} & biten;
+   
+   assign if0l = ifreg[7:0];
+   assign if0h = ifreg[15:8];
+   assign if1l = ifreg[23:16];
+   assign if1h = ifreg[31:24];
+   assign if2l = ifreg[39:32];
+   assign if2h = ifreg[47:40];
+
+
+   QLK0RINT48V2_BIT_INTDBG IFREGDBG(.BASECK(BASECK), .RESB(RESB), .INTAS(INTAS02), /*.INTS(INTS02),*/ .CLR(clr_ifreg_dbg), .IFREG(ifreg_dbg), 
+                                    .ED(edge_detect_dbg), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK), //.TESTMODE(TESTMODE), .ITES0(ites0), .PR0(ites4),
+                                    .ex_moni(ex_moni[48]));
+                                    
+   QLK0RINT48V2_BIT_IFREG IFREG0(.BASECK(BASECK), .RESB(RESB), .EN(INTS04EN), /*.INTS(INTS04),*/ .INTAS(INTAS04), 
+                                 .WE(we_ifreg[0] & ~NMIMODE), .CLR(clr_ifreg[0]), .mdw(MDW0), .IFREG(ifreg[0]), 
+                                 .ED(edge_detect[0]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK), //.TESTMODE(TESTMODE),
+                                 /*.ITES0(ites0), .PR0(pr00l[0]),*/ .ex_moni(ex_moni[0]));
+                                 
+   QLK0RINT48V2_BIT_IFREG IFREG1(.BASECK(BASECK), .RESB(RESB), .EN(INTS06EN), .INTAS(INTAS06), 
+                                 .WE(we_ifreg[1]), .CLR(clr_ifreg[1]), .mdw(MDW1), .IFREG(ifreg[1]), 
+                                 .ED(edge_detect[1]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                 .ex_moni(ex_moni[1]));
+                                 
+   QLK0RINT48V2_BIT_IFREG IFREG2(.BASECK(BASECK), .RESB(RESB), .EN(INTS08EN), .INTAS(INTAS08), 
+                                 .WE(we_ifreg[2]), .CLR(clr_ifreg[2]), .mdw(MDW2), .IFREG(ifreg[2]), 
+                                 .ED(edge_detect[2]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                 .ex_moni(ex_moni[2]) );
+   
+   QLK0RINT48V2_BIT_IFREG IFREG3(.BASECK(BASECK), .RESB(RESB), .EN(INTS0AEN), .INTAS(INTAS0A), 
+                                 .WE(we_ifreg[3]), .CLR(clr_ifreg[3]), .mdw(MDW3), .IFREG(ifreg[3]), 
+                                 .ED(edge_detect[3]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                 .ex_moni(ex_moni[3]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG4(.BASECK(BASECK), .RESB(RESB), .EN(INTS0CEN), .INTAS(INTAS0C), 
+                                 .WE(we_ifreg[4]), .CLR(clr_ifreg[4]), .mdw(MDW4), .IFREG(ifreg[4]), 
+                                 .ED(edge_detect[4]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                 .ex_moni(ex_moni[4]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG5(.BASECK(BASECK), .RESB(RESB), .EN(INTS0EEN), .INTAS(INTAS0E), 
+                                 .WE(we_ifreg[5]), .CLR(clr_ifreg[5]), .mdw(MDW5), .IFREG(ifreg[5]), 
+                                 .ED(edge_detect[5]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                 .ex_moni(ex_moni[5]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG6(.BASECK(BASECK), .RESB(RESB), .EN(INTS10EN), .INTAS(INTAS10), 
+                                 .WE(we_ifreg[6]), .CLR(clr_ifreg[6]), .mdw(MDW6), .IFREG(ifreg[6]), 
+                                 .ED(edge_detect[6]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                 .ex_moni(ex_moni[6]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG7(.BASECK(BASECK), .RESB(RESB), .EN(INTS12EN), .INTAS(INTAS12), 
+                                 .WE(we_ifreg[7]), .CLR(clr_ifreg[7]), .mdw(MDW7), .IFREG(ifreg[7]), 
+                                 .ED(edge_detect[7]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                 .ex_moni(ex_moni[7]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG8(.BASECK(BASECK), .RESB(RESB), .EN(INTS14EN), .INTAS(INTAS14), 
+                                 .WE(we_ifreg[8]), .CLR(clr_ifreg[8]), .mdw(MDW8), .IFREG(ifreg[8]), 
+                                 .ED(edge_detect[8]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                 .ex_moni(ex_moni[8]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG9(.BASECK(BASECK), .RESB(RESB), .EN(INTS16EN), .INTAS(INTAS16), 
+                                 .WE(we_ifreg[9]), .CLR(clr_ifreg[9]), .mdw(MDW9), .IFREG(ifreg[9]), 
+                                 .ED(edge_detect[9]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                 .ex_moni(ex_moni[9]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG10(.BASECK(BASECK), .RESB(RESB), .EN(INTS18EN), .INTAS(INTAS18), 
+                                  .WE(we_ifreg[10]), .CLR(clr_ifreg[10]), .mdw(MDW10), .IFREG(ifreg[10]), 
+                                  .ED(edge_detect[10]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[10]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG11(.BASECK(BASECK), .RESB(RESB), .EN(INTS1AEN), .INTAS(INTAS1A), 
+                                  .WE(we_ifreg[11]), .CLR(clr_ifreg[11]), .mdw(MDW11), .IFREG(ifreg[11]), 
+                                  .ED(edge_detect[11]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[11]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG12(.BASECK(BASECK), .RESB(RESB), .EN(INTS1CEN), .INTAS(INTAS1C), 
+                                  .WE(we_ifreg[12]), .CLR(clr_ifreg[12]), .mdw(MDW12), .IFREG(ifreg[12]), 
+                                  .ED(edge_detect[12]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK), 
+                                  .ex_moni(ex_moni[12]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG13(.BASECK(BASECK), .RESB(RESB), .EN(INTS1EEN), .INTAS(INTAS1E), 
+                                  .WE(we_ifreg[13]), .CLR(clr_ifreg[13]), .mdw(MDW13), .IFREG(ifreg[13]), 
+                                  .ED(edge_detect[13]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK), 
+                                  .ex_moni(ex_moni[13]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG14(.BASECK(BASECK), .RESB(RESB), .EN(INTS20EN), .INTAS(INTAS20), 
+                                  .WE(we_ifreg[14]), .CLR(clr_ifreg[14]), .mdw(MDW14), .IFREG(ifreg[14]),
+                                  .ED(edge_detect[14]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK), 
+                                  .ex_moni(ex_moni[14]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG15(.BASECK(BASECK), .RESB(RESB), .EN(INTS22EN), .INTAS(INTAS22), 
+                                  .WE(we_ifreg[15]), .CLR(clr_ifreg[15]), .mdw(MDW15), .IFREG(ifreg[15]), 
+                                  .ED(edge_detect[15]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[15]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG16(.BASECK(BASECK), .RESB(RESB), .EN(INTS24EN), .INTAS(INTAS24), 
+                                  .WE(we_ifreg[16]), .CLR(clr_ifreg[16]), .mdw(MDW0), .IFREG(ifreg[16]), 
+                                  .ED(edge_detect[16]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[16]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG17(.BASECK(BASECK), .RESB(RESB), .EN(INTS26EN), .INTAS(INTAS26), 
+                                  .WE(we_ifreg[17]), .CLR(clr_ifreg[17]), .mdw(MDW1), .IFREG(ifreg[17]), 
+                                  .ED(edge_detect[17]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[17]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG18(.BASECK(BASECK), .RESB(RESB), .EN(INTS28EN), .INTAS(INTAS28), 
+                                  .WE(we_ifreg[18]), .CLR(clr_ifreg[18]), .mdw(MDW2), .IFREG(ifreg[18]), 
+                                  .ED(edge_detect[18]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[18]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG19(.BASECK(BASECK), .RESB(RESB), .EN(INTS2AEN), .INTAS(INTAS2A), 
+                                  .WE(we_ifreg[19]), .CLR(clr_ifreg[19]), .mdw(MDW3), .IFREG(ifreg[19]), 
+                                  .ED(edge_detect[19]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[19]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG20(.BASECK(BASECK), .RESB(RESB), .EN(INTS2CEN), .INTAS(INTAS2C), 
+                                  .WE(we_ifreg[20]), .CLR(clr_ifreg[20]), .mdw(MDW4), .IFREG(ifreg[20]), 
+                                  .ED(edge_detect[20]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[20]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG21(.BASECK(BASECK), .RESB(RESB), .EN(INTS2EEN), .INTAS(INTAS2E), 
+                                  .WE(we_ifreg[21]), .CLR(clr_ifreg[21]), .mdw(MDW5), .IFREG(ifreg[21]), 
+                                  .ED(edge_detect[21]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[21]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG22(.BASECK(BASECK), .RESB(RESB), .EN(INTS30EN), .INTAS(INTAS30), 
+                                  .WE(we_ifreg[22]), .CLR(clr_ifreg[22]), .mdw(MDW6), .IFREG(ifreg[22]), 
+                                  .ED(edge_detect[22]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[22]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG23(.BASECK(BASECK), .RESB(RESB), .EN(INTS32EN), .INTAS(INTAS32),
+                                  .WE(we_ifreg[23]), .CLR(clr_ifreg[23]), .mdw(MDW7), .IFREG(ifreg[23]), 
+                                  .ED(edge_detect[23]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[23]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG24(.BASECK(BASECK), .RESB(RESB), .EN(INTS34EN), .INTAS(INTAS34), 
+                                  .WE(we_ifreg[24]), .CLR(clr_ifreg[24]), .mdw(MDW8), .IFREG(ifreg[24]), 
+                                  .ED(edge_detect[24]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[24]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG25(.BASECK(BASECK), .RESB(RESB), .EN(INTS36EN), .INTAS(INTAS36), 
+                                  .WE(we_ifreg[25]), .CLR(clr_ifreg[25]), .mdw(MDW9), .IFREG(ifreg[25]), 
+                                  .ED(edge_detect[25]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[25]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG26(.BASECK(BASECK), .RESB(RESB), .EN(INTS38EN), .INTAS(INTAS38), 
+                                  .WE(we_ifreg[26]), .CLR(clr_ifreg[26]), .mdw(MDW10), .IFREG(ifreg[26]), 
+                                  .ED(edge_detect[26]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[26]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG27(.BASECK(BASECK), .RESB(RESB), .EN(INTS3AEN), .INTAS(INTAS3A), 
+                                  .WE(we_ifreg[27]), .CLR(clr_ifreg[27]), .mdw(MDW11), .IFREG(ifreg[27]), 
+                                  .ED(edge_detect[27]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[27]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG28(.BASECK(BASECK), .RESB(RESB), .EN(INTS3CEN), .INTAS(INTAS3C), 
+                                  .WE(we_ifreg[28]), .CLR(clr_ifreg[28]), .mdw(MDW12), .IFREG(ifreg[28]), 
+                                  .ED(edge_detect[28]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[28]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG29(.BASECK(BASECK), .RESB(RESB), .EN(INTS3EEN), .INTAS(INTAS3E), 
+                                  .WE(we_ifreg[29]), .CLR(clr_ifreg[29]), .mdw(MDW13), .IFREG(ifreg[29]), 
+                                  .ED(edge_detect[29]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[29]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG30(.BASECK(BASECK), .RESB(RESB), .EN(INTS40EN), .INTAS(INTAS40),
+                                  .WE(we_ifreg[30]), .CLR(clr_ifreg[30]), .mdw(MDW14), .IFREG(ifreg[30]), 
+                                  .ED(edge_detect[30]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[30]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG31(.BASECK(BASECK), .RESB(RESB), .EN(INTS42EN), .INTAS(INTAS42), 
+                                  .WE(we_ifreg[31]), .CLR(clr_ifreg[31]), .mdw(MDW15), .IFREG(ifreg[31]), 
+                                  .ED(edge_detect[31]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[31]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG32(.BASECK(BASECK), .RESB(RESB), .EN(INTS44EN), .INTAS(INTAS44),
+                                  .WE(we_ifreg[32]), .CLR(clr_ifreg[32]), .mdw(MDW0), .IFREG(ifreg[32]), 
+                                  .ED(edge_detect[32]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[32]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG33(.BASECK(BASECK), .RESB(RESB), .EN(INTS46EN), .INTAS(INTAS46),
+                                  .WE(we_ifreg[33]), .CLR(clr_ifreg[33]), .mdw(MDW1), .IFREG(ifreg[33]), 
+                                  .ED(edge_detect[33]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[33]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG34(.BASECK(BASECK), .RESB(RESB), .EN(INTS48EN), .INTAS(INTAS48), 
+                                  .WE(we_ifreg[34]), .CLR(clr_ifreg[34]), .mdw(MDW2), .IFREG(ifreg[34]), 
+                                  .ED(edge_detect[34]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[34]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG35(.BASECK(BASECK), .RESB(RESB), .EN(INTS4AEN), .INTAS(INTAS4A), 
+                                  .WE(we_ifreg[35]), .CLR(clr_ifreg[35]), .mdw(MDW3), .IFREG(ifreg[35]), 
+                                  .ED(edge_detect[35]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[35]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG36(.BASECK(BASECK), .RESB(RESB), .EN(INTS4CEN), .INTAS(INTAS4C), 
+                                  .WE(we_ifreg[36]), .CLR(clr_ifreg[36]), .mdw(MDW4), .IFREG(ifreg[36]), 
+                                  .ED(edge_detect[36]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[36]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG37(.BASECK(BASECK), .RESB(RESB), .EN(INTS4EEN), .INTAS(INTAS4E), 
+                                  .WE(we_ifreg[37]), .CLR(clr_ifreg[37]), .mdw(MDW5), .IFREG(ifreg[37]), 
+                                  .ED(edge_detect[37]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[37]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG38(.BASECK(BASECK), .RESB(RESB), .EN(INTS50EN), .INTAS(INTAS50), 
+                                  .WE(we_ifreg[38]), .CLR(clr_ifreg[38]), .mdw(MDW6), .IFREG(ifreg[38]), 
+                                  .ED(edge_detect[38]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[38]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG39(.BASECK(BASECK), .RESB(RESB), .EN(INTS52EN), .INTAS(INTAS52), 
+                                  .WE(we_ifreg[39]), .CLR(clr_ifreg[39]), .mdw(MDW7), .IFREG(ifreg[39]), 
+                                  .ED(edge_detect[39]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[39]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG40(.BASECK(BASECK), .RESB(RESB), .EN(INTS54EN), .INTAS(INTAS54), 
+                                  .WE(we_ifreg[40]), .CLR(clr_ifreg[40]), .mdw(MDW8), .IFREG(ifreg[40]), 
+                                  .ED(edge_detect[40]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[40]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG41(.BASECK(BASECK), .RESB(RESB), .EN(INTS56EN), .INTAS(INTAS56), 
+                                  .WE(we_ifreg[41]), .CLR(clr_ifreg[41]), .mdw(MDW9), .IFREG(ifreg[41]), 
+                                  .ED(edge_detect[41]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[41]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG42(.BASECK(BASECK), .RESB(RESB), .EN(INTS58EN), .INTAS(INTAS58), 
+                                  .WE(we_ifreg[42]), .CLR(clr_ifreg[42]), .mdw(MDW10), .IFREG(ifreg[42]), 
+                                  .ED(edge_detect[42]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[42]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG43(.BASECK(BASECK), .RESB(RESB), .EN(INTS5AEN), .INTAS(INTAS5A), 
+                                  .WE(we_ifreg[43]), .CLR(clr_ifreg[43]), .mdw(MDW11), .IFREG(ifreg[43]), 
+                                  .ED(edge_detect[43]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[43]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG44(.BASECK(BASECK), .RESB(RESB), .EN(INTS5CEN), .INTAS(INTAS5C), 
+                                  .WE(we_ifreg[44]), .CLR(clr_ifreg[44]), .mdw(MDW12), .IFREG(ifreg[44]), 
+                                  .ED(edge_detect[44]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[44]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG45(.BASECK(BASECK), .RESB(RESB), .EN(INTS5EEN), .INTAS(INTAS5E), 
+                                  .WE(we_ifreg[45]), .CLR(clr_ifreg[45]), .mdw(MDW13), .IFREG(ifreg[45]), 
+                                  .ED(edge_detect[45]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[45]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG46(.BASECK(BASECK), .RESB(RESB), .EN(INTS60EN), .INTAS(INTAS60), 
+                                  .WE(we_ifreg[46]), .CLR(clr_ifreg[46]), .mdw(MDW14), .IFREG(ifreg[46]), 
+                                  .ED(edge_detect[46]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[46]));
+   
+   QLK0RINT48V2_BIT_IFREG IFREG47(.BASECK(BASECK), .RESB(RESB), .EN(INTS62EN), .INTAS(INTAS62), 
+                                  .WE(we_ifreg[47]), .CLR(clr_ifreg[47]), .mdw(MDW15), .IFREG(ifreg[47]), 
+                                  .ED(edge_detect[47]), .SCANMODE(SCANMODE), .SCANCLK(SCANCLK),  
+                                  .ex_moni(ex_moni[47]));
+
+   QLK0RINT48V2_MONI moni(.SCANCLK(SCANCLK), .RESB(RESB), .ex_moni(ex_moni), .scan_moni());
+//==========MK flag ===============================================================================
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           mk0l[7:0] <= 8'hFF;
+       end else if( we_mk0l ) begin
+           mk0l[0] <= MDW0 | ~INTS04EN | NMIMODE;
+           mk0l[1] <= MDW1 | ~INTS06EN ;
+           mk0l[2] <= MDW2 | ~INTS08EN ;
+           mk0l[3] <= MDW3 | ~INTS0AEN ;
+           mk0l[4] <= MDW4 | ~INTS0CEN ;
+           mk0l[5] <= MDW5 | ~INTS0EEN ;
+           mk0l[6] <= MDW6 | ~INTS10EN ;
+           mk0l[7] <= MDW7 | ~INTS12EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           mk0h[7:0] <= 8'hFF;
+       end else if( we_mk0h ) begin
+           mk0h[0] <= MDW8  | ~INTS14EN ;
+           mk0h[1] <= MDW9  | ~INTS16EN ;
+           mk0h[2] <= MDW10 | ~INTS18EN ;
+           mk0h[3] <= MDW11 | ~INTS1AEN ;
+           mk0h[4] <= MDW12 | ~INTS1CEN ;
+           mk0h[5] <= MDW13 | ~INTS1EEN ;
+           mk0h[6] <= MDW14 | ~INTS20EN ;
+           mk0h[7] <= MDW15 | ~INTS22EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           mk1l[7:0] <= 8'hFF;
+       end else if( we_mk1l ) begin
+           mk1l[0] <= MDW0 | ~INTS24EN ;
+           mk1l[1] <= MDW1 | ~INTS26EN ;
+           mk1l[2] <= MDW2 | ~INTS28EN ;
+           mk1l[3] <= MDW3 | ~INTS2AEN ;
+           mk1l[4] <= MDW4 | ~INTS2CEN ;
+           mk1l[5] <= MDW5 | ~INTS2EEN ;
+           mk1l[6] <= MDW6 | ~INTS30EN ;
+           mk1l[7] <= MDW7 | ~INTS32EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           mk1h[7:0] <= 8'hFF;
+       end else if( we_mk1h ) begin
+           mk1h[0] <= MDW8  | ~INTS34EN ;
+           mk1h[1] <= MDW9  | ~INTS36EN ;
+           mk1h[2] <= MDW10 | ~INTS38EN ;
+           mk1h[3] <= MDW11 | ~INTS3AEN ;
+           mk1h[4] <= MDW12 | ~INTS3CEN ;
+           mk1h[5] <= MDW13 | ~INTS3EEN ;
+           mk1h[6] <= MDW14 | ~INTS40EN ;
+           mk1h[7] <= MDW15 | ~INTS42EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           mk2l[7:0] <= 8'hFF;
+       end else if( we_mk2l ) begin
+           mk2l[0] <= MDW0 | ~INTS44EN ;
+           mk2l[1] <= MDW1 | ~INTS46EN ;
+           mk2l[2] <= MDW2 | ~INTS48EN ;
+           mk2l[3] <= MDW3 | ~INTS4AEN ;
+           mk2l[4] <= MDW4 | ~INTS4CEN ;
+           mk2l[5] <= MDW5 | ~INTS4EEN ;
+           mk2l[6] <= MDW6 | ~INTS50EN ;
+           mk2l[7] <= MDW7 | ~INTS52EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           mk2h[7:0] <= 8'hFF;
+       end else if( we_mk2h ) begin
+           mk2h[0] <= MDW8  | ~INTS54EN ;
+           mk2h[1] <= MDW9  | ~INTS56EN ;
+           mk2h[2] <= MDW10 | ~INTS58EN ;
+           mk2h[3] <= MDW11 | ~INTS5AEN ;
+           mk2h[4] <= MDW12 | ~INTS5CEN ;
+           mk2h[5] <= MDW13 | ~INTS5EEN ;
+           mk2h[6] <= MDW14 | ~INTS60EN ;
+           mk2h[7] <= MDW15 | ~INTS62EN ;
+       end
+   end
+
+//========= PR0 flag ===========================================================================
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr00l[7:0] <= 8'hFF;
+       end else if( we_pr00l ) begin
+           pr00l[0] <= MDW0 | ~INTS04EN | NMIMODE;
+           pr00l[1] <= MDW1 | ~INTS06EN ;
+           pr00l[2] <= MDW2 | ~INTS08EN ;
+           pr00l[3] <= MDW3 | ~INTS0AEN ;
+           pr00l[4] <= MDW4 | ~INTS0CEN ;
+           pr00l[5] <= MDW5 | ~INTS0EEN ;
+           pr00l[6] <= MDW6 | ~INTS10EN ;
+           pr00l[7] <= MDW7 | ~INTS12EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr00h[7:0] <= 8'hFF;
+       end else if( we_pr00h ) begin
+           pr00h[0] <= MDW8  | ~INTS14EN ;
+           pr00h[1] <= MDW9  | ~INTS16EN ;
+           pr00h[2] <= MDW10 | ~INTS18EN ;
+           pr00h[3] <= MDW11 | ~INTS1AEN ;
+           pr00h[4] <= MDW12 | ~INTS1CEN ;
+           pr00h[5] <= MDW13 | ~INTS1EEN ;
+           pr00h[6] <= MDW14 | ~INTS20EN ;
+           pr00h[7] <= MDW15 | ~INTS22EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr01l[7:0] <= 8'hFF;
+       end else if( we_pr01l ) begin
+           pr01l[0] <= MDW0 | ~INTS24EN ;
+           pr01l[1] <= MDW1 | ~INTS26EN ;
+           pr01l[2] <= MDW2 | ~INTS28EN ;
+           pr01l[3] <= MDW3 | ~INTS2AEN ;
+           pr01l[4] <= MDW4 | ~INTS2CEN ;
+           pr01l[5] <= MDW5 | ~INTS2EEN ;
+           pr01l[6] <= MDW6 | ~INTS30EN ;
+           pr01l[7] <= MDW7 | ~INTS32EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr01h[7:0] <= 8'hFF;
+       end else if( we_pr01h ) begin
+           pr01h[0] <= MDW8  | ~INTS34EN ;
+           pr01h[1] <= MDW9  | ~INTS36EN ;
+           pr01h[2] <= MDW10 | ~INTS38EN ;
+           pr01h[3] <= MDW11 | ~INTS3AEN ;
+           pr01h[4] <= MDW12 | ~INTS3CEN ;
+           pr01h[5] <= MDW13 | ~INTS3EEN ;
+           pr01h[6] <= MDW14 | ~INTS40EN ;
+           pr01h[7] <= MDW15 | ~INTS42EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr02l[7:0] <= 8'hFF;
+       end else if( we_pr02l ) begin
+           pr02l[0] <= MDW0 | ~INTS44EN ;
+           pr02l[1] <= MDW1 | ~INTS46EN ;
+           pr02l[2] <= MDW2 | ~INTS48EN ;
+           pr02l[3] <= MDW3 | ~INTS4AEN ;
+           pr02l[4] <= MDW4 | ~INTS4CEN ;
+           pr02l[5] <= MDW5 | ~INTS4EEN ;
+           pr02l[6] <= MDW6 | ~INTS50EN ;
+           pr02l[7] <= MDW7 | ~INTS52EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr02h[7:0] <= 8'hFF;
+       end else if( we_pr02h ) begin
+           pr02h[0] <= MDW8  | ~INTS54EN ;
+           pr02h[1] <= MDW9  | ~INTS56EN ;
+           pr02h[2] <= MDW10 | ~INTS58EN ;
+           pr02h[3] <= MDW11 | ~INTS5AEN ;
+           pr02h[4] <= MDW12 | ~INTS5CEN ;
+           pr02h[5] <= MDW13 | ~INTS5EEN ;
+           pr02h[6] <= MDW14 | ~INTS60EN ;
+           pr02h[7] <= MDW15 | ~INTS62EN ;
+       end
+   end
+
+
+//============= PR1 flag =========================================================================
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr10l[7:0] <= 8'hFF;
+       end else if( we_pr10l ) begin
+           pr10l[0] <= MDW0 | ~INTS04EN | NMIMODE;
+           pr10l[1] <= MDW1 | ~INTS06EN ;
+           pr10l[2] <= MDW2 | ~INTS08EN ;
+           pr10l[3] <= MDW3 | ~INTS0AEN ;
+           pr10l[4] <= MDW4 | ~INTS0CEN ;
+           pr10l[5] <= MDW5 | ~INTS0EEN ;
+           pr10l[6] <= MDW6 | ~INTS10EN ;
+           pr10l[7] <= MDW7 | ~INTS12EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr10h[7:0] <= 8'hFF;
+       end else if( we_pr10h ) begin
+           pr10h[0] <= MDW8  | ~INTS14EN ;
+           pr10h[1] <= MDW9  | ~INTS16EN ;
+           pr10h[2] <= MDW10 | ~INTS18EN ;
+           pr10h[3] <= MDW11 | ~INTS1AEN ;
+           pr10h[4] <= MDW12 | ~INTS1CEN ;
+           pr10h[5] <= MDW13 | ~INTS1EEN ;
+           pr10h[6] <= MDW14 | ~INTS20EN ;
+           pr10h[7] <= MDW15 | ~INTS22EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr11l[7:0] <= 8'hFF;
+       end else if( we_pr11l ) begin
+           pr11l[0] <= MDW0 | ~INTS24EN ;
+           pr11l[1] <= MDW1 | ~INTS26EN ;
+           pr11l[2] <= MDW2 | ~INTS28EN ;
+           pr11l[3] <= MDW3 | ~INTS2AEN ;
+           pr11l[4] <= MDW4 | ~INTS2CEN ;
+           pr11l[5] <= MDW5 | ~INTS2EEN ;
+           pr11l[6] <= MDW6 | ~INTS30EN ;
+           pr11l[7] <= MDW7 | ~INTS32EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr11h[7:0] <= 8'hFF;
+       end else if( we_pr11h ) begin
+           pr11h[0] <= MDW8  | ~INTS34EN ;
+           pr11h[1] <= MDW9  | ~INTS36EN ;
+           pr11h[2] <= MDW10 | ~INTS38EN ;
+           pr11h[3] <= MDW11 | ~INTS3AEN ;
+           pr11h[4] <= MDW12 | ~INTS3CEN ;
+           pr11h[5] <= MDW13 | ~INTS3EEN ;
+           pr11h[6] <= MDW14 | ~INTS40EN ;
+           pr11h[7] <= MDW15 | ~INTS42EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr12l[7:0] <= 8'hFF;
+       end else if( we_pr12l ) begin
+           pr12l[0] <= MDW0 | ~INTS44EN ;
+           pr12l[1] <= MDW1 | ~INTS46EN ;
+           pr12l[2] <= MDW2 | ~INTS48EN ;
+           pr12l[3] <= MDW3 | ~INTS4AEN ;
+           pr12l[4] <= MDW4 | ~INTS4CEN ;
+           pr12l[5] <= MDW5 | ~INTS4EEN ;
+           pr12l[6] <= MDW6 | ~INTS50EN ;
+           pr12l[7] <= MDW7 | ~INTS52EN ;
+       end
+   end
+
+   //synopsys async_set_reset "RESB"
+// always @(posedge BASECK or negedge RESB) begin
+   always @(posedge PCLKRW or negedge RESB) begin
+       if(!RESB) begin
+           pr12h[7:0] <= 8'hFF;
+       end else if( we_pr12h ) begin
+           pr12h[0] <= MDW8  | ~INTS54EN ;
+           pr12h[1] <= MDW9  | ~INTS56EN ;
+           pr12h[2] <= MDW10 | ~INTS58EN ;
+           pr12h[3] <= MDW11 | ~INTS5AEN ;
+           pr12h[4] <= MDW12 | ~INTS5CEN ;
+           pr12h[5] <= MDW13 | ~INTS5EEN ;
+           pr12h[6] <= MDW14 | ~INTS60EN ;
+           pr12h[7] <= MDW15 | ~INTS62EN ;
+       end
+   end
+
+
+endmodule
+
+// INT48V2 del#	//***************************************************************************************************
+// INT48V2 del#	// Module Name : QLK0RINT48V2_MAIN_TEST
+// INT48V2 del#	// function    : TESTÍÑ¥ì¥¸¥¹¥¿
+// INT48V2 del#	//***************************************************************************************************
+// INT48V2 del#	module QLK0RINT48V2_MAIN_TEST( BASECK, RESB, TESTMODE, edge_detect, edge_detect_dbg, 
+// INT48V2 del#	                               MDW0, MDW4, MDW7, we_ites, biten0, biten4, biten7,
+// INT48V2 del#	                               ites0, ites4, ites7);
+// INT48V2 del#	
+// INT48V2 del#	   input  BASECK, RESB;
+// INT48V2 del#	   input  TESTMODE;
+// INT48V2 del#	   input [47:0] edge_detect;
+// INT48V2 del#	   input  edge_detect_dbg;
+// INT48V2 del#	   input  MDW0, MDW4, MDW7;
+// INT48V2 del#	   input  we_ites;
+// INT48V2 del#	   input  biten0, biten4, biten7;
+// INT48V2 del#	   output ites0, ites4, ites7;
+// INT48V2 del#	   
+// INT48V2 del#	   reg  ites0, ites4, ites7;
+// INT48V2 del#	   
+// INT48V2 del#	   wire ed_tmp0, ed_tmp1, ed_tmp2, ed_tmp3, ed_tmp4, ed_tmp5, ed_tmp;
+// INT48V2 del#	
+// INT48V2 del#	//======== Test register =====================================================
+// INT48V2 del#	
+// INT48V2 del#	   //synopsys async_set_reset "RESB"
+// INT48V2 del#	   always @(posedge BASECK or negedge RESB) begin
+// INT48V2 del#	       if(!RESB) begin
+// INT48V2 del#	           ites0 <= 1'b0;
+// INT48V2 del#	       end else if( TESTMODE ) begin
+// INT48V2 del#	           if( we_ites ) begin
+// INT48V2 del#	               ites0 <= (biten0 & MDW0) | (~biten0 & ites0);
+// INT48V2 del#	           end
+// INT48V2 del#	       end
+// INT48V2 del#	   end
+// INT48V2 del#	  
+// INT48V2 del#	   //synopsys async_set_reset "RESB"
+// INT48V2 del#	   always @(posedge BASECK or negedge RESB) begin
+// INT48V2 del#	       if(!RESB) begin
+// INT48V2 del#	           ites4 <= 1'b0;
+// INT48V2 del#	       end else if( TESTMODE ) begin
+// INT48V2 del#	           if( we_ites ) begin
+// INT48V2 del#	               ites4 <= (biten4 & MDW4) | (~biten4 & ites4);
+// INT48V2 del#	           end
+// INT48V2 del#	       end
+// INT48V2 del#	   end
+// INT48V2 del#	 
+// INT48V2 del#	   assign ed_tmp0 = |edge_detect[7:0];
+// INT48V2 del#	   assign ed_tmp1 = |edge_detect[15:8];
+// INT48V2 del#	   assign ed_tmp2 = |edge_detect[23:16];
+// INT48V2 del#	   assign ed_tmp3 = |edge_detect[31:24];
+// INT48V2 del#	   assign ed_tmp4 = |edge_detect[39:32];
+// INT48V2 del#	   assign ed_tmp5 = |edge_detect[47:40];
+// INT48V2 del#	   assign ed_tmp  = ed_tmp0 | ed_tmp1 | ed_tmp2 | ed_tmp3 | ed_tmp4 | ed_tmp5 | edge_detect_dbg;
+// INT48V2 del#	   
+// INT48V2 del#	 
+// INT48V2 del#	   //synopsys async_set_reset "RESB"
+// INT48V2 del#	   always @(posedge BASECK or negedge RESB) begin
+// INT48V2 del#	       if(!RESB) begin
+// INT48V2 del#	           ites7 <= 1'b0;
+// INT48V2 del#	       end else if( TESTMODE ) begin
+// INT48V2 del#	           if( we_ites ) begin
+// INT48V2 del#	               ites7 <= (biten7 & MDW7) | (~biten7 & ites7);
+// INT48V2 del#	           end else if( ed_tmp ) begin
+// INT48V2 del#	               ites7 <= 1'b1;
+// INT48V2 del#	           end
+// INT48V2 del#	       end
+// INT48V2 del#	   end
+// INT48V2 del#	
+// INT48V2 del#	endmodule
+
+
+//***************************************************************************************************
+// Module Name : QLK0RINT48V2_BIT_IFREG
+// function    : Edge detector + IF¥ì¥¸¥¹¥¿(ÈóÆ±´ü³ä¤ê¹þ¤ß»þ¤Î¥á¥¿¥¹¥Æ¡¼¥Ö¥ëÂÐ±þ)
+//***************************************************************************************************
+module QLK0RINT48V2_BIT_IFREG(BASECK,RESB,EN,/*INTS,*/INTAS,WE,CLR,mdw,IFREG,ED,SCANMODE,SCANCLK,/*TESTMODE,ITES0,PR0,*/ex_moni);
+   input  BASECK, RESB;
+   input  EN, WE, CLR;
+   input  /*INTS,*/ INTAS;
+   input  mdw;
+   output IFREG;
+   output ED;
+   output ex_moni;
+   input  SCANMODE;
+   input  SCANCLK;
+// input  TESTMODE;
+// input  ITES0,PR0 ;
+   
+   reg IFREG;
+   reg ed_reg;
+   wire ed_reset;
+   wire intas_trig;
+   wire intas_scan;
+   wire intas_test;
+   wire int_scan;
+   wire ints_scan;
+   wire ifreg_ex;
+
+   QLK0RINT48V2_METASTABLE	METASTABLE(.BASECK(BASECK), .IFREG(IFREG), .ifreg_ex(ifreg_ex));
+
+   /*ÈóÆ±´ü¥ê¥»¥Ã¥È¤ÎÄ¾ÀÜÀ©¸æÀ­³ÎÊÝ¤Î°Ù¡¢SCANMODE»þ¤ÏRESBÃ¼»Ò¤ÇÄ¾ÀÜÀ©¸æ²ÄÇ½¤È¤¹¤ë*/
+   assign ed_reset = ~RESB | (ifreg_ex & ~SCANMODE);
+   
+   assign ex_moni = ifreg_ex;
+// INT48V2:TEST circuit ºï½ü
+// /*TESTMODE»þ¤ÏITES0,PR¤Ç¤âed_reg¤òÀ©¸æ²ÄÇ½¤È¤¹¤ë*/
+// assign intas_test = TESTMODE & (ITES0 & PR0);
+// assign intas_scan = INTAS | intas_test;
+   assign intas_scan = INTAS ;
+   
+   /*SCANMODE»þ¤ÏSCAN¥¯¥í¥Ã¥¯¤ËÀÚ¤êÂØ¤¨¤ë*/
+   assign intas_trig = (intas_scan & ~SCANMODE) | (SCANCLK & SCANMODE);
+   
+
+   /*¸ÇÄêÃÍÆþÎÏ¤ÏSCANMODE»þ¤Ë¤Ï¸ÇÄêÃÍ¤¬ÆþÎÏ¤µ¤ì¤Ê¤¤ÍÍ¤Ê²óÏ©¹½À®¤È¤¹¤ë*/
+   //synopsys async_set_reset "ed_reset"
+   always @(posedge intas_trig or posedge ed_reset) begin
+       if(ed_reset) begin
+           ed_reg<= 1'b0;
+       end else if( ~SCANMODE )begin
+           ed_reg <= 1'b1;
+       end
+   end
+   
+   /*SCANMODE»þ¤ÏEdge detect¤ò¥Ð¥¤¥Ñ¥¹¤¹¤ë*/
+   assign int_scan = (ed_reg & ~SCANMODE) | (intas_scan & SCANMODE);
+// INT48V2: INTSºï½ü
+// assign ints_scan = int_scan | INTS;
+   assign ints_scan = int_scan ;
+
+   assign ED = ints_scan;
+   
+   
+   //synopsys async_set_reset "RESB"
+   always @(posedge BASECK or negedge RESB) begin
+       if(!RESB) begin
+           IFREG <= 1'b0;
+       end else if( EN & WE ) begin
+           IFREG <= mdw;
+       end else if( ints_scan )begin
+           IFREG <= 1'b1;
+       end else if( CLR ) begin
+           IFREG <= 1'b0;
+       end
+   end
+endmodule
+
+//***************************************************************************************************
+// Module Name : QLK0RINT48V2_BIT_IFREG
+// function    : Edge detector + IF¥ì¥¸¥¹¥¿(INTDBGÍÑ)
+//***************************************************************************************************
+module QLK0RINT48V2_BIT_INTDBG(BASECK,RESB,INTAS,/*INTS,*/ CLR,IFREG,ED,SCANMODE,SCANCLK,/*TESTMODE,ITES0,PR0,*/ ex_moni);
+   input  BASECK;
+   input  RESB;
+   input  INTAS;
+// input  INTS;
+   input  CLR;
+   output IFREG;
+   output ED;
+   output ex_moni;
+   input  SCANMODE;
+   input  SCANCLK;
+// input  TESTMODE;
+// input  ITES0;
+// input  PR0;
+   
+   reg IFREG;
+   reg ed_reg;
+   wire ed_reset;
+   wire intas_trig;
+   wire intas_scan;
+   wire intas_test;
+   wire int_scan;
+   wire ints_scan;
+   wire ifreg_ex;
+      
+   QLK0RINT48V2_METASTABLE	METASTABLE(.BASECK(BASECK), .IFREG(IFREG), .ifreg_ex(ifreg_ex));
+
+   /*ÈóÆ±´ü¥ê¥»¥Ã¥È¤ÎÄ¾ÀÜÀ©¸æÀ­³ÎÊÝ¤Î°Ù¡¢SCANMODE»þ¤ÏRESBÃ¼»Ò¤ÇÄ¾ÀÜÀ©¸æ²ÄÇ½¤È¤¹¤ë*/
+   assign ed_reset = ~RESB | (ifreg_ex & ~SCANMODE); 
+   assign ex_moni = ifreg_ex;
+
+// INT48V2:TEST circuit ºï½ü
+   /*TESTMODE»þ¤ÏITES0,PR¤Ç¤âed_reg¤òÀ©¸æ²ÄÇ½¤È¤¹¤ë*/
+// assign intas_test = TESTMODE & (ITES0 & PR0);
+// assign intas_scan = INTAS | intas_test;
+   assign intas_scan = INTAS ;
+
+   /*SCANMODE»þ¤ÏSCAN¥¯¥í¥Ã¥¯¤ËÀÚ¤êÂØ¤¨¤ë*/
+   assign intas_trig = (intas_scan & ~SCANMODE) | (SCANCLK & SCANMODE);
+
+   /*¸ÇÄêÃÍÆþÎÏ¤ÏSCANMODE»þ¤Ë¤Ï¸ÇÄêÃÍ¤¬ÆþÎÏ¤µ¤ì¤Ê¤¤ÍÍ¤Ê²óÏ©¹½À®¤È¤¹¤ë*/
+   //synopsys async_set_reset "ed_reset"
+   always @(posedge intas_trig or posedge ed_reset) begin
+       if(ed_reset) begin
+           ed_reg<= 1'b0;
+       end else if( ~SCANMODE )begin
+           ed_reg <= 1'b1;
+       end
+   end
+   
+   /*SCANMODE»þ¤ÏEdge detect¤ò¥Ð¥¤¥Ñ¥¹¤¹¤ë*/
+   assign int_scan = (ed_reg & ~SCANMODE) | (intas_scan & SCANMODE);
+// INT48V2: INTSºï½ü
+// assign ints_scan = int_scan | INTS;
+   assign ints_scan = int_scan ;
+   
+   assign ED = ints_scan;
+
+   //synopsys async_set_reset "RESB"
+   always @(posedge BASECK or negedge RESB) begin
+       if(!RESB) begin
+           IFREG <= 1'b0;
+       end else if( ints_scan )begin
+           IFREG <= 1'b1;
+       end else if( CLR ) begin
+           IFREG <= 1'b0;
+       end
+   end
+   
+endmodule
+
+//***************************************************************************************************
+// Module Name : QLK0RINT48V2_METASTABLE
+// function    : ~BASECK ¤& IFREG
+//***************************************************************************************************
+module QLK0RINT48V2_METASTABLE(BASECK, IFREG, ifreg_ex);
+	input	BASECK;
+	input	IFREG;
+	output	ifreg_ex;
+
+	assign ifreg_ex = (~BASECK & IFREG);
+
+endmodule
+
+
+
+//***************************************************************************************************
+// Module Name : QLK0RINT48V2_MONI
+// function    : ¥á¥¿¥¹¥Æ¡¼¥Ö¥ë´ÑÂ¬ÍÑFF
+//***************************************************************************************************
+module QLK0RINT48V2_MONI(SCANCLK, RESB, scan_moni, ex_moni);
+   input   SCANCLK, RESB;
+   input   [48:0] ex_moni;
+   output  scan_moni;
+
+   wire    eor_in;
+   reg     scan_moni;
+
+   assign eor_in = ex_moni[0]^ex_moni[1]^ex_moni[2]^ex_moni[3]^ex_moni[4]^ex_moni[5]^ex_moni[6]^ex_moni[7]
+              ^ex_moni[8]^ex_moni[9]^ex_moni[10]^ex_moni[11]^ex_moni[12]^ex_moni[13]^ex_moni[14]^ex_moni[15]
+              ^ex_moni[16]^ex_moni[17]^ex_moni[18]^ex_moni[19]^ex_moni[20]^ex_moni[21]^ex_moni[22]^ex_moni[23]
+              ^ex_moni[24]^ex_moni[25]^ex_moni[26]^ex_moni[27]^ex_moni[28]^ex_moni[29]^ex_moni[30]^ex_moni[31]
+              ^ex_moni[32]^ex_moni[33]^ex_moni[34]^ex_moni[35]^ex_moni[36]^ex_moni[37]^ex_moni[38]^ex_moni[39]
+              ^ex_moni[40]^ex_moni[41]^ex_moni[42]^ex_moni[43]^ex_moni[44]^ex_moni[45]^ex_moni[46]^ex_moni[47]^ex_moni[48];
+
+   //synopsys async_set_reset "RESB"
+   always @ ( posedge SCANCLK or negedge RESB) begin
+      if ( !RESB )         scan_moni <= 1'b0;
+      else                 scan_moni <= eor_in;
+   end
+
+endmodule

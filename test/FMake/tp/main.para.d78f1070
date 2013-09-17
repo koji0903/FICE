@@ -1,0 +1,59 @@
+//==============================================================================================================
+// for D78F1070 (K0R/Kx4)
+// Ver2.0
+//==============================================================================================================
+//==============================================================================================================
+
+
+PRODUCT: D78F1070 2.52
+
+DESIGNER: "A.Ishimura(RMS)"
+DATE: 2010/12/07
+
+PROCESS: MF3
+
+// Directory pathes
+SET:	CHIP_VER	cf1.0
+
+SET:	CHIP_PATH	/proj/78k0r_11/78k0r_kx4/top_2.3
+SET:	PARAM_DIR	${CHIP_PATH}/_chip/_${CHIP_VER}/_para
+SET:	MAKE_LIB_PATH   ${CHIP_PATH}/_library/_${CHIP_VER}
+
+// Macro
+SET:	MACRO_TOP	/proj/78k0r_11/78k0r_kx4/top_1.0
+SET:	SMACRO_PATH	${MACRO_TOP}/_macro/_soft
+SET:	S_SMACRO_PATH	${MACRO_TOP}/_macro/_smacro
+SET:    HMACRO_PATH     ${MACRO_TOP}/_macro/_hard
+SET:    LMACRO_PATH     ${MACRO_TOP}/_macro/_local
+
+// Ver2.0 LOCAL
+SET:	TOP_V2		/proj/78k0r_11/78k0r_kx4/top_2.0
+SET:    LMACRO_V2	${TOP_V2}/_macro/_local
+
+SET:	SS3RD_TOP	/proj/78k0r_16/ss3rd/_macro/_1_local_release
+SET:	SMACRO_SS3RD	${SS3RD_TOP}/_soft
+SET:	S_SMACRO_SS3RD	${SS3RD_TOP}/_smacro
+SET:    HMACRO_SS3RD	${SS3RD_TOP}/_hard
+
+SET:	LIB_PATH	/cadtools/nec/opencad/OpenCAD-LINUX-MF3_1.6.0.1/lib/MF3/cmos1_2.1V/liberty_db
+_
+
+USABLE_LABEL_NAME: MF3
+
+FRONTEND: LIB_INFO ./lib.info
+FRONTEND: SIG_INFO ./sig.info
+LIB_INFO: MF3
+
+//Read input parameter file for generating 1chip.
+INCLUDE: ${PARAM_DIR}/chip.para 0.03
+
+//Read pin-information parameter file.
+INCLUDE: ${PARAM_DIR}/pins.para 0.03
+
+//Read parameter file for macro parts information
+INCLUDE: ${PARAM_DIR}/parts.para 0.04
+
+// Include file of inter-macro connection information
+INCLUDE: ${PARAM_DIR}/connect.para 0.04
+
+END_PRODUCT:

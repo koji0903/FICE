@@ -1,0 +1,863 @@
+
+// =======================================================================================================================
+//
+//  CIB for SS3rd
+//  Macro Name  : QLK0RCIBCM3SF1V1
+//  Module Name : QLK0RCIBCM3SF1V1_NVMCHK
+//  Version     : v1.00
+//  Date        : 2010.01.15 Fri
+//  Designe     : I.Uike
+//
+// -----------------------------------------------------------------------------------------------------------------------
+//  Reference from :
+//    QLK0RCIBM2SF2V1
+//    Version 1.0
+//  File directory :
+//      /proj/78k0r_3/ss2/_release/_smacro/_soft/qlk0rcibm2sf2v1_mf2_1.00/_library/070925/sec_hdl/
+//      -r--------    1 masakio  ss2nds      35782 Sep 26  2007 qlk0rcibm2sf2v1_NVMCHK.hdl_070925
+//
+//  Reference's Filnal History:
+// ----- (This description is only reference. Please check original file.) -----------------------------------------------
+// 2007.09.19 Rev 2
+// 	= BB support: _RESSEQ2
+// 	   - "r_s_hxk_en" gen-logic Changed. R_END -> R_BBNV1
+// 2007.09.25 <DF3.1> Released ****************************************************************
+// 2007.09.25 <CF1.0> Released ****************************************************************
+// -----------------------------------------------------------------------------------------------------------------------
+//
+// =======================================================================================================================
+// ¢¨ÊÑ¹¹²Õ½ê¤Î¥³¥á¥ó¥È¤Ë¤Ï¡¢"SS2nd:v1.1)"¤Èµ­Æþ
+// ==== History ======
+// 2008.05.02
+//	Chg FT3 Register)
+//		cib/nvmchk/cspdtctl_ft3 :QLK0RCIBM2SF2V1_FT3_H -> QLK0RCIBM2SF2V1_FT3_H_RST
+//	Del wire) sfr_cspdtctl_fto
+//	Chg clk gatinge enable for) baseck_latch
+//	Add New PORT) for FT3 reset
+//		cspdtctl_ft_res
+//
+// =======================================================================================================================
+
+module QLK0RCIBCM3SF1V1_NVMCHK (
+	BASECK,
+	SYSRESB,
+	RESETB,
+	NSRESB,
+	// -- APB for APBIF --
+	// APB I/F output
+	prdata_o,
+	ren_o,
+	// APB I/F input
+	PSEL4,
+	PWRITE,
+	PENABLE,
+	paddr,
+	pwdata,
+	// TOP Output
+	CSPDTFLG,
+	CKSMER,
+	CFNSD,
+	// CIB internal Output/Input
+	iromo,
+	// To RESSEQ
+	rseq_dec_addr2_o,
+	rstate,
+	// Wen from RESSEQ
+	NVMRCEND,
+	r_e2w_en,
+	r_fmopb_en,
+	// Target SFR
+	secuflg,
+	e2w_e2we,
+	e2w_e2ws,
+	// Other
+	PTESINST,
+	TESTMOD,
+	ce0msk_en_o,
+	EXAmsk_en_o,
+	READ,
+	WWR,
+	EXER,
+	PEXA,
+	AisS0,
+	AisS1,
+	AisS2,
+	AisS3,
+	SPRGMOD,
+	FLSPM
+);
+
+// ======= Port Define ========================================================================
+input		BASECK;
+input		SYSRESB;	// Reset signal for SFR
+input		RESETB;		// Reset signal for CKSM calc
+input		NSRESB;		// CKSM circuit FLAG
+// -- APB for APBIF --
+output	[15:0]	prdata_o;
+output		ren_o;
+input		PSEL4;
+input		PWRITE;
+input		PENABLE;
+input	[ 2:0]	paddr;
+input	[ 9:0]	pwdata;
+
+// -- TOP's External port
+output		CSPDTFLG;
+output		CKSMER;
+output	[ 9:0]	CFNSD;
+
+// -- CIB internal port
+input	[15:0]	iromo;
+
+// For RESSEQ2
+output	[15:0]	rseq_dec_addr2_o;
+input	[ 4:0]	rstate;
+
+// SFR write enable signals
+input		NVMRCEND;		// Reset Sequence finish signal
+input		r_e2w_en;		// SECUFLG     calc time
+input		r_fmopb_en;		// FSW         calc time
+
+// CKSM Target Input (from SFR captured-FF)
+input	[6:0]	secuflg;	// SECUFLG	// {{FSPR, RDPR, WRPR, CEPR, SEPR, BTPR}, BTFLG}
+
+input	[9:0]	e2w_e2we;	// FSWE		// {6'b0, e2w_e2we[9:0]}
+input	[9:0]	e2w_e2ws;	// FSWS		// {6'b0, e2w_e2ws[9:0]}
+
+// Other
+input		PTESINST;
+input		TESTMOD;
+// Extra Accsess Ctrl
+output		ce0msk_en_o;
+output		EXAmsk_en_o;		// SS2nd: 2007.09.07 Add) for Extra0/1/2 access disable signal for WWR, SER, EXER
+					// ExtraÎÎ°è¤Î¥é¥¤¥È/¾Ãµî¤Î¥¢¥¯¥»¥¹À©¸Â¤Î¤¿¤á¤Ë¡¢ËÜ¿®¹æ¤ò»ÈÍÑ¤¹¤ë¡£
+					// ËÜ¿®¹æ¤ò¸µ¤Ë¡¢CIB¤ÎMEMIF¥â¥¸¥å¡¼¥ë¤Ë¤Æ¡¢EXAmsk_en_o="H"»þ¤Ë¤Ï¡¢
+					// EXA=0, PRAR=1, PRSERAR=1
+					// ¤ËÀßÄê¤·¤Æ¡¢FCB¤Î½ñ¹þ¤ß/¾Ãµî¶Ø»ßµ¡Ç½¤ò»ÅÍÍ¤·¤ÆExtraÎÎ°è¤ÎÊÝ¸î¤ò¼Â»Ü¤¹¤ë¡£
+					// PRAR, PRSERAR¤À¤±¤Ç¤Ï¡¢ExtraÎÎ°è¤ÎÊÝ¸î¤È¤Ê¤é¤Ê¤¤¡£(FCB¤Î»ÅÍÍ¤Ë¤è¤ë¤¿¤á)
+					// ÌµÍý¤ä¤ê EXA=L¤È¤·¤Æ¡¢¥æ¡¼¥¶ÎÎ°è¤Î¥¢¥¯¥»¥¹ÊÝ¸îµ¡Ç½¤òÆ¯¤«¤»¤Æ¤¤¤ë¡£
+					// ¶ñÂÎÅª¤Ë¤Ï¡¢ËÜ¾ò·ï¤Î»þ¤ËFCB¤ÏDIS=H¤È¤·¤Æ¤¤¤ë¡£
+					//
+					// ¤½¤ÎÂ¾¤Î°Æ) 
+					//   ¤½¤ÎÂ¾¤Î°Æ¤È¤·¤Æ¤Ï¡¢°Ê²¼¤ÎÂÐ±þ¤¬²ÄÇ½¤Ç¤¢¤ë¤¬¡¢HWR¤È½Å¤Ê¤ë¤¿¤áºÎÍÑ¤·¤Ê¤«¤Ã¤¿¡£
+					//   ½ñ¹þ¤ß»þ¤ÎÊÝ¸î¡§DW=All"1"¤È¤¹¤ë¤³¤È¤Ç¡¢¾å½ñ¤­¤òËÉ»ß¤¹¤ë¡£
+					//   ¾Ãµî»þ¤ÎÊÝ¸î¡§FCLK="L" ¤È¤·¤Æ¾Ãµî¼«ÂÎ¤òÌµ¸ú²½¤¹¤ë¡£
+					// ¤¤¤º¤ì¤ÎÊýË¡¤â¡¢³Æ¥â¡¼¥É¤ËÆþ¤Ã¤Æ¤«¤é¤·¤«È½Äê¤Ç¤­¤Ê¤¤¤¿¤á¡¢FLASH¤Î»ÈÍÑ¶Ø»ß¾õÂÖ¤Ë´Ù¤ë¤¿¤áÉÔºÎÍÑ¤È¤·¤Æ¤¤¤ë¡£
+					// ¤â¤·¤«¤·¤¿¤é¡¢OK¤«¤â¡©
+input		READ, WWR, EXER;
+input		PEXA;
+input		AisS0, AisS1, AisS2, AisS3;
+input		SPRGMOD;
+input		FLSPM;
+
+
+// ======= Wire Define ========================================================================
+// wire		cap_secpdtflg_out;
+wire	[15:0]	cap_cksm;	// Capture Reg: Output CKSM
+// for APB I/F
+wire	[9:0]	sfr_cfnsd;		// SFR output: CFNSD
+wire		sfr_cfnsd_en;		// SFR enable: CFNSD
+wire	[9:0]	sfr_cfnsd_in;		// SFR input : CFNSD
+
+wire	[7:0]	sfr_cspdt;		// SFR output: CSPDT
+wire		sfr_cspdtctl_en;	// SFR enable: CSPDT
+wire	[7:0]	sfr_cspdtctl_in;	// SFR input : CSPDT
+
+wire		cap_cksm_en;		// Capture Reg: Enable CKSM
+wire	[15:0]	cap_cksm_in;		// Capture Reg: Input  CKSM
+// wire		cap_secpdtflg_en;	// Capture Reg: Enable SECPDTCTL
+// wire		cap_secpdtflg_in;	// Capture Reg: Input  SECPDTCTL
+
+// SS2nd: 2007.07.19 Add: For EXACCSCTL
+wire		ce0_mask_en;
+wire		EXA_mask_en;	// SS2nd: 2007.09.8
+
+// from RESSEQ:cap signal
+wire		r_s_fnsd_en;
+wire		r_s_spdtctl_en;
+wire		r_s_cksm_en;
+
+// SS3rd: 2010.01.16 Add: For CALCSM
+wire		r_bbnv1_en;
+
+
+// ======= MAIN ==============================================================================
+// ------- APB I/F ----------
+	QLK0RCIBCM3SF1V1_APBIF apbif (
+		// Input
+		.PSEL4(PSEL4),	.PWRITE(PWRITE),	.PENABLE(PENABLE),
+		.paddr(paddr),	.pwdata(pwdata),
+		.PTESINST(PTESINST),
+		.r_s_fnsd_en(r_s_fnsd_en),	.r_s_spdtctl_en(r_s_spdtctl_en),
+		.iromo(iromo[9:0]),
+		.sfr_cfnsd(sfr_cfnsd),		.sfr_cspdt(sfr_cspdt),
+		// Output
+		.sfr_cfnsd_en(sfr_cfnsd_en),	.sfr_cspdtctl_en(sfr_cspdtctl_en),
+		.sfr_cfnsd_in(sfr_cfnsd_in),	.sfr_cspdtctl_in(sfr_cspdtctl_in),
+		.prdata_o(prdata_o),		.ren_o(ren_o)
+	);
+// ------- RESSEQ2 ----------
+	QLK0RCIBCM3SF1V1_RESSEQ2 resseq2 (
+		.rstate(rstate),
+		.rseq_dec_addr2_o(rseq_dec_addr2_o),
+		.r_s_spdtctl_en(r_s_spdtctl_en),	.r_s_fnsd_en(r_s_fnsd_en),	.r_s_cksm_en(r_s_cksm_en),
+		.r_bbnv1_en(r_bbnv1_en)
+	);
+
+// ------- BASECK Gating ----
+	wire	baseckin;
+	wire	r_all_en = ( r_s_spdtctl_en | r_s_fnsd_en | r_s_cksm_en );
+//	TBGTSMLALADPCLX2 baseck_latch ( .N01(baseckin) ,.N02() ,.H01(r_all_en) ,.H02(BASECK) ,.H03(TESTMOD) );
+	TBGTSMLALADCLX2 baseck_latch ( .N01(baseckin) ,.H01(r_all_en) ,.H02(BASECK) ,.H03(TESTMOD) );
+
+// ------- SFR --------------
+	assign	CFNSD [ 9:0] = sfr_cfnsd[9:0];
+	QLK0RCIBCM3SF1V1_CFNSD cfnsd (
+		.BASECK(baseckin),		.SYSRESB(SYSRESB),
+		.sfr_cfnsd(sfr_cfnsd),		.sfr_cfnsd_en(sfr_cfnsd_en),	.sfr_cfnsd_in(sfr_cfnsd_in)
+	);
+
+//	assign	CSPDTFLG = ( 8'ha5 == sfr_cspdt[7:0] ) ? 1'b1 : 1'b0 ;
+//	assign	CSPDTFLG = ( 8'h5a == sfr_cspdt[7:0] ) ? 1'b0 : 1'b1 ;			// Ver2.0 modify
+	assign	CSPDTFLG = ( ( 8'h5a == sfr_cspdt[7:0] ) ||
+			     ( 8'hff == sfr_cspdt[7:0] ) ||
+			     ( 8'h00 == sfr_cspdt[7:0] )  ) ? 1'b0 : 1'b1 ;		// Ver2.0 modify
+	QLK0RCIBCM3SF1V1_CSPDT cspdt (
+		.BASECK(baseckin),	.SYSRESB(SYSRESB),
+		.sfr_cspdt(sfr_cspdt),	.sfr_cspdtctl_en(sfr_cspdtctl_en),	.sfr_cspdtctl_in(sfr_cspdtctl_in)
+	);
+
+// ------- Capture Register -----
+// CKSM is written by NVM register Only with RESSEQ.
+// --------- WRITE_EN ctrl -----------------------
+	assign	cap_cksm_en       = r_s_cksm_en;
+// --------- WRITE_BUS from RESSEQ ---------------
+	assign	cap_cksm_in[15:0] = iromo[15:0];
+//// InternalCap: CKSM ////
+	QLK0RCIBCM3SF1V1_CCKSM ccksm (
+		.BASECK(baseckin),	.SYSRESB(SYSRESB),
+		.cap_cksm(cap_cksm),	.cap_cksm_en(cap_cksm_en),	.cap_cksm_in(cap_cksm_in)
+	);
+
+// ------- CKSM -----------
+	QLK0RCIBCM3SF1V1_CALCSM calcsm (
+		.BASECK(BASECK),	.RESETB(RESETB),	.NSRESB(NSRESB),
+		// Output
+		.CKSMER(CKSMER),
+		// Input
+		.NVMRCEND(NVMRCEND),
+		.r_e2w_en(r_e2w_en),			.r_fmopb_en(r_fmopb_en),
+		.r_s_spdtctl_en(r_s_spdtctl_en),	.r_s_fnsd_en(r_s_fnsd_en),
+		.r_s_cksm_en(r_s_cksm_en),		.r_bbnv1_en(r_bbnv1_en),
+		.secuflg(secuflg),
+		.e2w_e2we(e2w_e2we),			.e2w_e2ws(e2w_e2ws),
+		.CFNSD(CFNSD),
+		.cksm(cap_cksm)
+	);
+
+// ------- EXTRA Accsess Ctrl -------
+assign	ce0msk_en_o = ce0_mask_en;
+assign	EXAmsk_en_o = EXA_mask_en;	// SS2nd: 2007.09.08 Add
+QLK0RCIBCM3SF1V1_EXACCSCTL exaccsctl (
+	.ce0_mask_en(ce0_mask_en),
+	.EXA_mask_en(EXA_mask_en),
+	// Input
+	.READ(READ),	   .WWR(WWR),	    .EXER(EXER),	.PEXA(PEXA),
+	.AisS0(AisS0),	   .AisS1(AisS1),   .AisS2(AisS2),	.AisS3(AisS3),
+	.SPRGMOD(SPRGMOD), .FLSPM(FLSPM),   .CSPDTFLG(CSPDTFLG),
+	.PTESINST(PTESINST)
+);
+
+endmodule // QLK0RCIBCM3SF1V1_NVMCHK
+
+
+
+// ======= Sub Modules ====================================================================
+// /////// APB I/F ////////////////////////////////////////////////////////////////////////
+// SS2nd: 2007.07.16 for Secutiry SFR.
+module QLK0RCIBCM3SF1V1_APBIF (
+	PSEL4,
+	paddr,
+	PWRITE,
+	PENABLE,
+	pwdata,
+	PTESINST,
+	r_s_fnsd_en, r_s_spdtctl_en,
+	iromo,
+	sfr_cfnsd,    sfr_cspdt,
+	sfr_cfnsd_en, sfr_cspdtctl_en,
+	sfr_cfnsd_in, sfr_cspdtctl_in,
+	prdata_o,
+	ren_o
+);
+// APB ctrl signals
+input		PSEL4;
+input	[ 2:0]	paddr;
+input		PWRITE;
+input		PENABLE;
+input	[ 9:0]	pwdata;
+// others
+input		PTESINST;
+//
+input		r_s_fnsd_en; 
+input		r_s_spdtctl_en;
+input	[ 9:0]	iromo;
+// SFR Register Output for APB Read BUS
+input	[ 9:0]	sfr_cfnsd;	// SFR input: CFNSD
+input	[ 7:0]	sfr_cspdt;	// SFR input: CSPDT
+
+// NVMCHK modules's Internal signals
+output		sfr_cfnsd_en;		// PSEL4 & PADDR=2'h0 or r_s_fnsd_en
+output		sfr_cspdtctl_en;	// PSEL4 & PADDR=2'h2 or r_s_spdtctl_en
+output	[ 9:0]	sfr_cfnsd_in;
+output	[ 7:0]	sfr_cspdtctl_in;
+// APB Read BUS
+output	[15:0]	prdata_o;
+output		ren_o;
+
+wire		sel_cfnsd ,sel_cspdtctl;
+
+// ======= Main =======================================================================
+	QLK0RCIBCM3SF1V1_BIADDEC biaddec(
+		.PSEL4(PSEL4),		.paddr(paddr),			.PTESINST(PTESINST),
+		.sel_cfnsd(sel_cfnsd),	.sel_cspdtctl(sel_cspdtctl)
+	);
+	QLK0RCIBCM3SF1V1_BIWRCNT biwrcnt(
+		.PWRITE(PWRITE),	.PENABLE(PENABLE),
+		.pwdata(pwdata),
+		.sel_cfnsd(sel_cfnsd),		.sel_cspdtctl(sel_cspdtctl),
+		.r_s_fnsd_en(r_s_fnsd_en),
+		.r_s_spdtctl_en(r_s_spdtctl_en),
+		.iromo(iromo),
+		.sfr_cfnsd_en(sfr_cfnsd_en),	.sfr_cspdtctl_en(sfr_cspdtctl_en),
+		.sfr_cfnsd_in(sfr_cfnsd_in),	.sfr_cspdtctl_in(sfr_cspdtctl_in),
+		.PTESINST(PTESINST)
+	);
+	QLK0RCIBCM3SF1V1_BIRDCNT birdcnt(
+		.PWRITE(PWRITE),	.PENABLE(PENABLE),
+		.sel_cfnsd(sel_cfnsd),	.sel_cspdtctl(sel_cspdtctl),
+		.sfr_cfnsd(sfr_cfnsd),	.sfr_cspdt(sfr_cspdt),
+		.prdata_o(prdata_o),	.ren_o(ren_o)
+	);
+endmodule // QLK0RCIBCM3SF1V1_APBIF
+
+
+
+// QLK0RCIBCM3SF1V1 APB address map
+//
+// PSEL4-------H- -------L-  -- -size-  ÄÌ¾ï  ¥»¥ë¥Õ  ¥Æ¥¹¥È RESET¾ò·ï RESET init value
+//                    CFNSD  0H   8bit   -/-   -/-     R/W   SYSRESB   00h
+//		      CHXKH  2H  16bit   -/-   -/-     R/W   SYSRESB   0000h
+//		      CHXKL  4H  16bit   -/-   -/-     R/W   SYSRESB   0000h
+//		   CSPDTCTL  6H   8bit   R/-   R/-     R/W   SYSRESB   01h
+//
+//   ¡úR¡§°ÕÌ£¤Î¤¢¤ë¥ê¡¼¥ÉÃÍ
+//   ¡ú-¡§¥ê¡¼¥É¤·¤Æ¤â"0"¤·¤«ÆÉ¤á¤Ê¤¤¡£¥é¥¤¥È¤ÏÌµ»ë
+//   ¡úW¡§°ÕÌ£¤Î¤¢¤ë¥é¥¤¥ÈÃÍ
+//   ¡ú¥ê¥»¥Ã¥È¾ò·ïSYSRESB¤Î¥ì¥¸¥¹¥¿¤Ï¡¢¥ê¥»¥Ã¥È¥·¡¼¥±¥ó¥¹¤Ç¾å½ñ¤­¤µ¤ì¤ë¡£
+//     ¤Þ¤¿¡¢¼ÂÂÎ¤ÏNVM¥­¥ã¥×¥Á¥ãÍÑ¤Î¥ì¥¸¥¹¥¿¤Ç¤¢¤ë¡£
+module QLK0RCIBCM3SF1V1_BIADDEC (
+	PSEL4,
+	paddr,
+	PTESINST,
+	sel_cfnsd, sel_cspdtctl 
+);
+// INPUT Port
+// APB ctrl signals
+input		PSEL4;
+input	[2:0]	paddr;
+// others
+input		PTESINST;
+// Output
+output		sel_cfnsd;	// PSEL4 & PADDR=2'h0
+output		sel_cspdtctl;	// PSEL4 & PADDR=2'h2
+
+// ======= Main =======================================================================
+// --------- Addr dec ----------------------------
+reg	sel_cfnsd;
+reg	sel_cspdtctl;
+
+	always @ ( PTESINST or PSEL4 or paddr ) begin
+		{ sel_cfnsd, sel_cspdtctl } = 2'b0;
+		case({PTESINST, PSEL4, paddr})
+			6'b1_1_000 : sel_cfnsd    = 1'b1;
+			//
+			6'b1_1_010 : sel_cspdtctl = 1'b1;
+			6'b0_1_010 : sel_cspdtctl = 1'b1;
+			//
+			default	   : sel_cfnsd    = 1'b0;
+		endcase
+	end
+endmodule // QLK0RCIBCM3SF1V1_BIADDEC
+
+
+
+module QLK0RCIBCM3SF1V1_BIWRCNT (
+	PWRITE,
+	PENABLE,
+	pwdata,
+	sel_cfnsd,
+	sel_cspdtctl,
+	r_s_fnsd_en,
+	r_s_spdtctl_en,
+	iromo,
+	sfr_cfnsd_en, sfr_cspdtctl_en,
+	sfr_cfnsd_in, sfr_cspdtctl_in,
+	PTESINST
+);
+// APB
+input		PWRITE;
+input		PENABLE;
+input	[ 9:0]	pwdata;
+input		sel_cfnsd;	// PSEL4 & PADDR=2'h0 & PTESINST=H
+input		sel_cspdtctl;	// PSEL4 & PADDR=2'h2 & PTESINST=*
+// Others
+input		r_s_fnsd_en; 
+input		r_s_spdtctl_en;
+input	[ 9:0]	iromo;
+// For SFR
+output		sfr_cfnsd_en;		// PSEL4 & PADDR=2'h0 or r_s_fnsd_en
+output		sfr_cspdtctl_en;	// PSEL4 & PADDR=2'h2 or r_s_spdtctl_en
+output	[ 9:0]	sfr_cfnsd_in;
+output	[ 7:0]	sfr_cspdtctl_in;	// SS3rd:2010.01.16 Mod
+
+input		PTESINST;
+
+// --------- WRITE_EN from BI --------------------
+	wire		write_en;
+	wire		b_cfnsd_en;
+	wire		b_cspdtctl_en;
+
+	assign	write_en	= PWRITE & PENABLE;
+	assign	b_cfnsd_en	= sel_cfnsd    & write_en;	// PTESINST=H ¤Î¤ßsel_xx¤¬Î©¤Ä
+	assign	b_cspdtctl_en	= sel_cspdtctl & write_en & PTESINST;	// PTESINST=H °Ê³°¤Ç¤â sßsel_xx¤¬Î©
+									// PTESINST=H/L¤ÎÎ¾Êý¤ÇSel¤¬Î©¤Ä¤¿¤á¡¢
+									// ¥é¥¤¥È¤ÏPTESINST=H¤Î¤ßµö²Ä¤È¤¹¤ë¤¿¤á¤Ë¡¢PTESINST¤òÍí¤á¤Æ¤¤¤ë¡£
+
+// --------- WRITE_EN ctrl -----------------------
+// r_ ¤Ï¥ê¥»¥Ã¥È¥·¡¼¥±¥ó¥¹¤Ç¤Î¥é¥Ã¥Áµö²Ä		¥Ç¡¼¥¿¥Ð¥¹¡§iromo
+// b_ ¤Ïbi(APB¥Ð¥¹·ÐÍ³¡Ë¤Î¥é¥Ã¥Áµö²Ä¡Ê¥Æ¥¹¥È¤«¥Õ¥¡¡¼¥à¡Ë¥Ç¡¼¥¿¥Ð¥¹¡§pwdata
+// f_ ¤ÏFCB·ÐÍ³¥ê¡¼¥É»þ¤Î¥é¥Ã¥Áµö²Ä¡Ê¥Õ¥¡¡¼¥à¡Ë		¥Ç¡¼¥¿¥Ð¥¹¡§iromo
+	assign	sfr_cfnsd_en	= b_cfnsd_en	| r_s_fnsd_en;
+	assign	sfr_cspdtctl_en	= b_cspdtctl_en | r_s_spdtctl_en;
+
+// --------- WRITE_BUS from BI -------------------
+	wire	iromo_en = ( r_s_fnsd_en | r_s_spdtctl_en );
+	assign	sfr_cfnsd_in    [9:0] = ( iromo_en ) ? iromo[9:0] : pwdata[9:0];
+	assign	sfr_cspdtctl_in [7:0] = ( iromo_en ) ? iromo[7:0] : pwdata[7:0];	// SS3rd:2010.01.16 Mod
+
+endmodule // QLK0RCIBCM3SF1V1_BIWRCNT
+
+
+
+module QLK0RCIBCM3SF1V1_BIRDCNT (
+	PWRITE,
+	PENABLE,
+	sel_cfnsd,
+	sel_cspdtctl,
+	sfr_cfnsd,
+	sfr_cspdt,
+	prdata_o,
+	ren_o
+);
+// APB & AddrDEC
+input		PWRITE;
+input		PENABLE;
+input		sel_cfnsd;	// PSEL4 & PADDR=2'h0 & PTESINST=H
+input		sel_cspdtctl;	// PSEL4 & PADDR=2'h2 & PTESINST=*
+// SFR Register Output for APB Read BUS
+input	[9:0]	sfr_cfnsd;	// SFR input: CFNSD
+input	[7:0]	sfr_cspdt;	// SFR input: CSPDT	// SS3rd:2010.01.16 Mod
+// APB Read BUS
+output	[15:0]	prdata_o;
+output		ren_o;
+
+// ======= Main =======================================================================
+// --------- READ_EN from BI ---------------------
+	wire	read_en		= !PWRITE & PENABLE;
+	wire	ren_cfnsd	= read_en & sel_cfnsd;		// PTESINST=H ¤Î¤ß sel_xx ¤¬Î©¤Ä
+	wire	ren_cspdtctl	= read_en & sel_cspdtctl;	// PTESINST=H °Ê³°¤Ç¤â ß sel_xx ¤¬Î©
+
+// --------- READ_BUS from BI ---------------------
+reg	[15:0]	prdata_o;
+
+	always @ ( ren_cfnsd or ren_cspdtctl or
+		   sfr_cfnsd or sfr_cspdt ) begin
+		case( 1'b1 )
+			ren_cfnsd	: prdata_o = { 6'b0, sfr_cfnsd[9:0] };
+			ren_cspdtctl	: prdata_o = { 8'b0, sfr_cspdt[7:0] };	// SS3rd:2010.01.15 Mod
+			default		: prdata_o = 16'h0000;
+		endcase
+	end
+	assign	ren_o = ( ren_cfnsd | ren_cspdtctl );
+
+endmodule // QLK0RCIBCM3SF1V1_BIRDCNT
+
+
+
+// /////// RESSEQ2 I/F ////////////////////////////////////////////////////////////////////
+// SS2nd: 2007.07.16 for Secutiry SFR.
+module QLK0RCIBCM3SF1V1_RESSEQ2 (
+	rstate,
+	rseq_dec_addr2_o,
+	r_s_spdtctl_en,
+	r_s_fnsd_en,
+	r_s_cksm_en,
+	r_bbnv1_en
+);
+// ------- Port Define ------
+input	[4:0]	rstate;
+
+output	[15:0]	rseq_dec_addr2_o;
+output		r_s_spdtctl_en;
+output		r_s_fnsd_en;
+output		r_s_cksm_en;
+output		r_bbnv1_en;
+
+// ------- Wire Define ------
+// ------- Main -------------
+
+// ¥ê¥»¥Ã¥È¥·¡¼¥±¥ó¥¹¥¹¥Æ¡¼¥È for Secutiry NVM
+//	wire	R_S_SECPD = rstate==5'h0B;  // 08A0h SPDTCTL
+	wire	R_S_FNSD  = rstate==5'h0C;  // 0014h FNSD
+	wire	R_S_CHKSM = rstate==5'h0D;  // 00A0h CKSM
+	wire	R_BBNV1   = rstate==5'h0E;  // 0810h
+	wire	R_BBNV2   = rstate==5'h0F;  // 0814h
+
+// ¥ê¥»¥Ã¥È¥·¡¼¥±¥ó¥¹È¯¹Ô :WRITE_EN
+	assign	r_s_spdtctl_en  = R_S_FNSD	;
+	assign	r_s_fnsd_en     = R_S_CHKSM	;
+	assign	r_s_cksm_en     = R_BBNV1	;
+	assign	r_bbnv1_en      = R_BBNV2	;
+
+// ¥ê¥»¥Ã¥È¥·¡¼¥±¥ó¥¹È¯¹Ô :NVM Address
+// Generate Flash Address Under Reset sequence for Security NVM.
+reg	[15:0]	rseq_dec_addr2_o;
+	always @ ( rstate )
+		case( rstate )
+			5'h0B	: rseq_dec_addr2_o = 16'h08A0; //0000_1000_1010_0000
+			5'h0C	: rseq_dec_addr2_o = 16'h000C; //0000_0000_0000_1100
+			5'h0D	: rseq_dec_addr2_o = 16'h0010; //0000_0000_0001_0000
+			default	: rseq_dec_addr2_o = 16'h0000; //0000_0000_0000_0000
+							       //...._|..._|.||_||..	// rseq_dec_addr2_o[11, 7, 5, 4, 3, 2]
+		endcase
+
+endmodule // QLK0RCIBCM3SF1V1_RESSEQ2
+
+
+
+// /////// SFR ////////////////////////////////////////////////////////////////////////////
+//// SFR: CFNSD ////
+module QLK0RCIBCM3SF1V1_CFNSD (
+	BASECK,
+	SYSRESB,
+	sfr_cfnsd,
+	sfr_cfnsd_en,
+	sfr_cfnsd_in
+);
+// ------- Port Define ------
+input		BASECK;
+input		SYSRESB;
+
+output	[9:0]	sfr_cfnsd;	// SFR output: CFNSD
+input		sfr_cfnsd_en;	// SFR enable: CFNSD
+input	[9:0]	sfr_cfnsd_in;	// SFR input : CFNSD
+
+// ------- Main -------------
+reg	[9:0]	sfr_cfnsd;
+
+	always @ ( posedge BASECK or negedge SYSRESB ) begin
+		if( !SYSRESB )
+			sfr_cfnsd <= 10'b00_0000_0000;
+		else if( sfr_cfnsd_en )
+			sfr_cfnsd <= sfr_cfnsd_in;
+	end
+
+endmodule // QLK0RCIBCM3SF1V1_CFNSD
+
+module QLK0RCIBCM3SF1V1_CSPDT (
+	BASECK,
+	SYSRESB,
+	sfr_cspdt,
+	sfr_cspdtctl_en,
+	sfr_cspdtctl_in
+);
+// ------- Port Define ------
+input		BASECK;
+input		SYSRESB;
+
+output	[7:0]	sfr_cspdt;		// SFR output: CSPDT
+input		sfr_cspdtctl_en;	// SFR enable: CSPDT
+input	[7:0]	sfr_cspdtctl_in;	// SFR input : CSPDT
+
+// ------- Main -------------
+reg	[7:0]	sfr_cspdt;
+
+	always @ ( posedge BASECK or negedge SYSRESB ) begin
+		if( !SYSRESB )
+			sfr_cspdt <= 8'b0000_0000;
+		else if( sfr_cspdtctl_en )
+			sfr_cspdt <= sfr_cspdtctl_in;
+	end
+
+endmodule // QLK0RCIBCM3SF1V1_CSPDT
+
+
+
+// ======= Internal Capture ===============================================================
+
+//// Cap: CKSM ///////////////
+module QLK0RCIBCM3SF1V1_CCKSM (
+	BASECK,
+	SYSRESB,
+	cap_cksm,
+	cap_cksm_en,
+	cap_cksm_in
+);
+// ------- Port Define ------
+input		BASECK;
+input		SYSRESB;
+
+output	[15:0]	cap_cksm;	// Capture Reg: Output CKSM
+input	[15:0]	cap_cksm_in;	// Capture Reg: Input  CKSM
+input		cap_cksm_en;	// Capture Reg: Enable CKSM
+
+reg	[15:0]	cap_cksm;
+
+	always @ ( posedge BASECK or negedge SYSRESB ) begin
+		if( !SYSRESB )
+			cap_cksm <= 16'b0;
+		else if( cap_cksm_en )
+			cap_cksm <= cap_cksm_in;
+	end
+
+endmodule // QLK0RCIBCM3SF1V1_CCKSM
+
+
+// ======= CKSM CALC =====================================================================
+module QLK0RCIBCM3SF1V1_CALCSM (
+	BASECK,
+	RESETB,
+	NSRESB,
+	// Output
+	CKSMER,
+	// Input
+	NVMRCEND,
+	r_e2w_en,
+	r_fmopb_en,
+	r_s_spdtctl_en,
+	r_s_fnsd_en,
+	r_s_cksm_en,
+	r_bbnv1_en,
+	secuflg,
+	e2w_e2we,
+	e2w_e2ws,
+	CFNSD,
+	cksm
+);
+// ------- Port Define ------
+input		BASECK;
+input		RESETB;
+input		NSRESB;
+// SFR write enable signals
+input		NVMRCEND;		// Reset Sequence Finish signal.
+input		r_e2w_en;		// SECUFLG     calc time
+input		r_fmopb_en;		// FSW         calc time
+input		r_s_spdtctl_en;	// OPTION Byte calc time
+input		r_s_fnsd_en;		// SPDTCTL   calc time
+input		r_s_cksm_en;		// CFNSD       calc time
+input		r_bbnv1_en;	// CKSM      calc time
+// SFR inputs
+// SECUFLG
+input	[6:0]	secuflg;	// {{FSPR, RDPR, WRPR, CEPR, SEPR, BTPR}, BTFLG}
+// FSW
+input	[9:0]	e2w_e2we;	// {6'b0, e2w_e2we[9:0]}
+input	[9:0]	e2w_e2ws;	// {6'b0, e2w_e2ws[9:0]}
+
+// Internal SFR
+// CFNSD
+input	[ 9:0]	CFNSD;		// {6'b0, CFNSD[9:0]}
+// CKSM
+input	[15:0]	cksm;		// { CKSM[15:0] }
+// CKSMER
+output		CKSMER;	// CKSM Err Output
+
+// ------ Reg & Wire ----
+reg	[15:0]	calcsm;
+wire	[15:0]	calcsm_in;
+wire		calcsm_en;
+
+reg		resb_edge;
+reg		CKSMER;
+wire		cksmer_pre;
+wire		cksmer_en;
+
+// ------ Calculate CKSM -------------
+// /* CKSM Target Selector */
+//	assign	calcsm_in[31:0] = ( r_e2w_en       ) ? { 27'b0, secuflg[4:0] }				:
+//				  ( r_fmopb_en     ) ? { {6'b0, e2w_e2we[9:0]}, {7'b0, e2w_e2ws[8:0]} }	:
+//				  ( r_s_spdtctl_en ) ? { topt3[7:0], 8'b0, topt1[7:0], topt0[7:0] }	:	// SS2nd: 2007.07.31 Del: TOPT 
+//				  ( r_s_fnsd_en    ) ? { 31'b0, CSPDTFLG }				:
+//				  ( r_s_cksm_en    ) ? { 16'b0, 7'b0, CFNSD[8:0] }			:
+//				  ( r_s_hxk_en     ) ? { cksm[31:0] }					: 32'b0;
+//	assign	calcsm_en = ( !NVMRCEND &
+//			     ( r_e2w_en | r_fmopb_en | r_s_spdtctl_en | r_s_fnsd_en | r_s_cksm_en | r_s_hxk_en ) );
+
+// /* CKSM Target Selector */
+	assign	calcsm_in[15:0] = ( r_e2w_en       ) ? { 9'b0, secuflg[6:0] }	:
+				  ( r_fmopb_en     ) ? { 6'b0, e2w_e2we[9:0] }	:
+				  ( r_s_spdtctl_en ) ? { 6'b0, e2w_e2ws[9:0] }	:
+				  ( r_s_fnsd_en    ) ? { 16'hf384 }		:
+				  ( r_s_cksm_en    ) ? { 6'b0, CFNSD[9:0] }	:
+				  ( r_bbnv1_en     ) ? { cksm[15:0] }		: 16'b0;
+	assign	calcsm_en = ( !NVMRCEND &
+			     ( r_e2w_en | r_fmopb_en | r_s_spdtctl_en | r_s_fnsd_en | r_s_cksm_en | r_bbnv1_en ) );
+// /* cksm calculation */
+	always @ ( posedge BASECK or negedge RESETB ) begin
+		if( !RESETB )
+			calcsm <= 16'b0;
+		else if( calcsm_en )
+			calcsm <= calcsm + calcsm_in;
+	end
+
+// ----- Generate CKSMER signal: This signal must be LEVEL.
+	assign	cksmer_pre	= ( 16'hffff == calcsm[15:0] ) ? 1'b0 : 1'b1 ;	// SS3rd: 2010.01.16 Mod
+	assign	cksmer_en	= ( NSRESB & !resb_edge );
+
+	always @ ( posedge BASECK or negedge RESETB ) begin
+		if ( !RESETB )
+			resb_edge <= 1'b0;
+		else
+			resb_edge <= NSRESB;
+	end
+
+	always @ ( posedge BASECK or negedge RESETB ) begin
+		if ( !RESETB )
+			CKSMER <= 1'b0;
+		else if( cksmer_en )
+			CKSMER <= cksmer_pre;
+	end
+
+endmodule // QLK0RCIBCM3SF1V1_CALCSM
+
+
+
+module QLK0RCIBCM3SF1V1_EXACCSCTL (
+	ce0_mask_en,
+	EXA_mask_en,
+	// Input
+	READ,
+	WWR,
+	EXER,
+	PEXA,
+	AisS0, AisS1, AisS2, AisS3,
+	SPRGMOD,
+	FLSPM,
+	CSPDTFLG,
+	PTESINST
+);
+
+input		READ	; // FCB.READ
+input		WWR	; // FCB.WWR
+input		EXER	; // FCB.EXER
+
+input		PEXA;
+input		AisS0, AisS1, AisS2, AisS3;
+
+input		SPRGMOD;
+input		FLSPM;
+input		CSPDTFLG;
+
+input		PTESINST;	// SS2nd: 2007.07.31 Add
+
+output		ce0_mask_en;
+
+output		EXA_mask_en;	// SS2nd: 2007.09.07 Add
+
+reg		ce0_mask_en;
+reg		EXA_mask_en;	// SS2nd: 2007.09.07 Add
+
+wire		AisEx0, AisEx1, AisEx2, AisEx3;
+wire		mod_seriprg, mod_selfprg;	// SS2nd: 2007.07.31 Add
+
+	assign	AisEx0 = ( AisS0 & PEXA );
+	assign	AisEx1 = ( AisS1 & PEXA );
+	assign	AisEx2 = ( AisS2 & PEXA );
+	assign	AisEx3 = ( AisS3 & PEXA );
+
+	assign	mod_seriprg =  SPRGMOD & FLSPM;	// SS2nd: 2007.07.31 Add
+	assign	mod_selfprg = !SPRGMOD & FLSPM;	// SS2nd: 2007.07.31 Add
+
+	// SS2nd: 2007.07.31 Chg: Add PTESINST bit to case statement.
+	always @ ( PTESINST	or CSPDTFLG	or 
+		   mod_seriprg	or mod_selfprg	or	// SS2nd: 2007.07.31 Chg
+	   	   AisEx2	or AisEx1	or AisEx0 or
+	   	   READ		or WWR		or EXER	  )
+	begin
+//		case( {CSPDTFLG, {SPRGMOD, FLSPM}, {AisEx2, AisEx1, AisEx0}, {READ, WWR, EXER}} )
+		casex( {PTESINST, CSPDTFLG, {mod_seriprg, mod_selfprg}, {AisEx2, AisEx1, AisEx0}, {READ, WWR, EXER}} )
+			10'b1_x_xx_xxx_xxx : ce0_mask_en = 1'b0;
+
+			10'b0_1_10_100_100 : ce0_mask_en = 1'b1; //  SPDTFLG & SPRGMOD & AisEx2 & READ	// Sec Serial
+//			10'b0_1_10_100_010 : ce0_mask_en = 1'b1; //  SPDTFLG & SPRGMOD & AisEx2 & WWR	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+//			10'b0_1_10_100_001 : ce0_mask_en = 1'b1; //  SPDTFLG & SPRGMOD & AisEx2 & EXER	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+
+			10'b0_1_01_100_100 : ce0_mask_en = 1'b1; //  SPDTFLG & FLSPM   & AisEx2 & READ	// Sec Self
+//			10'b0_1_01_100_010 : ce0_mask_en = 1'b1; //  SPDTFLG & FLSPM   & AisEx2 & WWR	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+//			10'b0_1_01_100_001 : ce0_mask_en = 1'b1; //  SPDTFLG & FLSPM   & AisEx2 & EXER	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+
+//			10'b0_1_01_010_010 : ce0_mask_en = 1'b1; //  SPDTFLG & FLSPM   & AisEx1 & WWR	// Sec Self
+//			10'b0_1_01_010_001 : ce0_mask_en = 1'b1; //  SPDTFLG & FLSPM   & AisEx1 & EXER	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+
+//			10'b0_1_01_001_010 : ce0_mask_en = 1'b1; //  SPDTFLG & FLSPM   & AisEx0 & WWR	// Sec Self
+//			10'b0_1_01_001_001 : ce0_mask_en = 1'b1; //  SPDTFLG & FLSPM   & AisEx0 & EXER	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+
+			10'b0_0_10_100_100 : ce0_mask_en = 1'b1; // !SPDTFLG & SPRGMOD & AisEx2 & READ	// Non-Sec Serial
+//			10'b0_0_10_100_010 : ce0_mask_en = 1'b1; // !SPDTFLG & SPRGMOD & AisEx2 & WWR	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+//			10'b0_0_10_100_001 : ce0_mask_en = 1'b1; // !SPDTFLG & SPRGMOD & AisEx2 & EXER	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+
+			10'b0_0_01_100_100 : ce0_mask_en = 1'b1; // !SPDTFLG & FLSPM   & AisEx2 & READ	// Non-Sec Self
+//			10'b0_0_01_100_010 : ce0_mask_en = 1'b1; // !SPDTFLG & FLSPM   & AisEx2 & WWR	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+//			10'b0_0_01_100_001 : ce0_mask_en = 1'b1; // !SPDTFLG & FLSPM   & AisEx2 & EXER	// WWR/EXER¤ÏFCB¤Î¥»¥¯¥¿ÊÝ¸îµ¡Ç½¤ò»ÈÍÑ
+
+			default		   : ce0_mask_en = 1'b0;
+		endcase
+	end
+
+// 2007.09.07 Changing
+// WWR/EXER/SER¤Ë¤ª¤¤¤Æ¡¢FCB¤Ë¤è¤ë¥Õ¥é¥Ã¥·¥å¤Î¥â¡¼¥ÉÊÑ¹¹³ÎÄê»þ¡¢¤¹¤Ê¤ï¤Á¡¢WWR/EXER/SER¤¬¥¢¥¯¥Æ¥£¥Ö¤È¤Ê¤Ã¤¿¤È¤­¤Ë¡¢
+// CE0¤ò¥Þ¥¹¥¯¤·¤Æ¤â¡¢Ä¾Á°¤ÎDIS¥â¡¼¥ÉÃæ¤Ë¡¢¥é¥¤¥ÈÎÎ°è¤ª¤è¤Ó¾ÃµîÎÎ°è¤Ï³ÎÄê¤·¤Æ¤·¤Þ¤Ã¤Æ¤ª¤ê¡¢CE0¥Þ¥¹¥¯¤Ç¤Ï¡¢
+// ¥é¥¤¥È/¾Ãµî¤ÎÊÝ¸î¤¬¤Ç¤­¤Ê¤¤¡£
+// ¤½¤ÎÂåÂØ°Æ¤È¤·¤Æ¡¢¥é¥¤¥È/¾Ãµî¶Ø»ß¾ò·ï²½¤Ë¤ª¤¤¤Æ¤Ï¡¢²¼µ­¤ÎÊý¿Ë¤È¤·¤Æ¤¤¤ë¡£
+//
+// EXA=0, PRAR=1, PRSERAR=1
+// ¤ËÀßÄê¤·¤Æ¡¢FCB¤Î½ñ¹þ¤ß/¾Ãµî¶Ø»ßµ¡Ç½¤ò»ÅÍÍ¤·¤ÆExtraÎÎ°è¤ÎÊÝ¸î¤ò¼Â»Ü¤¹¤ë¡£
+// PRAR, PRSERAR¤À¤±¤Ç¤Ï¡¢ExtraÎÎ°è¤ÎÊÝ¸î¤È¤Ê¤é¤Ê¤¤¡£(FCB¤Î»ÅÍÍ¤Ë¤è¤ë¤¿¤á)
+// ÌµÍý¤ä¤ê EXA=L¤È¤·¤Æ¡¢¥æ¡¼¥¶ÎÎ°è¤Î¥¢¥¯¥»¥¹ÊÝ¸îµ¡Ç½¤òÆ¯¤«¤»¤Æ¤¤¤ë¡£
+// ¶ñÂÎÅª¤Ë¤Ï¡¢ËÜ¾ò·ï¤Î»þ¤ËFCB¤ÏDIS=H¤È¤·¤Æ¤¤¤ë¡£
+
+	// For Extra0/1/2 Access Control for WWR, SER, EXER: Using FCB Sector Protect Function.
+	always @ ( PTESINST	or CSPDTFLG	or 
+		   mod_seriprg	or mod_selfprg	or
+	   	   AisEx3	or AisEx2	or AisEx1	or AisEx0 or
+	   	   READ		)
+	begin
+		casex( {PTESINST, CSPDTFLG, {mod_seriprg, mod_selfprg}, {AisEx3, AisEx2, AisEx1, AisEx0}, READ } )
+			9'b1_x_xx_xxxx_x : EXA_mask_en = 1'b0;
+			9'bx_x_xx_xxxx_1 : EXA_mask_en = 1'b0; //  READ¤Ç¥Þ¥¹¥¯²ò½ü
+			
+			9'b0_1_10_0100_0 : EXA_mask_en = 1'b1; //  SPDTFLG & seri & Ex2 & (WWR | SER | EXER )	// Sec Serial
+
+			9'b0_1_01_1000_0 : EXA_mask_en = 1'b1; //  SPDTFLG & self & Ex3 & (WWR | SER | EXER )	// Sec Self
+			9'b0_1_01_0100_0 : EXA_mask_en = 1'b1; //  SPDTFLG & self & Ex2 & (WWR | SER | EXER )	// Sec Self
+			9'b0_1_01_0010_0 : EXA_mask_en = 1'b1; //  SPDTFLG & self & Ex1 & (WWR | SER | EXER )	// Sec Self
+			9'b0_1_01_0001_0 : EXA_mask_en = 1'b1; //  SPDTFLG & self & Ex0 & (WWR | SER | EXER )	// Sec Self
+
+			9'b0_0_10_0100_0 : EXA_mask_en = 1'b1; // !SPDTFLG & seri & Ex2 & (WWR | SER | EXER )	// Non-Sec Serial
+			9'b0_0_01_0100_0 : EXA_mask_en = 1'b1; // !SPDTFLG & self & Ex2 & (WWR | SER | EXER )	// Non-Sec Self
+
+			default		 : EXA_mask_en = 1'b0;
+		endcase
+	end
+
+endmodule // QLK0RCIBCM3SF1V1_EXACCSCTL

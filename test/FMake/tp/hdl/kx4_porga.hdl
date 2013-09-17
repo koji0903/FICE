@@ -1,0 +1,1096 @@
+//==============================================================
+//      Module Name:KX4 PRODUCT_ORGANIZER
+//	Date	   :2010.01.27
+//	Name	   :Muratomi Ryota(QDK)	
+//==============================================================
+//	Date	   :2010.07.01
+//	Note	   :Ver1.0 -> Ver2.0 
+//		K.yamaguchi
+//==============================================================
+// HISTORY
+// 2010.07.09: change M.ouchiyama
+//		change PORT name BBCLKIN -> BBCLK
+//		change ADPC DGEN's decoder from Mail
+//			(Thu, 08 Jul 2010 14:33 naoki.nakanose.sx@rms.renesas.com)
+// 2010.07.20: change CHMOD FT3
+// 		訂正回路削除。
+//	       冗長F/F入力反転に変更
+// 2010.07.21: RAMSIZE change
+//	old)	4'b1000 : ramsize = 8'b11011111; //12KB
+//	new)	4'b1000 : ramsize = 8'b11001111; //12KB
+// 2010.07.24: STOPZ) add scanmode mask
+//==============================================================
+module KX4_PORGA (
+		PCLKRW,   RESB,     SYSRESB,  TESTMOD,  PRDSELEN,
+		PSEL1,    PSEL2,    MA3,      MA2,      MA1,      MA0,      CPUWR,    CPURD,
+		TIN05,    R15KOUT,  FSUB,     OSCOUTM,    BBCLK,  P137EXINA,SIN10,    TIN07,
+		MDR15,    MDR14,    MDR13,    MDR12,    MDR11,    MDR10,    MDR9,     MDR8,
+		MDR7,     MDR6,     MDR5,     MDR4,     MDR3,     MDR2,     MDR1,     MDR0,
+		STOPZ,    CHMOD,										// Ver2.0
+		SNFEN20,  SNFEN10,  SNFEN00,
+		TNFEN07,  TNFEN06,  TNFEN05,  TNFEN04,  TNFEN03,  TNFEN02,  TNFEN01,  TNFEN00,
+		PIOR7,    PIOR6,    PIOR5,    PIOR4,    PIOR3,    PIOR2,    PIOR1,    PIOR0,    /* XBAR -> PIOR */
+//		IAW7,     IAW5,     IAW4,     IAW2,     IAW1,     IAW0,
+		IAWEN,	  GDRAM1,   GDRAM0,   GDPORT,   GDINT,    GDCSC,			/*01.15 IAWの名称を変更*/
+		TIN05O,   INTP0EG,   TIN07O,
+		SEL20P,   SEL24P,   SEL30P,   SEL32P,   SEL36P,   SEL38P,   SEL40P,   SEL44P,   SEL48P,		// Ver2.0
+		SEL52P,   SEL64P,   SEL08P,
+		RAMSIZE7, RAMSIZE6, RAMSIZE5, RAMSIZE4, RAMSIZE3, RAMSIZE2, RAMSIZE1, RAMSIZE0,
+		FLSIZE3,  FLSIZE2,  FLSIZE1,  FLSIZE0,
+		DFSIZE1,  DFSIZE0,
+		SYSRSOUTB,
+		SEL20PI,  SEL24PI,  SEL30PI,  SEL32PI,  SEL36PI,  SEL38PI,  SEL40PI,  SEL44PI,  SEL48PI,	// Ver2.0
+		SEL52PI,  SEL64PI,
+		MDWFLRO15, MDWFLRO14, MDWFLRO13, MDWFLRO12, MDWFLRO11, MDWFLRO10, MDWFLRO9,  MDWFLRO8,
+                MDWFLRO7,  MDWFLRO6,  MDWFLRO5,  MDWFLRO4,  MDWFLRO3,  MDWFLRO2,  MDWFLRO1,  MDWFLRO0,  /*12.16追加*/
+		DGEN07,   DGEN06,   DGEN05,   DGEN04,
+	 	DGEN03,   DGEN02,   DGEN01,   DGEN00,
+		SCANMODE, 									/*01.26追加*/
+		BBISC,    SIN00									// add 2010.08.21 tanayasu
+		);
+
+  input		PCLKRW,   RESB,     SYSRESB,  TESTMOD,  PRDSELEN,
+		PSEL1,    PSEL2,    MA3,      MA2,      MA1,      MA0,      CPUWR,    CPURD,
+		TIN05,    R15KOUT,  FSUB,     OSCOUTM,    BBCLK,  P137EXINA,SIN10,    TIN07, 
+		MDWFLRO15, MDWFLRO14, MDWFLRO13, MDWFLRO12, MDWFLRO11, MDWFLRO10, MDWFLRO9,  MDWFLRO8,
+                MDWFLRO7,  MDWFLRO6,  MDWFLRO5,  MDWFLRO4,  MDWFLRO3,  MDWFLRO2,  MDWFLRO1,  MDWFLRO0,  /*12.16追加*/
+		SCANMODE  ,									/*01.26追加*/
+		BBISC,    SIN00;								// add 2010.08.21 tanayasu
+
+  output	MDR15,    MDR14,    MDR13,    MDR12,    MDR11,    MDR10,    MDR9,     MDR8,
+		MDR7,     MDR6,     MDR5,     MDR4,     MDR3,     MDR2,     MDR1,     MDR0,
+		STOPZ,	  CHMOD,										// Ver2.0
+		SNFEN20,  SNFEN10,  SNFEN00,
+		TNFEN07,  TNFEN06,  TNFEN05,  TNFEN04,  TNFEN03,  TNFEN02,  TNFEN01,  TNFEN00,
+		PIOR7,    PIOR6,    PIOR5,    PIOR4,    PIOR3,    PIOR2,    PIOR1,    PIOR0,   /* XBAR -> PIOR */
+//		IAW7,     IAW5,     IAW4,     IAW2,     IAW1,     IAW0,
+                IAWEN,    GDRAM1,   GDRAM0,   GDPORT,   GDINT,    GDCSC,                        /*01.15 IAWの名称を変更*/
+		TIN05O,   INTP0EG,   TIN07O,
+		SEL20P,   SEL24P,   SEL30P,   SEL32P,   SEL36P,   SEL38P,   SEL40P,   SEL44P,   SEL48P,		// Ver2.0
+		SEL52P,   SEL64P,   SEL08P,
+		RAMSIZE7, RAMSIZE6, RAMSIZE5, RAMSIZE4, RAMSIZE3, RAMSIZE2, RAMSIZE1, RAMSIZE0,
+		FLSIZE3,  FLSIZE2,  FLSIZE1,  FLSIZE0,
+		DFSIZE1,  DFSIZE0,
+		DGEN07,   DGEN06,   DGEN05,   DGEN04,
+                DGEN03,   DGEN02,   DGEN01,   DGEN00 ;                                /*12.17追加*/
+
+// For ICE
+  input		SYSRSOUTB ;
+  output	SEL20PI,  SEL24PI,  SEL30PI,  SEL32PI,  SEL36PI,  SEL38PI,  SEL40PI,  SEL44PI,  SEL48PI,	// Ver2.0
+		SEL52PI,  SEL64PI ;
+//
+
+
+  wire	[15:0]	din, dout ;
+  wire		oscoutm_i, fsub_i, r15kout_i ;
+  wire		sel_nfen0, sel_nfen1, sel_isc, sel_tis0,
+		sel_adpc, sel_pior, sel_iaw, sel_gdidis, sel_prdsel,	// Ver2.0
+		we_nfen0, we_nfen1, we_isc, we_tis0,
+		we_adpc, we_pior, we_iaw, we_gdidis, we_prdsel ;	// Ver2.0
+
+  KX4_PORGA_MAIN	main (
+		.pclkrw(PCLKRW), .resb(RESB), .sysresb(SYSRESB),
+		.din(din[15:0]),
+		.sel_nfen0(sel_nfen0), .sel_nfen1(sel_nfen1), .sel_isc(sel_isc), .sel_tis0(sel_tis0),
+		.sel_adpc(sel_adpc),   .sel_pior(sel_pior),   .sel_iaw(sel_iaw), .sel_gdidis(sel_gdidis),	// Ver2.0
+		.sel_prdsel(sel_prdsel),
+		.we_nfen0(we_nfen0),   .we_nfen1(we_nfen1),   .we_isc(we_isc),   .we_tis0(we_tis0),
+		.we_adpc(we_adpc),     .we_pior(we_pior),     .we_iaw(we_iaw),   .we_gdidis(we_gdidis),		// Ver2.0
+		.we_prdsel(we_prdsel),
+		.testmod(TESTMOD),     .prdselen(PRDSELEN),
+		.tin05(TIN05),         .r15kout_i(r15kout_i), .fsub_i(fsub_i),   .oscoutm_i(oscoutm_i),
+		.bbclkin(BBCLK),
+		.p137exina(P137EXINA),     .sin10(SIN10),         .tin07(TIN07),
+		.dout(dout[15:0]),
+		.tnfen({TNFEN07,        TNFEN06, TNFEN05, TNFEN04, TNFEN03, TNFEN02, TNFEN01, TNFEN00}),
+		.pior({PIOR7,  PIOR6,   PIOR5,   PIOR4,   PIOR3,   PIOR2,   PIOR1,   PIOR0}),
+//		.iaw7(IAW7),	.iaw5(IAW5),	.iaw4(IAW4),	.iaw2(IAW2),	.iaw1(IAW1),	.iaw0(IAW0),
+                .iawen(IAWEN),          .gdram1(GDRAM1),   .gdram0(GDRAM0),    .gdport(GDPORT),    .gdint(GDINT),    .gdcsc(GDCSC),
+		.stopz(STOPZ),	        .chmod(CHMOD),								// Ver2.0
+                .snfen20(SNFEN20),      .snfen10(SNFEN10), .snfen00(SNFEN00),
+		.tin05o(TIN05O),        .intp0eg(INTP0EG), .tin07o(TIN07O),
+		.sel20p(SEL20P),        .sel24p(SEL24P), .sel30p(SEL30P), .sel32p(SEL32P), .sel36p(SEL36P),	// Ver2.0
+		.sel38p(SEL38P),        .sel40p(SEL40P), .sel44p(SEL44P), .sel48p(SEL48P),
+		.sel52p(SEL52P),        .sel64p(SEL64P), .sel08p(SEL08P),
+		.ramsize7(RAMSIZE7),    .ramsize6(RAMSIZE6), .ramsize5(RAMSIZE5), .ramsize4(RAMSIZE4),
+		.ramsize3(RAMSIZE3),    .ramsize2(RAMSIZE2), .ramsize1(RAMSIZE1), .ramsize0(RAMSIZE0),
+		.flsize3(FLSIZE3),      .flsize2(FLSIZE2),   .flsize1(FLSIZE1),   .flsize0(FLSIZE0),
+		.dfsize1(DFSIZE1),      .dfsize0(DFSIZE0),
+		.sysrsoutb(SYSRSOUTB),
+		.sel20pi(SEL20PI), .sel24pi(SEL24PI), .sel30pi(SEL30PI), .sel32pi(SEL32PI), .sel36pi(SEL36PI),	// Ver2.0
+		.sel38pi(SEL38PI), .sel40pi(SEL40PI), .sel44pi(SEL44PI), .sel48pi(SEL48PI),
+		.sel52pi(SEL52PI), .sel64pi(SEL64PI),
+		.dgen({  DGEN07,   DGEN06,   DGEN05,   DGEN04,
+                         DGEN03,   DGEN02,   DGEN01,   DGEN00})
+		,.SCANMODE(SCANMODE),
+		.sin00(SIN00),	.bbisc(BBISC)							// add 2010.08.21 tanayasu
+                );
+
+  KX4_PORGA_BI		bi (
+		.psel1(PSEL1), .psel2(PSEL2), .ma({MA3,MA2,MA1,MA0}), .cpuwr(CPUWR), .cpurd(CPURD),
+		.testmod(TESTMOD),
+		.mdwflro({MDWFLRO15,MDWFLRO14,MDWFLRO13,MDWFLRO12,MDWFLRO11,MDWFLRO10,MDWFLRO9, MDWFLRO8,
+			  MDWFLRO7, MDWFLRO6, MDWFLRO5, MDWFLRO4, MDWFLRO3, MDWFLRO2, MDWFLRO1, MDWFLRO0}),
+		.dout(dout[15:0]),
+		.sel_nfen0(sel_nfen0), .sel_nfen1(sel_nfen1), .sel_isc(sel_isc), .sel_tis0(sel_tis0),
+		.sel_adpc(sel_adpc),   .sel_pior(sel_pior),   .sel_iaw(sel_iaw), .sel_gdidis(sel_gdidis),	// Ver2.0
+		.sel_prdsel(sel_prdsel),
+		.we_nfen0(we_nfen0),   .we_nfen1(we_nfen1),   .we_isc(we_isc),   .we_tis0(we_tis0),
+		.we_adpc(we_adpc),     .we_pior(we_pior),     .we_iaw(we_iaw),   .we_gdidis(we_gdidis),		// Ver2.0
+		.we_prdsel(we_prdsel),
+		.din(din[15:0]),
+		.mdr({MDR15,MDR14,MDR13,MDR12,MDR11,MDR10,MDR9,MDR8,MDR7,MDR6,MDR5,MDR4,MDR3,MDR2,MDR1,MDR0}),
+		.oscoutm(OSCOUTM), .fsub(FSUB), .r15kout(R15KOUT),
+		.oscoutm_i(oscoutm_i), .fsub_i(fsub_i), .r15kout_i(r15kout_i), 				/*100126*/
+		.scanmode(SCANMODE)
+		) ;
+
+
+endmodule
+
+//==============================================================
+//
+// BI
+//
+//==============================================================
+module KX4_PORGA_BI (
+		psel1, psel2, ma, cpuwr, cpurd, testmod,
+		mdwflro, dout,
+		sel_nfen0, sel_nfen1, sel_isc, sel_tis0,
+		sel_adpc, sel_pior, sel_iaw, sel_gdidis, sel_prdsel,	// Ver2.0
+		we_nfen0, we_nfen1, we_isc, we_tis0,
+		we_adpc, we_pior, we_iaw, we_gdidis, we_prdsel,		// Ver2.0
+		din, mdr,
+		scanmode,
+		oscoutm, fsub, r15kout,
+		oscoutm_i, fsub_i , r15kout_i
+		);
+
+  input		psel1, psel2, cpuwr, cpurd, testmod ;
+  input	[3:0]	ma ;
+  input	[15:0]	dout, mdwflro ;
+  input		oscoutm, fsub, r15kout ;
+  input		scanmode ;
+
+  output	sel_nfen0, sel_nfen1, sel_isc, sel_tis0,
+		sel_adpc, sel_pior, sel_iaw, sel_gdidis, sel_prdsel,	// Ver2.0
+		we_nfen0, we_nfen1, we_isc, we_tis0,
+		we_adpc, we_pior, we_iaw, we_gdidis, we_prdsel ;	// Ver2.0
+
+  output[15:0]	din, mdr ;
+  output	oscoutm_i, fsub_i, r15kout_i ;
+ 
+
+//======address decode ===================================================
+
+  assign sel_nfen0  = psel1 & (ma == 4'b0000);
+  assign sel_nfen1  = psel1 & (ma == 4'b0001);
+//assign sel_nfen2  = psel1 & (ma == 4'b0010);	// reserve
+  assign sel_isc    = psel1 & (ma == 4'b0011);
+  assign sel_tis0   = psel1 & (ma == 4'b0100);
+//assign sel_tis1   = psel1 & (ma == 4'b0101);	// reserve
+  assign sel_adpc   = psel1 & (ma == 4'b0110);
+  assign sel_pior   = psel1 & (ma == 4'b0111);
+  assign sel_iaw    = psel1 & (ma == 4'b1000);
+  assign sel_gdidis = psel1 & (ma == 4'b1101);	// Ver2.0
+ 
+  assign sel_prdsel = psel2 & testmod ;
+
+
+//=======Write Enable ====================================================
+
+  assign we_nfen0  = cpuwr & sel_nfen0  ;
+  assign we_nfen1  = cpuwr & sel_nfen1  ;
+  assign we_isc    = cpuwr & sel_isc    ;
+  assign we_tis0   = cpuwr & sel_tis0   ;
+  assign we_adpc   = cpuwr & sel_adpc   ;
+  assign we_pior   = cpuwr & sel_pior   ;
+  assign we_iaw    = cpuwr & sel_iaw    ;
+  assign we_gdidis = cpuwr & sel_gdidis ;	// Ver2.0
+ 
+  assign we_prdsel = cpuwr & sel_prdsel ;
+
+
+//=======Bus =============================================================
+
+  assign mdr[0]  = dout[0]  & cpurd;
+  assign mdr[1]  = dout[1]  & cpurd; 
+  assign mdr[2]  = dout[2]  & cpurd; 
+  assign mdr[3]  = dout[3]  & cpurd;
+  assign mdr[4]  = dout[4]  & cpurd;
+  assign mdr[5]  = dout[5]  & cpurd;
+  assign mdr[6]  = dout[6]  & cpurd;
+  assign mdr[7]  = dout[7]  & cpurd;
+  assign mdr[8]  = dout[8]  & cpurd;
+  assign mdr[9]  = dout[9]  & cpurd;
+  assign mdr[10] = dout[10] & cpurd;
+  assign mdr[11] = dout[11] & cpurd;
+  assign mdr[12] = dout[12] & cpurd;
+  assign mdr[13] = dout[13] & cpurd;
+  assign mdr[14] = dout[14] & cpurd;
+  assign mdr[15] = dout[15] & cpurd;
+
+  assign din = mdwflro ;
+
+
+//=======TISEL =============================================================
+  assign fsub_i  = fsub  | scanmode ;
+  assign oscoutm_i = oscoutm | scanmode ;
+  assign r15kout_i = r15kout | scanmode ;
+
+
+endmodule
+
+
+
+//==============================================================
+//
+// MAIN
+//
+//==============================================================
+module KX4_PORGA_MAIN (
+		pclkrw, resb, sysresb,
+		din, 
+		sel_nfen0, sel_nfen1, sel_isc, sel_tis0,
+		sel_adpc, sel_pior, sel_iaw, sel_gdidis, sel_prdsel,	// Ver2.0
+		we_nfen0, we_nfen1, we_isc, we_tis0,
+		we_adpc, we_pior, we_iaw, we_gdidis, we_prdsel,		// Ver2.0
+		testmod, prdselen,
+		tin05, r15kout_i, fsub_i, oscoutm_i, bbclkin,
+		p137exina, sin10, tin07,
+		dout, tnfen, pior, 
+//		iaw7, iaw5, iaw4, iaw2, iaw1, iaw0,
+		iawen,  gdram1, gdram0, gdport, gdint, gdcsc,
+		stopz, chmod,						// Ver2.0
+		snfen20, snfen10, snfen00,
+		tin05o, intp0eg, tin07o,
+		sel20p, sel24p, sel30p, sel32p, sel36p,			// Ver2.0
+		sel44p, sel48p, sel38p, sel40p,
+		sel52p, sel64p, sel08p,
+		ramsize7, ramsize6, ramsize5, ramsize4,
+		ramsize3, ramsize2, ramsize1, ramsize0,
+		flsize3, flsize2, flsize1, flsize0,
+		dfsize1, dfsize0,
+		sysrsoutb,
+		sel20pi, sel24pi, sel30pi, sel32pi, sel36pi,		// Ver2.0
+		sel38pi, sel40pi, sel44pi, sel48pi,
+		sel52pi, sel64pi, 
+		dgen
+		,SCANMODE,
+		sin00, bbisc						// add 2010.08.21 tanayasu
+		) ;
+
+  input		pclkrw, resb, sysresb ;
+  input		testmod, prdselen ;
+  input[15:0]	din ;
+
+  input		sel_nfen0, sel_nfen1, sel_isc, sel_tis0,
+		sel_adpc, sel_pior, sel_iaw, sel_gdidis, sel_prdsel,	// Ver2.0
+		we_nfen0, we_nfen1, we_isc, we_tis0,
+		we_adpc, we_pior, we_iaw, we_gdidis, we_prdsel ;	// Ver2.0
+
+  input		tin05, r15kout_i, fsub_i, oscoutm_i, bbclkin ;	// TISEL
+  input		p137exina, sin10, tin07 ;				// LINSEL
+  input		sin00, bbisc ;						// add 2010.08.21 tanayasu
+
+  output[15:0]	dout ;
+  output[7:0]	tnfen, pior ;
+//  output 	iaw7, iaw5, iaw4, iaw2, iaw1, iaw0 ;
+  output 	iawen, gdram1, gdram0, gdport, gdint, gdcsc ;
+
+  output	stopz ;						// GDIDIS Ver2.0
+  output	chmod ;						// Ver2.0
+
+  input		SCANMODE ;
+  output	snfen20, snfen10, snfen00 ;
+
+  output	tin05o ;					// TISEL
+  output	intp0eg, tin07o ;				// LINSEL
+
+  output	sel20p, sel24p, sel30p, sel32p, sel36p,			// Ver2.0
+		sel44p, sel48p, sel38p, sel40p,
+		sel52p, sel64p, sel08p ;
+
+  output	ramsize7, ramsize6, ramsize5, ramsize4,
+		ramsize3, ramsize2, ramsize1, ramsize0 ;
+
+  output	flsize3, flsize2, flsize1, flsize0 ;
+
+  output	dfsize1, dfsize0 ;
+
+  output[7:0]	dgen;
+
+// for ICE ---------------------------------------------------------------------------------
+  input		sysrsoutb ;
+
+  output	sel20pi, sel24pi, sel30pi, sel32pi, sel36pi,		// Ver2.0
+		sel38pi, sel40pi, sel44pi, sel48pi,
+		sel52pi, sel64pi ;
+// for ICE kokomade ------------------------------------------------------------------------
+
+  wire	[3:0]	prdsel_pclm ;
+  wire	[3:0]	prdsel_ramcnf ;						// Ver2.0
+  wire	[2:0]	tis0 ;
+  wire	[1:0]	isc ;
+  wire  [3:0]	adpc ;
+
+  KX4_PORGA_REGCTL	regctl  (
+		.pclkrw(pclkrw), .resb(resb), .sysresb(sysresb),
+		.din(din[15:0]), 
+		.sel_nfen0(sel_nfen0), .sel_nfen1(sel_nfen1), .sel_isc(sel_isc), .sel_tis0(sel_tis0),
+		.sel_adpc(sel_adpc), .sel_pior(sel_pior), .sel_iaw(sel_iaw), .sel_gdidis(sel_gdidis),	// Ver2.0
+		.sel_prdsel(sel_prdsel),
+		.we_nfen0(we_nfen0), .we_nfen1(we_nfen1), .we_isc(we_isc), .we_tis0(we_tis0),
+		.we_adpc(we_adpc), .we_pior(we_pior), .we_iaw(we_iaw), .we_gdidis(we_gdidis),		// Ver2.0
+		.we_prdsel(we_prdsel),
+		.testmod(testmod), .prdselen(prdselen),
+		.dout(dout[15:0]),
+		.tnfen(tnfen[7:0]), .pior(pior[7:0]), 
+//		.iaw7(iaw7),  .iaw5(iaw5),  .iaw4(iaw4),  .iaw2(iaw2),  .iaw1(iaw1),  .iaw0(iaw0),
+		.iawen(iawen),	.gdram1(gdram1),   .gdram0(gdram0),   .gdport(gdport),   .gdint(gdint),   .gdcsc(gdcsc),
+		.adpc(adpc[3:0]),
+		.prdsel_pclm(prdsel_pclm[3:0]), .prdsel_ramcnf(prdsel_ramcnf[3:0]),			// Ver2.0
+		.tis0(tis0[2:0]), .isc(isc[1:0]),
+		.stopz(stopz), .chmod(chmod),								// Ver2.0
+		.snfen20(snfen20), .snfen10(snfen10), .snfen00(snfen00)
+		,.SCANMODE(SCANMODE)
+		);
+
+
+  KX4_PORGA_TISEL	tisel (
+		.tin05(tin05), .r15kout_i(r15kout_i), .fsub_i(fsub_i), .oscoutm_i(oscoutm_i),
+		.bbclkin(bbclkin),
+		.tis0(tis0[2:0]),
+		.tin05o(tin05o)
+		);
+
+  KX4_PORGA_LINSEL	linsel (
+		.p137exina(p137exina), .sin10(sin10), .tin07(tin07),
+		.isc(isc[1:0]),
+		.intp0eg(intp0eg), .tin07o(tin07o),
+		.sin00(sin00),	.bbisc(bbisc)								// add 2010.08.21 tanayasu	
+		);
+
+  KX4_PORGA_PRDSEL	prdsel (
+		.prdsel_pclm(prdsel_pclm[3:0]), .prdsel_ramcnf(prdsel_ramcnf[3:0]),				// Ver2.0
+		.sel20p(sel20p), .sel24p(sel24p), .sel30p(sel30p), .sel32p(sel32p), .sel36p(sel36p),		// Ver2.0
+		.sel38p(sel38p), .sel40p(sel40p), .sel44p(sel44p), .sel48p(sel48p),
+		.sel52p(sel52p), .sel64p(sel64p), .sel08p(sel08p),
+		.ramsize7(ramsize7), .ramsize6(ramsize6), .ramsize5(ramsize5), .ramsize4(ramsize4),
+		.ramsize3(ramsize3), .ramsize2(ramsize2), .ramsize1(ramsize1), .ramsize0(ramsize0),
+		.flsize3(flsize3), .flsize2(flsize2), .flsize1(flsize1), .flsize0(flsize0),
+		.dfsize1(dfsize1), .dfsize0(dfsize0),
+// for ICE ---------------------------------------------------------------------------------
+		.resb(resb), .sysrsoutb(sysrsoutb),
+		.sel20pi(sel20pi), .sel24pi(sel24pi), .sel30pi(sel30pi), .sel32pi(sel32pi), .sel36pi(sel36pi),	// Ver2.0
+		.sel38pi(sel38pi), .sel40pi(sel40pi), .sel44pi(sel44pi), .sel48pi(sel48pi),
+		.sel52pi(sel52pi), .sel64pi(sel64pi)
+// for ICE kokomade ------------------------------------------------------------------------
+		);
+
+KX4_PORGA_ADPC		adpcen (
+		.adpc(adpc[3:0]), .dgen(dgen[7:0])
+		);
+
+endmodule
+
+
+//==============================================================
+//
+// REGCTL
+//
+//==============================================================
+module KX4_PORGA_REGCTL (
+		pclkrw, resb, sysresb,
+		din, 
+		//iromo,
+		sel_nfen0, sel_nfen1, sel_isc, sel_tis0,
+		sel_adpc, sel_pior, sel_iaw, sel_gdidis, sel_prdsel,	// Ver2.0
+		we_nfen0, we_nfen1, we_isc, we_tis0,
+		we_adpc, we_pior, we_iaw, we_gdidis, we_prdsel,		// Ver2.0
+		testmod, prdselen,
+		dout,
+		tnfen, pior, 
+//		iaw7, iaw5, iaw4, iaw2, iaw1, iaw0,
+                iawen, gdram1,  gdram0, gdport,  gdint,  gdcsc,
+	        adpc, prdsel_pclm, prdsel_ramcnf,
+		tis0, isc,
+		stopz, chmod,						// Ver2.0
+		snfen20, snfen10, snfen00
+		,SCANMODE
+		);
+
+  input		pclkrw, resb, sysresb ;
+  input	[15:0]	din ;
+
+  input		sel_nfen0, sel_nfen1, sel_isc, sel_tis0,
+		sel_adpc, sel_pior, sel_iaw, sel_gdidis, sel_prdsel,	// Ver2.0
+		we_nfen0, we_nfen1, we_isc, we_tis0,
+		we_adpc, we_pior, we_iaw, we_gdidis, we_prdsel ;	// Ver2.0
+
+  input		testmod ;
+  input		prdselen ;
+
+  output[15:0]	dout ;
+  output[7:0]	tnfen, pior ; 
+//  output	iaw7, iaw5, iaw4, iaw2, iaw1, iaw0 ;
+  output	iawen, gdram1,  gdram0, gdport,  gdint,  gdcsc ;
+  output[3:0]	adpc ;
+  output[3:0]	prdsel_pclm ;
+  output[3:0]	prdsel_ramcnf ;			// Ver2.0
+  output[2:0]	tis0 ;
+  output[1:0]	isc ;
+  output	stopz ;				// Ver2.0
+  input		SCANMODE ;
+  output	chmod ;				// Ver2.0
+  output	snfen20, snfen10, snfen00 ;
+
+  wire	[8:0]	all_sl ;			// Ver2.0
+  wire	[13:0]	prdsel_in ;			// Ver2.0
+  wire		chmod ;				// Ver2.0
+  wire	[3:0]	prdsel_pclm ;
+  wire		pclkrw_in ;
+  wire		pclm_fto_3, pclm_fto_2, pclm_fto_1, pclm_fto_0 ;
+  wire		chmod_fto ;			// Ver2.0
+  wire		we_prdsel_in, fto_all ;
+
+  reg	[15:0]	dout ;
+  reg	[7:0]	tnfen, pior ;
+//  reg		iaw7, iaw5, iaw4, iaw2, iaw1, iaw0 ;
+  reg		iawen, gdram1, gdram0, gdport, gdint, gdcsc ;
+  reg	[3:0]	adpc ;
+  reg		gdidis0 ;			// Ver2.0
+  reg	[3:0]	prdsel_ramcnf ;			// Ver2.0
+  reg	[2:0]	tis0 ;
+  reg	[1:0]	isc ;
+  reg		snfen20, snfen10, snfen00 ;
+  reg   [12:0]  dgen ;
+
+//---------------------------------------
+// NFEN0 -lower 8bit
+//---------------------------------------
+// for SAU N/F, use bit4, bit2, bit0
+
+  //synopsys async_set_reset "resb"
+  always @  (posedge pclkrw or negedge resb) begin
+	if (!resb) begin
+		snfen20 <= 1'b0;
+		snfen10 <= 1'b0;
+		snfen00 <= 1'b0;
+	end
+	else if (we_nfen0) begin
+		snfen20 <= din[4];
+		snfen10 <= din[2];
+		snfen00 <= din[0];
+	end
+  end
+
+
+//---------------------------------------
+// NFEN1 -higher 8bit
+//---------------------------------------
+// for TAU N/F
+
+  //synopsys async_set_reset "resb"
+  always @  (posedge pclkrw or negedge resb) begin
+	if (!resb)		tnfen[7:0] <= 8'h00;
+	else if (we_nfen1)	tnfen[7:0] <= din[15:8];
+  end
+
+
+//---------------------------------------
+// NFEN2 -lower 8bit (reserve)
+//---------------------------------------
+//---------------------------------------
+// ISC -higher 8bit
+//---------------------------------------
+
+  //synopsys async_set_reset "resb"
+  always @  (posedge pclkrw or negedge resb) begin
+	if (!resb) 		isc[1:0] <= 2'b00;
+	else if (we_isc)	isc[1:0] <= din[9:8];
+  end
+
+//---------------------------------------
+// TIS0 -lower 8bit
+//---------------------------------------
+
+  //synopsys async_set_reset "resb"
+  always @  (posedge pclkrw or negedge resb) begin
+	if (!resb)		tis0[2:0] <= 3'b000;
+	else if (we_tis0)	tis0[2:0] <= din[2:0];
+  end
+
+//---------------------------------------
+// TIS1 -higher 8bit (reserve)
+//---------------------------------------
+
+//---------------------------------------
+// ADPC -lower 8bit 
+//---------------------------------------
+
+  //synopsys async_set_reset "resb"
+  always @  (posedge pclkrw or negedge resb) begin
+	if (!resb)		adpc[3:0]  <= 4'h0;
+	else if (we_adpc)	adpc[3:0]  <= din[3:0];
+  end
+
+
+//---------------------------------------
+// PIOR -higher 8bit
+//---------------------------------------
+
+  //synopsys async_set_reset "resb"
+  always @  (posedge pclkrw or negedge resb) begin
+	if (!resb)		pior[7:0] <= 8'h00;
+	else if (we_pior)	pior[7:0] <= din[15:8];
+  end
+
+//---------------------------------------
+// IAW -lower 8bit 
+//---------------------------------------
+
+  //synopsys async_set_reset "resb"
+  always @  (posedge pclkrw or negedge resb) begin
+	if (!resb) begin
+				iawen  <= 1'b0;	
+				gdram1 <= 1'b0;	
+				gdram0 <= 1'b0;	
+				gdport <= 1'b0;	
+				gdint  <= 1'b0;	
+				gdcsc  <= 1'b0;	
+	end
+	else if (we_iaw) begin
+                                iawen    <= din[7] | iawen ;
+                                gdram1   <= din[5];
+                                gdram0   <= din[4];
+                                gdport   <= din[2];
+                                gdint    <= din[1];
+                                gdcsc    <= din[0];
+	end
+  end
+
+
+// Ver2.0
+//---------------------------------------
+// GDIDIS -higher 8bit
+//---------------------------------------
+
+  //synopsys async_set_reset "resb"
+  always @  (posedge pclkrw or negedge resb) begin
+	if (!resb)		gdidis0 <= 1'b0;
+	else if (we_gdidis)	gdidis0 <= din[8];
+  end
+
+//assign stopz = ~gdidis0 ;
+  assign stopz = ( SCANMODE ) ? 1'b1 :  ~gdidis0 ;
+
+
+//---------------------------------------
+// PRDSEL -higer 8bit
+// PRDSEL -lower 8bit
+//---------------------------------------
+// SFR
+//
+//     15      14      13      12      11      10      9       8 
+// +-------+-------+-------+-------+-------+-------+-------+-------+
+// | 1'b0  | 1'b0  | CHMOD | 1'b0  | 1'b0  | 1'b0  | 1'b0  |RAMCNF3|
+// +-------+-------+-------+-------+-------+-------+-------+-------+
+//     7       6       5       4       3       2       1       0
+// +-------+-------+-------+-------+-------+-------+-------+-------+
+// |       RAMCNF2-0       | 1'b0  |            PINCNF3-0          |
+// +-------+-------+-------+-------+-------+-------+-------+-------+
+
+
+//
+//  Kx4では、FLSIZE,DFSIZEは固定(ALL0)なのでキャプチャしない。
+
+
+// RESSEQからの書き込み許可とCPU命令の書き込み許可をOR
+  assign we_prdsel_in = prdselen | we_prdsel ;
+
+
+// RESSEQからの書き込み許可は、IROMOを選択
+//
+// ※iromo[6:0]= ({IROMO11, IROMO10, IROMO9, IROMO8, IROMO7, IROMO6, IROMO5})
+//
+
+//assign prdsel_in[3:0] = ( prdselen ) ? iromo[6:3] : din[3:0] ;
+//assign prdsel_in[6:4] = ( prdselen ) ? iromo[2:0] : din[7:5] ;
+//assign prdsel_in[6:0] = ( prdselen ) ? {iromo[2:0], iromo[6:3]} : {din[7:5], din[3:0]} ; 
+
+//assign prdsel_in[7:0] = din[7:0];	//12.16追加
+  assign prdsel_in[13:0] = din[13:0];	// Ver2.0
+
+// 訂正時の書き込み許可信号生成
+  assign fto_all = pclm_fto_3 | pclm_fto_2  | pclm_fto_1 | pclm_fto_0 ;
+//assign fto_all = pclm_fto_3 | pclm_fto_2  | pclm_fto_1 | pclm_fto_0 | chmod_fto ;
+
+
+// pclkrwは、リセットシーケンス、訂正時、テストモード時のみ有効
+  TBGTSMLALADCLX2 pclkrw_latch ( .N01(pclkrw_in), .H01( prdselen | fto_all ), .H02(pclkrw), .H03(testmod) ) ;
+
+
+// Ver2.0
+// CHMOD  Capture reg
+//KX4_PORGA_FT3_CH  chmod_ft3 ( .pclkrw_in(pclkrw_in), .sysresb(sysresb), .in(prdsel_in[13]), .en(we_prdsel_in),
+//				 .out(chmod),          .fto(chmod_fto) );
+  KX4_PORGA_FT3_H_CHMOD  chmod_ft3 ( .pclkrw_in(pclkrw_in), .sysresb(sysresb), .in(prdsel_in[13]), .en(we_prdsel_in),
+				 .out(chmod) );
+
+
+// ramsizeは、多数決無し
+  //synopsys async_set_reset "sysresb"
+  always @ ( posedge pclkrw_in or negedge sysresb ) begin
+	if(!sysresb)		{prdsel_ramcnf} <= 4'b1111;
+	else if( we_prdsel_in )	{prdsel_ramcnf} <= prdsel_in[8:5];
+  end
+
+
+  KX4_PORGA_FT3_H  pclm_ft3_3 ( .pclkrw_in(pclkrw_in), .sysresb(sysresb), .in(prdsel_in[3]), .en(we_prdsel_in),
+				 .out(prdsel_pclm[3]), .fto(pclm_fto_3) );
+
+  KX4_PORGA_FT3_H  pclm_ft3_2 ( .pclkrw_in(pclkrw_in), .sysresb(sysresb), .in(prdsel_in[2]), .en(we_prdsel_in),
+				 .out(prdsel_pclm[2]), .fto(pclm_fto_2) );
+
+  KX4_PORGA_FT3_H  pclm_ft3_1 ( .pclkrw_in(pclkrw_in), .sysresb(sysresb), .in(prdsel_in[1]), .en(we_prdsel_in),
+				 .out(prdsel_pclm[1]), .fto(pclm_fto_1) );
+
+  KX4_PORGA_FT3_H  pclm_ft3_0 ( .pclkrw_in(pclkrw_in), .sysresb(sysresb), .in(prdsel_in[0]), .en(we_prdsel_in),
+				 .out(prdsel_pclm[0]), .fto(pclm_fto_0) );
+
+
+//
+// Read ------------------------------------------------------------------------------------
+//
+// Ver2.0
+
+  assign all_sl = {sel_nfen0, sel_nfen1, sel_isc, sel_tis0, sel_adpc, sel_pior, sel_iaw, sel_gdidis, sel_prdsel};
+
+  always @ ( all_sl or snfen20 or snfen10 or snfen00 or tnfen or isc or tis0 or
+	     adpc or pior or iawen or gdram1 or gdram0 or gdport or gdint or gdcsc or gdidis0 or 
+	     chmod or prdsel_ramcnf or prdsel_pclm ) begin
+	case ( all_sl ) //synopsys parallel_case
+	  9'b100000000 : dout[15:0] = {8'b0, 3'b0, snfen20, 1'b0, snfen10, 1'b0, snfen00}; //bit4,2,0
+	  9'b010000000 : dout[15:0] = {tnfen[7:0], 8'b0};
+	  9'b001000000 : dout[15:0] = {6'b0, isc[1:0], 8'b0};
+	  9'b000100000 : dout[15:0] = {8'b0, 5'b0, tis0[2:0]};
+	  9'b000010000 : dout[15:0] = {8'b0, 4'b0, adpc[3:0]};
+	  9'b000001000 : dout[15:0] = {pior[7:0], 8'b0};
+	  9'b000000100 : dout[15:0] = {8'b0, iawen, 1'b0, gdram1, gdram0, 1'b0, gdport, gdint, gdcsc};
+	  9'b000000010 : dout[15:0] = {7'b0, gdidis0, 8'b0} ;
+	  9'b000000001 : dout[15:0] = {2'b0, chmod, 4'b0, prdsel_ramcnf[3:0], 1'b0, prdsel_pclm[3:0]} ;
+	  default      : dout[15:0] = 16'b0;
+	endcase
+  end
+
+endmodule
+
+// Ver2.0
+//==============================================================
+// 多数決回路(chmod)
+//==============================================================
+// 2010.07.20: 訂正回路削除。
+//	       冗長F/F入力反転に変更
+module KX4_PORGA_FT3_H_CHMOD ( pclkrw_in, sysresb, in, en, out );
+// module KX4_PORGA_FT3_CH ( pclkrw_in, sysresb, in, en, out, fto );
+
+  input		pclkrw_in ;	// クロック
+  input		sysresb ;	// リセット（ロウアクティブ）
+  input		in ;		// 入力
+  input		en ;		// 書き込み許可
+
+  output	out ;		// 訂正済み出力（3bitの多数決）
+//output	fto ;		//
+
+  reg		out;
+  reg	[2:0]	cap_bit;
+
+  wire		ft_en, cap_en, cap_in ;
+
+//assign  ft_en  = ( cap_bit!=3'b000 ) & ( cap_bit!=3'b111) ;	// 訂正許可
+//assign  cap_en = en | ft_en ;					// 訂正許可または書き込み許可（cap_bitライトイネーブル）
+//assign  cap_in = ( en ) ? in : out ;				// cap_bitライトデータ
+
+  assign  cap_en = en ;		// 訂正許可または書き込み許可（cap_bitライトイネーブル）
+  assign  cap_in = in ;		// cap_bitライトデータ
+
+//assign  fto    = ft_en;     // 2006.02.06
+
+// CHMOD output
+  always @ ( cap_bit ) begin
+	case( cap_bit ) //synopsys parallel_case
+	   3'b000 : out = 1'b1;
+	   3'b001 : out = 1'b1;
+	   3'b010 : out = 1'b0;
+	   3'b011 : out = 1'b1;
+	   3'b100 : out = 1'b1;
+	   3'b101 : out = 1'b1;
+	   3'b110 : out = 1'b1;
+	   3'b111 : out = 1'b1;
+	endcase
+  end
+
+  //synopsys async_set_reset "sysresb"
+  always @ ( posedge pclkrw_in or negedge sysresb ) begin
+	if( !sysresb )		cap_bit <= 3'b111;
+	else if( cap_en )	cap_bit <= {cap_in,~cap_in,cap_in} ;
+  end
+
+endmodule
+
+//==============================================================
+// 多数決回路(pclm)
+//==============================================================
+module KX4_PORGA_FT3_H ( pclkrw_in, sysresb, in, en, out, fto );
+
+  input		pclkrw_in ;	// クロック
+  input		sysresb ;	// リセット（ロウアクティブ）
+  input		in ;		// 入力
+  input		en ;		// 書き込み許可
+
+  output	out ;		// 訂正済み出力（3bitの多数決）
+  output	fto ;		//
+
+  reg		out;
+  reg	[2:0]	cap_bit;
+
+  wire		ft_en, cap_en, cap_in ;
+
+  assign  ft_en  = ( cap_bit!=3'b000 ) & ( cap_bit!=3'b111) ;	// 訂正許可
+  assign  cap_en = en | ft_en ;					// 訂正許可または書き込み許可（cap_bitライトイネーブル）
+  assign  cap_in = ( en ) ? in : out ;				// cap_bitライトデータ
+
+  assign  fto    = ft_en;     // 2006.02.06
+
+  always @ ( cap_bit ) begin
+	case( cap_bit ) //synopsys parallel_case
+	   3'b000 : out = 1'b0;
+	   3'b001 : out = 1'b0;
+	   3'b010 : out = 1'b0;
+	   3'b011 : out = 1'b1;
+	   3'b100 : out = 1'b0;
+	   3'b101 : out = 1'b1;
+	   3'b110 : out = 1'b1;
+	   3'b111 : out = 1'b1;
+	endcase
+  end
+
+  //synopsys async_set_reset "sysresb"
+  always @ ( posedge pclkrw_in or negedge sysresb ) begin
+	if( !sysresb )		cap_bit <= 3'b111;
+	else if( cap_en )	cap_bit <= {cap_in,cap_in,cap_in} ;
+  end
+
+endmodule
+
+//==============================================================
+//
+// TISEL
+//
+//==============================================================
+module KX4_PORGA_TISEL (
+		tin05, r15kout_i, fsub_i, oscoutm_i, bbclkin,
+		tis0, tin05o
+		);
+
+  input		tin05, r15kout_i, fsub_i, oscoutm_i, bbclkin ;
+
+  input	[2:0]	tis0 ;
+
+  output	tin05o ;
+
+  reg		tin05o ;
+
+// tis[2:0]で、TI5の入力を選択する。
+
+  always @ ( tis0 or tin05 or r15kout_i or fsub_i or oscoutm_i or bbclkin ) begin
+	case ( tis0[2:0] ) //synopsys parallel_case
+		3'b100	: tin05o = r15kout_i ;
+		3'b101	: tin05o = fsub_i  ;
+		3'b110	: tin05o = oscoutm_i ;
+		3'b111	: tin05o = bbclkin ;
+		default	: tin05o = tin05   ;
+	endcase
+  end
+
+
+endmodule
+
+//==============================================================
+//
+// LINSEL
+//
+//==============================================================
+module KX4_PORGA_LINSEL (
+                p137exina, sin10, tin07,
+                isc,
+                intp0eg, tin07o,
+		sin00,	bbisc					// add 2010.08.21 tanayasu
+                ) ;
+
+  input		p137exina, sin10, tin07 ;
+  input	[1:0]	isc ;
+  input		sin00,  bbisc ;					// add 2010.08.21 tanayasu
+
+  output	intp0eg, tin07o ;
+  
+  wire		iscsel ;
+
+  assign iscsel = ( bbisc ) ? sin00 : sin10 ;			// add 2010.08.21 tanayasu
+
+//  assign tin07o = ( isc[1] ) ? sin10 : tin07 ;		// del 2010.08.21 tanayasu
+//  assign intp0eg = ( isc[0] ) ? sin10 : p137exina ;		// del 2010.08.21 tanayasu
+
+  assign tin07o = ( isc[1] ) ? iscsel : tin07 ;			// add 2010.08.21 tanayasu
+  assign intp0eg = ( isc[0] ) ? iscsel : p137exina ;		// add 2010.08.21 tanayasu
+
+endmodule
+
+//==============================================================
+//
+// PRDSEL
+//
+//==============================================================
+module KX4_PORGA_PRDSEL (
+                prdsel_pclm, prdsel_ramcnf,
+		sel20p, sel24p, sel30p, sel32p, sel36p,		// Ver2.0
+		sel38p, sel40p, sel44p, sel48p,
+		sel52p, sel64p, sel08p,
+		ramsize7, ramsize6, ramsize5, ramsize4,
+		ramsize3, ramsize2, ramsize1, ramsize0,
+		flsize3, flsize2, flsize1, flsize0,
+		dfsize1, dfsize0,
+		resb, sysrsoutb,
+		sel20pi, sel24pi, sel30pi, sel32pi, sel36pi,	// Ver2.0
+		sel38pi, sel40pi, sel44pi, sel48pi,
+		sel52pi, sel64pi
+                ) ;
+
+  input	[3:0]	prdsel_pclm ;
+  input	[3:0]	prdsel_ramcnf ;
+
+  output	sel20p, sel24p, sel30p, sel32p, sel36p,		// Ver2.0
+		sel38p, sel40p, sel44p, sel48p,
+		sel52p, sel64p, sel08p ;
+
+  output	ramsize7, ramsize6, ramsize5, ramsize4,
+		ramsize3, ramsize2, ramsize1, ramsize0,
+		flsize3, flsize2, flsize1, flsize0,
+		dfsize1, dfsize0 ;
+
+  reg	[11:0]	pinsize;					// Ver2.0
+  reg	[7:0]	ramsize;
+
+
+// for ICE ---------------------------------------------------------------------------------
+  input		resb, sysrsoutb ;
+  output	sel20pi, sel24pi, sel30pi, sel32pi, sel36pi,	// Ver2.0
+		sel38pi, sel40pi, sel44pi, sel48pi,
+		sel52pi, sel64pi ;
+// for ICE kokomade ------------------------------------------------------------------------
+
+
+// Product Pin Configuration    ------------------------------------------------------------
+// Ver2.0 add sel36p
+
+  assign sel20p = pinsize[11];
+  assign sel24p = pinsize[10];
+  assign sel30p = pinsize[9];
+  assign sel32p = pinsize[8];
+  assign sel36p = pinsize[7];
+  assign sel38p = pinsize[6];
+  assign sel40p = pinsize[5];
+  assign sel44p = pinsize[4];
+  assign sel48p = pinsize[3];
+  assign sel52p = pinsize[2];
+  assign sel64p = pinsize[1];
+  assign sel08p = pinsize[0];
+
+  always @( prdsel_pclm ) begin
+	case (prdsel_pclm[3:0]) //synopsys parallel_case   
+	   4'b0000 : pinsize = 12'b100000000000; //SEL20P
+	   4'b0001 : pinsize = 12'b010000000000; //SEL24P
+	   4'b0010 : pinsize = 12'b001000000000; //SEL30P
+	   4'b0011 : pinsize = 12'b000100000000; //SEL32P
+	   4'b0100 : pinsize = 12'b000010000000; //SEL36P
+	   4'b0101 : pinsize = 12'b000001000000; //SEL38P
+	   4'b0110 : pinsize = 12'b000000100000; //SEL40P
+	   4'b0111 : pinsize = 12'b000000010000; //SEL44P
+	   4'b1000 : pinsize = 12'b000000001000; //SEL48P
+	   4'b1001 : pinsize = 12'b000000000100; //SEL52P
+	   4'b1010 : pinsize = 12'b000000000010; //SEL64P
+	   4'b1011 : pinsize = 12'b000000000010; //SEL64P
+	   4'b1100 : pinsize = 12'b000000000010; //SEL64P
+	   4'b1101 : pinsize = 12'b000000000010; //SEL64P
+	   4'b1110 : pinsize = 12'b000000000010; //SEL64P
+	   4'b1111 : pinsize = 12'b000000000001; //SEL08P
+	endcase
+  end
+
+// Product Ram Size & Flash Size Configuration  --------------------------------------------
+
+//FLASHは64KBで固定
+  assign flsize3 = 1'b0;
+  assign flsize2 = 1'b0; 
+  assign flsize1 = 1'b0;
+  assign flsize0 = 1'b0;
+ 
+//DATA FLASHは4KBで固定
+  assign dfsize1 = 1'b0;
+  assign dfsize0 = 1'b1; 
+
+  assign ramsize7 = ramsize[7];
+  assign ramsize6 = ramsize[6];
+  assign ramsize5 = ramsize[5];
+  assign ramsize4 = ramsize[4];
+  assign ramsize3 = ramsize[3];
+  assign ramsize2 = ramsize[2];
+  assign ramsize1 = ramsize[1];
+  assign ramsize0 = ramsize[0];
+ 
+
+// SPRGMODではRAMSIZEは常に最大サイズを選択 -> delete Ver2.0
+// ramcnf 3bit -> 4bit Ver2.0
+
+  always @( prdsel_ramcnf ) begin 
+	   case(prdsel_ramcnf[3:0]) //synopsys parallel_case
+		4'b0000 : ramsize = 8'b11111110; //256Byte
+		4'b0001 : ramsize = 8'b11111101; //512Byte
+		4'b0010 : ramsize = 8'b11111100; //768Byte
+		4'b0011 : ramsize = 8'b11111011; //1KB
+		4'b0100 : ramsize = 8'b11110111; //2KB
+		4'b0101 : ramsize = 8'b11110011; //3KB
+		4'b0110 : ramsize = 8'b11101111; //4KB
+		4'b0111 : ramsize = 8'b11011111; //8KB
+
+//		4'b1000 : ramsize = 8'b11011111; //12KB
+		4'b1000 : ramsize = 8'b11001111; //12KB
+
+		4'b1001 : ramsize = 8'b10111111; //16KB
+		4'b1010 : ramsize = 8'b10101111; //20KB
+		4'b1011 : ramsize = 8'b10011111; //24KB
+		4'b1100 : ramsize = 8'b10001111; //28KB
+		4'b1101 : ramsize = 8'b01111111; //32KB
+		4'b1110 : ramsize = 8'b01011111; //40KB
+		4'b1111 : ramsize = 8'b00111111; //48KB
+	   endcase
+  end
+
+  KX4_PORGA_PRDSEL_ICE_LO  ice_20pin  (.in1(sel20p), .in2(resb), .in3(sysrsoutb), .iceout(sel20pi));
+  KX4_PORGA_PRDSEL_ICE_LO  ice_24pin  (.in1(sel24p), .in2(resb), .in3(sysrsoutb), .iceout(sel24pi));
+  KX4_PORGA_PRDSEL_ICE_LO  ice_30pin  (.in1(sel30p), .in2(resb), .in3(sysrsoutb), .iceout(sel30pi));
+  KX4_PORGA_PRDSEL_ICE_LO  ice_32pin  (.in1(sel32p), .in2(resb), .in3(sysrsoutb), .iceout(sel32pi));
+  KX4_PORGA_PRDSEL_ICE_LO  ice_36pin  (.in1(sel36p), .in2(resb), .in3(sysrsoutb), .iceout(sel36pi));
+  KX4_PORGA_PRDSEL_ICE_LO  ice_38pin  (.in1(sel38p), .in2(resb), .in3(sysrsoutb), .iceout(sel38pi));
+  KX4_PORGA_PRDSEL_ICE_LO  ice_40pin  (.in1(sel40p), .in2(resb), .in3(sysrsoutb), .iceout(sel40pi));
+  KX4_PORGA_PRDSEL_ICE_LO  ice_44pin  (.in1(sel44p), .in2(resb), .in3(sysrsoutb), .iceout(sel44pi));
+  KX4_PORGA_PRDSEL_ICE_LO  ice_48pin  (.in1(sel48p), .in2(resb), .in3(sysrsoutb), .iceout(sel48pi));
+  KX4_PORGA_PRDSEL_ICE_LO  ice_52pin  (.in1(sel52p), .in2(resb), .in3(sysrsoutb), .iceout(sel52pi));
+  KX4_PORGA_PRDSEL_ICE_HI  ice_64pin  (.in1(sel64p), .in2(resb), .in3(sysrsoutb), .iceout(sel64pi));
+
+
+endmodule
+
+//==============================================================
+// PRDSEL_ICE
+//==============================================================
+
+`ifndef FPGA_ICE   	//ICE用の仕込み
+
+   module KX4_PORGA_PRDSEL_ICE_HI (in1, in2, in3, iceout);
+
+ 	 input         in1, in2, in3;
+         output        iceout;
+
+  	 assign iceout = in1 ;
+
+   endmodule
+
+`else
+
+   module KX4_PORGA_PRDSEL_ICE_HI (in1, in2, in3, iceout);
+
+	input         in1, in2, in3;
+	output        iceout;
+
+        //assign iceout = in1 ;
+	reg iceout;
+
+	always @(posedge in2 or negedge in3) begin
+	  if (!in3) iceout <= 1'b1;
+	  else iceout <= in1;
+	end
+
+   endmodule
+
+`endif
+
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+`ifndef FPGA_ICE        //ICE用の仕込み
+
+   module KX4_PORGA_PRDSEL_ICE_LO (in1, in2, in3, iceout);
+
+	input         in1, in2, in3;
+	output        iceout;
+
+	assign iceout = in1 ;
+
+   endmodule
+
+`else
+
+   module KX4_PORGA_PRDSEL_ICE_LO (in1, in2, in3, iceout);
+
+	input         in1, in2, in3;
+	output        iceout;
+
+	//assign iceout = in1 ;
+	reg iceout;
+
+	always @(posedge in2 or negedge in3) begin
+	if (!in3) iceout <= 1'b0;
+	else iceout <= in1;
+	end
+
+   endmodule
+	
+`endif
+
+//==============================================================
+// PORGA_ADPC
+//==============================================================
+module KX4_PORGA_ADPC(adpc,dgen);
+
+  input[3:0]		adpc;
+  
+  output[7:0]		dgen;
+  
+  reg[7:0]		dgen;
+
+// 2010.07.09 :
+// dgen[x] = 0: Analog Select
+// dgen[x] = 1: Digital Select
+
+	always @(adpc) begin
+	 case(adpc[3:0]) //synopsys parallel_case
+          4'b0000 : dgen = 8'b0000_0000;
+	  4'b0001 : dgen = 8'b1111_1111; //        4'b0001 : dgen = 8'b1000_0000;
+          4'b0010 : dgen = 8'b1111_1110; //        4'b0010 : dgen = 8'b1100_0000;
+          4'b0011 : dgen = 8'b1111_1100; //        4'b0011 : dgen = 8'b1110_0000;
+          4'b0100 : dgen = 8'b1111_1000; //        4'b0100 : dgen = 8'b1111_0000;
+          4'b0101 : dgen = 8'b1111_0000; //        4'b0101 : dgen = 8'b1111_1000;
+          4'b0110 : dgen = 8'b1110_0000; //        4'b0110 : dgen = 8'b1111_1100;
+          4'b0111 : dgen = 8'b1100_0000; //        4'b0111 : dgen = 8'b1111_1110;
+          4'b1000 : dgen = 8'b1000_0000; //        4'b1000 : dgen = 8'b1111_1111;
+          4'b1001 : dgen = 8'b0000_0000;
+          4'b1010 : dgen = 8'b0000_0000;
+          4'b1011 : dgen = 8'b0000_0000;
+          4'b1100 : dgen = 8'b0000_0000;
+          4'b1101 : dgen = 8'b0000_0000;
+          4'b1110 : dgen = 8'b0000_0000;
+          4'b1111 : dgen = 8'b0000_0000;
+ 	 endcase
+	end
+endmodule

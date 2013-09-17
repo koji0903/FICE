@@ -1,0 +1,23 @@
+//
+// modectl. ROUTSRCx / RINGINx に接続する信号の許可を行う。
+// グルーピングしてマクロ出口付近に配置しやすいように、専用マクロとして準備。
+//
+//
+
+module KX4_MONSIG (
+	R32MOUT,  R15KOUT,  FIHFL,  FIHOCD,
+	TR32MOUT, TR15KOUT, TFIHFL, TFIHOCD,
+	TESTMOD
+	);
+
+	input	R32MOUT,  R15KOUT,  FIHFL,  FIHOCD, TESTMOD ;
+	output	TR32MOUT, TR15KOUT, TFIHFL, TFIHOCD ;
+
+	assign TR32MOUT = R32MOUT & TESTMOD ;
+	assign TR15KOUT = R15KOUT & TESTMOD ;
+	assign TFIHFL   = FIHFL   & TESTMOD ;
+	assign TFIHOCD  = FIHOCD  & TESTMOD ;
+
+
+endmodule
+

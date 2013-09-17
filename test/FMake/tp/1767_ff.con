@@ -1,0 +1,26 @@
+rst rst:terminal
+D   D:terminal
+Q3  Q3:terminal
+#wire_1718 cspf_wrapper.cspf.connect_1718    # OLD
+RESB              cspf_wrapper.cspf.mc200.test_wire
+wire_connect_1718 cspf_wrapper.cspf.mc200.wire_1718 # Ticket #1718
+#BUS  cspf_wrapper.cspf.connect_bus_1718
+CON_BUS1 cspf_wrapper.cspf.mc200.CON_BUS1
+CON_BUS0 cspf_wrapper.cspf.mc200.CON_BUS0
+#BUS1 cspf_wrapper.cspf.mc200.CON_BUS1
+#BUS0 cspf_wrapper.cspf.mc200.CON_BUS0
+PUONOUT         cspf_wrapper.cspf.mc200.add_ff2.PUONOUT
+
+CE0 cspf_wrapper.cspf.bus.CE0
+clk_1777		ice_top.clka_1777,cspf_wrapper.cspf.bus.clkb_1777
+#clk_bus_1777	ice_top.clka_bus_1777,cspf_wrapper.cspf.bus.clkb_bus_1777
+clk_bus_1777	cspf_wrapper.cspf.bus.clkb_bus_1777
+CLK60MHZ		cspf_wrapper.flash_code.ICECK60M,ice_top.ICECK60M
+ff2_Q			cspf_wrapper.cspf.mc200.add_ff2.Q3
+
+
+CPURSOUTB		ice_top.SYSRSOUTB
+
+CLK30MHz		cspf_wrapper.iceck30m
+
+wire002			pulldown_cell0.x
