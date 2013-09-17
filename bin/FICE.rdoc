@@ -1,0 +1,38 @@
+#== FPGA-ICE Development Support Tool 
+#    Generate Verilog-HDL modified for FPGA-ICE
+#Authors::   Koji HIJIKURO<koji.hijikuro.rj@rms.renesas.com>
+#Copyright:: Copyright (c) 2011 Renesas MicroSystems. All rights reserved.
+#
+#=== Notice
+# Support Ruby-1.9.2 only
+#
+#=== Usage
+#
+# %FMake.rb [OPTION]
+#  [OPTION]
+#    --help                  : Print Help Message
+#    --version               : Print Version Message
+#    --verbose               : Execute under Verbose-Mode
+#    --startup [VerilogList] : Execute Startup-Mode
+#    --module  [Modulename]  : Describe Analyzing Module, use under Startup-Mode
+#    --product [ProdctName]  : Describe Product Name, use under Startup-Mode
+#    --check  [Conf file]    : Execute Check-Mode
+#    --config [Conf file]    : Execute Config-Mode
+#
+#  If you want to get more information. plese use "--help" option.
+#
+#=== Example
+# [Startup Mode] %FMake.rb --startup Product.list --module RL78TOP --product RL78-GXX
+# [Check Mode]   %FMake.rb --check RL78-GXX.conf
+# [Config Modde] %FMake.rb --config RL78-GXX.conf
+#
+#
+#=== Output
+# Conf-file(*.conf) - Startup/Check
+# Verilog-HDL(*.v) - Config
+# Report File(fmake.report)
+#
+#=== History
+# -history
+#
+
